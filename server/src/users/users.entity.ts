@@ -10,6 +10,12 @@ export class User {
 
   @Column({
     type: 'varchar',
+    length: 50,
+  })
+  fullName: string;
+
+  @Column({
+    type: 'varchar',
     length: 17,
   })
   username: string;
@@ -18,7 +24,7 @@ export class User {
     type: 'varchar',
     length: 50,
   })
-  fullName: string;
+  email: string;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
