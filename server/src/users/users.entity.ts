@@ -5,9 +5,6 @@ export class User {
   @ObjectIdColumn()
   id: ObjectID;
 
-  @Column()
-  categoryId: ObjectID;
-
   @Column({
     type: 'varchar',
     length: 50,
