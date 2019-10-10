@@ -24,6 +24,6 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(3000);
+  await app.listen(app.get('ConfigService').get('APP_PORT'));
 }
 bootstrap();
