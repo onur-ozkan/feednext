@@ -11,7 +11,6 @@ export class Category {
   @Column({
     type: 'varchar',
     length: 30,
-    nullable: false,
   })
   name: string;
 

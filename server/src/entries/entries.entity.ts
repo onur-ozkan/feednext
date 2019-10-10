@@ -11,7 +11,6 @@ export class Entry {
   @Column({
     type: 'varchar',
     length: 255,
-    nullable: false,
   })
   entry: string;
 
