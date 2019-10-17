@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from './config/config.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
@@ -14,13 +14,15 @@ import { UsersService } from './users/users.service';
 import { CategoriesService } from './categories/categories.service';
 import { ProductsService } from './products/products.service';
 import { EntriesService } from './entries/entries.service';
+import { User } from './users/users.entity';
+import { databaseService } from './config/config.service';
 
 @Module({
   imports: [
-    ConfigModule, CategoriesModule, ProductsModule, EntriesModule, UsersModule,
+    UsersModule,
+    TypeOrmModule.forRoot(databaseService.getTypeOrmConfig()),
+
   ],
-  controllers: [AppController, UsersController, CategoriesController, ProductsController, EntriesController],
-  providers: [AppService, UsersService, CategoriesService, ProductsService, EntriesService],
 })
 
 export class AppModule {}
