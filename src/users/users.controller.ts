@@ -8,9 +8,9 @@ import { ValidationPipe } from '../shared/pipes/validation.pipe';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get(':id')
-  findOne(@Param('id') id): Promise<UserEntity> {
-    return this.usersService.findOne(id);
+  @Get(':username')
+  findOne(@Param('username') username): Promise<UserEntity> {
+    return this.usersService.findOne(username);
   }
 
   @UsePipes(new ValidationPipe())
