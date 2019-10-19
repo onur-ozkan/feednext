@@ -14,13 +14,15 @@ export class UsersService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async findOne(idParam): Promise<UserEntity> {
-    return await this.userRepository.findOne({ id: idParam });
+  async findOne(usernameParam: string): Promise<UserEntity> {
+    try {
+      return await this.userRepository.findOneOrFail({ username: usernameParam });
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.NOT_FOUND);
+    }
   }
 
   async create(dto: CreateUserDto): Promise<UserRO> {
-
-    // check uniqueness of username/email
     const { fullName, username, password, email } = dto;
 
     // Create new user
@@ -39,10 +41,8 @@ export class UsersService {
       try {
         const savedUser = await this.userRepository.save(newUser);
         return this.buildUserRO(savedUser);
-      } catch (MongoWriteException) {
-        throw new HttpException(
-          { message: 'Incoming data is already exists in the database.', MongoWriteException },
-          HttpStatus.UNPROCESSABLE_ENTITY);
+      } catch (err) {
+        throw new HttpException(err, HttpStatus.UNPROCESSABLE_ENTITY);
       }
     }
   }
