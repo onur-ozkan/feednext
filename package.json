@@ -1,8 +1,8 @@
 {
   "name": "product-analyzer-backend",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Server side of product-analyzer",
+  "author": "Onur Ozkan",
   "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
@@ -27,10 +27,12 @@
     "class-transformer": "^0.2.3",
     "class-validator": "^0.10.2",
     "cookie-parser": "^1.4.4",
+    "crypto": "^1.0.1",
     "csurf": "^1.10.0",
     "dotenv": "^8.1.0",
     "express-rate-limit": "^5.0.0",
     "helmet": "^3.21.1",
+    "jsonwebtoken": "8.5.1",
     "mongodb": "^3.3.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.0",
