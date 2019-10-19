@@ -3,6 +3,7 @@ export interface UserData {
   username: string;
   password: string;
   email: string;
+  token: string;
 }
 
 export interface UserRO {
