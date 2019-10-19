@@ -5,7 +5,8 @@ import * as crypto from 'crypto';
 @Entity({name: 'Users'})
 export class UserEntity {
   @ObjectIdColumn()
-  id: ObjectID;
+  // tslint:disable-next-line:variable-name
+  _id: ObjectID;
 
   @Column({
     type: 'varchar',
