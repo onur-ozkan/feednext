@@ -26,7 +26,7 @@ export class ConfigService {
     return this.get('APP_PORT', true);
   }
 
-  public getSecretKey(): string {
+  public getSecretKey() {
     return this.get('SECRET_KEY', true);
   }
 
