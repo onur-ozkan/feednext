@@ -1,6 +1,9 @@
-import { Column, Entity, ObjectID, ObjectIdColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Column, Entity, ObjectID, ObjectIdColumn, CreateDateColumn, UpdateDateColumn, Unique, BeforeInsert } from 'typeorm';
+import { IsEmail } from 'class-validator';
+import * as crypto from 'crypto';
 
-@Entity()
+@Entity({name: 'Users'})
+@Unique(['username', 'email'])
 export class UserEntity {
   @ObjectIdColumn()
   id: ObjectID;
@@ -23,10 +26,16 @@ export class UserEntity {
   })
   password: string;
 
+  @BeforeInsert()
+  hashPassword() {
+    this.password = crypto.createHmac('sha256', this.password).digest('hex');
+  }
+
   @Column({
     type: 'varchar',
     length: 50,
   })
+  @IsEmail()
   email: string;
 
   @CreateDateColumn({ type: 'timestamp' })
