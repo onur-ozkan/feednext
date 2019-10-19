@@ -1,10 +1,11 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { UserEntity } from './users.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserRO } from './interface/user.interface';
 import { validate } from 'class-validator';
+import { configService } from '../config/config.service';
 
 @Injectable()
 export class UsersService {
@@ -14,45 +15,46 @@ export class UsersService {
   ) {}
 
   async findOne(idParam): Promise<UserEntity> {
-    return await this.userRepository.findOne({id: idParam});
+    return await this.userRepository.findOne({ id: idParam });
   }
 
   async create(dto: CreateUserDto): Promise<UserRO> {
 
     // check uniqueness of username/email
     const { fullName, username, password, email } = dto;
-    const qb = await getRepository(UserEntity)
-      .createQueryBuilder('user')
-      .where('user.username = :username', { username })
-      .orWhere('user.email = :email', { email });
 
-    const user = await qb.getOne();
-
-    if (user) {
-      // tslint:disable-next-line:no-shadowed-variable
-      const errors = {username: 'Username and email must be unique.'};
-      throw new HttpException({message: 'Input data validation failed', errors}, HttpStatus.BAD_REQUEST);
-
-    }
-
-    // create new user
+    // Create new user
     const newUser = new UserEntity();
     newUser.fullName = fullName;
     newUser.username = username;
     newUser.password = password;
     newUser.email = email;
 
+    // Catch validation errors
     const errors = await validate(newUser);
     if (errors.length > 0) {
-      // tslint:disable-next-line:variable-name
-      const _errors = {username: 'Userinput is not valid.'};
-      throw new HttpException({message: 'Input data validation failed', _errors}, HttpStatus.BAD_REQUEST);
-
+      throw new HttpException({message: 'Input data validation failed', errors}, HttpStatus.BAD_REQUEST);
     } else {
+      // Save to the database
       const savedUser = await this.userRepository.save(newUser);
       return this.buildUserRO(savedUser);
     }
+  }
 
+  public generateJWT(user) {
+    const jwt = require('jsonwebtoken');
+    const today = new Date();
+    const exp = new Date(today);
+    exp.setDate(today.getDate() + 60);
+
+    return jwt.sign({
+      id: user.id,
+      fullName: user.fullName,
+      username: user.username,
+      password: user.password,
+      email: user.email,
+      exp: exp.getTime() / 1000,
+    }, configService.getSecretKey());
   }
 
   private buildUserRO(user: UserEntity) {
@@ -62,6 +64,7 @@ export class UsersService {
       username: user.username,
       password: user.password,
       email: user.email,
+      token: this.generateJWT(user),
     };
 
     return {user: UserRO};
