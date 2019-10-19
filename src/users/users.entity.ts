@@ -1,9 +1,8 @@
-import { Column, Entity, ObjectID, ObjectIdColumn, CreateDateColumn, UpdateDateColumn, Unique, BeforeInsert } from 'typeorm';
+import { Column, Entity, ObjectID, ObjectIdColumn, CreateDateColumn, UpdateDateColumn, BeforeInsert } from 'typeorm';
 import { IsEmail } from 'class-validator';
 import * as crypto from 'crypto';
 
 @Entity({name: 'Users'})
-@Unique(['username', 'email'])
 export class UserEntity {
   @ObjectIdColumn()
   id: ObjectID;
@@ -17,6 +16,7 @@ export class UserEntity {
   @Column({
     type: 'varchar',
     length: 17,
+    unique: true,
   })
   username: string;
 
@@ -34,6 +34,7 @@ export class UserEntity {
   @Column({
     type: 'varchar',
     length: 50,
+    unique: true,
   })
   @IsEmail()
   email: string;
