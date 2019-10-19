@@ -33,11 +33,17 @@ export class UsersService {
     // Catch validation errors
     const errors = await validate(newUser);
     if (errors.length > 0) {
-      throw new HttpException({message: 'Input data validation failed', errors}, HttpStatus.BAD_REQUEST);
+      throw new HttpException({ message: 'Input data validation failed.', errors }, HttpStatus.BAD_REQUEST);
     } else {
       // Save to the database
-      const savedUser = await this.userRepository.save(newUser);
-      return this.buildUserRO(savedUser);
+      try {
+        const savedUser = await this.userRepository.save(newUser);
+        return this.buildUserRO(savedUser);
+      } catch (MongoWriteException) {
+        throw new HttpException(
+          { message: 'Incoming data is already exists in the database.', MongoWriteException },
+          HttpStatus.UNPROCESSABLE_ENTITY);
+      }
     }
   }
 
