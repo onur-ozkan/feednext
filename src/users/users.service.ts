@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { UserEntity } from './users.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserRO } from './interface/user.interface';
-import { validate } from 'class-validator';
 import { configService } from '../shared/config/config.service';
 
 @Injectable()
@@ -22,39 +21,20 @@ export class UsersService {
     }
   }
 
-  async findById(id: number): Promise<UserEntity> {
-    const user = await this.userRepository.findOne(id);
-
-    if (!user) {
-      const errors = {User: ' not found'};
-      throw new HttpException({ errors }, 401);
-    }
-
-    return user;
-  }
-
   async create(dto: CreateUserDto): Promise<UserRO> {
-    const { fullName, username, password, email } = dto;
-
     // Create new user
-    const newUser = new UserEntity();
-    newUser.fullName = fullName;
-    newUser.username = username;
-    newUser.password = password;
-    newUser.email = email;
+    const newUser = new UserEntity({
+      email: dto.email,
+      username: dto.username,
+      password: dto.password,
+      fullName: dto.fullName,
+    });
 
-    // Catch validation errors
-    const errors = await validate(newUser);
-    if (errors.length > 0) {
-      throw new HttpException({ message: 'Input data validation failed.', errors }, HttpStatus.BAD_REQUEST);
-    } else {
-      // Save to the database
-      try {
-        const savedUser = await this.userRepository.save(newUser);
-        return this.buildUserRO(savedUser);
-      } catch (err) {
-        throw new HttpException(err, HttpStatus.UNPROCESSABLE_ENTITY);
-      }
+    try {
+      const savedUser = await this.userRepository.save(newUser);
+      return this.buildUserRO(savedUser);
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.UNPROCESSABLE_ENTITY);
     }
   }
 
