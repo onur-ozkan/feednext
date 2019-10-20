@@ -4,7 +4,7 @@ import * as cookieParser from 'cookie-parser';
 import * as helmet from 'helmet';
 import * as csurf from 'csurf';
 import * as rateLimit from 'express-rate-limit';
-import { configService } from './config/config.service';
+import { configService } from './shared/config/config.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
