@@ -1,6 +1,5 @@
 import { Column, Entity, ObjectID, ObjectIdColumn, CreateDateColumn, UpdateDateColumn, BeforeInsert } from 'typeorm';
 import { IsEmail } from 'class-validator';
-import { Exclude } from 'class-transformer';
 import * as crypto from 'crypto';
 
 @Entity({name: 'Users'})
@@ -10,7 +9,6 @@ export class UserEntity {
     Object.assign(this, partial);
   }
 
-  @Exclude()
   @ObjectIdColumn()
   // tslint:disable-next-line:variable-name
   _id: ObjectID;
@@ -28,7 +26,6 @@ export class UserEntity {
   })
   username: string;
 
-  @Exclude()
   @Column({
     type: 'varchar',
     length: 15,
@@ -51,11 +48,9 @@ export class UserEntity {
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
-  @Exclude()
   @UpdateDateColumn({ type: 'timestamp'})
   updatedAt?: Date;
 
-  @Exclude()
   @Column({ type: 'timestamp' })
   deletedAt?: Date;
 }
