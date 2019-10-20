@@ -5,7 +5,7 @@ import { UserEntity } from './users.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserRO } from './interface/user.interface';
 import { validate } from 'class-validator';
-import { configService } from '../config/config.service';
+import { configService } from '../shared/config/config.service';
 
 @Injectable()
 export class UsersService {
@@ -20,6 +20,17 @@ export class UsersService {
     } catch (err) {
       throw new HttpException(err, HttpStatus.NOT_FOUND);
     }
+  }
+
+  async findById(id: number): Promise<UserEntity> {
+    const user = await this.userRepository.findOne(id);
+
+    if (!user) {
+      const errors = {User: ' not found'};
+      throw new HttpException({ errors }, 401);
+    }
+
+    return user;
   }
 
   async create(dto: CreateUserDto): Promise<UserRO> {
@@ -70,9 +81,9 @@ export class UsersService {
       username: user.username,
       password: user.password,
       email: user.email,
-      token: this.generateJWT(user),
+      accessToken: this.generateJWT(user),
     };
 
-    return {user: UserRO};
+    return { user: UserRO };
   }
 }
