@@ -17,7 +17,7 @@ export class UsersService {
     try {
       const result = await this.userRepository.findOneOrFail({ username: usernameParam });
       const JSONAPISerializer = require('jsonapi-serializer').Serializer;
-      return await new JSONAPISerializer('user', {attributes: ['fullName', 'username', 'email', 'createdAt']}).serialize(result);
+      return await new JSONAPISerializer('users', { attributes: ['fullName', 'username', 'email', 'createdAt'] }).serialize(result);
     } catch (err) {
       throw new HttpException(err, HttpStatus.NOT_FOUND);
     }
