@@ -34,6 +34,7 @@
     "dotenv": "^8.1.0",
     "express-rate-limit": "^5.0.0",
     "helmet": "^3.21.1",
+    "jsonapi-serializer": "^3.6.5",
     "jsonwebtoken": "8.5.1",
     "mongodb": "^3.3.2",
     "passport": "^0.4.0",

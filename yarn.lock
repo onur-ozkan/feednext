@@ -3239,6 +3239,11 @@ infer-owner@^1.0.3:
   resolved "https://registry.yarnpkg.com/infer-owner/-/infer-owner-1.0.4.tgz#c4cefcaa8e51051c2a40ba2ce8a3d27295af9467"
   integrity sha512-IClj+Xz94+d7irH5qRyfJonOdfTzuDaifE6ZPWfx0N0+/ATZCbuTPq2prFl526urkQd90WyUKIh1DfBQ2hMz9A==
 
+inflected@^1.1.6:
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/inflected/-/inflected-1.1.7.tgz#c393df6e28472d0d77b3082ec3aa2091f4bc96f9"
+  integrity sha1-w5PfbihHLQ13swguw6ogkfS8lvk=
+
 inflight@^1.0.4:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/inflight/-/inflight-1.0.6.tgz#49bd6331d7d02d0c09bc910a1075ba8165b56df9"
@@ -4075,6 +4080,14 @@ json5@^1.0.1:
   dependencies:
     minimist "^1.2.0"
 
+jsonapi-serializer@^3.6.5:
+  version "3.6.5"
+  resolved "https://registry.yarnpkg.com/jsonapi-serializer/-/jsonapi-serializer-3.6.5.tgz#8e61c8062affc748732857b5c8646d6d0f75503a"
+  integrity sha512-UmBU9JnWVi2H2vZcPTSsPsA7+SUIkuGXwjXbx2GWW7crbZr/pYgQPUH3MSmOQYvpAIYlg5oIomnS4F9eM8g5cQ==
+  dependencies:
+    inflected "^1.1.6"
+    lodash "^4.16.3"
+
 jsonfile@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/jsonfile/-/jsonfile-4.0.0.tgz#8771aae0799b64076b76640fca058f9c10e33ecb"
@@ -4269,7 +4282,7 @@ lodash.toarray@^4.4.0:
   resolved "https://registry.yarnpkg.com/lodash.toarray/-/lodash.toarray-4.4.0.tgz#24c4bfcd6b2fba38bfd0594db1179d8e9b656561"
   integrity sha1-JMS/zWsvuji/0FlNsRedjptlZWE=
 
-lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.15:
+lodash@^4.16.3, lodash@^4.16.4, lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.15:
   version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
@@ -6440,6 +6453,14 @@ ts-jest@^24.1.0:
     resolve "1.x"
     semver "^5.5"
     yargs-parser "10.x"
+
+ts-jsonapi@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/ts-jsonapi/-/ts-jsonapi-2.1.2.tgz#7b074aec48c99fdd67f11bdaa3aba7f724239669"
+  integrity sha512-83txwLbtVv0DCV+4CtcJqWop4tavLgv+ytiQwIkkvgGBamydDeVqXt+dzs7WKylr4fZmsEhkzSr2CtTsqNmjNg==
+  dependencies:
+    inflected "^1.1.6"
+    lodash "^4.16.4"
 
 ts-loader@^6.1.1:
   version "6.2.0"
