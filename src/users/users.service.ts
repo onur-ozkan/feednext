@@ -5,6 +5,7 @@ import { UserEntity } from './users.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserRO } from './interface/user.interface';
 import { configService } from '../shared/config/config.service';
+import { Serializer } from 'jsonapi-serializer';
 
 @Injectable()
 export class UsersService {
@@ -16,8 +17,8 @@ export class UsersService {
   async findOne(usernameParam: string): Promise<UserEntity> {
     try {
       const result = await this.userRepository.findOneOrFail({ username: usernameParam });
-      const JSONAPISerializer = require('jsonapi-serializer').Serializer;
-      return await new JSONAPISerializer('users', { attributes: ['fullName', 'username', 'email', 'createdAt'] }).serialize(result);
+
+      return await new Serializer('users', { attributes: ['fullName', 'username', 'email', 'createdAt'] }).serialize(result);
     } catch (err) {
       throw new HttpException(err, HttpStatus.NOT_FOUND);
     }
@@ -34,7 +35,9 @@ export class UsersService {
 
     try {
       const savedUser = await this.userRepository.save(newUser);
-      return this.buildUserRO(savedUser);
+      const result = this.buildUserRO(savedUser);
+
+      return await new Serializer('user-identities', { attributes: ['fullName', 'username', 'email', 'accessToken'] }).serialize(result.user);
     } catch (err) {
       throw new HttpException(err, HttpStatus.UNPROCESSABLE_ENTITY);
     }
