@@ -42,7 +42,7 @@ export class ConfigService {
       host: this.get('DB_HOST'),
       database: this.get('DB_NAME'),
       synchronize: true,
-
+      useUnifiedTopology: true,
       entities: [UserEntity],
       // migrationsTableName: 'migration',
       // migrations: ['../migration/*.ts'],
