@@ -1,21 +1,16 @@
-import { Get, Post, Body, Param, Controller, UsePipes  } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { Get, Param, Controller, UseGuards, UseInterceptors, ClassSerializerInterceptor  } from '@nestjs/common';
 import { UserEntity } from './users.entity';
 import { UsersService } from './users.service';
-import { ValidationPipe } from '../shared/pipes/validation.pipe';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('user')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get(':username')
   findOne(@Param('username') username): Promise<UserEntity> {
     return this.usersService.findOne(username);
-  }
-
-  @UsePipes(new ValidationPipe())
-  @Post('create')
-  async create(@Body() userData: CreateUserDto) {
-    return this.usersService.create(userData);
   }
 }
