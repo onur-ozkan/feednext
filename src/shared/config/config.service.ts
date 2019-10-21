@@ -17,20 +17,27 @@ export class ConfigService {
     return value;
   }
 
-  public ensureValues(keys: string[]) {
+  public ensureValues(keys: string[]): any {
     keys.forEach(k => this.get(k, true));
     return this;
   }
 
-  public getPort() {
+  public getPort(): any {
     return this.get('APP_PORT', true);
   }
 
-  public getSecretKey() {
+  public getSecretKey(): any {
     return this.get('SECRET_KEY', true);
   }
 
-  public isProduction() {
+  public get apmAccount(): any {
+    return {
+      username: this.get('APM_USERNAME'),
+      password: this.get('APM_PASSWORD'),
+    };
+  }
+
+  public isProduction(): any {
     const mode = this.get('MODE', false);
     return mode !== 'DEV';
   }
@@ -44,9 +51,6 @@ export class ConfigService {
       synchronize: true,
       useUnifiedTopology: true,
       entities: [UserEntity],
-      // migrationsTableName: 'migration',
-      // migrations: ['../migration/*.ts'],
-      // cli: {migrationsDir: '../migration'},
 
       ssl: this.isProduction(),
     };
