@@ -37,8 +37,22 @@ async function bootstrap() {
     }),
   );
 
+  // Configure the APM
+
+  const apmAccount = configService.apmAccount;
+
+  const apmConfig = {
+    authentication: true,
+    onAuthenticate(req, username, password) {
+      // simple check for username and password
+      return ((username === apmAccount.username) && (password === apmAccount.password));
+    },
+    uriPath: '/api-status',
+    version: '0.95.11',
+  };
+
   // Initialize the APM
-  app.use(apm.getMiddleware());
+  app.use(apm.getMiddleware(apmConfig));
 
   await app.listen(configService.getPort());
 }
