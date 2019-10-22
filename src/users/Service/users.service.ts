@@ -1,10 +1,10 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserEntity } from './users.entity';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UserRO } from './interface/user.interface';
-import { configService } from '../shared/config/config.service';
+import { UserEntity } from '../Entity/users.entity';
+import { CreateUserDto } from '../Dto/create-user.dto';
+import { UserRO } from '../Interface/user.interface';
+import { configService } from '../../shared/config/config.service';
 import { Serializer } from 'jsonapi-serializer';
 
 @Injectable()
