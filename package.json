@@ -36,6 +36,7 @@
     "helmet": "^3.21.1",
     "jsonapi-serializer": "^3.6.5",
     "jsonwebtoken": "8.5.1",
+    "moment": "^2.24.0",
     "mongodb": "^3.3.2",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
@@ -44,7 +45,8 @@
     "rimraf": "^3.0.0",
     "rxjs": "^6.5.3",
     "swagger-stats": "^0.95.11",
-    "typeorm": "^0.2.19"
+    "typeorm": "^0.2.19",
+    "winston": "^2.4.4"
   },
   "devDependencies": {
     "@nestjs/cli": "^6.9.0",
