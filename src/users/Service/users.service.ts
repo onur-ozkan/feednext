@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { UserEntity } from '../Entity/users.entity';
 import { CreateUserDto } from '../Dto/create-user.dto';
 import { UserRO } from '../Interface/user.interface';
-import { configService } from '../../shared/config/config.service';
+import { configService } from '../../shared/Config/app.config';
 import { Serializer } from 'jsonapi-serializer';
 
 @Injectable()

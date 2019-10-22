@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { configService } from './shared/config/config.service';
+import { configService } from './shared/Config/app.config';
 import * as cookieParser from 'cookie-parser';
 import * as helmet from 'helmet';
 import * as csurf from 'csurf';

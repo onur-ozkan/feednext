@@ -1,4 +1,4 @@
-import { ConfigService } from './config/config.service';
+import { ConfigService } from './Config/app.config';
 import * as jwt from 'jsonwebtoken';
 
 export class BaseController {
