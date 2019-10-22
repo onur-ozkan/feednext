@@ -30,6 +30,10 @@ export class ConfigService {
     return this.get('SECRET_KEY', true);
   }
 
+  public getLogLevel(): any {
+    return this.get('LOG_LEVEL', true);
+  }
+
   public get apmAccount(): any {
     return {
       username: this.get('APM_USERNAME'),
