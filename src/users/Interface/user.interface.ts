@@ -3,9 +3,8 @@ export interface UserData {
   username: string;
   password: string;
   email: string;
-  accessToken: string;
 }
 
-export interface UserRO {
+export interface UserInterface {
   user: UserData;
 }
