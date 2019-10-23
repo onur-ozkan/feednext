@@ -34,6 +34,14 @@ export class ConfigService {
     return this.get('LOG_LEVEL', true);
   }
 
+  public getJwtExpireTime(): any {
+    return this.get('JWT_EXPIRATION_TIME', true);
+  }
+
+  public getAppUrl(): any {
+    return this.get('APP_URL', true);
+  }
+
   public get apmAccount(): any {
     return {
       username: this.get('APM_USERNAME'),
