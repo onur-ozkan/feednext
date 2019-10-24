@@ -7,6 +7,8 @@ import * as csurf from 'csurf';
 import * as rateLimit from 'express-rate-limit';
 import * as apm from 'swagger-stats';
 
+declare const module: any;
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // Initialize the cookieParser
@@ -39,7 +41,7 @@ async function bootstrap() {
 
   // Configure the APM
 
-  const apmAccount = configService.apmAccount;
+  const apmAccount = configService.getApmAccount();
 
   const apmConfig = {
     authentication: true,
@@ -55,5 +57,10 @@ async function bootstrap() {
   app.use(apm.getMiddleware(apmConfig));
 
   await app.listen(configService.getPort());
+
+  if (module.hot) {
+    module.hot.accept();
+    module.hot.dispose(() => app.close());
+  }
 }
 bootstrap();
