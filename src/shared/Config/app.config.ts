@@ -42,7 +42,7 @@ export class ConfigService {
     return this.get('APP_URL', true);
   }
 
-  public get apmAccount(): any {
+  public getApmAccount(): any {
     return {
       username: this.get('APM_USERNAME'),
       password: this.get('APM_PASSWORD'),
