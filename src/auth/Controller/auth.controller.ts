@@ -14,7 +14,7 @@ export class AuthController {
     @ApiResponse({ status: 201, description: 'Successfully Signed In' })
     @ApiResponse({ status: 400, description: 'Bad Request' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
-    async login(@Body() dto: LoginDto): Promise<any> {
+    async login(@Body() dto: LoginDto): Promise<LoginDto> {
         const user = await this.authService.validateUser(dto);
         return await this.authService.createToken(user);
     }
@@ -24,7 +24,7 @@ export class AuthController {
     @ApiResponse({ status: 400, description: 'Bad Request' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @UsePipes(new ValidationPipe())
-    async register(@Body() dto: CreateUserDto): Promise<any> {
+    async register(@Body() dto: CreateUserDto): Promise<CreateUserDto> {
         return this.authService.register(dto);
     }
 
@@ -33,7 +33,7 @@ export class AuthController {
     @Get('me')
     @ApiResponse({ status: 200, description: 'Successful Response' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
-    async getLoggedInUser(@Request() request): Promise<any> {
+    async getLoggedInUser(@Request() request): Promise<object> {
         return request.user;
     }
 }
