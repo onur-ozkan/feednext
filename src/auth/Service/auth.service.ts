@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../../users/Service/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { configService } from '../../shared/Config/app.config';
+import { configService } from '../../shared/Config/config.service';
 import { CreateUserDto } from '../../users/Dto/create-user.dto';
 import { UserEntity } from '../../users/Entity/users.entity';
 import { LoginDto } from '../Dto/login.dto';
@@ -9,7 +9,8 @@ import { LoginDto } from '../Dto/login.dto';
 @Injectable()
 export class AuthService {
     constructor(private readonly userService: UsersService,
-                private readonly jwtService: JwtService) {}
+                private readonly jwtService: JwtService,
+    ) {}
 
     async validateUser(dto: LoginDto): Promise<any> {
         const user = await this.userService.userValidation(dto.email, dto.username, dto.password);
@@ -21,7 +22,7 @@ export class AuthService {
 
     async createToken(userEntity: UserEntity): Promise<any> {
         return {
-          expiresIn: configService.getJwtExpireTime(),
+          expiresIn: configService.get('JWT_EXPIRATION_TIME'),
           accessToken: this.jwtService.sign({_id: userEntity._id}),
           user: userEntity,
         };

@@ -1,15 +1,13 @@
-import { ConfigService } from './Config/app.config';
+import { configService } from './Config/config.service';
 import * as jwt from 'jsonwebtoken';
 
 export class BaseController {
-
-  constructor(private readonly configService: ConfigService) {}
 
   protected getUserIdFromToken(authorization) {
     if (!authorization) { return null; }
 
     const token = authorization.split(' ')[1];
-    const decoded: any = jwt.verify(token, this.configService.getSecretKey);
+    const decoded: any = jwt.verify(token, configService.get('SECRET_KEY'));
     return decoded.id;
   }
 }

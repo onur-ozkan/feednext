@@ -1,6 +1,6 @@
 import { LoggerService } from '@nestjs/common';
 import { LoggerInstance, transports, Logger as WsLogger } from 'winston';
-import { configService } from '../Config/app.config';
+import { configService } from '../Config/config.service';
 import * as moment from 'moment';
 
 export class AppLogger implements LoggerService {
@@ -8,7 +8,7 @@ export class AppLogger implements LoggerService {
 
   constructor(label?: string) {
     this.logger = new WsLogger({
-      level: configService.getLogLevel(),
+      level: configService.get('LOG_LEVEL'),
         transports: [
           new transports.Console({
             label,

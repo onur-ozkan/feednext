@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { configService } from './shared/Config/app.config';
+import { configService } from './shared/Config/config.service';
 import * as cookieParser from 'cookie-parser';
 import * as helmet from 'helmet';
 import * as csurf from 'csurf';
@@ -41,13 +41,12 @@ async function bootstrap() {
 
   // Configure the APM
 
-  const apmAccount = configService.getApmAccount();
 
   const apmConfig = {
     authentication: true,
     onAuthenticate(req, username, password) {
       // simple check for username and password
-      return ((username === apmAccount.username) && (password === apmAccount.password));
+      return ((username === configService.get('APM_USERNAME')) && (password === configService.get('APM_PASSWORD')));
     },
     uriPath: '/api-status',
     version: '0.95.11',
@@ -56,7 +55,7 @@ async function bootstrap() {
   // Initialize the APM
   app.use(apm.getMiddleware(apmConfig));
 
-  await app.listen(configService.getPort());
+  await app.listen(configService.get('APP_PORT'));
 
   if (module.hot) {
     module.hot.accept();

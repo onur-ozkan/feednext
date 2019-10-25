@@ -8,7 +8,7 @@ require('dotenv').config();
 export class ConfigService {
   constructor(private env: { [k: string]: string | undefined }) { }
 
-  private get(key: string, throwOnMissing = true): string {
+  public get(key: string, throwOnMissing = true): string {
     const value = this.env[key];
     if (!value && throwOnMissing) {
       throw new Error(`config error - missing env.${key}`);
@@ -20,33 +20,6 @@ export class ConfigService {
   public ensureValues(keys: string[]): any {
     keys.forEach(k => this.get(k, true));
     return this;
-  }
-
-  public getPort(): any {
-    return this.get('APP_PORT', true);
-  }
-
-  public getSecretKey(): any {
-    return this.get('SECRET_KEY', true);
-  }
-
-  public getLogLevel(): any {
-    return this.get('LOG_LEVEL', true);
-  }
-
-  public getJwtExpireTime(): any {
-    return this.get('JWT_EXPIRATION_TIME', true);
-  }
-
-  public getAppUrl(): any {
-    return this.get('APP_URL', true);
-  }
-
-  public getApmAccount(): any {
-    return {
-      username: this.get('APM_USERNAME'),
-      password: this.get('APM_PASSWORD'),
-    };
   }
 
   public isProduction(): any {
