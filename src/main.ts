@@ -40,8 +40,6 @@ async function bootstrap() {
   );
 
   // Configure the APM
-
-
   const apmConfig = {
     authentication: true,
     onAuthenticate(req, username, password) {

@@ -34,8 +34,5 @@ import { RedisService } from '../shared/Redis/redis.service';
         JwtStrategy,
     ],
     controllers: [AuthController],
-    exports: [
-        PassportModule.register({ defaultStrategy: 'jwt' }),
-    ],
 })
 export class AuthModule {}

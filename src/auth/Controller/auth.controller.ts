@@ -31,7 +31,6 @@ export class AuthController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard())
     @Get('signout')
-    @ApiResponse({ status: 200, description: 'Successful Response' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     async signOut(@Request() request): Promise<any> {
         const token = await request.headers.authorization.substring(7);
