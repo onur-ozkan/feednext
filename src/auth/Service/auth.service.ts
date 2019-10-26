@@ -5,6 +5,7 @@ import { configService } from '../../shared/Config/config.service';
 import { CreateUserDto } from '../../users/Dto/create-user.dto';
 import { UserEntity } from '../../users/Entity/users.entity';
 import { LoginDto } from '../Dto/login.dto';
+import * as moment from 'moment';
 
 @Injectable()
 export class AuthService {
@@ -26,6 +27,16 @@ export class AuthService {
           accessToken: this.jwtService.sign({_id: userEntity._id}),
           user: userEntity,
         };
+    }
+
+    async killToken(token: string) {
+        const decodedToken = await this.jwtService.decode(token);
+        // tslint:disable-next-line:no-string-literal
+        const expireDate =  await  moment(decodedToken['exp'] * 1000);
+        const remainingRawTime = await moment.duration(expireDate.diff(moment()));
+        const remainingSeconds = await Math.round(remainingRawTime.asSeconds());
+
+        return;
     }
 
     async register(dto: CreateUserDto): Promise<any> {
