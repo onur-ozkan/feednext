@@ -6,11 +6,13 @@ import { CreateUserDto } from '../../users/Dto/create-user.dto';
 import { UserEntity } from '../../users/Entity/users.entity';
 import { LoginDto } from '../Dto/login.dto';
 import * as moment from 'moment';
+import { RedisService } from '../../shared/Redis/redis.service';
 
 @Injectable()
 export class AuthService {
     constructor(private readonly userService: UsersService,
                 private readonly jwtService: JwtService,
+                private readonly redisService: RedisService,
     ) {}
 
     async validateUser(dto: LoginDto): Promise<any> {
@@ -36,7 +38,8 @@ export class AuthService {
         const remainingRawTime = await moment.duration(expireDate.diff(moment()));
         const remainingSeconds = await Math.round(remainingRawTime.asSeconds());
 
-        return;
+        // tslint:disable-next-line:no-string-literal
+        this.redisService.setData(decodedToken['_id'], token, remainingSeconds);
     }
 
     async register(dto: CreateUserDto): Promise<any> {
