@@ -10,22 +10,32 @@ import { AuthGuard } from '@nestjs/passport';
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
-    @Post('signin')
-    @ApiResponse({ status: 201, description: 'Successfully Signed In' })
-    @ApiResponse({ status: 400, description: 'Bad Request' })
-    @ApiResponse({ status: 401, description: 'Unauthorized' })
-    async login(@Body() dto: LoginDto): Promise<LoginDto> {
-        const user = await this.authService.validateUser(dto);
-        return await this.authService.createToken(user);
-    }
-
     @Post('signup')
     @ApiResponse({ status: 201, description: 'Successfully Signed Up' })
     @ApiResponse({ status: 400, description: 'Bad Request' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @UsePipes(new ValidationPipe())
-    async register(@Body() dto: CreateUserDto): Promise<CreateUserDto> {
+    async signUp(@Body() dto: CreateUserDto): Promise<CreateUserDto> {
         return this.authService.register(dto);
+    }
+
+    @Post('signin')
+    @ApiResponse({ status: 201, description: 'Successfully Signed In' })
+    @ApiResponse({ status: 400, description: 'Bad Request' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    async signIn(@Body() dto: LoginDto): Promise<LoginDto> {
+        const user = await this.authService.validateUser(dto);
+        return await this.authService.createToken(user);
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard())
+    @Get('signout')
+    @ApiResponse({ status: 200, description: 'Successful Response' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    async signOut(@Request() request): Promise<any> {
+        const token = await request.headers.authorization.substring(7);
+        return await this.authService.killToken(token);
     }
 
     @ApiBearerAuth()
