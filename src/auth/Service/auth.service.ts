@@ -5,7 +5,6 @@ import { configService } from '../../shared/Config/config.service';
 import { CreateUserDto } from '../../users/Dto/create-user.dto';
 import { UserEntity } from '../../users/Entity/users.entity';
 import { LoginDto } from '../Dto/login.dto';
-import * as moment from 'moment';
 import { RedisService } from '../../shared/Redis/redis.service';
 
 @Injectable()
@@ -24,22 +23,25 @@ export class AuthService {
     }
 
     async createToken(userEntity: UserEntity): Promise<any> {
+
+        const token = this.jwtService.sign({
+            _id: userEntity._id,
+            username: userEntity.username,
+            email: userEntity.email,
+            createdAt: userEntity.createdAt,
+        });
+
         return {
           expiresIn: configService.get('JWT_EXPIRATION_TIME'),
-          accessToken: this.jwtService.sign({_id: userEntity._id}),
+          accessToken: token,
           user: userEntity,
         };
     }
 
     async killToken(token: string) {
-        const decodedToken = await this.jwtService.decode(token);
+        const decodedToken = this.jwtService.decode(token);
         // tslint:disable-next-line:no-string-literal
-        const expireDate =  await  moment(decodedToken['exp'] * 1000);
-        const remainingRawTime = await moment.duration(expireDate.diff(moment()));
-        const remainingSeconds = await Math.round(remainingRawTime.asSeconds());
-
-        // tslint:disable-next-line:no-string-literal
-        this.redisService.setData(decodedToken['_id'], token, remainingSeconds);
+        await this.redisService.setOnlyKey(token, Number(decodedToken['exp']));
     }
 
     async register(dto: CreateUserDto): Promise<any> {

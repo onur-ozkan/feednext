@@ -12,21 +12,28 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: configService.get('SECRET_KEY'),
+      ignoreExpiration: false,
     });
   }
 
-  async validate({ iat, exp, id }, done) {
+  async validate({ iat, exp, _id }): Promise<any> {
     const timeDiff = exp - iat;
     if (timeDiff <= 0) {
       throw new UnauthorizedException();
     }
 
-    const user = await this.usersService.get(id);
+    const user = await this.usersService.get(_id);
     if (!user) {
       throw new UnauthorizedException();
     }
 
-    delete user.password;
-    done(null, user);
+    const data = {
+      fullName: user.fullName,
+      username: user.username,
+      email: user.email,
+      createdAt: user.createdAt,
+    };
+
+    return data;
   }
 }
