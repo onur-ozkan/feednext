@@ -11,15 +11,32 @@ export class RedisService {
     });
   }
 
-  public setData(key: any, value: any, expireTime?: number) {
+  async setData(key: any, value: any, expireTime?: number) {
     if (expireTime) {
-      this.redisConnection().set(key, value, 'EX', expireTime);
+      await this.redisConnection().set(key, value, 'EX', expireTime);
     } else {
-      this.redisConnection().set(key, value);
+      await this.redisConnection().set(key, value);
     }
   }
 
-  public getData(key: any) {
-    return this.redisConnection().get(key);
+  async setOnlyKey(key: any, expireTime?: number) {
+    if (expireTime) {
+      await this.redisConnection().set(key, null, 'EX', expireTime);
+    } else {
+      await this.redisConnection().set(key, null);
+    }
+  }
+
+  async pushList(key: any, value: any, expireTime?: number) {
+    if (expireTime) {
+      await this.redisConnection().rpush(key, value);
+      await this.redisConnection().expire(key, expireTime);
+    } else {
+      await this.redisConnection().rpush(key, value);
+    }
+  }
+
+  async getData(key: any) {
+    return await this.redisConnection().get(key);
   }
 }
