@@ -41,7 +41,10 @@ export class AuthService {
     async killToken(token: string) {
         const decodedToken = this.jwtService.decode(token);
         // tslint:disable-next-line:no-string-literal
-        await this.redisService.setOnlyKey(token, Number(decodedToken['exp']));
+        const expireDate =  decodedToken['exp'];
+        const remainingSeconds = Math.round(expireDate - (Date.now() / 1000));
+
+        await this.redisService.setOnlyKey(token, remainingSeconds);
     }
 
     async register(dto: CreateUserDto): Promise<any> {
