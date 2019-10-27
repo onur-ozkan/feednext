@@ -4,11 +4,8 @@ import { Repository } from 'typeorm';
 import { UserEntity } from '../Entity/users.entity';
 import { UserInterface } from '../Interface/user.interface';
 import { Serializer } from 'jsonapi-serializer';
-import { Validator } from 'class-validator';
 import { CreateUserDto } from '../Dto/create-user.dto';
-import * as crypto from 'crypto';
 
-const validator = new Validator();
 @Injectable()
 export class UsersService {
   constructor(
@@ -28,17 +25,6 @@ export class UsersService {
     } catch (err) {
       throw new HttpException(err, HttpStatus.NOT_FOUND);
     }
-  }
-
-  // User validation process logic
-  async userValidation(incEmail?: string, incUsername?: string, incPassword?: string): Promise<UserEntity> {
-
-    const passHash = crypto.createHmac('sha256', incPassword).digest('hex');
-    if (validator.isEmail(incEmail)) {
-      return await this.userRepository.findOneOrFail({email: incEmail, password: passHash});
-    }
-
-    return await this.userRepository.findOneOrFail({username: incUsername, password: passHash});
   }
 
   // User registration process logic
