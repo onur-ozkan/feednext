@@ -11,10 +11,6 @@ export class UsersService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async get(id: number) {
-    return this.userRepository.findOne(id);
-  }
-
   async findOne(usernameParam: string): Promise<UserEntity> {
     try {
       const result = await this.userRepository.findOneOrFail({ username: usernameParam });
