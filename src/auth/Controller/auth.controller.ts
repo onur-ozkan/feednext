@@ -4,7 +4,7 @@ import { CreateUserDto } from '../Dto/create-user.dto';
 import { ValidationPipe } from '../../shared/Pipe/validation.pipe';
 import { LoginDto } from '../Dto/login.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { VerifyEmailDto } from '../Dto/verify-email.dto';
+import { AccountRecoveryDto } from '../Dto/account-recovery.dto';
 import { UserAuthInterface } from '../Interface/user-auth.interface';
 
 @Controller('auth')
@@ -30,9 +30,9 @@ export class AuthController {
         return await this.authService.killToken(token);
     }
 
-    @Post('verify-email')
-    async verifyEmail(@Body() dto: VerifyEmailDto): Promise<HttpException> {
-        return this.authService.verifyEmail(dto);
+    @Post('signin/account-recovery')
+    async verifyEmail(@Body() dto: AccountRecoveryDto): Promise<HttpException> {
+        return this.authService.accountRecovery(dto);
     }
 
     @UseGuards(AuthGuard())
