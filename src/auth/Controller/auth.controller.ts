@@ -1,9 +1,11 @@
-import { Controller, Post, Body, UsePipes, UseGuards, Get, Request } from '@nestjs/common';
+import { Controller, Post, Body, UsePipes, UseGuards, Get, Request, HttpException } from '@nestjs/common';
 import { AuthService } from '../Service/auth.service';
-import { CreateUserDto } from '../../users/Dto/create-user.dto';
+import { CreateUserDto } from '../Dto/create-user.dto';
 import { ValidationPipe } from '../../shared/Pipe/validation.pipe';
 import { LoginDto } from '../Dto/login.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { VerifyEmailDto } from '../Dto/verify-email.dto';
+import { UserAuthInterface } from '../Interface/user-auth.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -11,7 +13,7 @@ export class AuthController {
 
     @Post('signup')
     @UsePipes(new ValidationPipe())
-    async signUp(@Body() dto: CreateUserDto): Promise<CreateUserDto> {
+    async signUp(@Body() dto: CreateUserDto): Promise<UserAuthInterface> {
         return this.authService.register(dto);
     }
 
@@ -26,6 +28,11 @@ export class AuthController {
     async signOut(@Request() request): Promise<any> {
         const token = await request.headers.authorization.substring(7);
         return await this.authService.killToken(token);
+    }
+
+    @Post('verify-email')
+    async verifyEmail(@Body() dto: VerifyEmailDto): Promise<HttpException> {
+        return this.authService.verifyEmail(dto);
     }
 
     @UseGuards(AuthGuard())
