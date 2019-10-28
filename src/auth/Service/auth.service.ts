@@ -8,10 +8,12 @@ import { RedisService } from '../../shared/Redis/redis.service';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Validator } from 'class-validator';
-import { VerifyEmailDto } from '../Dto/verify-email.dto';
+import { AccountRecoveryDto } from '../Dto/account-recovery.dto';
 import { Serializer } from 'jsonapi-serializer';
 import { UserAuthInterface } from '../Interface/user-auth.interface';
+import { EmailSenderBody } from '../Interface/email.sender.interface';
 import * as crypto from 'crypto';
+import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class AuthService {
@@ -40,10 +42,18 @@ export class AuthService {
         }
     }
 
-    async verifyEmail(dto: VerifyEmailDto): Promise<HttpException> {
+    async accountRecovery(dto: AccountRecoveryDto): Promise<HttpException> {
         await this.validateEmail(dto.email);
         try {
             await this.userRepository.findOneOrFail({email: dto.email});
+
+            const mailBody = {
+                receiver: dto.email,
+                subject: 'Verify Your Account [TESTING]',
+                text: 'bla bla bla',
+            };
+
+            await this.sentMail(mailBody);
         } catch (err) {
             throw new NotFoundException('Email does not exist in the database.');
         }
@@ -98,5 +108,29 @@ export class AuthService {
         } catch (err) {
           throw new UnprocessableEntityException(err.errmsg);
         }
-      }
+    }
+
+    private async sentMail(bodyData: EmailSenderBody): Promise<any> {
+        const transporter = await nodemailer.createTransport({
+            service: configService.get('NODEMAILER_SERVICE'),
+            auth: {
+                user: configService.get('NODEMAILER_MAIL'),
+                pass: configService.get('NODEMAILER_PASSWORD'),
+            },
+        });
+
+        const mailOptions = {
+            from: configService.get('NODEMAILER_MAIL'),
+            to: bodyData.receiver,
+            subject: bodyData.subject,
+            text: bodyData.text,
+        };
+
+        await transporter.sendMail(mailOptions, (err) => {
+            if (err) {
+                // tslint:disable-next-line:no-console
+                console.log(err); // Gonna be logger for prod
+            }
+        });
+    }
 }
