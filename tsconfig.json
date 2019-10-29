@@ -1,15 +1,41 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "declaration": true,
+    "alwaysStrict": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es2017",
+    "lib": [
+      "dom",
+      "es2019"
+    ],
+    "module": "commonjs",
+    "noImplicitAny": false,
+    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "sourceMap": true,
+    "target": "es2019",
+    "charset": "utf8",
+    "allowJs": false,
+    "pretty": true,
+    "noEmitOnError": false,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "strictPropertyInitialization": false,
+    "noFallthroughCasesInSwitch": true,
+    "skipDefaultLibCheck": true,
+    "importHelpers": true,
     "outDir": "./dist",
     "baseUrl": "./",
-    "incremental": true
   },
-  "exclude": ["node_modules", "dist"]
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ]
 }
