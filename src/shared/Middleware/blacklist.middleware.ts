@@ -1,12 +1,12 @@
 import { Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { FastifyRequest, FastifyReply } from 'fastify';
 import { RedisService } from '../Redis/redis.service';
 
 @Injectable()
 export class BlacklistMiddleware implements NestMiddleware {
   constructor(private readonly redisService: RedisService) {}
 
-  async use(req: Request, res: Response, next: Function) {
+  async use(req: FastifyRequest, res: FastifyReply<Response>, next: Function) {
     const token = req.headers.authorization.substring(7);
     const isTokenDead = await this.redisService.getData(token);
 
