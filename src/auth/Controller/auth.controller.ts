@@ -7,6 +7,7 @@ import {
     Get,
     Request,
     HttpException,
+    Query,
 } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
@@ -43,8 +44,13 @@ export class AuthController {
     }
 
     @Post('signin/account-recovery')
-    async verifyEmail(@Body() dto: AccountRecoveryDto): Promise<HttpException> {
+    async accountRecovery(@Body() dto: AccountRecoveryDto): Promise<HttpException> {
         return this.authService.accountRecovery(dto)
+    }
+
+    @Get('account-verification/')
+    async verifyAccount(@Query() query): Promise<any> {
+        return this.authService.accountVerification(query.token)
     }
 
     @ApiBearerAuth()
