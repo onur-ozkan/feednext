@@ -67,7 +67,7 @@ export class AuthService {
                 text: 'bla bla bla',
             }
 
-            await this.sentMail(mailBody)
+            await this.sendMail(mailBody)
         } catch (err) {
             throw new NotFoundException('Email does not exist in the database.')
         }
@@ -124,7 +124,7 @@ export class AuthService {
         }
     }
 
-    private async sentMail(bodyData: EmailSenderBody): Promise<any> {
+    private async sendMail(bodyData: EmailSenderBody): Promise<any> {
         const transporter = await nodemailer.createTransport({
             service: configService.get('NODEMAILER_SERVICE'),
             auth: {
