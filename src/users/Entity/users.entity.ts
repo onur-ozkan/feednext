@@ -17,24 +17,20 @@ export class UserEntity {
     }
 
     @ObjectIdColumn()
-    // tslint:disable-next-line:variable-name
     _id: ObjectID
 
     @Column({
-        type: 'varchar',
         length: 50,
     })
     fullName: string
 
     @Column({
-        type: 'varchar',
         length: 17,
         unique: true,
     })
     username: string
 
     @Column({
-        type: 'varchar',
         length: 15,
     })
     password: string
@@ -45,19 +41,27 @@ export class UserEntity {
     }
 
     @Column({
-        type: 'varchar',
         length: 50,
         unique: true,
     })
     @IsEmail()
     email: string
 
-    @CreateDateColumn({ type: 'timestamp' })
+    @Column({})
+    isVerified: boolean
+
+    @Column({})
+    isActive: boolean
+
+    @BeforeInsert()
+    fillDefaults() {
+        this.isActive = true
+        this.isVerified = false
+    }
+
+    @CreateDateColumn({})
     createdAt: Date
 
-    @UpdateDateColumn({ type: 'timestamp' })
-    updatedAt?: Date
-
-    @Column({ type: 'timestamp' })
-    deletedAt?: Date
+    @UpdateDateColumn({})
+    updatedAt: Date
 }
