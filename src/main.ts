@@ -1,57 +1,55 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { configService } from './shared/Config/config.service';
-import * as cookieParser from 'cookie-parser';
-import * as helmet from 'helmet';
-import * as csurf from 'csurf';
-import * as rateLimit from 'express-rate-limit';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as apm from 'swagger-stats';
+import * as fastifyRateLimit from 'fastify-rate-limit';
+import * as helmet from 'fastify-helmet';
+import * as compress from 'fastify-compress';
 
 declare const module: any;
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  // Initialize the cookieParser
-  app.use(cookieParser());
+  const fastifyAdapter = new FastifyAdapter({
+    logger: configService.get('MODE') === 'PROD' ? false : true,
+  });
 
-  // Initialize middleware functions that set security-related HTTP headers from helmet
-  app.use(helmet());
+  // Set request limit as 1 for per second
+  fastifyAdapter.register(fastifyRateLimit, {
+    max: 60,
+    timeWindow: 60 * 1000,
+    whitelist: ['127.0.0.1'],
+  });
 
-  // Initialize the Cross-site request blocker
-  // app.use(csurf({ cookie: true }));
+  fastifyAdapter.register(helmet); // Initialize security middleware module 'fastify-helmet'
+  fastifyAdapter.register(compress); // Initialize fastify-compress to better handle high-level traffic
 
-  const paths = ['/users/', '/categories/', '/entries/', '/products/'];
+  const app = await NestFactory.create<NestFastifyApplication>(AppModule, fastifyAdapter);
 
-  // Configure the brute-force defender [values will change for production]
-  for (const path of paths) {
-    app.use(path,
-      rateLimit({
-        windowMs: 60 * 1000,
-        max: 100,
-      }),
-    );
-  }
+  app.setGlobalPrefix('/api/v1'); // Setting base path
 
-  app.use('/auth/',
-    rateLimit({
-      windowMs: 60 * 1000,
-      max: 100,
-    }),
-  );
+  // Configure the Swagger API Doc
+  const options = new DocumentBuilder()
+    .setTitle('Product Analyzer API Documentation')
+    .setVersion('1.0')
+    .setBasePath('api/v1')
+    .addBearerAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('/api/v1', app, document);
 
   // Configure the APM
   const apmConfig = {
     authentication: true,
     onAuthenticate(req, username, password) {
-      // simple check for username and password
       return ((username === configService.get('APM_USERNAME')) && (password === configService.get('APM_PASSWORD')));
     },
-    uriPath: '/api-status',
+    uriPath: '/api/status',
     version: '0.95.11',
   };
 
-  // Initialize the APM
-  app.use(apm.getMiddleware(apmConfig));
+  app.use(apm.getMiddleware(apmConfig)); // Initialize APM
 
   await app.listen(configService.get('APP_PORT'));
 
