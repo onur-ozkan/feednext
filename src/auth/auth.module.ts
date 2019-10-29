@@ -20,13 +20,7 @@ import { RedisService } from '../shared/Redis/redis.service'
                 return {
                     secret: configService.get('SECRET_KEY'),
                     signOptions: {
-                        ...(configService.get('JWT_EXPIRATION_TIME')
-                            ? {
-                                  expiresIn: Number(
-                                      configService.get('JWT_EXPIRATION_TIME'),
-                                  ),
-                              }
-                            : {}),
+                        ...({ expiresIn: Number(configService.get('JWT_EXPIRATION_TIME')) }),
                     },
                 }
             },
