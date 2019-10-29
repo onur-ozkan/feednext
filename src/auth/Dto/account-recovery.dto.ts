@@ -1,12 +1,12 @@
-import { IsEmail, IsNotEmpty } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { IsEmail, IsNotEmpty } from 'class-validator'
+import { ApiModelProperty } from '@nestjs/swagger'
 
 export class AccountRecoveryDto {
-  @ApiModelProperty({
-    required: true,
-    example: 'example@gmail.com',
-  })
-  @IsNotEmpty()
-  @IsEmail()
-  email: string;
+    @ApiModelProperty({
+        required: true,
+        example: 'example@gmail.com',
+    })
+    @IsNotEmpty()
+    @IsEmail()
+    email: string
 }

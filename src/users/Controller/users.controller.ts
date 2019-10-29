@@ -1,15 +1,15 @@
-import { Get, Param, Controller, UseGuards } from '@nestjs/common';
-import { UserEntity } from '../Entity/users.entity';
-import { UsersService } from '../Service/users.service';
-import { AuthGuard } from '@nestjs/passport';
+import { Get, Param, Controller, UseGuards } from '@nestjs/common'
+import { AuthGuard } from '@nestjs/passport'
+import { UserEntity } from '../Entity/users.entity'
+import { UsersService } from '../Service/users.service'
 
 @Controller('user')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+    constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(AuthGuard('jwt'))
-  @Get(':username')
-  findOne(@Param('username') username): Promise<UserEntity> {
-    return this.usersService.findOne(username);
-  }
+    @UseGuards(AuthGuard('jwt'))
+    @Get(':username')
+    findOne(@Param('username') username): Promise<UserEntity> {
+        return this.usersService.findOne(username)
+    }
 }
