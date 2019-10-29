@@ -13,7 +13,9 @@
     "interface-name": [false],
     "arrow-parens": false,
     "object-literal-sort-keys": false,
-    "ban-types": false
+    "ban-types": false,
+    "semicolon": [true, "never"],
+    "variable-name": false
   },
   "rulesDirectory": []
 }
