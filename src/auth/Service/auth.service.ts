@@ -74,6 +74,25 @@ export class AuthService {
         throw new HttpException('OK', HttpStatus.OK)
     }
 
+    async accountVerification(incToken: string): Promise<HttpException> {
+        const decodedToken: any = this.jwtService.decode(incToken)
+        if (decodedToken) {
+            const remainingTime = await decodedToken.exp - decodedToken.iat
+            if (remainingTime <= 0) {
+                throw new NotFoundException('Incoming token is expired.')
+            }
+        }
+
+        try {
+            const account = await this.userRepository.findOneOrFail({ email: decodedToken.email })
+            account.isVerified = true
+            await this.userRepository.save(account)
+        } catch (err) {
+            throw new NotFoundException('Incoming token is not valid.')
+        }
+        throw new HttpException('OK', HttpStatus.OK)
+    }
+
     async validateEmail(incEmail: string): Promise<any> {
         const validator = new Validator()
         if (validator.isEmail(incEmail)) {
