@@ -2,21 +2,19 @@ import {
     Controller,
     Post,
     Body,
-    UsePipes,
     UseGuards,
     Get,
     Request,
     HttpException,
     Query,
+    HttpStatus,
 } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthService } from '../Service/auth.service'
 import { CreateUserDto } from '../Dto/create-user.dto'
-import { ValidationPipe } from '../../shared/Pipe/validation.pipe'
 import { LoginDto } from '../Dto/login.dto'
 import { AccountRecoveryDto } from '../Dto/account-recovery.dto'
-import { UserAuthInterface } from '../Interface/user-auth.interface'
 
 @ApiUseTags('v1/auth')
 @Controller('auth')
@@ -24,13 +22,12 @@ export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
     @Post('signup')
-    @UsePipes(new ValidationPipe())
-    async signUp(@Body() dto: CreateUserDto): Promise<UserAuthInterface> {
+    async signUp(@Body() dto: CreateUserDto): Promise<HttpException> {
         return this.authService.register(dto)
     }
 
     @Post('signin')
-    async signIn(@Body() dto: LoginDto): Promise<LoginDto> {
+    async signIn(@Body() dto: LoginDto): Promise<HttpException> {
         const user = await this.authService.validateUser(dto)
         return await this.authService.createToken(user)
     }
@@ -38,7 +35,7 @@ export class AuthController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard())
     @Get('signout')
-    async signOut(@Request() request): Promise<any> {
+    async signOut(@Request() request): Promise<HttpException> {
         const token = await request.headers.authorization.substring(7)
         return await this.authService.killToken(token)
     }
@@ -48,15 +45,15 @@ export class AuthController {
         return this.authService.accountRecovery(dto)
     }
 
-    @Get('account-verification/')
-    async verifyAccount(@Query() query): Promise<any> {
+    @Get('account-verification')
+    async verifyAccount(@Query() query): Promise<HttpException> {
         return this.authService.accountVerification(query.token)
     }
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard())
     @Get('me')
-    async getLoggedInUser(@Request() request): Promise<object> {
-        return request.user
+    async getLoggedInUser(@Request() request): Promise<HttpException> {
+        throw new HttpException({statusCode: 200, message: 'OK', data: request.user}, HttpStatus.OK )
     }
 }
