@@ -38,6 +38,8 @@
     "fastify-swagger": "^2.4.0",
     "ioredis": "^4.14.1",
     "jsonapi-serializer": "^3.6.5",
+    "jsonwebtoken": "^8.5.1",
+    "keymachine": "^1.0.7",
     "mongodb": "^3.3.2",
     "nodemailer": "^6.3.1",
     "passport": "^0.4.0",
