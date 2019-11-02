@@ -7,6 +7,7 @@ import * as apm from 'swagger-stats'
 import * as fastifyRateLimit from 'fastify-rate-limit'
 import * as helmet from 'fastify-helmet'
 import * as compress from 'fastify-compress'
+import { ValidationPipe } from '@nestjs/common'
 
 declare const module: any
 
@@ -28,6 +29,8 @@ async function bootstrap() {
     const app = await NestFactory.create<NestFastifyApplication>(AppModule, fastifyAdapter)
 
     app.setGlobalPrefix('/api/v1') // Setting base path
+
+    app.useGlobalPipes(new ValidationPipe()) // Initialize global validation
 
     // Configure the Swagger API Doc
     const options = new DocumentBuilder()
