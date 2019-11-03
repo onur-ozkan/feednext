@@ -9,11 +9,11 @@ import { JwtService, JwtModule } from '@nestjs/jwt'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Serializer } from 'jsonapi-serializer'
 import { Repository } from 'typeorm'
-import { configService } from '../../shared/Config/config.service'
+import { configService } from '../../../shared/Config/config.service'
 import { CreateUserDto } from '../Dto/create-user.dto'
 import { UserEntity } from '../../users/Entity/users.entity'
 import { LoginDto } from '../Dto/login.dto'
-import { RedisService } from '../../shared/Redis/redis.service'
+import { RedisService } from '../../../shared/Redis/redis.service'
 import { AccountRecoveryDto } from '../Dto/account-recovery.dto'
 import { EmailSenderBody } from '../Interface/email.sender.interface'
 import * as crypto from 'crypto'
@@ -61,7 +61,7 @@ export class AuthService {
             await this.userRepository.save(account)
 
             const mailBody: EmailSenderBody = {
-                receiver: 'rjergbohn@gmail.com',
+                receiver: dto.email,
                 subject: `Account Recovery [${account.username}]`,
                 text: `By your request we have set your password as '${generatePassword}' for x hours, in that time please sign in and update your Account Password.`,
             }

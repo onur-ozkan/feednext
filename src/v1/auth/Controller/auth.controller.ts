@@ -17,7 +17,7 @@ import { LoginDto } from '../Dto/login.dto'
 import { AccountRecoveryDto } from '../Dto/account-recovery.dto'
 
 @ApiUseTags('v1/auth')
-@Controller('auth')
+@Controller()
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
