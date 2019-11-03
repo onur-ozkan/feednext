@@ -28,7 +28,7 @@ async function bootstrap() {
 
     const app = await NestFactory.create<NestFastifyApplication>(AppModule, fastifyAdapter)
 
-    app.setGlobalPrefix('/api/v1') // Setting base path
+    app.setGlobalPrefix('/api') // Setting base path
 
     app.useGlobalPipes(new ValidationPipe()) // Initialize global validation
 
@@ -36,11 +36,11 @@ async function bootstrap() {
     const options = new DocumentBuilder()
         .setTitle('Product Analyzer API Documentation')
         .setVersion('1.0')
-        .setBasePath('api/v1')
+        .setBasePath('api')
         .addBearerAuth()
         .build()
     const document = SwaggerModule.createDocument(app, options)
-    SwaggerModule.setup('/api/v1', app, document)
+    SwaggerModule.setup('/api', app, document)
 
     // Configure the APM
     const apmConfig = {

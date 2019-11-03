@@ -1,22 +1,18 @@
-import { Module, MiddlewareConsumer } from '@nestjs/common'
+import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { UsersModule } from './users/users.module'
+import { RouterModule } from 'nest-router'
+import { versionRoutes } from './version.routes'
 import { databaseService } from './shared/Config/config.service'
-import { AuthModule } from './auth/auth.module'
-import { BlacklistMiddleware } from './shared/Middleware/blacklist.middleware'
 import { RedisService } from './shared/Redis/redis.service'
+import { ApiModule } from './v1/api.module'
 
 @Module({
     imports: [
-        UsersModule,
         TypeOrmModule.forRoot(databaseService.getTypeOrmConfig()),
-        AuthModule,
+        RouterModule.forRoutes(versionRoutes),
+        ApiModule,
     ],
     providers: [RedisService],
 })
 
-export class AppModule {
-    configure(consumer: MiddlewareConsumer) {
-        consumer.apply(BlacklistMiddleware).forRoutes('auth/me', 'auth/signout')
-    }
-}
+export class AppModule {}
