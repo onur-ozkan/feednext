@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport'
 import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { configService } from '../../../shared/Config/config.service'
 import { Repository } from 'typeorm'
-import { UserEntity } from '../../users/Entity/users.entity'
+import { UserEntity } from '../../../shared/Entities/users.entity'
 import { InjectRepository } from '@nestjs/typeorm'
 
 @Injectable()

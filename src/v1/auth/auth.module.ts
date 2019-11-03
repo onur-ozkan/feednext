@@ -7,7 +7,7 @@ import { UsersModule } from '../users/users.module'
 import { AuthController } from './Controller/auth.controller'
 import { configService } from '../../shared/Config/config.service'
 import { JwtStrategy } from './Strategy/jwt.strategy'
-import { UserEntity } from '../users/Entity/users.entity'
+import { UserEntity } from '../../shared/Entities/users.entity'
 import { RedisService } from '../../shared/Redis/redis.service'
 
 @Module({

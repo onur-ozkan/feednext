@@ -1,5 +1,5 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm'
-import { UserEntity } from '../../users/Entity/users.entity'
+import { UserEntity } from '../Entities/users.entity'
 
 // tslint:disable-next-line:no-var-requires
 require('dotenv').config()
