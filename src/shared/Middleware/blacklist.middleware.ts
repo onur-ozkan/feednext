@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common'
 import { FastifyRequest, FastifyReply } from 'fastify'
-import { RedisService } from '../Redis/redis.service'
+import { RedisService } from '../Services/redis.service'
 
 @Injectable()
 export class BlacklistMiddleware implements NestMiddleware {

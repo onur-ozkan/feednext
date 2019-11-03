@@ -6,7 +6,7 @@ import { EntriesModule } from './entries/entries.module'
 import { ProductsModule } from './products/products.module'
 
 import { BlacklistMiddleware } from '../shared/Middleware/blacklist.middleware'
-import { RedisService } from '../shared/Redis/redis.service'
+import { RedisService } from '../shared/Services/redis.service'
 
 @Module({
     imports: [
