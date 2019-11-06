@@ -1,15 +1,15 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
-import { UserEntity } from '../../../shared/Entities/users.entity'
 import { Serializer } from 'jsonapi-serializer'
+import { UserEntity } from '../../../shared/Entities/users.entity'
+import { UserRepository } from '../../../shared/Repositories/user.repository'
 
 @Injectable()
 export class UsersService {
 
     constructor(
-        @InjectRepository(UserEntity)
-        private readonly userRepository: Repository<UserEntity>,
+        @InjectRepository(UserRepository)
+        private readonly userRepository: UserRepository,
     ) {}
 
     async findOne(usernameParam: string): Promise<UserEntity> {

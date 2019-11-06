@@ -1,16 +1,15 @@
 import { ExtractJwt, Strategy } from 'passport-jwt'
 import { PassportStrategy } from '@nestjs/passport'
 import { Injectable, UnauthorizedException } from '@nestjs/common'
-import { configService } from '../../../shared/Services/config.service'
-import { Repository } from 'typeorm'
-import { UserEntity } from '../../../shared/Entities/users.entity'
 import { InjectRepository } from '@nestjs/typeorm'
+import { configService } from '../../../shared/Services/config.service'
+import { UserRepository } from '../../../shared/Repositories/user.repository'
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor(
-        @InjectRepository(UserEntity)
-        private readonly userRepository: Repository<UserEntity>,
+        @InjectRepository(UserRepository)
+        private readonly userRepository: UserRepository,
     ) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

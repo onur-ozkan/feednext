@@ -9,10 +9,11 @@ import { configService } from '../../shared/Services/config.service'
 import { JwtStrategy } from './Strategy/jwt.strategy'
 import { UserEntity } from '../../shared/Entities/users.entity'
 import { RedisService } from '../../shared/Services/redis.service'
+import { UserRepository } from '../../shared/Repositories/user.repository'
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([UserEntity]),
+        TypeOrmModule.forFeature([UserEntity, UserRepository]),
         UsersModule,
         PassportModule.register({ defaultStrategy: 'jwt' }),
         JwtModule.registerAsync({

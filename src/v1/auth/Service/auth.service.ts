@@ -8,7 +8,6 @@ import {
 import { JwtService, JwtModule } from '@nestjs/jwt'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Serializer } from 'jsonapi-serializer'
-import { Repository } from 'typeorm'
 import { configService } from '../../../shared/Services/config.service'
 import { CreateUserDto } from '../Dto/create-user.dto'
 import { UserEntity } from '../../../shared/Entities/users.entity'
@@ -20,14 +19,15 @@ import * as crypto from 'crypto'
 import * as nodemailer from 'nodemailer'
 import * as jwt from 'jsonwebtoken'
 import * as kmachine from 'keymachine'
+import { UserRepository } from '../../../shared/Repositories/user.repository'
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly jwtService: JwtService,
         private readonly redisService: RedisService,
-        @InjectRepository(UserEntity)
-        private readonly userRepository: Repository<UserEntity>,
+        @InjectRepository(UserRepository)
+        private readonly userRepository: UserRepository,
     ) {}
 
     async validateUser(dto: LoginDto): Promise<any> {
