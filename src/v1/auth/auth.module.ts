@@ -10,6 +10,7 @@ import { JwtStrategy } from './Strategy/jwt.strategy'
 import { UserEntity } from '../../shared/Entities/users.entity'
 import { RedisService } from '../../shared/Services/redis.service'
 import { UserRepository } from '../../shared/Repositories/user.repository'
+import { MailService } from '../../shared/Services/mailer.service'
 
 @Module({
     imports: [
@@ -27,7 +28,7 @@ import { UserRepository } from '../../shared/Repositories/user.repository'
             },
         }),
     ],
-    providers: [AuthService, RedisService, JwtStrategy],
+    providers: [AuthService, RedisService,  MailService, JwtStrategy],
     controllers: [AuthController],
 })
 

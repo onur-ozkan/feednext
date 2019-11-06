@@ -14,18 +14,19 @@ import { UserEntity } from '../../../shared/Entities/users.entity'
 import { LoginDto } from '../Dto/login.dto'
 import { RedisService } from '../../../shared/Services/redis.service'
 import { AccountRecoveryDto } from '../Dto/account-recovery.dto'
-import { EmailSenderBody } from '../Interface/email.sender.interface'
+import { EmailSenderBody } from '../../../shared/Services/Interfaces/email.sender.interface'
+import { UserRepository } from '../../../shared/Repositories/user.repository'
+import { MailService } from '../../../shared/Services/mailer.service'
 import * as crypto from 'crypto'
-import * as nodemailer from 'nodemailer'
 import * as jwt from 'jsonwebtoken'
 import * as kmachine from 'keymachine'
-import { UserRepository } from '../../../shared/Repositories/user.repository'
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly jwtService: JwtService,
         private readonly redisService: RedisService,
+        private readonly mailService: MailService,
         @InjectRepository(UserRepository)
         private readonly userRepository: UserRepository,
     ) {}
@@ -66,7 +67,7 @@ export class AuthService {
                 text: `By your request we have set your password as '${generatePassword}' for x hours, in that time please sign in and update your Account Password.`,
             }
 
-            await this.sendMail(mailBody)
+            await this.mailService.send(mailBody)
         } catch (err) {
             throw new NotFoundException(`This email does not exist in the database.`)
         }
@@ -149,33 +150,9 @@ export class AuthService {
             subject: `Verify Your Account [${dto.username}]`,
             text: `${verificationUrl}`,
         }
-        await this.sendMail(mailBody)
+        await this.mailService.send(mailBody)
 
         const data: object = result['data']
         throw new HttpException({statusCode: 200, message: `Account has been registered successfully to the database.`, data}, HttpStatus.OK)
-    }
-
-    private async sendMail(bodyData: EmailSenderBody) {
-        const transporter: nodemailer = await nodemailer.createTransport({
-            service: configService.get(`NODEMAILER_SERVICE`),
-            auth: {
-                user: configService.get(`NODEMAILER_MAIL`),
-                pass: configService.get(`NODEMAILER_PASSWORD`),
-            },
-        })
-
-        const mailOptions: object = {
-            from: configService.get(`NODEMAILER_MAIL`),
-            to: bodyData.receiver,
-            subject: bodyData.subject,
-            text: bodyData.text,
-        }
-
-        await transporter.sendMail(mailOptions, err => {
-            if (err) {
-                // tslint:disable-next-line:no-console
-                console.log(err) // Gonna be logger for prod
-            }
-        })
     }
 }
