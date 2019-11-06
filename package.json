@@ -72,6 +72,10 @@
     "webpack-cli": "^3.3.9",
     "webpack-node-externals": "^1.7.2"
   },
+  "engines": {
+    "node": "12.12.0",
+    "npm": "6.11.3"
+  },
   "jest": {
     "moduleFileExtensions": [
       "js",
