@@ -10,7 +10,7 @@ import { JwtStrategy } from './Strategy/jwt.strategy'
 import { UserEntity } from '../../shared/Entities/users.entity'
 import { RedisService } from '../../shared/Services/redis.service'
 import { UserRepository } from '../../shared/Repositories/user.repository'
-import { MailService } from '../../shared/Services/mailer.service'
+import { MailService } from '../../shared/Services/mail.service'
 
 @Module({
     imports: [
