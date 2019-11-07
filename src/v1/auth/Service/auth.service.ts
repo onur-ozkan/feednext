@@ -10,12 +10,12 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Serializer } from 'jsonapi-serializer'
 import { configService } from '../../../shared/Services/config.service'
 import { CreateUserDto } from '../Dto/create-user.dto'
-import { UserEntity } from '../../../shared/Entities/users.entity'
+import { UsersEntity } from '../../../shared/Entities/users.entity'
 import { LoginDto } from '../Dto/login.dto'
 import { RedisService } from '../../../shared/Services/redis.service'
 import { AccountRecoveryDto } from '../Dto/account-recovery.dto'
 import { MailSenderBody } from '../../../shared/Services/Interfaces/mail.sender.interface'
-import { UserRepository } from '../../../shared/Repositories/user.repository'
+import { UsersRepository } from '../../../shared/Repositories/users.repository'
 import { MailService } from '../../../shared/Services/mail.service'
 import * as crypto from 'crypto'
 import * as jwt from 'jsonwebtoken'
@@ -27,8 +27,8 @@ export class AuthService {
         private readonly jwtService: JwtService,
         private readonly redisService: RedisService,
         private readonly mailService: MailService,
-        @InjectRepository(UserRepository)
-        private readonly userRepository: UserRepository,
+        @InjectRepository(UsersRepository)
+        private readonly usersRepository: UsersRepository,
     ) {}
 
     async validateUser(dto: LoginDto): Promise<any> {
@@ -36,7 +36,7 @@ export class AuthService {
 
         if (dto.email) {
             try {
-                return await this.userRepository.findOneOrFail({
+                return await this.usersRepository.findOneOrFail({
                     email: dto.email,
                     password: passwordHash,
                 })
@@ -46,7 +46,7 @@ export class AuthService {
         }
 
         try {
-            return await this.userRepository.findOneOrFail({
+            return await this.usersRepository.findOneOrFail({
                 password: passwordHash,
             })
         } catch (err) {
@@ -56,10 +56,10 @@ export class AuthService {
 
     async accountRecovery(dto: AccountRecoveryDto): Promise<HttpException> {
         try {
-            const account: UserEntity = await this.userRepository.findOneOrFail({ email: dto.email })
+            const account: UsersEntity = await this.usersRepository.findOneOrFail({ email: dto.email })
             const generatePassword: string = await kmachine.keymachine()
             account.password = generatePassword
-            await this.userRepository.save(account)
+            await this.usersRepository.save(account)
 
             const mailBody: MailSenderBody = {
                 receiver: dto.email,
@@ -84,16 +84,16 @@ export class AuthService {
         }
 
         try {
-            const account: UserEntity = await this.userRepository.findOneOrFail({ email: decodedToken.email })
+            const account: UsersEntity = await this.usersRepository.findOneOrFail({ email: decodedToken.email })
             account.isVerified = true
-            await this.userRepository.save(account)
+            await this.usersRepository.save(account)
         } catch (err) {
             throw new NotFoundException(`Incoming token is not valid.`)
         }
         throw new HttpException(`Account has been verified.`, HttpStatus.OK)
     }
 
-    async createToken(userEntity: UserEntity): Promise<HttpException> {
+    async createToken(userEntity: UsersEntity): Promise<HttpException> {
         const token: string = this.jwtService.sign({
             _id: userEntity._id,
             username: userEntity.username,
@@ -119,7 +119,7 @@ export class AuthService {
     }
 
     async register(dto: CreateUserDto): Promise<HttpException> {
-        const newUser: UserEntity = new UserEntity({
+        const newUser: UsersEntity = new UsersEntity({
             email: dto.email,
             username: dto.username,
             password: dto.password,
@@ -129,7 +129,7 @@ export class AuthService {
         let result: object
 
         try {
-            result = await this.userRepository.save(newUser)
+            result = await this.usersRepository.save(newUser)
             result = await new Serializer(`user-identities`, {
                 attributes: [`fullName`, `username`, `email`, `accessToken`],
             }).serialize(result)

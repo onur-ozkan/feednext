@@ -1,10 +1,10 @@
 import { Routes } from 'nest-router'
 import { V1Module } from './v1/v1.module'
-import { AuthModule } from './v1/auth/auth.module'
-import { CategoriesModule } from './v1/categories/categories.module'
-import { EntriesModule } from './v1/entries/entries.module'
-import { ProductsModule } from './v1/products/products.module'
-import { UsersModule } from './v1/users/users.module'
+import { AuthModule } from './v1/Auth/auth.module'
+import { CategoryModule } from './v1/Category/category.module'
+import { EntryModule } from './v1/Entry/entry.module'
+import { ProductModule } from './v1/Product/product.module'
+import { UserModule } from './v1/User/user.module'
 
 export const versionRoutes: Routes = [
     {
@@ -16,20 +16,20 @@ export const versionRoutes: Routes = [
                 module: AuthModule,
             },
             {
-                path: `/categories`,
-                module: CategoriesModule,
+                path: `/category`,
+                module: CategoryModule,
             },
             {
-                path: `/entries`,
-                module: EntriesModule,
+                path: `/entry`,
+                module: EntryModule,
             },
             {
-                path: `/products`,
-                module: ProductsModule,
+                path: `/product`,
+                module: ProductModule,
             },
             {
-                path: `/users`,
-                module: UsersModule,
+                path: `/user`,
+                module: UserModule,
             },
         ],
     },

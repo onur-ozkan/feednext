@@ -1,20 +1,20 @@
 import { Module, MiddlewareConsumer } from '@nestjs/common'
-import { UsersModule } from './users/users.module'
-import { AuthModule } from './auth/auth.module'
-import { CategoriesModule } from './categories/categories.module'
-import { EntriesModule } from './entries/entries.module'
-import { ProductsModule } from './products/products.module'
+import { UserModule } from './User/user.module'
+import { AuthModule } from './Auth/auth.module'
+import { CategoryModule } from './Category/category.module'
+import { EntryModule } from './Entry/entry.module'
+import { ProductModule } from './Product/product.module'
 
 import { BlacklistMiddleware } from '../shared/Middleware/blacklist.middleware'
 import { RedisService } from '../shared/Services/redis.service'
 
 @Module({
     imports: [
-        UsersModule,
+        UserModule,
         AuthModule,
-        CategoriesModule,
-        EntriesModule,
-        ProductsModule,
+        CategoryModule,
+        EntryModule,
+        ProductModule,
     ],
     providers: [RedisService],
 })

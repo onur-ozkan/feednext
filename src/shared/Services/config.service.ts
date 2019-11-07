@@ -1,5 +1,5 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm'
-import { UserEntity } from '../Entities/users.entity'
+import { UsersEntity } from '../Entities/users.entity'
 
 // tslint:disable-next-line:no-var-requires
 require('dotenv').config()
@@ -34,7 +34,7 @@ export class ConfigService {
             database: this.get('DB_NAME'),
             synchronize: true,
             useUnifiedTopology: true,
-            entities: [UserEntity],
+            entities: [UsersEntity],
 
             ssl: this.isProduction(),
         }

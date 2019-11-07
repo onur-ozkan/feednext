@@ -3,19 +3,19 @@ import { JwtModule } from '@nestjs/jwt'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { PassportModule } from '@nestjs/passport'
 import { AuthService } from './Service/auth.service'
-import { UsersModule } from '../users/users.module'
+import { UserModule } from '../User/user.module'
 import { AuthController } from './Controller/auth.controller'
 import { configService } from '../../shared/Services/config.service'
 import { JwtStrategy } from './Strategy/jwt.strategy'
-import { UserEntity } from '../../shared/Entities/users.entity'
+import { UsersEntity } from '../../shared/Entities/users.entity'
 import { RedisService } from '../../shared/Services/redis.service'
-import { UserRepository } from '../../shared/Repositories/user.repository'
+import { UsersRepository } from '../../shared/Repositories/users.repository'
 import { MailService } from '../../shared/Services/mail.service'
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([UserEntity, UserRepository]),
-        UsersModule,
+        TypeOrmModule.forFeature([UsersEntity, UsersRepository]),
+        UserModule,
         PassportModule.register({ defaultStrategy: 'jwt' }),
         JwtModule.registerAsync({
             useFactory: () => {

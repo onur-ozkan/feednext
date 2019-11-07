@@ -12,8 +12,8 @@ import { IsEmail } from 'class-validator'
 import * as crypto from 'crypto'
 
 @Entity({ name: 'Users' })
-export class UserEntity {
-    constructor(partial: Partial<UserEntity>) {
+export class UsersEntity {
+    constructor(partial: Partial<UsersEntity>) {
         Object.assign(this, partial)
     }
 
