@@ -14,7 +14,7 @@ import { UserEntity } from '../../../shared/Entities/users.entity'
 import { LoginDto } from '../Dto/login.dto'
 import { RedisService } from '../../../shared/Services/redis.service'
 import { AccountRecoveryDto } from '../Dto/account-recovery.dto'
-import { EmailSenderBody } from '../../../shared/Services/Interfaces/email.sender.interface'
+import { MailSenderBody } from '../../../shared/Services/Interfaces/mail.sender.interface'
 import { UserRepository } from '../../../shared/Repositories/user.repository'
 import { MailService } from '../../../shared/Services/mail.service'
 import * as crypto from 'crypto'
@@ -61,7 +61,7 @@ export class AuthService {
             account.password = generatePassword
             await this.userRepository.save(account)
 
-            const mailBody: EmailSenderBody = {
+            const mailBody: MailSenderBody = {
                 receiver: dto.email,
                 subject: `Account Recovery [${account.username}]`,
                 text: `By your request we have set your password as '${generatePassword}' for x hours, in that time please sign in and update your Account Password.`,
@@ -145,7 +145,7 @@ export class AuthService {
 
         const verificationUrl: string = `${configService.get(`APP_URL`)}/api/v1/auth/account-verification?token=${verifyToken}`
 
-        const mailBody: EmailSenderBody = {
+        const mailBody: MailSenderBody = {
             receiver: dto.email,
             subject: `Verify Your Account [${dto.username}]`,
             text: `${verificationUrl}`,

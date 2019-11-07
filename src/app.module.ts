@@ -4,13 +4,13 @@ import { RouterModule } from 'nest-router'
 import { versionRoutes } from './version.routes'
 import { databaseService } from './shared/Services/config.service'
 import { RedisService } from './shared/Services/redis.service'
-import { ApiModule } from './v1/api.module'
+import { V1Module } from './v1/v1.module'
 
 @Module({
     imports: [
         TypeOrmModule.forRoot(databaseService.getTypeOrmConfig()),
         RouterModule.forRoutes(versionRoutes),
-        ApiModule,
+        V1Module,
     ],
     providers: [RedisService],
 })
