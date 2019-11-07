@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common'
 import * as nodemailer from 'nodemailer'
 import { configService } from './config.service'
-import { EmailSenderBody } from './Interfaces/email.sender.interface'
+import { MailSenderBody } from './Interfaces/mail.sender.interface'
 
 @Injectable()
 export class MailService {
-    public async send(bodyData: EmailSenderBody) {
+    public async send(bodyData: MailSenderBody) {
         const transporter: nodemailer = await nodemailer.createTransport({
             service: configService.get(`NODEMAILER_SERVICE`),
             auth: {
