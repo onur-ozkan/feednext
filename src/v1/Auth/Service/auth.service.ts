@@ -9,7 +9,7 @@ import { JwtService, JwtModule } from '@nestjs/jwt'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Serializer } from 'jsonapi-serializer'
 import { configService } from '../../../shared/Services/config.service'
-import { CreateUserDto } from '../Dto/create-user.dto'
+import { CreateAccountDto } from '../Dto/create-account.dto'
 import { UsersEntity } from '../../../shared/Entities/users.entity'
 import { LoginDto } from '../Dto/login.dto'
 import { RedisService } from '../../../shared/Services/redis.service'
@@ -118,7 +118,7 @@ export class AuthService {
         throw new HttpException(`Token has been destroyed.`, HttpStatus.OK)
     }
 
-    async register(dto: CreateUserDto): Promise<HttpException> {
+    async signup(dto: CreateAccountDto): Promise<HttpException> {
         const newUser: UsersEntity = new UsersEntity({
             email: dto.email,
             username: dto.username,

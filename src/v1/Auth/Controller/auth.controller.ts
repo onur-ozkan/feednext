@@ -12,7 +12,7 @@ import {
 import { AuthGuard } from '@nestjs/passport'
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthService } from '../Service/auth.service'
-import { CreateUserDto } from '../Dto/create-user.dto'
+import { CreateAccountDto } from '../Dto/create-account.dto'
 import { LoginDto } from '../Dto/login.dto'
 import { AccountRecoveryDto } from '../Dto/account-recovery.dto'
 
@@ -22,8 +22,8 @@ export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
     @Post('signup')
-    async signUp(@Body() dto: CreateUserDto): Promise<HttpException> {
-        return this.authService.register(dto)
+    async signUp(@Body() dto: CreateAccountDto): Promise<HttpException> {
+        return this.authService.signup(dto)
     }
 
     @Post('signin')
