@@ -23,7 +23,7 @@ export class UsersEntity {
     @Column({
         length: 50,
     })
-    fullName: string
+    full_name: string
 
     @Column({
         length: 17,
@@ -50,20 +50,20 @@ export class UsersEntity {
     email: string
 
     @Column({})
-    isVerified: boolean
+    is_verified: boolean
 
     @Column({})
-    isActive: boolean
+    is_active: boolean
 
     @BeforeInsert()
     fillDefaults() {
-        this.isActive = true
-        this.isVerified = false
+        this.is_active = true
+        this.is_verified = false
     }
 
     @CreateDateColumn({})
-    createdAt: Date
+    created_at: Date
 
     @UpdateDateColumn({})
-    updatedAt: Date
+    updated_at: Date
 }

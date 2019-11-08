@@ -30,10 +30,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         }
 
         const data = {
-            fullName: user.fullName,
+            full_name: user.full_name,
             username: user.username,
             email: user.email,
-            createdAt: user.createdAt,
+            created_at: user.created_at,
         }
         return data
     }

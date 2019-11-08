@@ -1,4 +1,4 @@
-export interface UserAuthData {
+interface UserAuthData {
     fullName: string
     username: string
     password: string

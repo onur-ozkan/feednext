@@ -85,7 +85,7 @@ export class AuthService {
 
         try {
             const account: UsersEntity = await this.usersRepository.findOneOrFail({ email: decodedToken.email })
-            account.isVerified = true
+            account.is_verified = true
             await this.usersRepository.save(account)
         } catch (err) {
             throw new NotFoundException(`Incoming token is not valid.`)
@@ -98,7 +98,7 @@ export class AuthService {
             _id: userEntity._id,
             username: userEntity.username,
             email: userEntity.email,
-            createdAt: userEntity.createdAt,
+            created_at: userEntity.created_at,
         })
 
         const responseData: object = {
@@ -123,7 +123,7 @@ export class AuthService {
             email: dto.email,
             username: dto.username,
             password: dto.password,
-            fullName: dto.fullName,
+            full_name: dto.fullName,
         })
 
         let result: object
@@ -131,7 +131,7 @@ export class AuthService {
         try {
             result = await this.usersRepository.save(newUser)
             result = await new Serializer(`user-identities`, {
-                attributes: [`fullName`, `username`, `email`, `accessToken`],
+                attributes: [`full_name`, `username`, `email`, `accessToken`],
             }).serialize(result)
         } catch (err) {
             throw new UnprocessableEntityException(err.errmsg)
