@@ -45,10 +45,10 @@ async function bootstrap() {
     // Configure the APM
     const apmConfig = {
         authentication: true,
-        onAuthenticate(username, password) {
+        onAuthenticate() {
             return (
-                username === configService.get('APM_USERNAME') &&
-                password === configService.get('APM_PASSWORD')
+                configService.get('APM_USERNAME') &&
+                configService.get('APM_PASSWORD')
             )
         },
         uriPath: '/api/status',
