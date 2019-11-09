@@ -33,7 +33,7 @@ export class AuthController {
     }
 
     @ApiBearerAuth()
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard('jwt'))
     @Get('signout')
     async signOut(@Request() request): Promise<HttpException> {
         const token = await request.headers.authorization.substring(7)
@@ -51,7 +51,7 @@ export class AuthController {
     }
 
     @ApiBearerAuth()
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard('jwt'))
     @Get('me')
     async getLoggedInUser(@Request() request): Promise<HttpException> {
         throw new HttpException({statusCode: 200, message: 'OK', data: request.user}, HttpStatus.OK )
