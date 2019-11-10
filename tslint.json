@@ -16,7 +16,8 @@
     "object-literal-sort-keys": false,
     "ban-types": false,
     "semicolon": [true, "never"],
-    "variable-name": false
+    "variable-name": false,
+    "curly": false
   },
   "rulesDirectory": []
 }
