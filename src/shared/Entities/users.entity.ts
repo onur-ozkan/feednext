@@ -6,7 +6,6 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     BeforeInsert,
-    BeforeUpdate,
 } from 'typeorm'
 import { IsEmail } from 'class-validator'
 import * as crypto from 'crypto'
@@ -37,7 +36,6 @@ export class UsersEntity {
     password: string
 
     @BeforeInsert()
-    @BeforeUpdate()
     hashPassword() {
         this.password = crypto.createHmac('sha256', this.password).digest('hex')
     }
