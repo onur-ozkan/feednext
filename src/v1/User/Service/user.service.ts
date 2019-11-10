@@ -1,8 +1,7 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Serializer } from 'jsonapi-serializer'
-import { UsersEntity } from '../../../shared/Entities/users.entity'
-import { UsersRepository } from '../../../shared/Repositories/users.repository'
+import { UsersEntity } from 'src/shared/Entities/users.entity'
+import { UsersRepository } from 'src/shared/Repositories/users.repository'
 
 @Injectable()
 export class UserService {
@@ -12,15 +11,15 @@ export class UserService {
         private readonly usersRepository: UsersRepository,
     ) {}
 
-    async findOne(usernameParam: string): Promise<UsersEntity> {
+    async getProfileByUsername(usernameParam: string): Promise<UsersEntity> {
+        let result: any
         try {
-            const result = await this.usersRepository.findOneOrFail({
+            result = await this.usersRepository.findOneOrFail({
                 username: usernameParam,
             })
-            return await new Serializer('users', { attributes: ['fullName', 'username', 'email', 'createdAt'] }).serialize(result)
-
         } catch (err) {
             throw new HttpException(err, HttpStatus.NOT_FOUND)
         }
+        throw new HttpException({statusCode: 200, message: `OK`, data: result }, HttpStatus.OK)
     }
 }

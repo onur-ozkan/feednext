@@ -7,16 +7,16 @@ import {
 } from '@nestjs/common'
 import { JwtService, JwtModule } from '@nestjs/jwt'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Serializer } from 'jsonapi-serializer'
-import { configService } from '../../../shared/Services/config.service'
+import { configService } from 'src/shared/Services/config.service'
+import { UsersEntity } from 'src/shared/Entities/users.entity'
+import { RedisService } from 'src/shared/Services/redis.service'
+import { MailSenderBody } from 'src/shared/Services/Interfaces/mail.sender.interface'
+import { UsersRepository } from 'src/shared/Repositories/users.repository'
+import { MailService } from 'src/shared/Services/mail.service'
+import { OkException } from 'src/shared/Exceptions/ok.exception'
 import { CreateAccountDto } from '../Dto/create-account.dto'
-import { UsersEntity } from '../../../shared/Entities/users.entity'
 import { LoginDto } from '../Dto/login.dto'
-import { RedisService } from '../../../shared/Services/redis.service'
 import { AccountRecoveryDto } from '../Dto/account-recovery.dto'
-import { MailSenderBody } from '../../../shared/Services/Interfaces/mail.sender.interface'
-import { UsersRepository } from '../../../shared/Repositories/users.repository'
-import { MailService } from '../../../shared/Services/mail.service'
 import * as crypto from 'crypto'
 import * as jwt from 'jsonwebtoken'
 import * as kmachine from 'keymachine'
@@ -93,7 +93,7 @@ export class AuthService {
         throw new HttpException(`Account has been verified.`, HttpStatus.OK)
     }
 
-    async createToken(userEntity: UsersEntity): Promise<HttpException> {
+    async signIn(userEntity: UsersEntity): Promise<HttpException> {
         const token: string = this.jwtService.sign({
             _id: userEntity._id,
             username: userEntity.username,
@@ -101,12 +101,15 @@ export class AuthService {
             created_at: userEntity.created_at,
         })
 
+        const id: any = userEntity._id
+        const { _id, password, ...serializedUser } = userEntity
+
         const responseData: object = {
-            expiresIn: configService.get(`JWT_EXPIRATION_TIME`),
-            accessToken: token,
-            user: userEntity,
+            expires_in: configService.get(`JWT_EXPIRATION_TIME`),
+            access_token: token,
+            user: serializedUser,
         }
-        throw new HttpException({statusCode: 200, message: `Access token has been generated.`, data: responseData}, HttpStatus.OK )
+        throw new OkException(`user_information`, responseData, `User successfully has been signed in.`, id)
     }
 
     async killToken(token: string): Promise<HttpException> {
@@ -115,7 +118,7 @@ export class AuthService {
         const remainingSeconds: number = Math.round(expireDate - Date.now() / 1000)
 
         await this.redisService.setOnlyKey(token, remainingSeconds)
-        throw new HttpException(`Token has been destroyed.`, HttpStatus.OK)
+        throw new OkException(`dead_token`, {token}, `Token has been killed.`)
     }
 
     async signup(dto: CreateAccountDto): Promise<HttpException> {
@@ -130,9 +133,6 @@ export class AuthService {
 
         try {
             result = await this.usersRepository.save(newUser)
-            result = await new Serializer(`user-identities`, {
-                attributes: [`full_name`, `username`, `email`, `accessToken`],
-            }).serialize(result)
         } catch (err) {
             throw new UnprocessableEntityException(err.errmsg)
         }
@@ -152,7 +152,11 @@ export class AuthService {
         }
         await this.mailService.send(mailBody)
 
-        const data: object = result['data']
-        throw new HttpException({statusCode: 200, message: `Account has been registered successfully to the database.`, data}, HttpStatus.OK)
+        const id: string = result['_id']
+        delete result['_id']
+        delete result['password']
+        delete result['updated_at']
+
+        throw new OkException(`account_informations`, result, `Account has been registered successfully to the database.`, id)
     }
 }

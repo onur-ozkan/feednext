@@ -7,10 +7,10 @@ import {
     Request,
     HttpException,
     Query,
-    HttpStatus,
 } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
+import { OkException } from 'src/shared/Exceptions/ok.exception'
 import { AuthService } from '../Service/auth.service'
 import { CreateAccountDto } from '../Dto/create-account.dto'
 import { LoginDto } from '../Dto/login.dto'
@@ -29,7 +29,7 @@ export class AuthController {
     @Post('signin')
     async signIn(@Body() dto: LoginDto): Promise<HttpException> {
         const user = await this.authService.validateUser(dto)
-        return await this.authService.createToken(user)
+        return await this.authService.signIn(user)
     }
 
     @ApiBearerAuth()
@@ -54,6 +54,7 @@ export class AuthController {
     @UseGuards(AuthGuard('jwt'))
     @Get('me')
     async getLoggedInUser(@Request() request): Promise<HttpException> {
-        throw new HttpException({statusCode: 200, message: 'OK', data: request.user}, HttpStatus.OK )
+        const data = await request.user
+        throw new OkException(`profile`, data)
     }
 }
