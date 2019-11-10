@@ -23,7 +23,7 @@ export class AuthController {
 
     @Post('signup')
     async signUp(@Body() dto: CreateAccountDto): Promise<HttpException> {
-        return this.authService.signup(dto)
+        return this.authService.signUp(dto)
     }
 
     @Post('signin')
@@ -37,7 +37,7 @@ export class AuthController {
     @Get('signout')
     async signOut(@Request() request): Promise<HttpException> {
         const token = await request.headers.authorization.substring(7)
-        return await this.authService.killToken(token)
+        return await this.authService.signOut(token)
     }
 
     @Post('signin/account-recovery')

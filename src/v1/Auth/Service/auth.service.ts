@@ -31,6 +31,72 @@ export class AuthService {
         private readonly usersRepository: UsersRepository,
     ) {}
 
+    async signUp(dto: CreateAccountDto): Promise<HttpException> {
+        const newUser: UsersEntity = new UsersEntity({
+            email: dto.email,
+            username: dto.username,
+            password: dto.password,
+            full_name: dto.fullName,
+        })
+
+        let result: object
+
+        try {
+            result = await this.usersRepository.save(newUser)
+        } catch (err) {
+            throw new UnprocessableEntityException(err.errmsg)
+        }
+
+        const verifyToken: JwtModule = jwt.sign({
+            id: dto.username,
+            email: dto.email,
+            exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
+        }, configService.get(`SECRET_KEY`))
+
+        const verificationUrl: string = `${configService.get(`APP_URL`)}/api/v1/auth/account-verification?token=${verifyToken}`
+
+        const mailBody: MailSenderBody = {
+            receiver: dto.email,
+            subject: `Verify Your Account [${dto.username}]`,
+            text: `${verificationUrl}`,
+        }
+        await this.mailService.send(mailBody)
+
+        const id: string = result['_id']
+        delete result['_id']
+        delete result['password']
+        delete result['updated_at']
+
+        throw new OkException(`account_informations`, result, `Account has been registered successfully to the database.`, id)
+    }
+
+    async signIn(userEntity: UsersEntity): Promise<HttpException> {
+        const token: string = this.jwtService.sign({
+            _id: userEntity._id,
+            username: userEntity.username,
+            email: userEntity.email,
+            created_at: userEntity.created_at,
+        })
+
+        const id: any = userEntity._id
+        const { _id, password, ...serializedUser } = userEntity
+
+        const responseData: object = {
+            access_token: token,
+            user: serializedUser,
+        }
+        throw new OkException(`user_information`, responseData, `User successfully has been signed in.`, id)
+    }
+
+    async signOut(token: string): Promise<HttpException> {
+        const decodedToken: any = this.jwtService.decode(token)
+        const expireDate: number = decodedToken.exp
+        const remainingSeconds: number = Math.round(expireDate - Date.now() / 1000)
+
+        await this.redisService.setOnlyKey(token, remainingSeconds)
+        throw new OkException(`dead_token`, {token}, `Token has been killed.`)
+    }
+
     async validateUser(dto: LoginDto): Promise<any> {
         const passwordHash: string = crypto.createHmac(`sha256`, dto.password).digest(`hex`)
 
@@ -91,72 +157,5 @@ export class AuthService {
             throw new NotFoundException(`Incoming token is not valid.`)
         }
         throw new HttpException(`Account has been verified.`, HttpStatus.OK)
-    }
-
-    async signIn(userEntity: UsersEntity): Promise<HttpException> {
-        const token: string = this.jwtService.sign({
-            _id: userEntity._id,
-            username: userEntity.username,
-            email: userEntity.email,
-            created_at: userEntity.created_at,
-        })
-
-        const id: any = userEntity._id
-        const { _id, password, ...serializedUser } = userEntity
-
-        const responseData: object = {
-            expires_in: configService.get(`JWT_EXPIRATION_TIME`),
-            access_token: token,
-            user: serializedUser,
-        }
-        throw new OkException(`user_information`, responseData, `User successfully has been signed in.`, id)
-    }
-
-    async killToken(token: string): Promise<HttpException> {
-        const decodedToken: any = this.jwtService.decode(token)
-        const expireDate: number = decodedToken.exp
-        const remainingSeconds: number = Math.round(expireDate - Date.now() / 1000)
-
-        await this.redisService.setOnlyKey(token, remainingSeconds)
-        throw new OkException(`dead_token`, {token}, `Token has been killed.`)
-    }
-
-    async signup(dto: CreateAccountDto): Promise<HttpException> {
-        const newUser: UsersEntity = new UsersEntity({
-            email: dto.email,
-            username: dto.username,
-            password: dto.password,
-            full_name: dto.fullName,
-        })
-
-        let result: object
-
-        try {
-            result = await this.usersRepository.save(newUser)
-        } catch (err) {
-            throw new UnprocessableEntityException(err.errmsg)
-        }
-
-        const verifyToken: JwtModule = jwt.sign({
-            id: dto.username,
-            email: dto.email,
-            exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
-        }, configService.get(`SECRET_KEY`))
-
-        const verificationUrl: string = `${configService.get(`APP_URL`)}/api/v1/auth/account-verification?token=${verifyToken}`
-
-        const mailBody: MailSenderBody = {
-            receiver: dto.email,
-            subject: `Verify Your Account [${dto.username}]`,
-            text: `${verificationUrl}`,
-        }
-        await this.mailService.send(mailBody)
-
-        const id: string = result['_id']
-        delete result['_id']
-        delete result['password']
-        delete result['updated_at']
-
-        throw new OkException(`account_informations`, result, `Account has been registered successfully to the database.`, id)
     }
 }
