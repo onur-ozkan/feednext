@@ -1,12 +1,11 @@
 import { Module, MiddlewareConsumer } from '@nestjs/common'
+import { BlacklistMiddleware } from 'src/shared/Middleware/blacklist.middleware'
+import { RedisService } from 'src/shared/Services/redis.service'
 import { UserModule } from './User/user.module'
 import { AuthModule } from './Auth/auth.module'
 import { CategoryModule } from './Category/category.module'
 import { EntryModule } from './Entry/entry.module'
 import { ProductModule } from './Product/product.module'
-
-import { BlacklistMiddleware } from '../shared/Middleware/blacklist.middleware'
-import { RedisService } from '../shared/Services/redis.service'
 
 @Module({
     imports: [

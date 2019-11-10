@@ -1,6 +1,6 @@
 import { Get, Param, Controller } from '@nestjs/common'
 import { ApiUseTags } from '@nestjs/swagger'
-import { UsersEntity } from '../../../shared/Entities/users.entity'
+import { UsersEntity } from 'src/shared/Entities/users.entity'
 import { UserService } from '../Service/user.service'
 
 @ApiUseTags('v1/user')
