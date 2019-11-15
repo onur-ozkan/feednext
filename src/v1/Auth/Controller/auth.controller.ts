@@ -4,6 +4,7 @@ import {
     Body,
     UseGuards,
     Get,
+    Put,
     Request,
     HttpException,
     Query,
@@ -40,7 +41,7 @@ export class AuthController {
         return await this.authService.signOut(token)
     }
 
-    @Post('signin/account-recovery')
+    @Put('signin/account-recovery')
     async accountRecovery(@Body() dto: AccountRecoveryDto): Promise<HttpException> {
         return this.authService.accountRecovery(dto)
     }
