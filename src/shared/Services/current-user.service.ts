@@ -1,7 +1,7 @@
 import * as jwt from 'jsonwebtoken'
 
-export class AuthUserService {
-    public getUserData(token: string, property: string): any {
+export class CurrentUserService {
+    public getCurrentUser(token: string, property: string): any {
         const authData: any = jwt.decode(token.substring(7))
 
         switch (property) {
@@ -13,6 +13,6 @@ export class AuthUserService {
     }
 }
 
-const authUserService = new AuthUserService()
+const currentUserService = new CurrentUserService()
 
-export { authUserService }
+export { currentUserService }
