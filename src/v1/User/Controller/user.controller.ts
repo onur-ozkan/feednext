@@ -1,9 +1,10 @@
-import { Get, Param, Controller, Body, Patch, UseGuards, Headers } from '@nestjs/common'
+import { Get, Param, Controller, Body, Patch, UseGuards, Headers, BadRequestException } from '@nestjs/common'
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
 import { UsersEntity } from 'src/shared/Entities/users.entity'
+import { AuthGuard } from '@nestjs/passport'
+import { authUserService } from 'src/shared/Services/auth-user.service'
 import { UserService } from '../Service/user.service'
 import { UpdateUserDto } from '../Dto/update-user.dto'
-import { AuthGuard } from '@nestjs/passport'
 
 @ApiUseTags('v1/user')
 @Controller()
@@ -22,8 +23,11 @@ export class UsersController {
         @Param('username') username,
         @Body() dto: UpdateUserDto,
         @Headers('authorization') bearer: string,
-    ) {
-        // const authToken = bearer.substring(7)
+    ): Promise<UsersEntity> {
+        if (username !== authUserService.getUserData(bearer, 'username')) {
+            throw new BadRequestException()
+        }
+
         return this.usersService.updateProfileByUsername(username, dto)
     }
 }
