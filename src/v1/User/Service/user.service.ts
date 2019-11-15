@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common'
+import { Injectable, NotFoundException, BadRequestException, HttpException, HttpStatus } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { UsersEntity } from 'src/shared/Entities/users.entity'
 import { UsersRepository } from 'src/shared/Repositories/users.repository'
@@ -6,7 +6,6 @@ import { OkException } from 'src/shared/Exceptions/ok.exception'
 import { UpdateUserDto } from '../Dto/update-user.dto'
 import * as crypto from 'crypto'
 import { serializerService } from 'src/shared/Services/serializer.service'
-
 @Injectable()
 export class UserService {
 
@@ -15,7 +14,7 @@ export class UserService {
         private readonly usersRepository: UsersRepository,
     ) {}
 
-    async getProfileByUsername(usernameParam: string): Promise<UsersEntity> {
+    async getUser(usernameParam: string): Promise<UsersEntity> {
         let profile: UsersEntity
         let id: string
         try {
@@ -34,7 +33,7 @@ export class UserService {
         throw new OkException(`user_profile`, profile, `User ${profile.username} is successfully loaded.`, id)
     }
 
-    async updateProfileByUsername(usernameParam: string, dto: UpdateUserDto): Promise<UsersEntity> {
+    async updateUser(usernameParam: string, dto: UpdateUserDto): Promise<UsersEntity> {
         const profile = await this.usersRepository.findOne({
             username: usernameParam,
         })
@@ -62,6 +61,22 @@ export class UserService {
         await serializerService.deleteProperties(profile, properties)
 
         throw new OkException(`updated_profile`, profile, `User ${profile.username} is successfully updated.`, id)
+    }
+
+    async disableUser(usernameParam: string): Promise<HttpException> {
+
+        try {
+            const profile = await this.usersRepository.findOneOrFail({
+                username: usernameParam,
+            })
+
+            profile.is_active = false
+            await this.usersRepository.save(profile)
+        } catch (err) {
+            throw new NotFoundException(`User with that username could not found in the database.`)
+        }
+
+        throw new HttpException(`OK`, HttpStatus.OK)
     }
 
 }
