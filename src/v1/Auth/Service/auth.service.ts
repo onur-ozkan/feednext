@@ -48,20 +48,22 @@ export class AuthService {
             throw new UnprocessableEntityException(err.errmsg)
         }
 
-        const verifyToken: JwtModule = jwt.sign({
-            id: dto.username,
-            email: dto.email,
-            exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
-        }, configService.get(`SECRET_KEY`))
+        if (configService.isProduction()) {
+            const verifyToken: JwtModule = jwt.sign({
+                id: dto.username,
+                email: dto.email,
+                exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
+            }, configService.get(`SECRET_KEY`))
 
-        const verificationUrl: string = `${configService.get(`APP_URL`)}/api/v1/auth/account-verification?token=${verifyToken}`
+            const verificationUrl: string = `${configService.get(`APP_URL`)}/api/v1/auth/account-verification?token=${verifyToken}`
 
-        const mailBody: MailSenderBody = {
-            receiver: dto.email,
-            subject: `Verify Your Account [${dto.username}]`,
-            text: `${verificationUrl}`,
+            const mailBody: MailSenderBody = {
+                receiver: dto.email,
+                subject: `Verify Your Account [${dto.username}]`,
+                text: `${verificationUrl}`,
+            }
+            await this.mailService.send(mailBody)
         }
-        await this.mailService.send(mailBody)
 
         const id: string = result['_id']
 
