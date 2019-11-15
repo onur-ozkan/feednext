@@ -21,7 +21,7 @@ export class ConfigService {
         return this
     }
 
-    public isProduction(): any {
+    public isProduction(): boolean {
         const mode = this.get('MODE', false)
         return mode !== 'DEV'
     }
