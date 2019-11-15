@@ -66,7 +66,7 @@ export class AuthService {
         const id: string = result['_id']
 
         const properties: string[] = ['_id', 'password', 'updated_at', 'is_verified']
-        serializerService.deleteProperties(result, properties)
+        await serializerService.deleteProperties(result, properties)
 
         throw new OkException(`account_informations`, result, `Account has been registered successfully to the database.`, id)
     }

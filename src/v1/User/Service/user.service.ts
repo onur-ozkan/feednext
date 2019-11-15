@@ -29,7 +29,7 @@ export class UserService {
         }
 
         const properties: string[] = ['_id', 'password', 'is_active', 'is_verified']
-        serializerService.deleteProperties(profile, properties)
+        await serializerService.deleteProperties(profile, properties)
 
         throw new OkException(`user_profile`, profile, `User ${profile.username} is successfully loaded.`, id)
     }
@@ -59,7 +59,7 @@ export class UserService {
         }
 
         const properties: string[] = ['_id', 'password', 'is_active', 'is_verified']
-        serializerService.deleteProperties(profile, properties)
+        await serializerService.deleteProperties(profile, properties)
 
         throw new OkException(`updated_profile`, profile, `User ${profile.username} is successfully updated.`, id)
     }
