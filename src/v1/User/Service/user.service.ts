@@ -5,6 +5,7 @@ import { UsersRepository } from 'src/shared/Repositories/users.repository'
 import { OkException } from 'src/shared/Exceptions/ok.exception'
 import { UpdateUserDto } from '../Dto/update-user.dto'
 import * as crypto from 'crypto'
+import { serializerService } from 'src/shared/Services/serializer.service'
 
 @Injectable()
 export class UserService {
@@ -27,10 +28,9 @@ export class UserService {
             throw new NotFoundException(`User with that username could not found in the database.`)
         }
 
-        delete profile['_id']
-        delete profile['password']
-        delete profile['is_active']
-        delete profile['is_verified']
+        const properties: string[] = ['_id', 'password', 'is_active', 'is_verified']
+        serializerService.deleteProperties(profile, properties)
+
         throw new OkException(`user_profile`, profile, `User ${profile.username} is successfully loaded.`, id)
     }
 
@@ -58,10 +58,9 @@ export class UserService {
             throw new BadRequestException(`The email that entered is duplicated in the database.`)
         }
 
-        delete profile['_id']
-        delete profile['password']
-        delete profile['is_active']
-        delete profile['is_verified']
+        const properties: string[] = ['_id', 'password', 'is_active', 'is_verified']
+        serializerService.deleteProperties(profile, properties)
+
         throw new OkException(`updated_profile`, profile, `User ${profile.username} is successfully updated.`, id)
     }
 

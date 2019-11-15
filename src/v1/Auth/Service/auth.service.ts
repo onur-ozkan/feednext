@@ -20,6 +20,7 @@ import { AccountRecoveryDto } from '../Dto/account-recovery.dto'
 import * as crypto from 'crypto'
 import * as jwt from 'jsonwebtoken'
 import * as kmachine from 'keymachine'
+import { serializerService } from 'src/shared/Services/serializer.service'
 
 @Injectable()
 export class AuthService {
@@ -63,9 +64,9 @@ export class AuthService {
         await this.mailService.send(mailBody)
 
         const id: string = result['_id']
-        delete result['_id']
-        delete result['password']
-        delete result['updated_at']
+
+        const properties: string[] = ['_id', 'password', 'updated_at', 'is_verified']
+        serializerService.deleteProperties(result, properties)
 
         throw new OkException(`account_informations`, result, `Account has been registered successfully to the database.`, id)
     }
