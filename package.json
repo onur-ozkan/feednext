@@ -27,6 +27,7 @@
     "@nestjs/platform-fastify": "^6.8.5",
     "@nestjs/swagger": "^3.1.0",
     "@nestjs/typeorm": "^6.2.0",
+    "body-parser": "^1.19.0",
     "class-transformer": "^0.2.3",
     "class-validator": "^0.10.2",
     "crypto": "^1.0.1",
