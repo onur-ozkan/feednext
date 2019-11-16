@@ -1,13 +1,14 @@
 import { NestFactory } from '@nestjs/core'
+import { ValidationPipe } from '@nestjs/common'
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
-import { AppModule } from './app.module'
-import { configService } from './shared/Services/config.service'
 import * as apm from 'swagger-stats'
 import * as fastifyRateLimit from 'fastify-rate-limit'
 import * as helmet from 'fastify-helmet'
 import * as compress from 'fastify-compress'
-import { ValidationPipe } from '@nestjs/common'
+import * as bodyParser from 'body-parser'
+import { AppModule } from './app.module'
+import { configService } from './shared/Services/config.service'
 
 declare const module: any
 
@@ -26,7 +27,10 @@ async function bootstrap() {
     fastifyAdapter.register(helmet) // Initialize security middleware module 'fastify-helmet'
     fastifyAdapter.register(compress) // Initialize fastify-compress to better handle high-level traffic
 
-    const app = await NestFactory.create<NestFastifyApplication>(AppModule, fastifyAdapter)
+    const app = await NestFactory.create<NestFastifyApplication>(AppModule, fastifyAdapter, {bodyParser: false})
+
+    // Parse raw json data of requests
+    app.use(bodyParser.json())
 
     app.setGlobalPrefix('/api') // Setting base path
 
