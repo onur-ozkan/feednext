@@ -6,7 +6,6 @@ import * as apm from 'swagger-stats'
 import * as fastifyRateLimit from 'fastify-rate-limit'
 import * as helmet from 'fastify-helmet'
 import * as compress from 'fastify-compress'
-import * as bodyParser from 'body-parser'
 import { AppModule } from './app.module'
 import { configService } from './shared/Services/config.service'
 
@@ -27,10 +26,7 @@ async function bootstrap() {
     fastifyAdapter.register(helmet) // Initialize security middleware module 'fastify-helmet'
     fastifyAdapter.register(compress) // Initialize fastify-compress to better handle high-level traffic
 
-    const app = await NestFactory.create<NestFastifyApplication>(AppModule, fastifyAdapter, {bodyParser: false})
-
-    // Parse raw json data of requests
-    app.use(bodyParser.json())
+    const app = await NestFactory.create<NestFastifyApplication>(AppModule, fastifyAdapter )
 
     app.setGlobalPrefix('/api') // Setting base path
 
