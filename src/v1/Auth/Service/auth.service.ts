@@ -4,6 +4,7 @@ import {
     NotFoundException,
     HttpStatus,
     HttpException,
+    BadRequestException,
 } from '@nestjs/common'
 import { JwtService, JwtModule } from '@nestjs/jwt'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -74,6 +75,8 @@ export class AuthService {
     }
 
     async signIn(userEntity: UsersEntity): Promise<HttpException> {
+        if (!userEntity.is_active) throw new BadRequestException(`Account is not active.`)
+
         const token: string = this.jwtService.sign({
             _id: userEntity._id,
             username: userEntity.username,
@@ -116,16 +119,18 @@ export class AuthService {
 
         try {
             return await this.usersRepository.findOneOrFail({
+                username: dto.username,
                 password: passwordHash,
             })
         } catch (err) {
-            throw new NotFoundException(`Couldn't find an account that matching with this email and password in the database.`)
+            throw new NotFoundException(`Couldn't find an account that matching with this username and password in the database.`)
         }
     }
 
     async accountRecovery(dto: AccountRecoveryDto): Promise<HttpException> {
+        let account: UsersEntity
         try {
-            const account: UsersEntity = await this.usersRepository.findOneOrFail({ email: dto.email })
+            account = await this.usersRepository.findOneOrFail({ email: dto.email })
             const generatePassword: string = await kmachine.keymachine()
             account.password = generatePassword
             await this.usersRepository.save(account)
@@ -140,6 +145,8 @@ export class AuthService {
         } catch (err) {
             throw new NotFoundException(`This email does not exist in the database.`)
         }
+        if (!account.is_active) throw new BadRequestException(`Account is not active.`)
+
         throw new HttpException(`OK`, HttpStatus.OK)
     }
 

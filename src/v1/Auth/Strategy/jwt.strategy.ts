@@ -1,6 +1,6 @@
 import { ExtractJwt, Strategy } from 'passport-jwt'
 import { PassportStrategy } from '@nestjs/passport'
-import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { configService } from 'src/shared/Services/config.service'
 import { UsersRepository } from 'src/shared/Repositories/users.repository'
@@ -27,6 +27,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         const user = await this.usersRepository.findOne(_id)
         if (!user) {
             throw new UnauthorizedException()
+        } else if (!user.is_active) {
+            throw new BadRequestException(`Account is not active.`)
         }
 
         const data = {
