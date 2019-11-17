@@ -51,7 +51,7 @@ export class AuthService {
 
         if (configService.isProduction()) {
             const verifyToken: JwtModule = jwt.sign({
-                id: dto.username,
+                username: dto.username,
                 email: dto.email,
                 exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
             }, configService.get(`SECRET_KEY`))
@@ -163,12 +163,17 @@ export class AuthService {
         }
 
         try {
-            const account: UsersEntity = await this.usersRepository.findOneOrFail({ email: decodedToken.email })
+            const account: UsersEntity = await this.usersRepository.findOneOrFail({
+                email: decodedToken.email,
+                username: decodedToken.username,
+            })
+
             account.is_verified = true
             await this.usersRepository.save(account)
         } catch (err) {
             throw new NotFoundException(`Incoming token is not valid.`)
         }
+
         throw new HttpException(`Account has been verified.`, HttpStatus.OK)
     }
 }
