@@ -129,23 +129,26 @@ export class AuthService {
 
     async accountRecovery(dto: AccountRecoveryDto): Promise<HttpException> {
         let account: UsersEntity
+
         try {
             account = await this.usersRepository.findOneOrFail({ email: dto.email })
-            const generatePassword: string = await kmachine.keymachine()
-            account.password = generatePassword
-            await this.usersRepository.save(account)
-
-            const mailBody: MailSenderBody = {
-                receiver: dto.email,
-                subject: `Account Recovery [${account.username}]`,
-                text: `By your request we have set your password as '${generatePassword}' for x hours, in that time please sign in and update your Account Password.`,
-            }
-
-            await this.mailService.send(mailBody)
         } catch (err) {
             throw new NotFoundException(`This email does not exist in the database.`)
         }
+
         if (!account.is_active) throw new BadRequestException(`Account is not active.`)
+
+        const generatePassword: string = await kmachine.keymachine()
+        account.password = generatePassword
+        await this.usersRepository.save(account)
+
+        const mailBody: MailSenderBody = {
+            receiver: dto.email,
+            subject: `Account Recovery [${account.username}]`,
+            text: `By your request we have set your password as '${generatePassword}' for x hours, in that time please sign in and update your Account Password.`,
+        }
+
+        await this.mailService.send(mailBody)
 
         throw new HttpException(`OK`, HttpStatus.OK)
     }
