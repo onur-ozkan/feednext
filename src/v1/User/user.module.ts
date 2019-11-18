@@ -5,10 +5,11 @@ import { UsersRepository } from 'src/shared/Repositories/users.repository'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { UserService } from './Service/user.service'
 import { UsersController } from './Controller/user.controller'
+import { MailService } from 'src/shared/Services/mail.service'
 
 @Module({
     imports: [TypeOrmModule.forFeature([UsersEntity, UsersRepository])],
-    providers: [UserService, ConfigService],
+    providers: [UserService, ConfigService, MailService],
     exports: [UserService],
     controllers: [UsersController],
 })

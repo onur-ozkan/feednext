@@ -1,17 +1,25 @@
 import { Injectable, NotFoundException, BadRequestException, HttpException, HttpStatus } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { JwtModule } from '@nestjs/jwt'
 import { UsersEntity } from 'src/shared/Entities/users.entity'
 import { UsersRepository } from 'src/shared/Repositories/users.repository'
 import { OkException } from 'src/shared/Exceptions/ok.exception'
 import { UpdateUserDto } from '../Dto/update-user.dto'
-import * as crypto from 'crypto'
 import { serializerService } from 'src/shared/Services/serializer.service'
+import { MailService } from 'src/shared/Services/mail.service'
+import { MailSenderBody } from 'src/shared/Services/Interfaces/mail.sender.interface'
+import { ActivateUserDto } from '../Dto/activate-user.dto'
+import { configService } from 'src/shared/Services/config.service'
+import * as crypto from 'crypto'
+import * as jwt from 'jsonwebtoken'
+
 @Injectable()
 export class UserService {
 
     constructor(
         @InjectRepository(UsersRepository)
         private readonly usersRepository: UsersRepository,
+        private readonly mailService: MailService,
     ) {}
 
     async getUser(usernameParam: string): Promise<UsersEntity> {
@@ -76,6 +84,62 @@ export class UserService {
             throw new NotFoundException(`User with that username could not found in the database.`)
         }
 
+        throw new HttpException(`OK`, HttpStatus.OK)
+    }
+
+    async activateUser(incToken: string): Promise<HttpException> {
+        const decodedToken: any = jwt.decode(incToken)
+
+        if (decodedToken.activationToken) {
+            const remainingTime: number = await decodedToken.exp - Math.floor(Date.now() / 1000)
+            if (remainingTime <= 0) {
+                throw new BadRequestException(`Incoming token is expired.`)
+            }
+
+            try {
+                const account: UsersEntity = await this.usersRepository.findOneOrFail({
+                    email: decodedToken.email,
+                    username: decodedToken.username,
+                })
+
+                account.is_active = true
+                await this.usersRepository.save(account)
+            } catch (err) {
+                throw new BadRequestException(`Incoming token is not valid.`)
+            }
+
+            throw new HttpException(`Account has been activated.`, HttpStatus.OK)
+        }
+
+        throw new BadRequestException(`Incoming token is not valid.`)
+    }
+
+    async sendActivationMail(dto: ActivateUserDto): Promise<HttpException> {
+        let user: UsersEntity
+
+        try {
+            user = await this.usersRepository.findOneOrFail({ email: dto.email })
+        } catch (err) {
+            throw new NotFoundException(`This email does not exist in the database.`)
+        }
+
+        if (user.is_active) throw new BadRequestException(`This account is already active.`)
+
+        const activateToken: JwtModule = jwt.sign({
+            email: user.email,
+            username: user.username,
+            activationToken: true,
+            exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
+        }, configService.get(`SECRET_KEY`))
+
+        const activationUrl: string = `${configService.get(`APP_URL`)}/api/v1/user/activate-user?token=${activateToken}`
+        const mailBody: MailSenderBody = {
+            receiver: `${dto.email}`,
+            subject: `RE-Enable Your Account [${user.username}]`,
+            text: `${activationUrl}`,
+        }
+
+        await this.mailService.send(mailBody)
         throw new HttpException(`OK`, HttpStatus.OK)
     }
 

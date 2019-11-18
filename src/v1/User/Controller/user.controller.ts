@@ -1,10 +1,11 @@
-import { Get, Param, Controller, Body, Patch, Put, UseGuards, Headers, BadRequestException, HttpException } from '@nestjs/common'
+import { Get, Param, Controller, Body, Patch, Put, UseGuards, Headers, BadRequestException, HttpException, Post, Query } from '@nestjs/common'
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
 import { UsersEntity } from 'src/shared/Entities/users.entity'
 import { AuthGuard } from '@nestjs/passport'
 import { currentUserService } from 'src/shared/Services/current-user.service'
 import { UserService } from '../Service/user.service'
 import { UpdateUserDto } from '../Dto/update-user.dto'
+import { ActivateUserDto } from '../Dto/activate-user.dto'
 
 @ApiUseTags('v1/user')
 @Controller()
@@ -33,7 +34,7 @@ export class UsersController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
-    @Put(':username/disable-account')
+    @Put(':username/disable-user')
     disableUser(
         @Param('username') username: string,
         @Headers('authorization') bearer: string,
@@ -43,5 +44,15 @@ export class UsersController {
         }
 
         return this.usersService.disableUser(username)
+    }
+
+    @Post('send-activation-mail')
+    async sendActivationMail(@Body() dto: ActivateUserDto): Promise<HttpException> {
+        return this.usersService.sendActivationMail(dto)
+    }
+
+    @Get('activate-user')
+    async activateUser(@Query('token') token: string): Promise<any> {
+        return this.usersService.activateUser(token)
     }
 }
