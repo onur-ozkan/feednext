@@ -23,7 +23,7 @@ export class ConfigService {
 
     public isProduction(): boolean {
         const mode = this.get('MODE', false)
-        return mode !== 'DEV'
+        return mode === 'PROD'
     }
 
     public getTypeOrmConfig(): TypeOrmModuleOptions {
