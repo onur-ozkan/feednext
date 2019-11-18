@@ -13,17 +13,14 @@ export class CategoriesEntity {
     id: ObjectID
 
     @Column()
-    parentCategory?: ObjectID
+    parent_category?: ObjectID
 
-    @Column({
-        type: 'varchar',
-        length: 30,
-    })
+    @Column({ length: 30 })
     name: string
 
-    @CreateDateColumn({ type: 'timestamp' })
-    createdAt: Date
+    @CreateDateColumn({})
+    created_at: Date
 
-    @UpdateDateColumn({ type: 'timestamp' })
-    updatedAt?: Date
+    @UpdateDateColumn({})
+    updated_at: Date
 }
