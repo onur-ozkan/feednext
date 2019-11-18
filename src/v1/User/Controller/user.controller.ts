@@ -32,6 +32,11 @@ export class UsersController {
         return this.usersService.updateUser(username, dto)
     }
 
+    @Get('verfiy-update-email')
+    async verifyUpdateEmail(@Query('token') token: string): Promise<HttpException> {
+        return this.usersService.verifyUpdateEmail(token)
+    }
+
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Put(':username/disable-user')
@@ -52,7 +57,7 @@ export class UsersController {
     }
 
     @Get('activate-user')
-    async activateUser(@Query('token') token: string): Promise<any> {
+    async activateUser(@Query('token') token: string): Promise<HttpException> {
         return this.usersService.activateUser(token)
     }
 }

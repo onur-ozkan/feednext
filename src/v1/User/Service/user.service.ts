@@ -53,13 +53,30 @@ export class UserService {
         const id = String(profile._id)
 
         if (dto.fullName) profile.full_name = dto.fullName
-        if (dto.email) profile.email = dto.email
         if (dto.password) {
             const hashedPassword = crypto.createHmac('sha256', dto.password).digest('hex')
             if (profile.password !== crypto.createHmac('sha256', dto.oldPassword).digest('hex')) {
                 throw new BadRequestException(`Old password does not match.`)
             }
             profile.password = hashedPassword
+        }
+        if (dto.email) {
+            const activateToken: JwtModule = jwt.sign({
+                email: profile.email,
+                username: profile.username,
+                newEmail: dto.email,
+                verifyUpdateEmailToken: true,
+                exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
+            }, configService.get(`SECRET_KEY`))
+
+            const activationUrl: string = `${configService.get(`APP_URL`)}/api/v1/user/verfiy-update-email?token=${activateToken}`
+            const mailBody: MailSenderBody = {
+                receiver: `${dto.email}`,
+                subject: `Verify Your New Email [${profile.username}]`,
+                text: `${activationUrl}`,
+            }
+
+            await this.mailService.send(mailBody)
         }
 
         await this.usersRepository.save(profile)
@@ -68,6 +85,33 @@ export class UserService {
         await serializerService.deleteProperties(profile, properties)
 
         throw new OkException(`updated_profile`, profile, `User ${profile.username} is successfully updated.`, id)
+    }
+
+    async verifyUpdateEmail(incToken: string): Promise<HttpException> {
+        const decodedToken: any = jwt.decode(incToken)
+
+        if (decodedToken.verifyUpdateEmailToken) {
+            const remainingTime: number = await decodedToken.exp - Math.floor(Date.now() / 1000)
+            if (remainingTime <= 0) {
+                throw new BadRequestException(`Incoming token is expired.`)
+            }
+
+            try {
+                const account: UsersEntity = await this.usersRepository.findOneOrFail({
+                    email: decodedToken.email,
+                    username: decodedToken.username,
+                })
+
+                account.email = decodedToken.newEmail
+                await this.usersRepository.save(account)
+            } catch (err) {
+                throw new BadRequestException(`Incoming token is not valid.`)
+            }
+
+            throw new HttpException(`Email has been updated.`, HttpStatus.OK)
+        }
+
+        throw new BadRequestException(`Incoming token is not valid.`)
     }
 
     async disableUser(usernameParam: string): Promise<HttpException> {
