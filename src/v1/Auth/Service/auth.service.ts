@@ -96,7 +96,7 @@ export class AuthService {
     }
 
     async signOut(token: string): Promise<HttpException> {
-        const decodedToken: any = this.jwtService.decode(token)
+        const decodedToken: any = jwt.decode(token)
         const expireDate: number = decodedToken.exp
         const remainingSeconds: number = Math.round(expireDate - Date.now() / 1000)
 
@@ -155,7 +155,7 @@ export class AuthService {
     }
 
     async accountVerification(incToken: string): Promise<HttpException> {
-        const decodedToken: any = this.jwtService.decode(incToken)
+        const decodedToken: any = jwt.decode(incToken)
 
         if (decodedToken.verificationToken) {
             const remainingTime: number = await decodedToken.exp - Math.floor(Date.now() / 1000)
