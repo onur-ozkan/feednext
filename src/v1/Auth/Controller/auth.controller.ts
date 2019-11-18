@@ -1,14 +1,4 @@
-import {
-    Controller,
-    Post,
-    Body,
-    UseGuards,
-    Get,
-    Put,
-    Request,
-    HttpException,
-    Query,
-} from '@nestjs/common'
+import { Controller, Post, Body, UseGuards, Get, Put, Request, HttpException, Query } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
 import { OkException } from 'src/shared/Exceptions/ok.exception'
@@ -47,8 +37,8 @@ export class AuthController {
     }
 
     @Get('account-verification')
-    async verifyAccount(@Query() query): Promise<HttpException> {
-        return this.authService.accountVerification(query.token)
+    async verifyAccount(@Query('token') token: string): Promise<HttpException> {
+        return this.authService.accountVerification(token)
     }
 
     @ApiBearerAuth()
