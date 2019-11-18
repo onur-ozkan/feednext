@@ -27,5 +27,15 @@ export class UpdateUserDto {
     @IsNotEmpty()
     @NotContains(' ')
     @Length(6, 15)
+    oldPassword: string
+
+    @ApiModelProperty({
+        required: false,
+        example: 'your_password123',
+    })
+    @IsOptional()
+    @IsNotEmpty()
+    @NotContains(' ')
+    @Length(6, 15)
     password: string
 }

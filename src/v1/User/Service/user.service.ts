@@ -52,18 +52,17 @@ export class UserService {
 
         const id = String(profile._id)
 
-        try {
-            if (dto.fullName) profile.full_name = dto.fullName
-            if (dto.email) profile.email = dto.email
-            if (dto.password) {
-                const hashedPassword = crypto.createHmac('sha256', dto.password).digest('hex')
-                profile.password = hashedPassword
+        if (dto.fullName) profile.full_name = dto.fullName
+        if (dto.email) profile.email = dto.email
+        if (dto.password) {
+            const hashedPassword = crypto.createHmac('sha256', dto.password).digest('hex')
+            if (profile.password !== crypto.createHmac('sha256', dto.oldPassword).digest('hex')) {
+                throw new BadRequestException(`Old password does not match.`)
             }
-
-            await this.usersRepository.save(profile)
-        } catch (err) {
-            throw new BadRequestException(`The email that entered is duplicated in the database.`)
+            profile.password = hashedPassword
         }
+
+        await this.usersRepository.save(profile)
 
         const properties: string[] = ['_id', 'password', 'is_active', 'is_verified']
         await serializerService.deleteProperties(profile, properties)
