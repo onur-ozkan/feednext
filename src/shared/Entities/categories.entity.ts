@@ -12,8 +12,8 @@ export class CategoriesEntity {
     @ObjectIdColumn()
     id: ObjectID
 
-    @Column()
-    parent_category?: ObjectID
+    @ObjectIdColumn({ nullable: true })
+    parent_category: ObjectID
 
     @Column({ length: 30 })
     name: string

@@ -12,8 +12,8 @@ export class EntriesEntity {
     @ObjectIdColumn()
     id: ObjectID
 
-    @Column()
-    productId: ObjectID
+    @ObjectIdColumn()
+    product_id: ObjectID
 
     @Column({
         type: 'varchar',
@@ -25,11 +25,11 @@ export class EntriesEntity {
         type: 'varchar',
         length: 50,
     })
-    writtenBy: string
+    written_by: string
 
-    @CreateDateColumn({ type: 'timestamp' })
-    createdAt: Date
+    @CreateDateColumn({})
+    created_at: Date
 
-    @UpdateDateColumn({ type: 'timestamp' })
-    updatedAt?: Date
+    @UpdateDateColumn({})
+    updated_at: Date
 }
