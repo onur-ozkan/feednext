@@ -13,7 +13,7 @@ export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
     @Post('signup')
-    async signUp(@Body() dto: CreateAccountDto): Promise<HttpException> {
+    signUp(@Body() dto: CreateAccountDto): Promise<HttpException> {
         return this.authService.signUp(dto)
     }
 
@@ -32,12 +32,12 @@ export class AuthController {
     }
 
     @Put('signin/account-recovery')
-    async accountRecovery(@Body() dto: AccountRecoveryDto): Promise<HttpException> {
+    accountRecovery(@Body() dto: AccountRecoveryDto): Promise<HttpException> {
         return this.authService.accountRecovery(dto)
     }
 
     @Get('account-verification')
-    async verifyAccount(@Query('token') token: string): Promise<HttpException> {
+    verifyAccount(@Query('token') token: string): Promise<HttpException> {
         return this.authService.accountVerification(token)
     }
 
