@@ -7,15 +7,19 @@ import {
     UpdateDateColumn,
 } from 'typeorm'
 
-@Entity()
+@Entity('Categories')
 export class CategoriesEntity {
+    constructor(partial: Partial<CategoriesEntity>) {
+        Object.assign(this, partial)
+    }
+
     @ObjectIdColumn()
     id: ObjectID
 
     @ObjectIdColumn({ nullable: true })
     parent_category: ObjectID
 
-    @Column({ length: 30 })
+    @Column({ length: 50, unique: true })
     name: string
 
     @CreateDateColumn({})
