@@ -47,6 +47,9 @@ export class UsersEntity {
     @IsEmail()
     email: string
 
+    @Column({type: 'tinyint'})
+    role: number
+
     @Column({})
     is_verified: boolean
 
@@ -55,6 +58,7 @@ export class UsersEntity {
 
     @BeforeInsert()
     fillDefaults() {
+        this.role = 0
         this.is_active = true
         this.is_verified = false
     }
