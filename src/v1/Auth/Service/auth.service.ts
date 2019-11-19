@@ -80,6 +80,7 @@ export class AuthService {
 
         const token: string = this.jwtService.sign({
             _id: userEntity._id,
+            role: userEntity.role,
             username: userEntity.username,
             email: userEntity.email,
             created_at: userEntity.created_at,
