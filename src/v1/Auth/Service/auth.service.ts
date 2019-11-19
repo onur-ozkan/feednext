@@ -18,10 +18,10 @@ import { OkException } from 'src/shared/Filters/ok-exception.filter'
 import { CreateAccountDto } from '../Dto/create-account.dto'
 import { LoginDto } from '../Dto/login.dto'
 import { AccountRecoveryDto } from '../Dto/account-recovery.dto'
+import { serializerService } from 'src/shared/Services/serializer.service'
 import * as crypto from 'crypto'
 import * as jwt from 'jsonwebtoken'
 import * as kmachine from 'keymachine'
-import { serializerService } from 'src/shared/Services/serializer.service'
 
 @Injectable()
 export class AuthService {
@@ -141,7 +141,7 @@ export class AuthService {
         if (!account.is_active) throw new BadRequestException(`Account is not active.`)
 
         const generatePassword: string = await kmachine.keymachine()
-        account.password = generatePassword
+        account.password = crypto.createHmac(`sha256`, generatePassword).digest(`hex`)
         await this.usersRepository.save(account)
 
         const mailBody: MailSenderBody = {
