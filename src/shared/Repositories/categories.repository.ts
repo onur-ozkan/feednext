@@ -4,6 +4,7 @@ import { ObjectID } from 'mongodb'
 import { CategoriesEntity } from '../Entities/categories.entity'
 import { CreateCategoryDto } from 'src/v1/Category/Dto/create-category.dto'
 import { Validator } from 'class-validator'
+import { UpdateCategoryDto } from 'src/v1/Category/Dto/update-category.dto'
 
 @EntityRepository(CategoriesEntity)
 export class CategoriesRepository extends Repository<CategoriesEntity> {
@@ -62,6 +63,36 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
             return await this.save(newCategory)
         } catch (err) {
             throw new UnprocessableEntityException(err.errmsg)
+        }
+    }
+
+    async updateCategory(categoryId: string, dto: UpdateCategoryDto): Promise<CategoriesEntity> {
+        if (!this.validator.isMongoId(categoryId)) throw new BadRequestException(`CategoryId must be a MongoId.`)
+
+        if (dto.parentCategoryId) {
+            try {
+                await this.findOneOrFail(dto.parentCategoryId)
+            } catch (err) {
+                throw new NotFoundException(`Parent category with that id could not found in the database.`)
+            }
+        }
+
+        let category: CategoriesEntity
+        try {
+            category = await this.findOneOrFail(categoryId)
+        } catch {
+            throw new NotFoundException(`Category with that id could not found in the database.`)
+        }
+
+        try {
+            if (dto.categoryName) category.name = dto.categoryName
+            if (dto.parentCategoryId) category.parent_category = dto.parentCategoryId
+            if (dto.is_lowest_cateogry !== undefined) category.is_lowest_cateogry = dto.is_lowest_cateogry
+
+            await this.save(category)
+            return category
+        } catch (err) {
+            throw new BadRequestException(err.errmsg)
         }
     }
 
