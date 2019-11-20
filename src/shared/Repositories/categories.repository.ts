@@ -47,7 +47,7 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
     async createCategory(dto: CreateCategoryDto): Promise<CategoriesEntity> {
         if (dto.parentCategoryId) {
             try {
-                await this.findOne(dto.parentCategoryId)
+                await this.findOneOrFail(dto.parentCategoryId)
             } catch (err) {
                 throw new BadRequestException(`${dto.parentCategoryId} does not match in database.`)
             }
@@ -55,7 +55,7 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
 
         const newCategory: CategoriesEntity = new CategoriesEntity({
             name: dto.categoryName,
-            parent_category: ObjectID(dto.parentCategoryId) || null,
+            parent_category: (dto.parentCategoryId) ? ObjectID(dto.parentCategoryId) : null,
         })
 
         try {
