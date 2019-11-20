@@ -24,6 +24,26 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
         }
     }
 
+    async getCategoryList(query: { limit: number, page: number, orderBy: any }): Promise<{categories: CategoriesEntity[], count: number}> {
+        const orderBy = query.orderBy || 'ASC'
+
+        try {
+            const [categories, total] = await this.findAndCount({
+                order: {
+                    name: orderBy.toUpperCase(),
+                },
+                take: Number(query.limit) || 10,
+                skip: Number(query.page) || 0,
+            })
+            return {
+                categories,
+                count: total,
+            }
+        } catch (err) {
+            throw new BadRequestException(err)
+        }
+    }
+
     async createCategory(dto: CreateCategoryDto): Promise<CategoriesEntity> {
         if (dto.parentCategoryId) {
             try {
