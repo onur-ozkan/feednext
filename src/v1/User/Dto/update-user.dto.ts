@@ -1,5 +1,5 @@
 import { ApiModelProperty } from '@nestjs/swagger'
-import { IsEmail, IsNotEmpty, IsOptional, Length, MaxLength, NotContains } from 'class-validator'
+import { IsEmail, IsOptional, Length, MaxLength, NotContains, IsNotEmpty, ValidateIf } from 'class-validator'
 
 export class UpdateUserDto {
     @ApiModelProperty({
@@ -7,7 +7,6 @@ export class UpdateUserDto {
         example: 'Example Name',
     })
     @IsOptional()
-    @IsNotEmpty()
     @MaxLength(50)
     fullName: string
 
@@ -20,10 +19,10 @@ export class UpdateUserDto {
     email: string
 
     @ApiModelProperty({
-        required: false,
+        required: true,
         example: 'your_password123',
     })
-    @IsOptional()
+    @ValidateIf(o => o.password !== undefined )
     @IsNotEmpty()
     @NotContains(' ')
     @Length(6, 15)
@@ -34,7 +33,6 @@ export class UpdateUserDto {
         example: 'your_password123',
     })
     @IsOptional()
-    @IsNotEmpty()
     @NotContains(' ')
     @Length(6, 15)
     password: string
