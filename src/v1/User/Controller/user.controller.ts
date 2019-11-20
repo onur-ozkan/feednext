@@ -39,7 +39,7 @@ export class UsersController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
-    @Put(':username/disable-user')
+    @Put(':username')
     disableUser(
         @Param('username') username: string,
         @Headers('authorization') bearer: string,
