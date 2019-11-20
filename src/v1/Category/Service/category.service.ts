@@ -4,6 +4,7 @@ import { CategoriesRepository } from 'src/shared/Repositories/categories.reposit
 import { CategoriesEntity } from 'src/shared/Entities/categories.entity'
 import { OkException } from 'src/shared/Filters/ok-exception.filter'
 import { CreateCategoryDto } from '../Dto/create-category.dto'
+import { UpdateCategoryDto } from '../Dto/update-category.dto'
 
 @Injectable()
 export class CategoryService {
@@ -14,12 +15,12 @@ export class CategoryService {
 
     async getCategory(categoryId: string): Promise<HttpException> {
         const category: CategoriesEntity = await this.categoriesRepository.getCategory(categoryId)
-        const id: string = String(category.id)
-        delete category.id
+        const id: string = String(category._id)
+        delete category._id
         throw new OkException(`category_detail`, category, `Category ${category.name} is successfully loaded.`, id)
     }
 
-    async getCategoryList(query: any): Promise<HttpException> {
+    async getCategoryList(query: { limit: number, page: number, orderBy: any }): Promise<HttpException> {
         const result: {categories: CategoriesEntity[], count: number} = await this.categoriesRepository.getCategoryList(query)
         throw new OkException(`category_list`, result, `List of categories are successfully loaded.`)
     }
@@ -29,10 +30,17 @@ export class CategoryService {
         throw new OkException(`category_detail`, newCategory)
     }
 
+    async updateCategory(categoryId: string, dto: UpdateCategoryDto): Promise<HttpException> {
+        const category: CategoriesEntity = await this.categoriesRepository.updateCategory(categoryId, dto)
+        const id: string = String(category._id)
+        delete category._id
+        throw new OkException(`category_detail`, category, `Category ${category.name} is successfully loaded.`, id)
+    }
+
     async deleteCategory(categoryId: string): Promise<HttpException> {
         const category: CategoriesEntity = await this.categoriesRepository.deleteCategory(categoryId)
-        const id: string = String(category.id)
-        delete category.id
+        const id: string = String(category._id)
+        delete category._id
         throw new OkException(`category_detail`, category, `Category ${category.name} is successfully deleted.`, id)
     }
 }
