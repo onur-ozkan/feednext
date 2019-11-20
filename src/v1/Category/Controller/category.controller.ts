@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpException, UseGuards, Param, Get, Delete } from '@nestjs/common'
+import { Controller, Post, Body, HttpException, UseGuards, Param, Get, Delete, Query } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
 import { RolesGuard } from 'src/shared/Guards/roles.guard'
@@ -19,9 +19,14 @@ export class CategoryController {
         return this.categoryService.getCategory(categoryId)
     }
 
+    @Get('all')
+    getCategoryList(@Query() query: any): Promise<HttpException> {
+        return this.categoryService.getCategoryList(query)
+    }
+
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
-    @Delete(':categoryId/delete')
+    @Delete(':categoryId')
     @Roles(5)
     deleteCategory(@Param('categoryId') categoryId: string): Promise<HttpException> {
         return this.categoryService.deleteCategory(categoryId)
