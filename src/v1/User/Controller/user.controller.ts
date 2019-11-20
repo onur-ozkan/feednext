@@ -1,6 +1,5 @@
 import { Get, Param, Controller, Body, Patch, Put, UseGuards, Headers, BadRequestException, HttpException, Post, Query } from '@nestjs/common'
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
-import { UsersEntity } from 'src/shared/Entities/users.entity'
 import { AuthGuard } from '@nestjs/passport'
 import { currentUserService } from 'src/shared/Services/current-user.service'
 import { UserService } from '../Service/user.service'
@@ -13,7 +12,7 @@ export class UsersController {
     constructor(private readonly usersService: UserService) {}
 
     @Get(':username')
-    getUser(@Param('username') username): Promise<UsersEntity> {
+    getUser(@Param('username') username): Promise<HttpException> {
         return this.usersService.getUser(username)
     }
 
@@ -24,7 +23,7 @@ export class UsersController {
         @Param('username') username: string,
         @Body() dto: UpdateUserDto,
         @Headers('authorization') bearer: string,
-    ): Promise<UsersEntity> {
+    ): Promise<HttpException> {
         if (username !== currentUserService.getCurrentUser(bearer, 'username')) throw new BadRequestException()
 
         return this.usersService.updateUser(username, dto)
