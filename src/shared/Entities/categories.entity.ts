@@ -5,6 +5,7 @@ import {
     ObjectIdColumn,
     CreateDateColumn,
     UpdateDateColumn,
+    BeforeInsert,
 } from 'typeorm'
 
 @Entity('Categories')
@@ -21,6 +22,14 @@ export class CategoriesEntity {
 
     @Column({ length: 50, unique: true })
     name: string
+
+    @Column({})
+    is_lowest_cateogry: boolean
+
+    @BeforeInsert()
+    fillDefaults() {
+        this.is_lowest_cateogry = false
+    }
 
     @CreateDateColumn({})
     created_at: Date
