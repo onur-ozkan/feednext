@@ -1,10 +1,9 @@
-import { Injectable, BadRequestException, UnprocessableEntityException, HttpException } from '@nestjs/common'
+import { Injectable, HttpException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CategoriesRepository } from 'src/shared/Repositories/categories.repository'
 import { CategoriesEntity } from 'src/shared/Entities/categories.entity'
 import { OkException } from 'src/shared/Filters/ok-exception.filter'
 import { CreateCategoryDto } from '../Dto/create-category.dto'
-import { ObjectID } from 'mongodb'
 
 @Injectable()
 export class CategoryService {
@@ -13,26 +12,22 @@ export class CategoryService {
         private readonly categoriesRepository: CategoriesRepository,
     ) {}
 
+    async getCategory(categoryId: string): Promise<HttpException> {
+        const category: CategoriesEntity = await this.categoriesRepository.getCategory(categoryId)
+        const id: string = String(category.id)
+        delete category.id
+        throw new OkException(`category_detail`, category, `Category ${category.name} is successfully loaded.`, id)
+    }
+
     async createCategory(dto: CreateCategoryDto): Promise<HttpException> {
-        if (dto.parentCategoryId) {
-            try {
-                await this.categoriesRepository.findOne(dto.parentCategoryId)
-            } catch (err) {
-                throw new BadRequestException(`${dto.parentCategoryId} does not match in database.`)
-            }
-        }
+        const newCategory: CategoriesEntity = await this.categoriesRepository.createCategory(dto)
+        throw new OkException(`category_detail`, newCategory)
+    }
 
-        const newCategory: CategoriesEntity = new CategoriesEntity({
-            name: dto.categoryName,
-            parent_category: ObjectID(dto.parentCategoryId) || null,
-        })
-
-        try {
-            await this.categoriesRepository.save(newCategory)
-        } catch (err) {
-            throw new UnprocessableEntityException(err.errmsg)
-        }
-
-        throw new OkException(`category`, newCategory)
+    async deleteCategory(categoryId: string): Promise<HttpException> {
+        const category: CategoriesEntity = await this.categoriesRepository.deleteCategory(categoryId)
+        const id: string = String(category.id)
+        delete category.id
+        throw new OkException(`category_detail`, category, `Category ${category.name} is successfully deleted.`, id)
     }
 }
