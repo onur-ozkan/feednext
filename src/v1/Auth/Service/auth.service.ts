@@ -1,11 +1,4 @@
-import {
-    Injectable,
-    UnprocessableEntityException,
-    NotFoundException,
-    HttpStatus,
-    HttpException,
-    BadRequestException,
-} from '@nestjs/common'
+import { Injectable, HttpStatus, HttpException, BadRequestException } from '@nestjs/common'
 import { JwtService, JwtModule } from '@nestjs/jwt'
 import { InjectRepository } from '@nestjs/typeorm'
 import { configService } from 'src/shared/Services/config.service'
@@ -21,7 +14,6 @@ import { AccountRecoveryDto } from '../Dto/account-recovery.dto'
 import { serializerService } from 'src/shared/Services/serializer.service'
 import * as crypto from 'crypto'
 import * as jwt from 'jsonwebtoken'
-import * as kmachine from 'keymachine'
 
 @Injectable()
 export class AuthService {
@@ -34,20 +26,7 @@ export class AuthService {
     ) {}
 
     async signUp(dto: CreateAccountDto): Promise<HttpException> {
-        const newUser: UsersEntity = new UsersEntity({
-            email: dto.email,
-            username: dto.username,
-            password: dto.password,
-            full_name: dto.fullName,
-        })
-
-        let result: object
-
-        try {
-            result = await this.usersRepository.save(newUser)
-        } catch (err) {
-            throw new UnprocessableEntityException(err.errmsg)
-        }
+        const result: UsersEntity = await this.usersRepository.createUser(dto)
 
         if (configService.isProduction()) {
             const verifyToken: JwtModule = jwt.sign({
@@ -67,7 +46,7 @@ export class AuthService {
             await this.mailService.send(mailBody)
         }
 
-        const id: string = result['_id']
+        const id: string = String(result._id)
 
         const properties: string[] = ['_id', 'password', 'updated_at', 'is_verified']
         await serializerService.deleteProperties(result, properties)
@@ -87,11 +66,12 @@ export class AuthService {
         })
 
         const id: any = userEntity._id
-        const { _id, password, ...serializedUser } = userEntity
+        const properties: string[] = ['_id', 'password' ]
+        await serializerService.deleteProperties(userEntity, properties)
 
         const responseData: object = {
             access_token: token,
-            user: serializedUser,
+            user: userEntity,
         }
         throw new OkException(`user_information`, responseData, `User successfully has been signed in.`, id)
     }
@@ -105,53 +85,21 @@ export class AuthService {
         throw new OkException(`dead_token`, {token}, `Token has been killed.`)
     }
 
-    async validateUser(dto: LoginDto): Promise<any> {
+    async validateUser(dto: LoginDto): Promise<UsersEntity> {
         const passwordHash: string = crypto.createHmac(`sha256`, dto.password).digest(`hex`)
-
-        if (dto.email) {
-            try {
-                return await this.usersRepository.findOneOrFail({
-                    email: dto.email,
-                    password: passwordHash,
-                })
-            } catch (err) {
-                throw new NotFoundException(`Couldn't find an account that matching with this email and password in the database.`)
-            }
-        }
-
-        try {
-            return await this.usersRepository.findOneOrFail({
-                username: dto.username,
-                password: passwordHash,
-            })
-        } catch (err) {
-            throw new NotFoundException(`Couldn't find an account that matching with this username and password in the database.`)
-        }
+        return await this.usersRepository.validateUser(dto, passwordHash)
     }
 
     async accountRecovery(dto: AccountRecoveryDto): Promise<HttpException> {
-        let account: UsersEntity
-
-        try {
-            account = await this.usersRepository.findOneOrFail({ email: dto.email })
-        } catch (err) {
-            throw new NotFoundException(`This email does not exist in the database.`)
-        }
-
-        if (!account.is_active) throw new BadRequestException(`Account is not active.`)
-
-        const generatePassword: string = await kmachine.keymachine()
-        account.password = crypto.createHmac(`sha256`, generatePassword).digest(`hex`)
-        await this.usersRepository.save(account)
+        const result: { account: UsersEntity, password: string }  = await this.usersRepository.accountRecovery(dto)
 
         const mailBody: MailSenderBody = {
             receiver: dto.email,
-            subject: `Account Recovery [${account.username}]`,
-            text: `By your request we have set your password as '${generatePassword}' for x hours, in that time please sign in and update your Account Password.`,
+            subject: `Account Recovery [${result.account.username}]`,
+            text: `By your request we have set your password as '${result.password}' please sign in and update your Account Password.`,
         }
 
         await this.mailService.send(mailBody)
-
         throw new HttpException(`OK`, HttpStatus.OK)
     }
 
@@ -164,17 +112,7 @@ export class AuthService {
                 throw new BadRequestException(`Incoming token is expired.`)
             }
 
-            try {
-                const account: UsersEntity = await this.usersRepository.findOneOrFail({
-                    email: decodedToken.email,
-                    username: decodedToken.username,
-                })
-
-                account.is_verified = true
-                await this.usersRepository.save(account)
-            } catch (err) {
-                throw new BadRequestException(`Incoming token is not valid.`)
-            }
+            await this.usersRepository.accountVerification(decodedToken)
 
             throw new HttpException(`Account has been verified.`, HttpStatus.OK)
         }

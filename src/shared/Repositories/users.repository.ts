@@ -1,4 +1,4 @@
-import { NotFoundException, BadRequestException } from '@nestjs/common'
+import { NotFoundException, BadRequestException, UnprocessableEntityException } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
 import { Repository, EntityRepository } from 'typeorm'
 import { UsersEntity } from '../Entities/users.entity'
@@ -6,8 +6,12 @@ import { MailService } from '../Services/mail.service'
 import { UpdateUserDto } from 'src/v1/User/Dto/update-user.dto'
 import { configService } from '../Services/config.service'
 import { MailSenderBody } from '../Services/Interfaces/mail.sender.interface'
+import { CreateAccountDto } from 'src/v1/Auth/Dto/create-account.dto'
+import { LoginDto } from 'src/v1/Auth/Dto/login.dto'
+import { AccountRecoveryDto } from 'src/v1/Auth/Dto/account-recovery.dto'
 import * as crypto from 'crypto'
 import * as jwt from 'jsonwebtoken'
+import * as kmachine from 'keymachine'
 
 @EntityRepository(UsersEntity)
 export class UsersRepository extends Repository<UsersEntity> {
@@ -32,6 +36,43 @@ export class UsersRepository extends Repository<UsersEntity> {
             return await this.findOneOrFail({ email: emailParam })
         } catch (err) {
             throw new NotFoundException(`This email does not exist in the database.`)
+        }
+    }
+
+    async validateUser(dto: LoginDto, passwordHash: string): Promise<UsersEntity> {
+        if (dto.email) {
+            try {
+                return await this.findOneOrFail({
+                    email: dto.email,
+                    password: passwordHash,
+                })
+            } catch (err) {
+                throw new NotFoundException(`Couldn't find an account that matching with this email and password in the database.`)
+            }
+        }
+
+        try {
+            return await this.findOneOrFail({
+                username: dto.username,
+                password: passwordHash,
+            })
+        } catch (err) {
+            throw new NotFoundException(`Couldn't find an account that matching with this username and password in the database.`)
+        }
+    }
+
+    async createUser(dto: CreateAccountDto): Promise<UsersEntity> {
+        const newUser: UsersEntity = new UsersEntity({
+            email: dto.email,
+            username: dto.username,
+            password: dto.password,
+            full_name: dto.fullName,
+        })
+
+        try {
+            return await this.save(newUser)
+        } catch (err) {
+            throw new UnprocessableEntityException(err.errmsg)
         }
     }
 
@@ -106,6 +147,39 @@ export class UsersRepository extends Repository<UsersEntity> {
 
           account.is_active = true
           await this.save(account)
+        } catch (err) {
+            throw new BadRequestException(`Incoming token is not valid.`)
+        }
+    }
+
+    async accountRecovery(dto: AccountRecoveryDto): Promise<{ account: UsersEntity, password: string }> {
+        let account: UsersEntity
+
+        try {
+            account = await this.findOneOrFail({ email: dto.email })
+        } catch (err) {
+            throw new NotFoundException(`This email does not exist in the database.`)
+        }
+
+        if (!account.is_active) throw new BadRequestException(`Account is not active.`)
+
+        const generatePassword: string = await kmachine.keymachine()
+        account.password = crypto.createHmac(`sha256`, generatePassword).digest(`hex`)
+        return {
+            account: await this.save(account),
+            password: generatePassword,
+        }
+    }
+
+    async accountVerification(decodedToken: { email: string, username: string}) {
+        try {
+            const account: UsersEntity = await this.findOneOrFail({
+                email: decodedToken.email,
+                username: decodedToken.username,
+            })
+
+            account.is_verified = true
+            await this.save(account)
         } catch (err) {
             throw new BadRequestException(`Incoming token is not valid.`)
         }
