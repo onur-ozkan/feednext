@@ -25,9 +25,7 @@ export class UsersController {
         @Body() dto: UpdateUserDto,
         @Headers('authorization') bearer: string,
     ): Promise<UsersEntity> {
-        if (username !== currentUserService.getCurrentUser(bearer, 'username')) {
-            throw new BadRequestException()
-        }
+        if (username !== currentUserService.getCurrentUser(bearer, 'username')) throw new BadRequestException()
 
         return this.usersService.updateUser(username, dto)
     }
