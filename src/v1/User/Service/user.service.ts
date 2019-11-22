@@ -9,8 +9,8 @@ import { serializerService } from 'src/shared/Services/serializer.service'
 import { MailService } from 'src/shared/Services/mail.service'
 import { MailSenderBody } from 'src/shared/Services/Interfaces/mail.sender.interface'
 import { ActivateUserDto } from '../Dto/activate-user.dto'
-import { configService } from 'src/shared/Services/config.service'
 import * as jwt from 'jsonwebtoken'
+import { configService } from 'src/shared/Services/config.service'
 
 @Injectable()
 export class UserService {
@@ -22,7 +22,7 @@ export class UserService {
     ) {}
 
     async getUser(usernameParam: string): Promise<HttpException> {
-        const profile: UsersEntity = await this.usersRepository.getUserByEmail(usernameParam)
+        const profile: UsersEntity = await this.usersRepository.getUserByUsername(usernameParam)
         const id: string = String(profile._id)
 
         const properties: string[] = ['_id', 'password', 'is_active', 'is_verified']
@@ -87,9 +87,9 @@ export class UserService {
             username: user.username,
             activationToken: true,
             exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
-        }, configService.get(`SECRET_KEY`))
+        }, configService.getEnv('SECRET_KEY'))
 
-        const activationUrl: string = `${configService.get(`APP_URL`)}/api/v1/user/activate-user?token=${activateToken}`
+        const activationUrl: string = `${configService.getEnv('APP_URL')}/api/v1/user/activate-user?token=${activateToken}`
         const mailBody: MailSenderBody = {
             receiver: `${dto.email}`,
             subject: `RE-Enable Your Account [${user.username}]`,

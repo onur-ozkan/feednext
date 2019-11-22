@@ -3,38 +3,28 @@ import { UsersEntity } from '../Entities/users.entity'
 import { CategoriesEntity } from '../Entities/categories.entity'
 import { EntriesEntity } from '../Entities/entries.entity'
 import { ProductsEntity } from '../Entities/products.entity'
+import * as env from 'dotenv'
 
-// tslint:disable-next-line:no-var-requires
-require('dotenv').config()
+env.config()
 
 export class ConfigService {
-    constructor(private env: { [k: string]: string | undefined }) {}
 
-    public get(key: string, throwOnMissing = true): any {
-        const value = this.env[key]
-        if (!value && throwOnMissing) {
-            throw new Error(`config error - missing env.${key}`)
-        }
-
+    public getEnv(key: string): any {
+        const value = process.env[key]
+        if (!value) throw new Error(`Config error. Missing ${key} variable in .env file.`)
         return value
     }
 
-    public ensureValues(keys: string[]): any {
-        keys.forEach(k => this.get(k, true))
-        return this
-    }
-
     public isProduction(): boolean {
-        const mode = this.get('MODE', false)
-        return mode === 'PROD'
+        return this.getEnv('MODE') === 'PROD'
     }
 
     public getTypeOrmConfig(): TypeOrmModuleOptions {
         return {
             type: 'mongodb',
 
-            host: this.get('DB_HOST'),
-            database: this.get('DB_NAME'),
+            host: this.getEnv('DB_HOST'),
+            database: this.getEnv('DB_NAME'),
             synchronize: true,
             useUnifiedTopology: true,
             entities: [UsersEntity, CategoriesEntity, EntriesEntity, ProductsEntity],
@@ -44,11 +34,6 @@ export class ConfigService {
     }
 }
 
-const databaseService = new ConfigService(process.env).ensureValues([
-    'DB_HOST',
-    'DB_NAME',
-])
+const configService = new ConfigService()
 
-const configService = new ConfigService(process.env)
-
-export { databaseService, configService }
+export { configService }

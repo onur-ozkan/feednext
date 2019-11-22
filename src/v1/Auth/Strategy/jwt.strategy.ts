@@ -2,8 +2,8 @@ import { ExtractJwt, Strategy } from 'passport-jwt'
 import { PassportStrategy } from '@nestjs/passport'
 import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { configService } from 'src/shared/Services/config.service'
 import { UsersRepository } from 'src/shared/Repositories/users.repository'
+import { configService } from 'src/shared/Services/config.service'
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -13,7 +13,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     ) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            secretOrKey: configService.get('SECRET_KEY'),
+            secretOrKey: configService.getEnv('SECRET_KEY'),
             ignoreExpiration: false,
         })
     }

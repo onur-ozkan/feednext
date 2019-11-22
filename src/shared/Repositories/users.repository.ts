@@ -4,7 +4,6 @@ import { Repository, EntityRepository } from 'typeorm'
 import { UsersEntity } from '../Entities/users.entity'
 import { MailService } from '../Services/mail.service'
 import { UpdateUserDto } from 'src/v1/User/Dto/update-user.dto'
-import { configService } from '../Services/config.service'
 import { MailSenderBody } from '../Services/Interfaces/mail.sender.interface'
 import { CreateAccountDto } from 'src/v1/Auth/Dto/create-account.dto'
 import { LoginDto } from 'src/v1/Auth/Dto/login.dto'
@@ -12,6 +11,7 @@ import { AccountRecoveryDto } from 'src/v1/Auth/Dto/account-recovery.dto'
 import * as crypto from 'crypto'
 import * as jwt from 'jsonwebtoken'
 import * as kmachine from 'keymachine'
+import { configService } from '../Services/config.service'
 
 @EntityRepository(UsersEntity)
 export class UsersRepository extends Repository<UsersEntity> {
@@ -96,9 +96,9 @@ export class UsersRepository extends Repository<UsersEntity> {
                 newEmail: dto.email,
                 verifyUpdateEmailToken: true,
                 exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
-            }, configService.get(`SECRET_KEY`))
+            }, configService.getEnv('SECRET_KEY'))
 
-            const activationUrl: string = `${configService.get(`APP_URL`)}/api/v1/user/verfiy-update-email?token=${activateToken}`
+            const activationUrl: string = `${configService.getEnv('APP_URL')}/api/v1/user/verfiy-update-email?token=${activateToken}`
             const mailBody: MailSenderBody = {
                 receiver: `${dto.email}`,
                 subject: `Verify Your New Email [${profile.username}]`,

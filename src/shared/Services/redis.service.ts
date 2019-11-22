@@ -1,12 +1,12 @@
-import { configService } from './config.service'
 import * as Redis from 'ioredis'
+import { configService } from './config.service'
 
 export class RedisService {
     private redisConnection() {
         return new Redis({
-            host: configService.get('REDIS_HOST'),
-            port: configService.get('REDIS_PORT'),
-            password: configService.get('REDIS_PASSWORD'),
+            host: configService.getEnv('REDIS_HOST'),
+            port: configService.getEnv('REDIS_PORT'),
+            password: configService.getEnv('REDIS_PASSWORD'),
         })
     }
 

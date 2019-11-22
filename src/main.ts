@@ -13,7 +13,7 @@ declare const module: any
 
 async function bootstrap() {
     const fastifyAdapter = new FastifyAdapter({
-        logger: (await configService.get('MODE')) === 'PROD' ? false : true,
+        logger: (configService.getEnv('MODE')) === 'PROD' ? false : true,
     })
 
     // Set request limit as 1 for per second
@@ -45,10 +45,9 @@ async function bootstrap() {
     // Configure the APM
     const apmConfig = {
         authentication: true,
-        onAuthenticate() {
-            return (
-                configService.get('APM_USERNAME') &&
-                configService.get('APM_PASSWORD')
+        onAuthenticate(_req, username, password) {
+            return(
+                (username === configService.getEnv('APM_USERNAME')) && (password === configService.getEnv('APM_PASSWORD'))
             )
         },
         uriPath: '/api/status',
@@ -57,7 +56,7 @@ async function bootstrap() {
 
     app.use(apm.getMiddleware(apmConfig)) // Initialize APM
 
-    app.listen(await configService.get('APP_PORT'))
+    app.listen(configService.getEnv('APP_PORT'))
 
     if (module.hot) {
         module.hot.accept()
