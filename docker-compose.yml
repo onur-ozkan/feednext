@@ -1,0 +1,51 @@
+version: '3.5'
+
+services:
+  # ------------------------------------------------------------
+  # NodeJS Backend
+  # ------------------------------------------------------------
+  node_backend:
+    image: "node:${BACKEND_NODE_VER}"
+    hostname: node_backend
+    working_dir: /home/node/app
+    volumes:
+      - ./server:/home/node/app
+    ports:
+      - "${BACKEND_EXPOSE_PORT}:${BACKEND_APP_PORT}"
+    links:
+      - mongo
+      - redis
+    command: >
+      bash -c "npm ci && npm run start:${START_BACKEND_AS}"
+    depends_on:
+      - redis
+      - mongo
+
+  # ------------------------------------------------------------
+  # Redis
+  # ------------------------------------------------------------
+  redis:
+    image: redis:${REDIS_SERVER}
+    hostname: redis
+    # Apply custom arguments to redis startup
+    command: redis-server ${REDIS_ARGS:- }
+    environment:
+      - REDIS_ARGS=${REDIS_ARGS:- }
+
+    ports:
+      - "${LOCAL_LISTEN_ADDR}${HOST_PORT_REDIS}:6379"
+
+  # ------------------------------------------------------------
+  # MongoDB
+  # ------------------------------------------------------------
+  mongo:
+    image: mongo:${MONGO_SERVER}
+    hostname: mongo
+    ports:
+      # [local-machine:]local-port:docker-port
+      - "${LOCAL_LISTEN_ADDR}${HOST_PORT_MONGO}:27017"
+
+    volumes:
+      # Mount MongoDB Data directory
+      - ./.docker/data/mongo:/data/db
+
