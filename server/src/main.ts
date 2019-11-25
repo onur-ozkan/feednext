@@ -56,7 +56,7 @@ async function bootstrap() {
 
     app.use(apm.getMiddleware(apmConfig)) // Initialize APM
 
-    app.listen(configService.getEnv('APP_PORT'))
+    app.listen(configService.getEnv('APP_PORT'), '0.0.0.0')
 
     if (module.hot) {
         module.hot.accept()
