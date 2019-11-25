@@ -23,7 +23,7 @@ export class EntriesEntity {
 
     @Column({
         type: 'varchar',
-        length: 50,
+        length: 17,
     })
     written_by: string
 
