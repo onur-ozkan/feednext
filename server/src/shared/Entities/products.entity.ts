@@ -17,7 +17,7 @@ export class ProductsEntity {
 
     @Column({
         type: 'varchar',
-        length: 150,
+        length: 60,
     })
     name: string
 
