@@ -12,8 +12,8 @@ export class ProductsEntity {
     @ObjectIdColumn()
     id: ObjectID
 
-    @ObjectIdColumn()
-    category_id: ObjectID
+    @Column({ nullable: true })
+    category_id: string
 
     @Column({
         type: 'varchar',
