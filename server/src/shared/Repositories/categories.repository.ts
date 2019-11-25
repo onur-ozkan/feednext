@@ -50,7 +50,7 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
             try {
                 await this.findOneOrFail(dto.parentCategoryId)
             } catch (err) {
-                throw new BadRequestException(`${dto.parentCategoryId} does not match in database.`)
+                throw new BadRequestException(`Category with id:${dto.parentCategoryId} does not match in database.`)
             }
         }
 
