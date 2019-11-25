@@ -7,8 +7,12 @@ import {
     UpdateDateColumn,
 } from 'typeorm'
 
-@Entity()
+@Entity({ name: 'Products' })
 export class ProductsEntity {
+    constructor(partial: Partial<ProductsEntity>) {
+        Object.assign(this, partial)
+    }
+
     @ObjectIdColumn()
     id: ObjectID
 
