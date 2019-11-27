@@ -20,7 +20,7 @@ export class CategoryService {
         throw new OkException(`category_detail`, category, `Category ${category.name} is successfully loaded.`, id)
     }
 
-    async getCategoryList(query: { limit: number, page: number, orderBy: any }): Promise<HttpException> {
+    async getCategoryList(query: { limit: number, skip: number, orderBy: any }): Promise<HttpException> {
         const result: {categories: CategoriesEntity[], count: number} = await this.categoriesRepository.getCategoryList(query)
         throw new OkException(`category_list`, result, `List of categories are successfully loaded.`)
     }

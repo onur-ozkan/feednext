@@ -25,7 +25,7 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
         }
     }
 
-    async getCategoryList(query: { limit: number, page: number, orderBy: any }): Promise<{categories: CategoriesEntity[], count: number}> {
+    async getCategoryList(query: { limit: number, skip: number, orderBy: any }): Promise<{categories: CategoriesEntity[], count: number}> {
         const orderBy = query.orderBy || 'ASC'
 
         try {
@@ -34,7 +34,7 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
                     name: orderBy.toUpperCase(),
                 },
                 take: Number(query.limit) || 10,
-                skip: Number(query.page) || 0,
+                skip: Number(query.skip) || 0,
             })
             return {
                 categories,

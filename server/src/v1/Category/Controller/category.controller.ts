@@ -21,7 +21,7 @@ export class CategoryController {
     }
 
     @Get('all')
-    getCategoryList(@Query() query: { limit: number, page: number, orderBy: any }): Promise<HttpException> {
+    getCategoryList(@Query() query: { limit: number, skip: number, orderBy: any }): Promise<HttpException> {
         return this.categoryService.getCategoryList(query)
     }
 
