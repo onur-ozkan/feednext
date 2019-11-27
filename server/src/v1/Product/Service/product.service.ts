@@ -15,6 +15,13 @@ export class ProductService {
         private readonly categoriesRepository: CategoriesRepository,
     ) {}
 
+    async getProduct(productId: string): Promise<HttpException> {
+        const product: ProductsEntity = await this.productsRepository.getProduct(productId)
+        const id: string = String(product.id)
+        delete product.id
+        throw new OkException(`product_detail`, product, `Product ${product.name} is successfully loaded.`, id)
+    }
+
     async createProduct(openedBy: string, dto: CreateProductDto): Promise<HttpException> {
         try {
           await this.categoriesRepository.findOneOrFail(dto.categoryId)

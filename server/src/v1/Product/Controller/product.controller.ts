@@ -1,10 +1,10 @@
-import { Controller, UseGuards, Headers, Post, Body, HttpException } from '@nestjs/common'
+import { Controller, UseGuards, Headers, Post, Body, HttpException, Get, Param } from '@nestjs/common'
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
+import { AuthGuard } from '@nestjs/passport/dist/auth.guard'
 import { RolesGuard } from 'src/shared/Guards/roles.guard'
 import { ProductService } from '../Service/product.service'
 import { CreateProductDto } from '../Dto/create-product.dto'
 import { currentUserService } from 'src/shared/Services/current-user.service'
-import { AuthGuard } from '@nestjs/passport/dist/auth.guard'
 import { Roles } from 'src/shared/Decorators/roles.decorator'
 
 @ApiUseTags('v1/product')
@@ -13,6 +13,11 @@ import { Roles } from 'src/shared/Decorators/roles.decorator'
 @Controller()
 export class ProductController {
     constructor(private readonly productService: ProductService) {}
+
+    @Get(':productId')
+    getCategory(@Param('productId') productId: string): Promise<HttpException> {
+        return this.productService.getProduct(productId)
+    }
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
