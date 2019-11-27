@@ -22,6 +22,11 @@ export class ProductService {
         throw new OkException(`product_detail`, product, `Product ${product.name} is successfully loaded.`, id)
     }
 
+    async getProductList(query: { limit: number, skip: number, orderBy: any }): Promise<HttpException> {
+      const result: {products: ProductsEntity[], count: number} = await this.productsRepository.getProductList(query)
+      throw new OkException(`product_list`, result, `List of products are successfully loaded.`)
+  }
+
     async createProduct(openedBy: string, dto: CreateProductDto): Promise<HttpException> {
         try {
           await this.categoriesRepository.findOneOrFail(dto.categoryId)

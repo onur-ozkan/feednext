@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Headers, Post, Body, HttpException, Get, Param } from '@nestjs/common'
+import { Controller, UseGuards, Headers, Post, Body, HttpException, Get, Param, Query } from '@nestjs/common'
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthGuard } from '@nestjs/passport/dist/auth.guard'
 import { RolesGuard } from 'src/shared/Guards/roles.guard'
@@ -17,6 +17,11 @@ export class ProductController {
     @Get(':productId')
     getCategory(@Param('productId') productId: string): Promise<HttpException> {
         return this.productService.getProduct(productId)
+    }
+
+    @Get('all')
+    getCategoryList(@Query() query: { limit: number, skip: number, orderBy: any }): Promise<HttpException> {
+        return this.productService.getProductList(query)
     }
 
     @ApiBearerAuth()
