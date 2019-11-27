@@ -4,6 +4,7 @@ import { ProductsEntity } from '../Entities/products.entity'
 import { CreateProductDto } from 'src/v1/Product/Dto/create-product.dto'
 import { ObjectID } from 'mongodb'
 import { Validator } from 'class-validator'
+import { UpdateProductDto } from 'src/v1/Product/Dto/update-product.dto'
 
 @EntityRepository(ProductsEntity)
 export class ProductsRepository extends Repository<ProductsEntity> {
@@ -56,6 +57,35 @@ export class ProductsRepository extends Repository<ProductsEntity> {
             return await this.save(newProduct)
         } catch (err) {
             throw new UnprocessableEntityException(err.errmsg)
+        }
+    }
+
+    async updateProduct(categoryId: string, dto: UpdateProductDto): Promise<ProductsEntity> {
+        if (!this.validator.isMongoId(categoryId)) throw new BadRequestException(`CategoryId must be a MongoId.`)
+
+        if (dto.categoryId) {
+            try {
+                await this.findOneOrFail(dto.categoryId)
+            } catch (err) {
+                throw new NotFoundException(`Category with that id could not found in the database.`)
+            }
+        }
+
+        let product: ProductsEntity
+        try {
+            product = await this.findOneOrFail(categoryId)
+        } catch {
+            throw new NotFoundException(`Product related to that category id could not found in the database.`)
+        }
+
+        try {
+            if (dto.name) product.name = dto.name
+            if (dto.categoryId) product.category_id = dto.categoryId
+
+            await this.save(product)
+            return product
+        } catch (err) {
+            throw new BadRequestException(err.errmsg)
         }
     }
 

@@ -5,6 +5,7 @@ import { CreateProductDto } from '../Dto/create-product.dto'
 import { ProductsEntity } from 'src/shared/Entities/products.entity'
 import { OkException } from 'src/shared/Filters/ok-exception.filter'
 import { CategoriesRepository } from 'src/shared/Repositories/categories.repository'
+import { UpdateProductDto } from '../Dto/update-product.dto'
 
 @Injectable()
 export class ProductService {
@@ -37,6 +38,13 @@ export class ProductService {
         const newProduct: ProductsEntity = await this.productsRepository.createProduct(openedBy, dto)
         throw new OkException(`product_detail`, newProduct)
     }
+
+    async updateProduct(productId: string, dto: UpdateProductDto): Promise<HttpException> {
+      const product: ProductsEntity = await this.productsRepository.updateProduct(productId, dto)
+      const id: string = String(product.id)
+      delete product.id
+      throw new OkException(`product_detail`, product, `Product ${product.name} is successfully updated.`, id)
+  }
 
     async deleteProduct(productId: string): Promise<HttpException> {
       const product: ProductsEntity = await this.productsRepository.deleteProduct(productId)
