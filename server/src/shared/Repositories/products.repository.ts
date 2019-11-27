@@ -58,4 +58,15 @@ export class ProductsRepository extends Repository<ProductsEntity> {
             throw new UnprocessableEntityException(err.errmsg)
         }
     }
+
+    async deleteProduct(productId: string): Promise<ProductsEntity> {
+        if (!this.validator.isMongoId(productId)) throw new BadRequestException(`ProductId must be a MongoId.`)
+        try {
+            const product: ProductsEntity = await this.findOneOrFail(productId)
+            await this.delete(product)
+            return product
+        } catch (err) {
+            throw new NotFoundException(`Product with that id could not found in the database.`)
+        }
+    }
 }

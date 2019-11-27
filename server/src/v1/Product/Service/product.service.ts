@@ -37,4 +37,11 @@ export class ProductService {
         const newProduct: ProductsEntity = await this.productsRepository.createProduct(openedBy, dto)
         throw new OkException(`product_detail`, newProduct)
     }
+
+    async deleteProduct(productId: string): Promise<HttpException> {
+      const product: ProductsEntity = await this.productsRepository.deleteProduct(productId)
+      const id: string = String(product.id)
+      delete product.id
+      throw new OkException(`product_detail`, product, `Product ${product.name} is successfully deleted.`, id)
+  }
 }

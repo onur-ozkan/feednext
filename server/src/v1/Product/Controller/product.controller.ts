@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Headers, Post, Body, HttpException, Get, Param, Query } from '@nestjs/common'
+import { Controller, UseGuards, Headers, Post, Body, HttpException, Get, Param, Query, Delete } from '@nestjs/common'
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthGuard } from '@nestjs/passport/dist/auth.guard'
 import { RolesGuard } from 'src/shared/Guards/roles.guard'
@@ -30,5 +30,13 @@ export class ProductController {
     @Roles(1)
     createProduct(@Headers('authorization') bearer: string, @Body() dto: CreateProductDto): Promise<HttpException> {
         return this.productService.createProduct(currentUserService.getCurrentUser(bearer, 'username'), dto)
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
+    @Delete(':productId')
+    @Roles(5)
+    deleteProduct(@Param('productId') productId: string): Promise<HttpException> {
+        return this.productService.deleteProduct(productId)
     }
 }
