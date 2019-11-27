@@ -34,7 +34,7 @@ export class CategoryService {
         const category: CategoriesEntity = await this.categoriesRepository.updateCategory(categoryId, dto)
         const id: string = String(category._id)
         delete category._id
-        throw new OkException(`category_detail`, category, `Category ${category.name} is successfully loaded.`, id)
+        throw new OkException(`category_detail`, category, `Category ${category.name} is successfully updated.`, id)
     }
 
     async deleteCategory(categoryId: string): Promise<HttpException> {
