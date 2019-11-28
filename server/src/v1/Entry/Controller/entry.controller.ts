@@ -1,4 +1,4 @@
-import { Controller, Headers, Get, Param, HttpException, UseGuards, Post, Body, Query } from '@nestjs/common'
+import { Controller, Headers, Get, Param, HttpException, UseGuards, Post, Body, Query, Patch, Delete } from '@nestjs/common'
 import { EntryService } from '../Service/entry.service'
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
 import { RolesGuard } from 'src/shared/Guards/roles.guard'
@@ -25,9 +25,25 @@ export class EntryController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
+    @Patch(':entryId')
+    @Roles(4)
+    updateCategory(@Param('entryId') entryId: string, @Body('text') text: string): Promise<HttpException> {
+        return this.entryService.updateEntry(entryId, text)
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
     @Post('create-entry')
     @Roles(1)
     createEntry(@Headers('authorization') bearer: string, @Body() dto: CreateEntryDto): Promise<HttpException> {
         return this.entryService.createEntry(currentUserService.getCurrentUser(bearer, 'username'), dto)
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
+    @Delete(':entryId')
+    @Roles(5)
+    deleteProduct(@Param('entryId') entryId: string): Promise<HttpException> {
+        return this.entryService.deleteEntry(entryId)
     }
 }

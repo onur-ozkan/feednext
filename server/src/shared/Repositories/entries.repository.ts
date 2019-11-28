@@ -57,4 +57,35 @@ export class EntriesRepository extends Repository<EntriesEntity> {
             throw new UnprocessableEntityException(err.errmsg)
         }
     }
-  }
+
+    async updateEntry(entryId: string, text: string): Promise<EntriesEntity> {
+        if (!this.validator.isMongoId(entryId)) throw new BadRequestException(`EntryId must be a MongoId.`)
+
+        let entry: EntriesEntity
+        try {
+            entry = await this.findOneOrFail(entryId)
+        } catch {
+            throw new NotFoundException(`Entry with that id could not found in the database.`)
+        }
+
+        try {
+            entry.text = text
+
+            await this.save(entry)
+            return entry
+        } catch (err) {
+            throw new BadRequestException(err.errmsg)
+        }
+    }
+
+    async deleteEntry(entryId: string): Promise<EntriesEntity> {
+        if (!this.validator.isMongoId(entryId)) throw new BadRequestException(`EntryId must be a MongoId.`)
+        try {
+            const entry: EntriesEntity = await this.findOneOrFail(entryId)
+            await this.delete(entry)
+            return entry
+        } catch (err) {
+            throw new NotFoundException(`Entry with that id could not found in the database.`)
+        }
+    }
+}

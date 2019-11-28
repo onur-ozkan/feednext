@@ -23,9 +23,16 @@ export class EntryService {
     }
 
     async getEntryList(query: { limit: number, skip: number, orderBy: any }): Promise<HttpException> {
-      const result: {entries: EntriesEntity[], count: number} = await this.entriesRepository.getEntryList(query)
-      throw new OkException(`entry_list`, result, `List of entries are successfully loaded.`)
-  }
+        const result: {entries: EntriesEntity[], count: number} = await this.entriesRepository.getEntryList(query)
+        throw new OkException(`entry_list`, result, `List of entries are successfully loaded.`)
+    }
+
+    async updateEntry(entryId: string, text: string): Promise<HttpException> {
+        const entry: EntriesEntity = await this.entriesRepository.updateEntry(entryId, text)
+        const id: string = String(entry.id)
+        delete entry.id
+        throw new OkException(`entry_detail`, entry, `Entry with the id:${entry.id} is successfully updated.`, id)
+    }
 
     async createEntry(writtenBy: string, dto: CreateEntryDto): Promise<HttpException> {
         try {
@@ -36,5 +43,12 @@ export class EntryService {
 
         const newEntry: EntriesEntity = await this.entriesRepository.createEntry(writtenBy, dto)
         throw new OkException(`entry_detail`, newEntry)
+    }
+
+    async deleteEntry(entryId: string): Promise<HttpException> {
+        const entry: EntriesEntity = await this.entriesRepository.deleteEntry(entryId)
+        const id: string = String(entry.id)
+        delete entry.id
+        throw new OkException(`entry_detail`, entry, `Entry ${entry.text} is successfully deleted.`, id)
     }
 }
