@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Headers, Post, Body, HttpException, Get, Param, Query, Delete, Put } from '@nestjs/common'
+import { Controller, UseGuards, Headers, Post, Body, HttpException, Get, Param, Query, Delete, Patch } from '@nestjs/common'
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthGuard } from '@nestjs/passport/dist/auth.guard'
 import { RolesGuard } from 'src/shared/Guards/roles.guard'
@@ -35,7 +35,7 @@ export class ProductController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
-    @Put(':productId')
+    @Patch(':productId')
     @Roles(4)
     updateCategory(@Param('productId') productId: string, @Body() dto: UpdateProductDto): Promise<HttpException> {
         return this.productService.updateProduct(productId, dto)
