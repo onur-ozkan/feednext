@@ -16,7 +16,7 @@ export class ProductsEntity {
     @ObjectIdColumn()
     id: ObjectID
 
-    @Column({ nullable: true })
+    @Column()
     category_id: string
 
     @Column({
@@ -31,9 +31,9 @@ export class ProductsEntity {
     })
     opened_by: string
 
-    @CreateDateColumn({})
+    @CreateDateColumn()
     created_at: Date
 
-    @UpdateDateColumn({})
+    @UpdateDateColumn()
     updated_at: Date
 }

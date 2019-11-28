@@ -23,7 +23,7 @@ export class CategoriesEntity {
     @Column({ length: 50, unique: true })
     name: string
 
-    @Column({})
+    @Column()
     is_lowest_cateogry: boolean
 
     @BeforeInsert()
@@ -31,9 +31,9 @@ export class CategoriesEntity {
         this.is_lowest_cateogry = false
     }
 
-    @CreateDateColumn({})
+    @CreateDateColumn()
     created_at: Date
 
-    @UpdateDateColumn({})
+    @UpdateDateColumn()
     updated_at: Date
 }

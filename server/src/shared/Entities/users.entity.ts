@@ -50,10 +50,10 @@ export class UsersEntity {
     @Column({type: 'tinyint'})
     role: number
 
-    @Column({})
+    @Column()
     is_verified: boolean
 
-    @Column({})
+    @Column()
     is_active: boolean
 
     @BeforeInsert()
@@ -63,9 +63,9 @@ export class UsersEntity {
         this.is_verified = false
     }
 
-    @CreateDateColumn({})
+    @CreateDateColumn()
     created_at: Date
 
-    @UpdateDateColumn({})
+    @UpdateDateColumn()
     updated_at: Date
 }

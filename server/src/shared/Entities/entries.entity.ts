@@ -16,10 +16,10 @@ export class EntriesEntity {
     @ObjectIdColumn()
     id: ObjectID
 
-    @ObjectIdColumn()
-    product_id: ObjectID
+    @Column()
+    product_id: string
 
-    @Column({})
+    @Column()
     text: string
 
     @Column({
@@ -28,9 +28,9 @@ export class EntriesEntity {
     })
     written_by: string
 
-    @CreateDateColumn({})
+    @CreateDateColumn()
     created_at: Date
 
-    @UpdateDateColumn({})
+    @UpdateDateColumn()
     updated_at: Date
 }
