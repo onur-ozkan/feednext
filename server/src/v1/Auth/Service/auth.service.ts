@@ -46,9 +46,9 @@ export class AuthService {
             await this.mailService.send(mailBody)
         }
 
-        const id: string = String(result._id)
+        const id: string = String(result.id)
 
-        const properties: string[] = ['_id', 'password', 'updated_at', 'is_verified']
+        const properties: string[] = ['id', 'password', 'updated_at', 'is_verified']
         await serializerService.deleteProperties(result, properties)
 
         throw new OkException(`account_informations`, result, `Account has been registered successfully to the database.`, id)
@@ -58,15 +58,15 @@ export class AuthService {
         if (!userEntity.is_active) throw new BadRequestException(`Account is not active.`)
 
         const token: string = this.jwtService.sign({
-            _id: userEntity._id,
+            id: userEntity.id,
             role: userEntity.role,
             username: userEntity.username,
             email: userEntity.email,
             created_at: userEntity.created_at,
         })
 
-        const id: any = userEntity._id
-        const properties: string[] = ['_id', 'password' ]
+        const id: any = userEntity.id
+        const properties: string[] = ['id', 'password' ]
         await serializerService.deleteProperties(userEntity, properties)
 
         const responseData: object = {

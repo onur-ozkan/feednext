@@ -23,9 +23,9 @@ export class UserService {
 
     async getUser(usernameParam: string): Promise<HttpException> {
         const profile: UsersEntity = await this.usersRepository.getUserByUsername(usernameParam)
-        const id: string = String(profile._id)
+        const id: string = String(profile.id)
 
-        const properties: string[] = ['_id', 'password', 'is_active', 'is_verified']
+        const properties: string[] = ['id', 'password', 'is_active', 'is_verified']
         await serializerService.deleteProperties(profile, properties)
 
         throw new OkException(`user_profile`, profile, `User ${profile.username} is successfully loaded.`, id)
@@ -33,9 +33,9 @@ export class UserService {
 
     async updateUser(usernameParam: string, dto: UpdateUserDto): Promise<HttpException> {
         const profile = await this.usersRepository.updateUser(usernameParam, dto)
-        const id = String(profile._id)
+        const id = String(profile.id)
 
-        const properties: string[] = ['_id', 'password', 'is_active', 'is_verified']
+        const properties: string[] = ['id', 'password', 'is_active', 'is_verified']
         await serializerService.deleteProperties(profile, properties)
 
         throw new OkException(`updated_profile`, profile, `User ${profile.username} is successfully updated.`, id)

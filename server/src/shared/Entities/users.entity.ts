@@ -17,7 +17,7 @@ export class UsersEntity {
     }
 
     @ObjectIdColumn()
-    _id: ObjectID
+    id: ObjectID
 
     @Column({
         length: 50,

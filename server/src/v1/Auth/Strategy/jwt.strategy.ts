@@ -18,13 +18,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         })
     }
 
-    async validate({ iat, exp, _id }): Promise<any> {
+    async validate({ iat, exp, id }): Promise<any> {
         const timeDiff = exp - iat
         if (timeDiff <= 0) {
             throw new UnauthorizedException()
         }
 
-        const user = await this.usersRepository.findOne(_id)
+        const user = await this.usersRepository.findOne(id)
         if (!user) {
             throw new UnauthorizedException()
         } else if (!user.is_active) {

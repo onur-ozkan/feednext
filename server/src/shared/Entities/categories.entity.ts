@@ -15,7 +15,7 @@ export class CategoriesEntity {
     }
 
     @ObjectIdColumn()
-    _id: ObjectID
+    id: ObjectID
 
     @Column({ nullable: true })
     parent_category: string

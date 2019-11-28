@@ -15,8 +15,8 @@ export class CategoryService {
 
     async getCategory(categoryId: string): Promise<HttpException> {
         const category: CategoriesEntity = await this.categoriesRepository.getCategory(categoryId)
-        const id: string = String(category._id)
-        delete category._id
+        const id: string = String(category.id)
+        delete category.id
         throw new OkException(`category_detail`, category, `Category ${category.name} is successfully loaded.`, id)
     }
 
@@ -32,15 +32,15 @@ export class CategoryService {
 
     async updateCategory(categoryId: string, dto: UpdateCategoryDto): Promise<HttpException> {
         const category: CategoriesEntity = await this.categoriesRepository.updateCategory(categoryId, dto)
-        const id: string = String(category._id)
-        delete category._id
+        const id: string = String(category.id)
+        delete category.id
         throw new OkException(`category_detail`, category, `Category ${category.name} is successfully updated.`, id)
     }
 
     async deleteCategory(categoryId: string): Promise<HttpException> {
         const category: CategoriesEntity = await this.categoriesRepository.deleteCategory(categoryId)
-        const id: string = String(category._id)
-        delete category._id
+        const id: string = String(category.id)
+        delete category.id
         throw new OkException(`category_detail`, category, `Category ${category.name} is successfully deleted.`, id)
     }
 }
