@@ -7,19 +7,20 @@ import {
     UpdateDateColumn,
 } from 'typeorm'
 
-@Entity()
+@Entity({ name: 'Entries' })
 export class EntriesEntity {
+    constructor(partial: Partial<EntriesEntity>) {
+        Object.assign(this, partial)
+    }
+
     @ObjectIdColumn()
     id: ObjectID
 
     @ObjectIdColumn()
     product_id: ObjectID
 
-    @Column({
-        type: 'varchar',
-        length: 255,
-    })
-    entry: string
+    @Column({})
+    text: string
 
     @Column({
         type: 'varchar',
