@@ -5,7 +5,7 @@ services:
   # NodeJS Backend
   # ------------------------------------------------------------
   node_backend:
-    image: "node:${BACKEND_NODE_VER}"
+    image: node:${BACKEND_NODE_VER}-alpine
     hostname: node_backend
     working_dir: /home/node/app
     volumes:
@@ -16,7 +16,7 @@ services:
       - mongo
       - redis
     command: >
-      bash -c "npm ci && npm run start:${START_BACKEND_AS}"
+      sh -c "npm ci && npm run start:${START_BACKEND_AS}"
     depends_on:
       - redis
       - mongo
@@ -25,7 +25,7 @@ services:
   # Redis
   # ------------------------------------------------------------
   redis:
-    image: redis:${REDIS_SERVER}
+    image: redis:${REDIS_SERVER}-alpine
     hostname: redis
     # Apply custom arguments to redis startup
     command: redis-server ${REDIS_ARGS:- }
