@@ -13,6 +13,7 @@ export class CreateEntryDto {
         required: true,
         example: '507f1f77bcf86cd799439011',
     })
+    @IsNotEmpty()
     @IsMongoId()
     productId: string
 }
