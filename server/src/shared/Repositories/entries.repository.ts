@@ -24,6 +24,26 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         }
     }
 
+    async getEntryList(query: { limit: number, skip: number, orderBy: any }): Promise<{entries: EntriesEntity[], count: number}> {
+        const orderBy = query.orderBy || 'ASC'
+
+        try {
+            const [entries, total] = await this.findAndCount({
+                order: {
+                    created_at: orderBy.toUpperCase(),
+                },
+                take: Number(query.limit) || 10,
+                skip: Number(query.skip) || 0,
+            })
+            return {
+                entries,
+                count: total,
+            }
+        } catch (err) {
+            throw new BadRequestException(err)
+        }
+    }
+
     async createEntry(writtenBy: string, dto: CreateEntryDto): Promise<EntriesEntity> {
         const newProduct: EntriesEntity = new EntriesEntity({
             text: dto.text,

@@ -22,6 +22,11 @@ export class EntryService {
         throw new OkException(`entry_detail`, entry, `Entry ${entry.text} is successfully loaded.`, id)
     }
 
+    async getEntryList(query: { limit: number, skip: number, orderBy: any }): Promise<HttpException> {
+      const result: {entries: EntriesEntity[], count: number} = await this.entriesRepository.getEntryList(query)
+      throw new OkException(`entry_list`, result, `List of entries are successfully loaded.`)
+  }
+
     async createEntry(writtenBy: string, dto: CreateEntryDto): Promise<HttpException> {
         try {
           await this.productsRepository.findOneOrFail(dto.productId)
