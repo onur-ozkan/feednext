@@ -24,9 +24,9 @@ export class ProductService {
     }
 
     async getProductList(query: { limit: number, skip: number, orderBy: any }): Promise<HttpException> {
-      const result: {products: ProductsEntity[], count: number} = await this.productsRepository.getProductList(query)
-      throw new OkException(`product_list`, result, `List of products are successfully loaded.`)
-  }
+        const result: {products: ProductsEntity[], count: number} = await this.productsRepository.getProductList(query)
+        throw new OkException(`product_list`, result, `List of products are successfully loaded.`)
+    }
 
     async createProduct(openedBy: string, dto: CreateProductDto): Promise<HttpException> {
         try {
@@ -40,16 +40,16 @@ export class ProductService {
     }
 
     async updateProduct(productId: string, dto: UpdateProductDto): Promise<HttpException> {
-      const product: ProductsEntity = await this.productsRepository.updateProduct(productId, dto)
-      const id: string = String(product.id)
-      delete product.id
-      throw new OkException(`product_detail`, product, `Product ${product.name} is successfully updated.`, id)
-  }
+        const product: ProductsEntity = await this.productsRepository.updateProduct(productId, dto)
+        const id: string = String(product.id)
+        delete product.id
+        throw new OkException(`product_detail`, product, `Product ${product.name} is successfully updated.`, id)
+    }
 
     async deleteProduct(productId: string): Promise<HttpException> {
-      const product: ProductsEntity = await this.productsRepository.deleteProduct(productId)
-      const id: string = String(product.id)
-      delete product.id
-      throw new OkException(`product_detail`, product, `Product ${product.name} is successfully deleted.`, id)
-  }
+        const product: ProductsEntity = await this.productsRepository.deleteProduct(productId)
+        const id: string = String(product.id)
+        delete product.id
+        throw new OkException(`product_detail`, product, `Product ${product.name} is successfully deleted.`, id)
+    }
 }
