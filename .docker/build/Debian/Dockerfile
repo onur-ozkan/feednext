@@ -4,8 +4,8 @@ FROM debian:${DEBIAN_VERSION}
 ARG NODE_VERSION
 
 RUN apt-get update && apt-get install -y \
-            sudo   \
-            curl
+    sudo   \
+    curl
 
 RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION} | sudo bash -
 
