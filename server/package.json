@@ -10,7 +10,7 @@
     "start": "node dist/server",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "pm2 start -i 4 dist/main.js && tail -f /dev/null",
     "lint": "tslint -p tsconfig.json -c tslint.json",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -73,8 +73,8 @@
     "webpack-node-externals": "^1.7.2"
   },
   "engines": {
-    "node": "12.13.1",
-    "npm": "6.12.1"
+    "node": "12",
+    "npm": "6"
   },
   "jest": {
     "moduleFileExtensions": [
