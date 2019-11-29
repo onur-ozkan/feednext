@@ -2,15 +2,14 @@ version: '3.5'
 
 services:
   # ------------------------------------------------------------
-  # Debian
+  # Node - Backend
   # ------------------------------------------------------------
-  debian:
+  node_server:
     build:
-      context: ./.docker/build/Debian
+      context: ./.docker/build/node
       args:
-        DEBIAN_VERSION: ${DEBIAN_VERSION}-slim
-        NODE_VERSION: ${BACKEND_NODE_VER}
-    hostname: debian
+        NODE_VERSION: ${BACKEND_NODE_VER}-alpine
+    hostname: node_server
     working_dir: /home/node/app
     volumes:
       - ./server:/home/node/app

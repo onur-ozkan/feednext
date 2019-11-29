@@ -73,8 +73,8 @@
     "webpack-node-externals": "^1.7.2"
   },
   "engines": {
-    "node": "12",
-    "npm": "6"
+    "node": "12.13.1",
+    "npm": "6.12.1"
   },
   "jest": {
     "moduleFileExtensions": [
