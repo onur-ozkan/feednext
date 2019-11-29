@@ -10,7 +10,7 @@
     "start": "node dist/server",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "pm2 start -i 4 dist/main.js && tail -f /dev/null",
+    "start:prod": "pm2 start pm2.config.js && tail -f /dev/null",
     "lint": "tslint -p tsconfig.json -c tslint.json",
     "test": "jest",
     "test:watch": "jest --watch",
