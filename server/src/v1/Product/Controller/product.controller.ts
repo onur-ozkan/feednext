@@ -37,8 +37,12 @@ export class ProductController {
     @UseGuards(AuthGuard('jwt'))
     @Patch(':productId')
     @Roles(4)
-    updateCategory(@Param('productId') productId: string, @Body() dto: UpdateProductDto): Promise<HttpException> {
-        return this.productService.updateProduct(productId, dto)
+    updateProduct(
+        @Headers('authorization') bearer: string,
+        @Param('productId') productId: string,
+        @Body() dto: UpdateProductDto,
+    ): Promise<HttpException> {
+        return this.productService.updateProduct(currentUserService.getCurrentUser(bearer, 'username'), productId, dto)
     }
 
     @ApiBearerAuth()

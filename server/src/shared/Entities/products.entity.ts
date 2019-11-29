@@ -31,6 +31,12 @@ export class ProductsEntity {
     })
     opened_by: string
 
+    @Column({
+        type: 'varchar',
+        length: 17,
+    })
+    updated_by: string
+
     @CreateDateColumn()
     created_at: Date
 

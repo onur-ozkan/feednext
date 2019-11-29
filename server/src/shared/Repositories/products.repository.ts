@@ -60,7 +60,7 @@ export class ProductsRepository extends Repository<ProductsEntity> {
         }
     }
 
-    async updateProduct(categoryId: string, dto: UpdateProductDto): Promise<ProductsEntity> {
+    async updateProduct(updatedBy: string, categoryId: string, dto: UpdateProductDto): Promise<ProductsEntity> {
         if (!this.validator.isMongoId(categoryId)) throw new BadRequestException(`CategoryId must be a MongoId.`)
 
         if (dto.categoryId) {
@@ -81,6 +81,7 @@ export class ProductsRepository extends Repository<ProductsEntity> {
         try {
             if (dto.name) product.name = dto.name
             if (dto.categoryId) product.category_id = dto.categoryId
+            product.updated_by = updatedBy
 
             await this.save(product)
             return product

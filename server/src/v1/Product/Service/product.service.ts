@@ -39,8 +39,8 @@ export class ProductService {
         throw new OkException(`product_detail`, newProduct)
     }
 
-    async updateProduct(productId: string, dto: UpdateProductDto): Promise<HttpException> {
-        const product: ProductsEntity = await this.productsRepository.updateProduct(productId, dto)
+    async updateProduct(updatedBy: string, productId: string, dto: UpdateProductDto): Promise<HttpException> {
+        const product: ProductsEntity = await this.productsRepository.updateProduct(updatedBy, productId, dto)
         const id: string = String(product.id)
         delete product.id
         throw new OkException(`product_detail`, product, `Product ${product.name} is successfully updated.`, id)
