@@ -1,4 +1,4 @@
 up:
-	docker-compose up -d node_backend
+	docker-compose up -d debian
 down:
 	docker-compose down
