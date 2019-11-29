@@ -2,16 +2,20 @@ version: '3.5'
 
 services:
   # ------------------------------------------------------------
-  # NodeJS Backend
+  # Debian
   # ------------------------------------------------------------
-  node_backend:
-    image: node:${BACKEND_NODE_VER}-alpine
-    hostname: node_backend
+  debian:
+    build:
+      context: ./.docker/build/Debian
+      args:
+        DEBIAN_VERSION: ${DEBIAN_VERSION}-slim
+        NODE_VERSION: ${BACKEND_NODE_VER}
+    hostname: debian
     working_dir: /home/node/app
     volumes:
       - ./server:/home/node/app
     ports:
-      - "${BACKEND_EXPOSE_PORT}:${BACKEND_APP_PORT}"
+      - ${BACKEND_EXPOSE_PORT}:${BACKEND_APP_PORT}
     links:
       - mongo
       - redis
@@ -33,7 +37,7 @@ services:
       - REDIS_ARGS=${REDIS_ARGS:- }
 
     ports:
-      - "${LOCAL_LISTEN_ADDR}${HOST_PORT_REDIS}:6379"
+      - ${LOCAL_LISTEN_ADDR}${HOST_PORT_REDIS}:6379
 
   # ------------------------------------------------------------
   # MongoDB
@@ -43,7 +47,7 @@ services:
     hostname: mongo
     ports:
       # [local-machine:]local-port:docker-port
-      - "${LOCAL_LISTEN_ADDR}${HOST_PORT_MONGO}:27017"
+      - ${LOCAL_LISTEN_ADDR}${HOST_PORT_MONGO}:27017
 
     volumes:
       # Mount MongoDB Data directory
