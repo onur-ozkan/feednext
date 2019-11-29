@@ -58,7 +58,8 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         }
     }
 
-    async updateEntry(entryId: string, text: string): Promise<EntriesEntity> {
+    async updateEntry(updatedBy, entryId: string, text: string): Promise<EntriesEntity> {
+        if (!text) throw new BadRequestException(`Entry text can not be null.`)
         if (!this.validator.isMongoId(entryId)) throw new BadRequestException(`EntryId must be a MongoId.`)
 
         let entry: EntriesEntity
@@ -70,6 +71,7 @@ export class EntriesRepository extends Repository<EntriesEntity> {
 
         try {
             entry.text = text
+            entry.updated_by = updatedBy
 
             await this.save(entry)
             return entry

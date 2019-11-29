@@ -27,8 +27,8 @@ export class EntryService {
         throw new OkException(`entry_list`, result, `List of entries are successfully loaded.`)
     }
 
-    async updateEntry(entryId: string, text: string): Promise<HttpException> {
-        const entry: EntriesEntity = await this.entriesRepository.updateEntry(entryId, text)
+    async updateEntry(updatedBy, entryId: string, text: string): Promise<HttpException> {
+        const entry: EntriesEntity = await this.entriesRepository.updateEntry(updatedBy, entryId, text)
         const id: string = String(entry.id)
         delete entry.id
         throw new OkException(`entry_detail`, entry, `Entry with the id:${entry.id} is successfully updated.`, id)

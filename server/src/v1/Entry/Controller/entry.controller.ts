@@ -27,8 +27,8 @@ export class EntryController {
     @UseGuards(AuthGuard('jwt'))
     @Patch(':entryId')
     @Roles(4)
-    updateCategory(@Param('entryId') entryId: string, @Body('text') text: string): Promise<HttpException> {
-        return this.entryService.updateEntry(entryId, text)
+    updateCategory(@Headers('authorization') bearer: string, @Param('entryId') entryId: string, @Body('text') text: string): Promise<HttpException> {
+        return this.entryService.updateEntry(currentUserService.getCurrentUser(bearer, 'username'), entryId, text)
     }
 
     @ApiBearerAuth()
