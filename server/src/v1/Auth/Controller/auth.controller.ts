@@ -1,6 +1,9 @@
+// Nest dependencies
 import { Controller, Post, Body, UseGuards, Get, Put, Request, HttpException, Query } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
+
+// Local files
 import { OkException } from 'src/shared/Filters/ok-exception.filter'
 import { AuthService } from '../Service/auth.service'
 import { CreateAccountDto } from '../Dto/create-account.dto'

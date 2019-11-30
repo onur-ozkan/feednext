@@ -1,4 +1,7 @@
+// Nest dependencies
 import { UnauthorizedException } from '@nestjs/common'
+
+// Other dependencies
 import * as jwt from 'jsonwebtoken'
 
 export class CurrentUserService {

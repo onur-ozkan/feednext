@@ -1,4 +1,7 @@
+// Nest dependencies
 import { Injectable, NestMiddleware, UnauthorizedException, Request, Response } from '@nestjs/common'
+
+// Local files
 import { RedisService } from '../Services/redis.service'
 
 @Injectable()

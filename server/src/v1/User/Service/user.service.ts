@@ -1,6 +1,12 @@
+// Nest dependencies
 import { Injectable, BadRequestException, HttpException, HttpStatus } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { JwtModule } from '@nestjs/jwt'
+
+// Other dependencies
+import * as jwt from 'jsonwebtoken'
+
+// Local files
 import { UsersEntity } from 'src/shared/Entities/users.entity'
 import { UsersRepository } from 'src/shared/Repositories/users.repository'
 import { OkException } from 'src/shared/Filters/ok-exception.filter'
@@ -9,7 +15,6 @@ import { serializerService } from 'src/shared/Services/serializer.service'
 import { MailService } from 'src/shared/Services/mail.service'
 import { MailSenderBody } from 'src/shared/Services/Interfaces/mail.sender.interface'
 import { ActivateUserDto } from '../Dto/activate-user.dto'
-import * as jwt from 'jsonwebtoken'
 import { configService } from 'src/shared/Services/config.service'
 
 @Injectable()

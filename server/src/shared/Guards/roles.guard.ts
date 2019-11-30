@@ -1,5 +1,8 @@
+// Nest dependencies
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
+
+// Local files
 import { currentUserService } from '../Services/current-user.service'
 
 @Injectable()

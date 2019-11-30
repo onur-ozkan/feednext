@@ -1,7 +1,12 @@
-import { ExtractJwt, Strategy } from 'passport-jwt'
+// Nest dependencies
+import { InjectRepository } from '@nestjs/typeorm'
 import { PassportStrategy } from '@nestjs/passport'
 import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common'
-import { InjectRepository } from '@nestjs/typeorm'
+
+// Other dependencies
+import { ExtractJwt, Strategy } from 'passport-jwt'
+
+// Local files
 import { UsersRepository } from 'src/shared/Repositories/users.repository'
 import { configService } from 'src/shared/Services/config.service'
 

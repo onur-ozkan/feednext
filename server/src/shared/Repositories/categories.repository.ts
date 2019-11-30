@@ -1,9 +1,14 @@
+// Nest dependencies
 import { NotFoundException, BadRequestException, UnprocessableEntityException } from '@nestjs/common'
+
+// Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
 import { ObjectID } from 'mongodb'
+import { Validator } from 'class-validator'
+
+// Local files
 import { CategoriesEntity } from '../Entities/categories.entity'
 import { CreateCategoryDto } from 'src/v1/Category/Dto/create-category.dto'
-import { Validator } from 'class-validator'
 import { UpdateCategoryDto } from 'src/v1/Category/Dto/update-category.dto'
 
 @EntityRepository(CategoriesEntity)

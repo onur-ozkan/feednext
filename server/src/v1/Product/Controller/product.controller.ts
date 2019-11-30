@@ -1,6 +1,9 @@
+// Nest dependencies
 import { Controller, UseGuards, Headers, Post, Body, HttpException, Get, Param, Query, Delete, Patch } from '@nestjs/common'
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthGuard } from '@nestjs/passport/dist/auth.guard'
+
+// Other dependencies
 import { RolesGuard } from 'src/shared/Guards/roles.guard'
 import { ProductService } from '../Service/product.service'
 import { CreateProductDto } from '../Dto/create-product.dto'

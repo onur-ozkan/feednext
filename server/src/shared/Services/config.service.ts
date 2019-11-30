@@ -1,9 +1,14 @@
+// Nest dependencies
 import { TypeOrmModuleOptions } from '@nestjs/typeorm'
+
+// Other dependencies
+import * as env from 'dotenv'
+
+// Local files
 import { UsersEntity } from '../Entities/users.entity'
 import { CategoriesEntity } from '../Entities/categories.entity'
 import { EntriesEntity } from '../Entities/entries.entity'
 import { ProductsEntity } from '../Entities/products.entity'
-import * as env from 'dotenv'
 
 env.config()
 

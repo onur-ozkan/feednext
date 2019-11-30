@@ -1,4 +1,7 @@
+// Nest dependencies
 import { ApiModelProperty } from '@nestjs/swagger'
+
+// Other dependencies
 import { IsNotEmpty, IsMongoId } from 'class-validator'
 
 export class CreateEntryDto {

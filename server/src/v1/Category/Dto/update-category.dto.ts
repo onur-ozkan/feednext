@@ -1,4 +1,7 @@
+// Nest dependencies
 import { ApiModelProperty } from '@nestjs/swagger'
+
+// Other dependencies
 import { MaxLength, IsOptional, IsMongoId, IsBoolean } from 'class-validator'
 
 export class UpdateCategoryDto {

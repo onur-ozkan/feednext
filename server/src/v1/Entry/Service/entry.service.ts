@@ -1,5 +1,8 @@
+// Nest dependencies
 import { Injectable, HttpException, BadRequestException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+
+// Local files
 import { EntriesRepository } from 'src/shared/Repositories/entries.repository'
 import { EntriesEntity } from 'src/shared/Entities/entries.entity'
 import { OkException } from 'src/shared/Filters/ok-exception.filter'

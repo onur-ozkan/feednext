@@ -1,6 +1,9 @@
+// Nest dependencies
 import { Get, Param, Controller, Body, Patch, Put, UseGuards, Headers, BadRequestException, HttpException, Post, Query } from '@nestjs/common'
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthGuard } from '@nestjs/passport'
+
+// Local files
 import { currentUserService } from 'src/shared/Services/current-user.service'
 import { UserService } from '../Service/user.service'
 import { UpdateUserDto } from '../Dto/update-user.dto'

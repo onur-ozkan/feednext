@@ -1,6 +1,9 @@
+// Nest dependencies
 import { Controller, Post, Body, HttpException, UseGuards, Param, Get, Delete, Query, Patch } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
+
+// Local files
 import { RolesGuard } from 'src/shared/Guards/roles.guard'
 import { Roles } from 'src/shared/Decorators/roles.decorator'
 import { CreateCategoryDto } from '../Dto/create-category.dto'

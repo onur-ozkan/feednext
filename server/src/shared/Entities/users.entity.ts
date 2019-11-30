@@ -1,3 +1,4 @@
+// Other dependencies
 import {
     Column,
     Entity,
@@ -7,7 +8,6 @@ import {
     UpdateDateColumn,
     BeforeInsert,
 } from 'typeorm'
-import { IsEmail } from 'class-validator'
 import * as crypto from 'crypto'
 
 @Entity({ name: 'Users' })
@@ -44,7 +44,6 @@ export class UsersEntity {
         length: 50,
         unique: true,
     })
-    @IsEmail()
     email: string
 
     @Column({type: 'tinyint'})

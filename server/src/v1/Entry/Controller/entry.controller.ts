@@ -1,8 +1,11 @@
+// Nest dependencies
 import { Controller, Headers, Get, Param, HttpException, UseGuards, Post, Body, Query, Patch, Delete } from '@nestjs/common'
-import { EntryService } from '../Service/entry.service'
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
-import { RolesGuard } from 'src/shared/Guards/roles.guard'
 import { AuthGuard } from '@nestjs/passport'
+
+// Local files
+import { EntryService } from '../Service/entry.service'
+import { RolesGuard } from 'src/shared/Guards/roles.guard'
 import { Roles } from 'src/shared/Decorators/roles.decorator'
 import { CreateEntryDto } from '../Dto/create-entry.dto'
 import { currentUserService } from 'src/shared/Services/current-user.service'

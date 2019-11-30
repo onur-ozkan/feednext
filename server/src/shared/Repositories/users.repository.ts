@@ -1,6 +1,14 @@
+// Nest dependencies
 import { NotFoundException, BadRequestException, UnprocessableEntityException } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
+
+// Other dependencies
+import * as crypto from 'crypto'
+import * as jwt from 'jsonwebtoken'
+import * as kmachine from 'keymachine'
 import { Repository, EntityRepository } from 'typeorm'
+
+// Local files
 import { UsersEntity } from '../Entities/users.entity'
 import { MailService } from '../Services/mail.service'
 import { UpdateUserDto } from 'src/v1/User/Dto/update-user.dto'
@@ -8,9 +16,6 @@ import { MailSenderBody } from '../Services/Interfaces/mail.sender.interface'
 import { CreateAccountDto } from 'src/v1/Auth/Dto/create-account.dto'
 import { LoginDto } from 'src/v1/Auth/Dto/login.dto'
 import { AccountRecoveryDto } from 'src/v1/Auth/Dto/account-recovery.dto'
-import * as crypto from 'crypto'
-import * as jwt from 'jsonwebtoken'
-import * as kmachine from 'keymachine'
 import { configService } from '../Services/config.service'
 
 @EntityRepository(UsersEntity)

@@ -1,6 +1,13 @@
+// Nest dependencies
 import { Injectable, HttpStatus, HttpException, BadRequestException } from '@nestjs/common'
 import { JwtService, JwtModule } from '@nestjs/jwt'
 import { InjectRepository } from '@nestjs/typeorm'
+
+// Other dependencies
+import * as crypto from 'crypto'
+import * as jwt from 'jsonwebtoken'
+
+// Local files
 import { configService } from 'src/shared/Services/config.service'
 import { UsersEntity } from 'src/shared/Entities/users.entity'
 import { RedisService } from 'src/shared/Services/redis.service'
@@ -12,8 +19,6 @@ import { CreateAccountDto } from '../Dto/create-account.dto'
 import { LoginDto } from '../Dto/login.dto'
 import { AccountRecoveryDto } from '../Dto/account-recovery.dto'
 import { serializerService } from 'src/shared/Services/serializer.service'
-import * as crypto from 'crypto'
-import * as jwt from 'jsonwebtoken'
 
 @Injectable()
 export class AuthService {

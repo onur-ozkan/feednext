@@ -1,9 +1,14 @@
+// Nest dependencies
 import { NotFoundException, BadRequestException, UnprocessableEntityException } from '@nestjs/common'
-import { EntriesEntity } from '../Entities/entries.entity'
-import { CreateEntryDto } from 'src/v1/Entry/Dto/create-entry.dto'
+
+// Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
 import { Validator } from 'class-validator'
 import { ObjectID } from 'mongodb'
+
+// Local files
+import { EntriesEntity } from '../Entities/entries.entity'
+import { CreateEntryDto } from 'src/v1/Entry/Dto/create-entry.dto'
 
 @EntityRepository(EntriesEntity)
 export class EntriesRepository extends Repository<EntriesEntity> {

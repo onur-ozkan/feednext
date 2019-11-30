@@ -1,16 +1,20 @@
+// Nest dependencies
 import { NestFactory } from '@nestjs/core'
 import { ValidationPipe } from '@nestjs/common'
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+
+// Other dependencies
 import * as apm from 'swagger-stats'
 import * as fastifyRateLimit from 'fastify-rate-limit'
 import * as helmet from 'fastify-helmet'
 import * as compress from 'fastify-compress'
+
+// Local files
 import { AppModule } from './app.module'
 import { configService } from './shared/Services/config.service'
 
 declare const module: any
-
 async function bootstrap() {
     const fastifyAdapter = new FastifyAdapter({
         logger: (configService.getEnv('MODE')) === 'PROD' ? false : true,

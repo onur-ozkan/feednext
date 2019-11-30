@@ -1,4 +1,7 @@
+// Nest dependencies
 import { Routes } from 'nest-router'
+
+// Local files
 import { V1Module } from './v1/v1.module'
 import { AuthModule } from './v1/Auth/auth.module'
 import { CategoryModule } from './v1/Category/category.module'

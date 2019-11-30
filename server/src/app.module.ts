@@ -1,6 +1,9 @@
+// Nest dependencies
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { RouterModule } from 'nest-router'
+
+// Local files
 import { versionRoutes } from 'src/version.routes'
 import { configService } from 'src/shared/Services/config.service'
 import { RedisService } from 'src/shared/Services/redis.service'

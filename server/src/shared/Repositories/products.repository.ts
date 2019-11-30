@@ -1,9 +1,14 @@
+// Nest dependencies
 import { UnprocessableEntityException, BadRequestException, NotFoundException } from '@nestjs/common'
+
+// Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
-import { ProductsEntity } from '../Entities/products.entity'
-import { CreateProductDto } from 'src/v1/Product/Dto/create-product.dto'
 import { ObjectID } from 'mongodb'
 import { Validator } from 'class-validator'
+
+// Local files
+import { ProductsEntity } from '../Entities/products.entity'
+import { CreateProductDto } from 'src/v1/Product/Dto/create-product.dto'
 import { UpdateProductDto } from 'src/v1/Product/Dto/update-product.dto'
 
 @EntityRepository(ProductsEntity)

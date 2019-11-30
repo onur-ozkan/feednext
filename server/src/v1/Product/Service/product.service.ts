@@ -1,6 +1,9 @@
+// Nest dependencies
 import { Injectable, HttpException, BadRequestException } from '@nestjs/common'
-import { ProductsRepository } from 'src/shared/Repositories/products.repository'
 import { InjectRepository } from '@nestjs/typeorm'
+
+// Local files
+import { ProductsRepository } from 'src/shared/Repositories/products.repository'
 import { CreateProductDto } from '../Dto/create-product.dto'
 import { ProductsEntity } from 'src/shared/Entities/products.entity'
 import { OkException } from 'src/shared/Filters/ok-exception.filter'

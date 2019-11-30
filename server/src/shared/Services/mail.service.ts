@@ -1,5 +1,10 @@
+// Nest dependencies
 import { Injectable } from '@nestjs/common'
+
+// Other dependencies
 import * as nodemailer from 'nodemailer'
+
+// Local files
 import { MailSenderBody } from './Interfaces/mail.sender.interface'
 import { configService } from './config.service'
 

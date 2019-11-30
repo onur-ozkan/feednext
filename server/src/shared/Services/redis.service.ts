@@ -1,4 +1,7 @@
+// Other dependencies
 import * as Redis from 'ioredis'
+
+// Local files
 import { configService } from './config.service'
 
 export class RedisService {

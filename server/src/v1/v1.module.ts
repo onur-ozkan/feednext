@@ -1,4 +1,7 @@
+// Nest dependencies
 import { Module, MiddlewareConsumer } from '@nestjs/common'
+
+// Local files
 import { BlacklistMiddleware } from 'src/shared/Middleware/blacklist.middleware'
 import { RedisService } from 'src/shared/Services/redis.service'
 import { UserModule } from './User/user.module'

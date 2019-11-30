@@ -1,4 +1,7 @@
+// Nest dependencies
 import { ApiModelProperty } from '@nestjs/swagger'
+
+// Other dependencies
 import { IsEmail, IsNotEmpty, NotContains, Length, MaxLength } from 'class-validator'
 
 export class CreateAccountDto {

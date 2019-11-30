@@ -1,7 +1,10 @@
+// Nest dependencies
 import { Module } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { PassportModule } from '@nestjs/passport'
+
+// Local files
 import { UsersEntity } from 'src/shared/Entities/users.entity'
 import { RedisService } from 'src/shared/Services/redis.service'
 import { UsersRepository } from 'src/shared/Repositories/users.repository'
