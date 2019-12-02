@@ -1,6 +1,25 @@
 version: '3.5'
 
+networks:
+  app-network:
+    driver: ${APP_NETWORK}
+
 services:
+  # ------------------------------------------------------------
+  # Nginx - Webserver
+  # ------------------------------------------------------------
+  webserver:
+    image: nginx:mainline-alpine
+    container_name: webserver
+    restart: unless-stopped
+    ports:
+      - ${BACKEND_PORT}:80
+    volumes:
+      - ./.docker/nginx/conf.d/:/etc/nginx/conf.d
+    networks:
+      - app-network
+
+
   # ------------------------------------------------------------
   # Node - Backend
   # ------------------------------------------------------------
@@ -15,17 +34,18 @@ services:
       - ./server:/home/node/app
     ports:
       - ${BACKEND_EXPOSE_PORT}:${BACKEND_APP_PORT}
-    links:
-      - mongo
-      - redis
     command: >
       sh -c "npm ci && npm run start:${START_BACKEND_AS}"
     depends_on:
       - redis
       - mongo
+      - webserver
+    networks:
+      - app-network
+
 
   # ------------------------------------------------------------
-  # Redis
+  # Redis - Cache Management
   # ------------------------------------------------------------
   redis:
     image: redis:${REDIS_SERVER}-alpine
@@ -37,9 +57,12 @@ services:
 
     ports:
       - ${LOCAL_LISTEN_ADDR}${HOST_PORT_REDIS}:6379
+    networks:
+      - app-network
+
 
   # ------------------------------------------------------------
-  # MongoDB
+  # MongoDB - Database
   # ------------------------------------------------------------
   mongo:
     image: mongo:${MONGO_SERVER}
@@ -51,4 +74,5 @@ services:
     volumes:
       # Mount MongoDB Data directory
       - ./.docker/data/mongo:/data/db
-
+    networks:
+      - app-network
