@@ -10,7 +10,7 @@ import { CreateCategoryDto } from '../Dto/create-category.dto'
 import { CategoryService } from '../Service/category.service'
 import { UpdateCategoryDto } from '../Dto/update-category.dto'
 
-@ApiUseTags('v1/category')
+@ApiUseTags(`v1/category`)
 @Controller()
 @UseGuards(RolesGuard)
 export class CategoryController {
@@ -18,37 +18,37 @@ export class CategoryController {
         private readonly categoryService: CategoryService,
     ) {}
 
-    @Get(':categoryId')
-    getCategory(@Param('categoryId') categoryId: string): Promise<HttpException> {
+    @Get(`:categoryId`)
+    getCategory(@Param(`categoryId`) categoryId: string): Promise<HttpException> {
         return this.categoryService.getCategory(categoryId)
     }
 
-    @Get('all')
+    @Get(`all`)
     getCategoryList(@Query() query: { limit: number, skip: number, orderBy: any }): Promise<HttpException> {
         return this.categoryService.getCategoryList(query)
     }
 
     @ApiBearerAuth()
-    @UseGuards(AuthGuard('jwt'))
-    @Post('create-category')
+    @UseGuards(AuthGuard(`jwt`))
+    @Post(`create-category`)
     @Roles(3)
     createCategory(@Body() dto: CreateCategoryDto): Promise<HttpException> {
         return this.categoryService.createCategory(dto)
     }
 
     @ApiBearerAuth()
-    @UseGuards(AuthGuard('jwt'))
-    @Patch(':categoryId')
+    @UseGuards(AuthGuard(`jwt`))
+    @Patch(`:categoryId`)
     @Roles(4)
-    updateCategory(@Param('categoryId') categoryId: string, @Body() dto: UpdateCategoryDto): Promise<HttpException> {
+    updateCategory(@Param(`categoryId`) categoryId: string, @Body() dto: UpdateCategoryDto): Promise<HttpException> {
         return this.categoryService.updateCategory(categoryId, dto)
     }
 
     @ApiBearerAuth()
-    @UseGuards(AuthGuard('jwt'))
-    @Delete(':categoryId')
+    @UseGuards(AuthGuard(`jwt`))
+    @Delete(`:categoryId`)
     @Roles(5)
-    deleteCategory(@Param('categoryId') categoryId: string): Promise<HttpException> {
+    deleteCategory(@Param(`categoryId`) categoryId: string): Promise<HttpException> {
         return this.categoryService.deleteCategory(categoryId)
     }
 }

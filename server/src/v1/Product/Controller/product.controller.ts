@@ -11,48 +11,48 @@ import { currentUserService } from 'src/shared/Services/current-user.service'
 import { Roles } from 'src/shared/Decorators/roles.decorator'
 import { UpdateProductDto } from '../Dto/update-product.dto'
 
-@ApiUseTags('v1/product')
+@ApiUseTags(`v1/product`)
 @Controller()
 @UseGuards(RolesGuard)
 @Controller()
 export class ProductController {
     constructor(private readonly productService: ProductService) {}
 
-    @Get(':productId')
-    getProduct(@Param('productId') productId: string): Promise<HttpException> {
+    @Get(`:productId`)
+    getProduct(@Param(`productId`) productId: string): Promise<HttpException> {
         return this.productService.getProduct(productId)
     }
 
-    @Get('all')
+    @Get(`all`)
     getProductList(@Query() query: { limit: number, skip: number, orderBy: any }): Promise<HttpException> {
         return this.productService.getProductList(query)
     }
 
     @ApiBearerAuth()
-    @UseGuards(AuthGuard('jwt'))
-    @Post('create-product')
+    @UseGuards(AuthGuard(`jwt`))
+    @Post(`create-product`)
     @Roles(1)
-    createProduct(@Headers('authorization') bearer: string, @Body() dto: CreateProductDto): Promise<HttpException> {
-        return this.productService.createProduct(currentUserService.getCurrentUser(bearer, 'username'), dto)
+    createProduct(@Headers(`authorization`) bearer: string, @Body() dto: CreateProductDto): Promise<HttpException> {
+        return this.productService.createProduct(currentUserService.getCurrentUser(bearer, `username`), dto)
     }
 
     @ApiBearerAuth()
-    @UseGuards(AuthGuard('jwt'))
-    @Patch(':productId')
+    @UseGuards(AuthGuard(`jwt`))
+    @Patch(`:productId`)
     @Roles(4)
     updateProduct(
-        @Headers('authorization') bearer: string,
-        @Param('productId') productId: string,
+        @Headers(`authorization`) bearer: string,
+        @Param(`productId`) productId: string,
         @Body() dto: UpdateProductDto,
     ): Promise<HttpException> {
-        return this.productService.updateProduct(currentUserService.getCurrentUser(bearer, 'username'), productId, dto)
+        return this.productService.updateProduct(currentUserService.getCurrentUser(bearer, `username`), productId, dto)
     }
 
     @ApiBearerAuth()
-    @UseGuards(AuthGuard('jwt'))
-    @Delete(':productId')
+    @UseGuards(AuthGuard(`jwt`))
+    @Delete(`:productId`)
     @Roles(5)
-    deleteProduct(@Param('productId') productId: string): Promise<HttpException> {
+    deleteProduct(@Param(`productId`) productId: string): Promise<HttpException> {
         return this.productService.deleteProduct(productId)
     }
 }

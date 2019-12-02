@@ -30,7 +30,7 @@ export class UserService {
         const profile: UsersEntity = await this.usersRepository.getUserByUsername(usernameParam)
         const id: string = String(profile.id)
 
-        const properties: string[] = ['id', 'password', 'is_active', 'is_verified']
+        const properties: string[] = [`id`, `password`, `is_active`, `is_verified`]
         await serializerService.deleteProperties(profile, properties)
 
         throw new OkException(`user_profile`, profile, `User ${profile.username} is successfully loaded.`, id)
@@ -40,7 +40,7 @@ export class UserService {
         const profile = await this.usersRepository.updateUser(usernameParam, dto)
         const id = String(profile.id)
 
-        const properties: string[] = ['id', 'password', 'is_active', 'is_verified']
+        const properties: string[] = [`id`, `password`, `is_active`, `is_verified`]
         await serializerService.deleteProperties(profile, properties)
 
         throw new OkException(`updated_profile`, profile, `User ${profile.username} is successfully updated.`, id)
@@ -92,9 +92,9 @@ export class UserService {
             username: user.username,
             activationToken: true,
             exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
-        }, configService.getEnv('SECRET_KEY'))
+        }, configService.getEnv(`SECRET_KEY`))
 
-        const activationUrl: string = `${configService.getEnv('APP_URL')}/api/v1/user/activate-user?token=${activateToken}`
+        const activationUrl: string = `${configService.getEnv(`APP_URL`)}/api/v1/user/activate-user?token=${activateToken}`
         const mailBody: MailSenderBody = {
             receiver: `${dto.email}`,
             subject: `RE-Enable Your Account [${user.username}]`,

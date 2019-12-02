@@ -7,7 +7,7 @@ import { IsEmail, IsNotEmpty, NotContains, Length, MaxLength } from 'class-valid
 export class CreateAccountDto {
     @ApiModelProperty({
         required: true,
-        example: 'Example Name',
+        example: `Example Name`,
     })
     @IsNotEmpty()
     @MaxLength(50)
@@ -15,14 +15,14 @@ export class CreateAccountDto {
 
     @ApiModelProperty({
         required: true,
-        example: 'example@gmail.com',
+        example: `example@gmail.com`,
     })
     @IsEmail()
     email: string
 
     @ApiModelProperty({
         required: true,
-        example: 'your_username',
+        example: `your_username`,
     })
     @IsNotEmpty()
     @NotContains(' ')
@@ -31,10 +31,10 @@ export class CreateAccountDto {
 
     @ApiModelProperty({
         required: true,
-        example: 'your_password123',
+        example: `your_password123`,
     })
     @IsNotEmpty()
-    @NotContains(' ')
+    @NotContains(` `)
     @Length(6, 15)
     password: string
 }

@@ -21,15 +21,15 @@ export class ConfigService {
     }
 
     public isProduction(): boolean {
-        return this.getEnv('MODE') === 'PROD'
+        return this.getEnv(`MODE`) === `PROD`
     }
 
     public getTypeOrmConfig(): TypeOrmModuleOptions {
         return {
-            type: 'mongodb',
+            type: `mongodb`,
 
-            host: this.getEnv('DB_HOST'),
-            database: this.getEnv('DB_NAME'),
+            host: this.getEnv(`DB_HOST`),
+            database: this.getEnv(`DB_NAME`),
             synchronize: true,
             useUnifiedTopology: true,
             entities: [UsersEntity, CategoriesEntity, EntriesEntity, ProductsEntity],

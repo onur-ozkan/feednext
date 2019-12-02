@@ -7,7 +7,7 @@ import { MaxLength, IsOptional, IsMongoId, IsBoolean } from 'class-validator'
 export class UpdateCategoryDto {
     @ApiModelProperty({
         required: false,
-        example: 'Example Name',
+        example: `Example Name`,
     })
     @IsOptional()
     @MaxLength(50)
@@ -15,7 +15,7 @@ export class UpdateCategoryDto {
 
     @ApiModelProperty({
       required: false,
-      example: '507f1f77bcf86cd799439011',
+      example: `507f1f77bcf86cd799439011`,
     })
     @IsOptional()
     @IsMongoId()
@@ -23,7 +23,7 @@ export class UpdateCategoryDto {
 
     @ApiModelProperty({
       required: false,
-      example: 'true || false',
+      example: `true || false`,
     })
     @IsBoolean()
     @IsOptional()

@@ -8,7 +8,7 @@ import {
     UpdateDateColumn,
 } from 'typeorm'
 
-@Entity({ name: 'Products' })
+@Entity(`Products`)
 export class ProductsEntity {
     constructor(partial: Partial<ProductsEntity>) {
         Object.assign(this, partial)
@@ -21,19 +21,19 @@ export class ProductsEntity {
     category_id: string
 
     @Column({
-        type: 'varchar',
+        type: `varchar`,
         length: 60,
     })
     name: string
 
     @Column({
-        type: 'varchar',
+        type: `varchar`,
         length: 17,
     })
     opened_by: string
 
     @Column({
-        type: 'varchar',
+        type: `varchar`,
         length: 17,
     })
     updated_by: string

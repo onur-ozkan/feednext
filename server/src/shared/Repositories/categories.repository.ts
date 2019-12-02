@@ -31,7 +31,7 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
     }
 
     async getCategoryList(query: { limit: number, skip: number, orderBy: any }): Promise<{categories: CategoriesEntity[], count: number}> {
-        const orderBy = query.orderBy || 'ASC'
+        const orderBy = query.orderBy || `ASC`
 
         try {
             const [categories, total] = await this.findAndCount({

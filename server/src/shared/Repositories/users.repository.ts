@@ -88,8 +88,8 @@ export class UsersRepository extends Repository<UsersEntity> {
 
         if (dto.fullName) profile.full_name = dto.fullName
         if (dto.password) {
-            const hashedPassword = crypto.createHmac('sha256', dto.password).digest('hex')
-            if (profile.password !== crypto.createHmac('sha256', dto.oldPassword).digest('hex')) {
+            const hashedPassword = crypto.createHmac(`sha256`, dto.password).digest(`hex`)
+            if (profile.password !== crypto.createHmac(`sha256`, dto.oldPassword).digest(`hex`)) {
                 throw new BadRequestException(`Old password does not match.`)
             }
             profile.password = hashedPassword
@@ -101,9 +101,9 @@ export class UsersRepository extends Repository<UsersEntity> {
                 newEmail: dto.email,
                 verifyUpdateEmailToken: true,
                 exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
-            }, configService.getEnv('SECRET_KEY'))
+            }, configService.getEnv(`SECRET_KEY`))
 
-            const activationUrl: string = `${configService.getEnv('APP_URL')}/api/v1/user/verfiy-update-email?token=${activateToken}`
+            const activationUrl: string = `${configService.getEnv(`APP_URL`)}/api/v1/user/verfiy-update-email?token=${activateToken}`
             const mailBody: MailSenderBody = {
                 receiver: `${dto.email}`,
                 subject: `Verify Your New Email [${profile.username}]`,

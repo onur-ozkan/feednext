@@ -7,7 +7,7 @@ import { IsEmail, IsNotEmpty } from 'class-validator'
 export class AccountRecoveryDto {
     @ApiModelProperty({
         required: true,
-        example: 'example@gmail.com',
+        example: `example@gmail.com`,
     })
     @IsNotEmpty()
     @IsEmail()

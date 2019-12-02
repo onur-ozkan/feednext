@@ -7,7 +7,7 @@ import { IsEmail, IsNotEmpty, IsOptional } from 'class-validator'
 export class LoginDto {
     @ApiModelProperty({
         required: false,
-        example: 'example@gmail.com',
+        example: `example@gmail.com`,
     })
     @IsOptional()
     @IsEmail()
@@ -15,14 +15,14 @@ export class LoginDto {
 
     @ApiModelProperty({
         required: false,
-        example: 'your_username',
+        example: `your_username`,
     })
     @IsOptional()
     username: string
 
     @ApiModelProperty({
         required: true,
-        example: 'your_password123',
+        example: `your_password123`,
     })
     @IsNotEmpty()
     password: string

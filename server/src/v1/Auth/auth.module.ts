@@ -19,13 +19,13 @@ import { configService } from 'src/shared/Services/config.service'
     imports: [
         TypeOrmModule.forFeature([UsersEntity, UsersRepository]),
         UserModule,
-        PassportModule.register({ defaultStrategy: 'jwt' }),
+        PassportModule.register({ defaultStrategy: `jwt` }),
         JwtModule.registerAsync({
             useFactory: () => {
                 return {
-                    secret: configService.getEnv('SECRET_KEY'),
+                    secret: configService.getEnv(`SECRET_KEY`),
                     signOptions: {
-                        ...({ expiresIn: configService.getEnv('JWT_EXPIRATION_TIME') }),
+                        ...({ expiresIn: configService.getEnv(`JWT_EXPIRATION_TIME`) }),
                     },
                 }
             },

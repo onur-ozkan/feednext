@@ -30,7 +30,7 @@ export class EntriesRepository extends Repository<EntriesEntity> {
     }
 
     async getEntryList(query: { limit: number, skip: number, orderBy: any }): Promise<{entries: EntriesEntity[], count: number}> {
-        const orderBy = query.orderBy || 'ASC'
+        const orderBy = query.orderBy || `ASC`
 
         try {
             const [entries, total] = await this.findAndCount({

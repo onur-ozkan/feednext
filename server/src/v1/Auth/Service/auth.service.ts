@@ -39,9 +39,9 @@ export class AuthService {
                 email: dto.email,
                 verificationToken: true,
                 exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
-            }, configService.getEnv('SECRET_KEY'))
+            }, configService.getEnv(`SECRET_KEY`))
 
-            const verificationUrl: string = `${configService.getEnv('APP_URL')}/api/v1/auth/account-verification?token=${verifyToken}`
+            const verificationUrl: string = `${configService.getEnv(`APP_URL`)}/api/v1/auth/account-verification?token=${verifyToken}`
 
             const mailBody: MailSenderBody = {
                 receiver: dto.email,
@@ -53,7 +53,7 @@ export class AuthService {
 
         const id: string = String(result.id)
 
-        const properties: string[] = ['id', 'password', 'updated_at', 'is_verified']
+        const properties: string[] = [`id`, `password`, `updated_at`, `is_verified`]
         await serializerService.deleteProperties(result, properties)
 
         throw new OkException(`account_informations`, result, `Account has been registered successfully to the database.`, id)
@@ -71,7 +71,7 @@ export class AuthService {
         })
 
         const id: any = userEntity.id
-        const properties: string[] = ['id', 'password' ]
+        const properties: string[] = [`id`, `password`]
         await serializerService.deleteProperties(userEntity, properties)
 
         const responseData: object = {

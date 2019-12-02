@@ -1,12 +1,13 @@
 // Nest dependencies
 import { ApiModelProperty } from '@nestjs/swagger'
+
 // Other dependencies
 import { IsEmail, IsOptional, Length, MaxLength, NotContains, IsNotEmpty, ValidateIf } from 'class-validator'
 
 export class UpdateUserDto {
     @ApiModelProperty({
         required: false,
-        example: 'Example Name',
+        example: `Example Name`,
     })
     @IsOptional()
     @MaxLength(50)
@@ -14,7 +15,7 @@ export class UpdateUserDto {
 
     @ApiModelProperty({
         required: false,
-        example: 'example@gmail.com',
+        example: `example@gmail.com`,
     })
     @IsOptional()
     @IsEmail()
@@ -22,7 +23,7 @@ export class UpdateUserDto {
 
     @ApiModelProperty({
         required: true,
-        example: 'your_password123',
+        example: `your_password123`,
     })
     @ValidateIf(o => o.password !== undefined )
     @IsNotEmpty()
@@ -32,7 +33,7 @@ export class UpdateUserDto {
 
     @ApiModelProperty({
         required: false,
-        example: 'your_password123',
+        example: `your_password123`,
     })
     @IsOptional()
     @NotContains(' ')

@@ -32,7 +32,7 @@ export class ProductsRepository extends Repository<ProductsEntity> {
     }
 
     async getProductList(query: { limit: number, skip: number, orderBy: any }): Promise<{products: ProductsEntity[], count: number}> {
-        const orderBy = query.orderBy || 'ASC'
+        const orderBy = query.orderBy || `ASC`
 
         try {
             const [products, total] = await this.findAndCount({

@@ -23,6 +23,6 @@ import { ProductModule } from './Product/product.module'
 
 export class V1Module {
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(BlacklistMiddleware).forRoutes('v1/auth/me', 'v1/auth/signout')
+        consumer.apply(BlacklistMiddleware).forRoutes(`v1/auth/me`, `v1/auth/signout`)
     }
 }

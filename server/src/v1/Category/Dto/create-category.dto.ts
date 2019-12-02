@@ -7,7 +7,7 @@ import { IsNotEmpty, MaxLength, IsOptional, IsMongoId, IsBoolean } from 'class-v
 export class CreateCategoryDto {
     @ApiModelProperty({
         required: true,
-        example: 'Example Name',
+        example: `Example Name`,
     })
     @IsNotEmpty()
     @MaxLength(50)
@@ -15,7 +15,7 @@ export class CreateCategoryDto {
 
     @ApiModelProperty({
       required: false,
-      example: '507f1f77bcf86cd799439011',
+      example: `507f1f77bcf86cd799439011`,
     })
     @IsMongoId()
     @IsOptional()
@@ -23,7 +23,7 @@ export class CreateCategoryDto {
 
     @ApiModelProperty({
       required: false,
-      example: 'true || false',
+      example: `true || false`,
     })
     @IsBoolean()
     @IsOptional()

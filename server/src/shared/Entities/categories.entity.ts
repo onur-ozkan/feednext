@@ -9,7 +9,7 @@ import {
     BeforeInsert,
 } from 'typeorm'
 
-@Entity('Categories')
+@Entity(`Categories`)
 export class CategoriesEntity {
     constructor(partial: Partial<CategoriesEntity>) {
         Object.assign(this, partial)

@@ -10,7 +10,7 @@ import {
 } from 'typeorm'
 import * as crypto from 'crypto'
 
-@Entity({ name: 'Users' })
+@Entity(`Users`)
 export class UsersEntity {
     constructor(partial: Partial<UsersEntity>) {
         Object.assign(this, partial)
@@ -37,7 +37,7 @@ export class UsersEntity {
 
     @BeforeInsert()
     hashPassword() {
-        this.password = crypto.createHmac('sha256', this.password).digest('hex')
+        this.password = crypto.createHmac(`sha256`, this.password).digest(`hex`)
     }
 
     @Column({
@@ -46,7 +46,7 @@ export class UsersEntity {
     })
     email: string
 
-    @Column({type: 'tinyint'})
+    @Column({type: `tinyint`})
     role: number
 
     @Column()
