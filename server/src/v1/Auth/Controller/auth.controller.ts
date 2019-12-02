@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Controller, Post, Body, UseGuards, Get, Put, Request, HttpException, Query } from '@nestjs/common'
+import { Controller, Headers, Post, Body, UseGuards, Get, Put, Request, HttpException, Query } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
 
@@ -9,6 +9,8 @@ import { AuthService } from '../Service/auth.service'
 import { CreateAccountDto } from '../Dto/create-account.dto'
 import { LoginDto } from '../Dto/login.dto'
 import { AccountRecoveryDto } from '../Dto/account-recovery.dto'
+import { currentUserService } from 'src/shared/Services/current-user.service'
+import { serializerService } from 'src/shared/Services/serializer.service'
 
 @ApiUseTags('v1/auth')
 @Controller()
@@ -47,8 +49,9 @@ export class AuthController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Get('me')
-    async getLoggedInUser(@Request() request): Promise<HttpException> {
-        const data = await request.user
+    async getLoggedInUser(@Headers('authorization') bearer: string): Promise<HttpException> {
+        const data = await currentUserService.getCurrentUser(bearer, `all`)
+        serializerService.deleteProperties(data, ['iat', 'exp'])
         throw new OkException(`profile`, data)
     }
 }
