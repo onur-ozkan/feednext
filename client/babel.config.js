@@ -2,8 +2,7 @@ module.exports = (api) => {
   api.cache(true)
   return {
     presets: [
-      'next/babel',
-      '@zeit/next-typescript/babel'
+      'next/babel'
     ],
     plugins: [
       '@babel/proposal-class-properties',

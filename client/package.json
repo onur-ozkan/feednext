@@ -42,7 +42,6 @@
     "@types/react": "^16.9.14",
     "@types/react-redux": "^7.1.5",
     "@zeit/next-css": "^1.0.1",
-    "@zeit/next-typescript": "^1.1.1",
     "babel-jest": "^24.9.0",
     "babel-plugin-transform-define": "^2.0.0",
     "enzyme": "^3.10.0",
