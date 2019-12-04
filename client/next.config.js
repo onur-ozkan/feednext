@@ -12,7 +12,6 @@ module.exports = withCSS(
         }))
       }
       return config
-    },
-    cssModules: true,
+    }
   }
 )
