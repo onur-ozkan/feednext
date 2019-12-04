@@ -3,6 +3,7 @@ import * as React from 'react'
 import {Provider} from 'react-redux'
 import App, {Container} from 'next/app'
 import {getStore} from '../src/store'
+import 'antd/dist/antd.css'
 
 export default class extends App {
   static async getInitialProps({Component, router, ctx}) {
@@ -14,7 +15,7 @@ export default class extends App {
     if (Component.getInitialProps) {
       return {
         ...out,
-        pageProps: {
+        pageProps: {  
           ...await Component.getInitialProps(ctx)
         }
       }
@@ -28,11 +29,9 @@ export default class extends App {
     const {Component, pageProps} = props
 
     return (
-      <Container>
-        <Provider store={getStore(undefined, props.server)}>
+      <Provider store={getStore(undefined, props.server)}>
           <Component {...pageProps} />
-        </Provider>
-      </Container>
+      </Provider>
     )
   }
 }
