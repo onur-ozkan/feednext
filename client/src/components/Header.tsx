@@ -1,10 +1,19 @@
 import * as React from 'react'
 import {Nav} from './Nav'
+import { Layout } from 'antd';
 
-export const Header: React.FunctionComponent = props =>
-  <div>
-    <h2>
-      header
-    </h2>
-    <Nav/>
-  </div>
+const { Header } = Layout;
+
+const HeaderSection: React.FunctionComponent = (
+  props
+): JSX.Element => {
+
+  return (
+    <Header className="header">
+      <div className="logo" />
+      <Nav/>
+    </Header>
+  );
+};
+
+export { HeaderSection };
