@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { HeaderSection } from './Header'
-import {Footer} from './Footer'
+import { HeaderSection } from '../Header/Header'
+import {Footer} from '../Footer/Footer'
 import Head from 'next/head'
 
 export const Layout: React.FunctionComponent = props =>
