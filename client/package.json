@@ -1,9 +1,8 @@
 {
-  "name": "next.js-typescript-starter-kit",
-  "version": "8.1.0",
-  "main": "index.js",
-  "repository": "https://github.com/deptno/next.js-typescript-starter-kit",
-  "author": "Bonggyun Lee <deptno@gmail.com>",
+  "name": "item-dictionary-client",
+  "version": "0.0.1",
+  "description": "Client side of item-dictionary",
+  "author": "Onur Ozkan",
   "license": "MIT",
   "private": true,
   "scripts": {
