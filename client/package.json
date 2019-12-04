@@ -52,6 +52,10 @@
     "typescript": "^3.7.3",
     "webpack-bundle-analyzer": "^3.6.0"
   },
+  "engines": {
+    "node": "12.13.1",
+    "npm": "6.12.1"
+  },
   "jest": {
     "moduleFileExtensions": [
       "ts",
