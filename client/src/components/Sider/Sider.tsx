@@ -6,9 +6,7 @@ const { Sider } = Layout
 
 export const SiderComponent: React.FunctionComponent = () => {
 
-    const [collapsed, setCollapsed]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(
-      false
-    )
+    const [collapsed, setCollapsed]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(false)
 
     const handleChange = (): void => setCollapsed(!collapsed)
 

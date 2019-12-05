@@ -1,19 +1,25 @@
-import * as React from 'react'
-import { HeaderSection } from '../Header/Header'
-import {Footer} from '../Footer/Footer'
-import Head from 'next/head'
+import React from 'react'
+import { HeaderComponent } from '../Header/Header'
+import { FooterComponent } from '../Footer/Footer'
+import { SiderComponent } from '../Sider/Sider'
+import { Layout } from 'antd'
 
-export const Layout: React.FunctionComponent = props =>
-  <div id="layout">
-    <Head>
-      <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1, shrink-to-fit=no"
-      />
-    </Head>
-    <HeaderSection/>
-    <main>
-      {props.children}
-    </main>
-    <Footer/>
-  </div>
+const { Content } = Layout
+
+export const LayoutComponent: React.FunctionComponent = props =>
+    <Layout style={{ minHeight: '100vh' }}>
+        <HeaderComponent/>
+        <Layout>
+            <SiderComponent/>
+            <Content
+                style={{
+                background: '#fff',
+                padding: 24,
+                margin: 0,
+                }}
+            >
+                {props.children}
+            </Content>
+        </Layout>
+        <FooterComponent/>
+    </Layout>

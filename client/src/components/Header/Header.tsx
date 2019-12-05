@@ -1,19 +1,16 @@
-import * as React from 'react'
+import React from 'react'
 import {Nav} from '../Nav/Nav'
-import { Layout } from 'antd';
+import { Layout } from 'antd'
 
-const { Header } = Layout;
+const { Header } = Layout
 
-const HeaderSection: React.FunctionComponent = (
-  props
-): JSX.Element => {
+const HeaderComponent: React.FunctionComponent = (props): JSX.Element => {
 
-  return (
-    <Header className="header">
-      <div className="logo" />
-      <Nav/>
-    </Header>
-  );
-};
+    return (
+        <Header style={{background: 'white', height: '55px'}} className="header">
+            <Nav/>
+        </Header>
+    )
+}
 
-export { HeaderSection };
+export { HeaderComponent }

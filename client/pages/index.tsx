@@ -1,8 +1,9 @@
 import * as React from 'react'
-import {Home} from '../src/components/Home/Home'
-import {Layout} from '../src/components/Layout/Layout'
+import { LayoutComponent } from '../src/components/Layout/Layout'
 
 export default props =>
-  <Layout>
-    <Home/>
-  </Layout>
+  <LayoutComponent>
+    <div>
+      Welcome page
+    </div>
+  </LayoutComponent>

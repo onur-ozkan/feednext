@@ -1,5 +1,5 @@
-const withCSS                = require('@zeit/next-css')
 const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer')
+const withCSS = require('@zeit/next-css')
 
 module.exports = withCSS(
   {

@@ -1,13 +1,13 @@
 import React from 'react'
 import Link from 'next/link'
-import { Menu} from 'antd';
+import { Menu} from 'antd'
 
 export const Nav: React.FunctionComponent = (props) =>
     <Menu
-        theme="dark"
+        theme="light"
         mode="horizontal"
         defaultSelectedKeys={['1']}
-        style={{ lineHeight: '64px' }}
+        style={{ lineHeight: '55px', textAlign: 'center' }}
     >
         <Menu.Item key="1">
             <Link href="/">
