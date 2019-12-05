@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, Dispatch, SetStateAction } from 'react'
 import { Layout, Menu, Icon } from 'antd'
 
 const { SubMenu } = Menu
@@ -6,11 +6,11 @@ const { Sider } = Layout
 
 export const SiderComponent: React.FunctionComponent = () => {
 
-    const [collapsed, setCollapsed] = useState(
+    const [collapsed, setCollapsed]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(
       false
     )
 
-    const handleChange = () => setCollapsed(!collapsed)
+    const handleChange = (): void => setCollapsed(!collapsed)
 
     return (
         <Sider theme="light" collapsible collapsed={collapsed} onCollapse={handleChange}>
