@@ -3,7 +3,7 @@ import App from 'next/app'
 import { Provider } from 'react-redux'
 import { getStore } from '../src/store'
 import 'isomorphic-fetch'
-import '../public/main.less'
+import '../public/style/main.less'
 
 export default class extends App {
     static async getInitialProps({Component, router, ctx}) {
