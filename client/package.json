@@ -18,8 +18,11 @@
     "ts:check": "tsc --noEmit"
   },
   "dependencies": {
+    "@zeit/next-less": "^1.0.1",
+    "antd": "3.26.0",
     "classnames": "^2.2.6",
     "isomorphic-fetch": "^2.2.1",
+    "less": "^3.10.3",
     "moment": "^2.24.0",
     "next": "^9.1.4",
     "react": "^16.12.0",
@@ -29,7 +32,6 @@
     "redux": "^4.0.4",
     "redux-logger": "^3.0.6",
     "redux-persist": "^4.9.1",
-    "antd": "3.26.0",
     "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
@@ -40,14 +42,11 @@
     "@types/node": "^12.12.14",
     "@types/react": "^16.9.14",
     "@types/react-redux": "^7.1.5",
-    "@zeit/next-css": "^1.0.1",
     "babel-jest": "^24.9.0",
     "babel-plugin-transform-define": "^2.0.0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.15.1",
     "jest": "^24.9.0",
-    "postcss": "^7.0.23",
-    "postcss-preset-env": "^6.7.0",
     "ts-jest": "^24.2.0",
     "typescript": "^3.7.3",
     "webpack-bundle-analyzer": "^3.6.0"
