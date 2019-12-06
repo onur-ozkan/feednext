@@ -1,7 +1,6 @@
 import React, { useState, Dispatch, SetStateAction } from 'react'
 import { Layout, Menu, Icon } from 'antd'
 
-const { SubMenu } = Menu
 const { Sider } = Layout
 
 export const SiderComponent: React.FunctionComponent = () => {
