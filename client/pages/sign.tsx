@@ -28,7 +28,7 @@ export default class Sign extends React.Component<{}, IComponentState> {
     render() {
         return (
             <div>
-                <Menu defaultSelectedKeys={['signin']} style={{ display: 'flex', justifyContent: 'center', fontSize: '16px' }} mode="horizontal">
+                <Menu defaultSelectedKeys={['signin']} style={{ display: 'flex', justifyContent: 'center' }} mode="horizontal">
                     <Menu.Item key="exit">
                         <Link href="/">
                             <a>
@@ -39,11 +39,11 @@ export default class Sign extends React.Component<{}, IComponentState> {
                     </Menu.Item>
                     <hr />
                     <Menu.Item onClick={() => this.setState({ isSignIn: false })} key="signup">
-                        <Icon style={{ fontSize: '16px' }} type="user-add" />
+                        <Icon type="user-add" />
                         Sign Up
                     </Menu.Item>
                     <Menu.Item onClick={() => this.setState({ isSignIn: true })} key="signin">
-                        <Icon style={{ fontSize: '16px' }} type="login" />
+                        <Icon type="login" />
                         Sign In
                     </Menu.Item>
                 </Menu>

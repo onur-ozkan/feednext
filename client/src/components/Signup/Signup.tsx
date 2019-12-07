@@ -72,7 +72,7 @@ const SignUpComponent: React.FC<FormComponentProps> = props => {
                 label="Fullname"
             >
                 {getFieldDecorator('fullname', {
-                    rules: [{ required: true, message: 'Please input your name and surname!', whitespace: false }],
+                    rules: [{ required: true, message: 'Please input your name and surname!', whitespace: true }],
                 })(<Input />)}
             </Form.Item>
             <Form.Item
@@ -85,8 +85,8 @@ const SignUpComponent: React.FC<FormComponentProps> = props => {
                     </span>
                 }
             >
-                {getFieldDecorator('nickname', {
-                    rules: [{ required: true, message: 'Please input your nickname!', whitespace: true }],
+                {getFieldDecorator('username', {
+                    rules: [{ required: true, message: 'Please input your username!', whitespace: true }],
                 })(<Input />)}
             </Form.Item>
             <Form.Item label="E-mail">
