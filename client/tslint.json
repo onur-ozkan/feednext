@@ -1,6 +1,6 @@
 {
   "rules": {
-    "semicolon": [false, "never"],
+    "semicolon": [true, "never"],
     "quotemark": [true, "single", "jsx-double"],
     "indent": [true, "spaces", 4]
   }
