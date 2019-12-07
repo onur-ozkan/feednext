@@ -1,7 +1,7 @@
 {
-  "name": "item-dictionary-client",
+  "name": "feednext-client",
   "version": "0.0.1",
-  "description": "Client side of item-dictionary",
+  "description": "Client side of feednext.io",
   "author": "Onur Ozkan",
   "license": "MIT",
   "private": true,

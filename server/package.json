@@ -1,7 +1,7 @@
 {
-  "name": "item-dictionary-backend",
+  "name": "feednext-backend",
   "version": "0.0.1",
-  "description": "Server side of item-dictionary",
+  "description": "Server side of feednext.io",
   "author": "Onur Ozkan",
   "license": "MIT",
   "scripts": {
