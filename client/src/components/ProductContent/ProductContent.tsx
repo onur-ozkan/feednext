@@ -1,8 +1,9 @@
 import React from 'react'
-import { Comment, Icon, Tooltip, Tabs, Rate, Form, Input, Button } from 'antd'
+import { Comment, Icon, Tooltip, Tabs, Rate, Form, Input, Button, Dropdown, Menu, message } from 'antd'
 import moment from 'moment'
 
 import { TagComponent } from '../Tag/Tag'
+import { relative } from 'path'
 
 const { TabPane } = Tabs
 const { TextArea } = Input
@@ -34,6 +35,29 @@ export class ProductContentComponent extends React.Component {
         })
     }
 
+    handleButtonClick = (e) => {
+        message.info('Click on left button.')
+        console.log('click left button', e)
+    }
+
+    handleMenuClick = (e) => {
+        message.info('Click on menu item.')
+        console.log('click', e)
+    }
+
+    menu = (
+        <Menu onClick={this.handleButtonClick}>
+            <Menu.Item key="1">
+                <Icon type="edit" />
+                Edit this entry
+			</Menu.Item>
+            <Menu.Item key="2">
+                <Icon type="warning" />
+                Report this entry
+			</Menu.Item>
+        </Menu>
+    )
+
     render() {
         const { likes, dislikes, action } = this.state
 
@@ -49,13 +73,19 @@ export class ProductContentComponent extends React.Component {
                     <Icon type="dislike" theme={action === 'disliked' ? 'filled' : 'outlined'} onClick={this.dislike} />
                 </Tooltip>
                 <span style={{ paddingLeft: 8, cursor: 'auto' }}>{dislikes}</span>
+            </span>,
+            <span style={{}}>
+                <Tooltip title="Options">
+                    <Dropdown overlay={this.menu} trigger={['click']}>
+                        <Icon type="down" />
+                    </Dropdown>
+                </Tooltip>
             </span>
         ]
 
         return (
             <div style={{ overflow: 'scroll' }}>
                 <span style={{ fontSize: '25px', color: '#212121' }}> Example Title </span>
-                <TagComponent color="red" name="Example Tag" />
                 <br />
                 <Rate allowHalf defaultValue={2.5} />
                 <br />
@@ -64,7 +94,12 @@ export class ProductContentComponent extends React.Component {
                     <TabPane tab="English" key="1">
                         <Comment
                             actions={actions}
-                            author={<a>Han Solo</a>}
+                            author={
+                                <a href="/">
+                                    {' '}
+                                    <TagComponent color="#212121" name="onurozkan" />
+                                </a>
+                            }
                             content={
                                 <p>
                                     We supply a series of design principles, practical patterns and high quality design
