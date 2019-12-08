@@ -3,7 +3,6 @@ import { Comment, Icon, Tooltip, Tabs, Rate, Form, Input, Button, Dropdown, Menu
 import moment from 'moment'
 
 import { TagComponent } from '../Tag/Tag'
-import { relative } from 'path'
 
 const { TabPane } = Tabs
 const { TextArea } = Input
@@ -95,59 +94,10 @@ export class ProductContentComponent extends React.Component {
                         <Comment
                             actions={actions}
                             author={
-                                <a href="/">
-                                    {' '}
+                                <a href="#">
                                     <TagComponent color="#212121" name="onurozkan" />
                                 </a>
                             }
-                            content={
-                                <p>
-                                    We supply a series of design principles, practical patterns and high quality design
-									resources (Sketch and Axure), to help people create their product prototypes
-									beautifully and efficiently.
-								</p>
-                            }
-                            datetime={
-                                <Tooltip title={moment().format('YYYY-MM-DD HH:mm:ss')}>
-                                    <span>{moment().fromNow()}</span>
-                                </Tooltip>
-                            }
-                        />
-                        <Comment
-                            actions={actions}
-                            author={<a>Han Solo</a>}
-                            content={
-                                <p>
-                                    We supply a series of design principles, practical patterns and high quality design
-									resources (Sketch and Axure), to help people create their product prototypes
-									beautifully and efficiently.
-								</p>
-                            }
-                            datetime={
-                                <Tooltip title={moment().format('YYYY-MM-DD HH:mm:ss')}>
-                                    <span>{moment().fromNow()}</span>
-                                </Tooltip>
-                            }
-                        />
-                        <Comment
-                            actions={actions}
-                            author={<a>Han Solo</a>}
-                            content={
-                                <p>
-                                    We supply a series of design principles, practical patterns and high quality design
-									resources (Sketch and Axure), to help people create their product prototypes
-									beautifully and efficiently.
-								</p>
-                            }
-                            datetime={
-                                <Tooltip title={moment().format('YYYY-MM-DD HH:mm:ss')}>
-                                    <span>{moment().fromNow()}</span>
-                                </Tooltip>
-                            }
-                        />
-                        <Comment
-                            actions={actions}
-                            author={<a>Han Solo</a>}
                             content={
                                 <p>
                                     We supply a series of design principles, practical patterns and high quality design
@@ -165,7 +115,7 @@ export class ProductContentComponent extends React.Component {
                             <Form.Item>
                                 <TextArea
                                     style={{ resize: 'none', width: 1250 }}
-                                    placeholder="Autosize height with minimum and maximum number of lines"
+                                    placeholder="Type an entry to feed other people."
                                     autoSize={{ minRows: 2, maxRows: 6 }}
                                 />
                             </Form.Item>
