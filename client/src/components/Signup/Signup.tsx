@@ -1,8 +1,6 @@
 import React, { useState, Dispatch, SetStateAction } from 'react'
 import { FormComponentProps } from 'antd/lib/form/Form'
-import { Form, Input, Tooltip, Icon, Select, Row, Col, Checkbox, Button } from 'antd'
-
-const { Option } = Select
+import { Form, Input, Tooltip, Icon, Row, Col, Checkbox, Button } from 'antd'
 
 const SignUpComponent: React.FC<FormComponentProps> = props => {
 

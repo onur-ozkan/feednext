@@ -5,7 +5,7 @@ import SignUpComponent from '../src/components/Signup/Signup'
 
 import { Icon, Row, Menu } from 'antd'
 
-interface IComponentState {
+declare interface IComponentState {
     isSignIn: boolean
 }
 

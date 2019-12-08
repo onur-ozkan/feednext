@@ -2,6 +2,8 @@ import React from 'react'
 import { Comment, Icon, Tooltip, Tabs, Rate, Form, Input, Button } from 'antd'
 import moment from 'moment'
 
+import {TagComponent} from '../Tag/Tag'
+
 const { TabPane } = Tabs
 const { TextArea } = Input
 
@@ -53,6 +55,7 @@ export class ProductContentComponent extends React.Component {
 		return (
 			<div style={{ overflow: 'scroll' }}>
 				<span style={{ fontSize: '25px', color: '#212121' }}> Example Title </span>
+				<TagComponent color="red" name="Example Tag"/>
 				<br />
 				<Rate allowHalf defaultValue={2.5} />
 				<br />
@@ -129,7 +132,6 @@ export class ProductContentComponent extends React.Component {
 									style={{ resize: 'none', width: 1250 }}
 									placeholder="Autosize height with minimum and maximum number of lines"
 									autoSize={{ minRows: 2, maxRows: 6 }}
-									maxLength={5}
 								/>
 							</Form.Item>
 							<Form.Item>

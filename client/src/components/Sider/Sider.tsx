@@ -12,7 +12,7 @@ export const SiderComponent: React.FunctionComponent = () => {
     const products = () => {
         if (!collapsed) {
             return (
-                <Menu defaultSelectedKeys={['1']} mode="inline">
+                <Menu mode="inline">
                     <Menu.Item key="1">
                         <Icon type="form" />
                         <span> Product Example </span>
