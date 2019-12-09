@@ -1,10 +1,11 @@
 import React, { useState, Dispatch, SetStateAction } from 'react'
-import { Layout, Menu, Icon, Input } from 'antd'
+import { Layout, Menu, Icon, Input, Button } from 'antd'
 
 const { Sider } = Layout
 
 export const SiderComponent: React.FunctionComponent = () => {
     const [collapsed, setCollapsed]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(false)
+    const [siderWidth, setSiderWith]: [string, Dispatch<SetStateAction<string>>] = useState('250')
     const [isSearching, setIsSearching]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(false)
 
     const handleChange = (): void => setCollapsed(!collapsed)
@@ -13,13 +14,18 @@ export const SiderComponent: React.FunctionComponent = () => {
         if (!collapsed) {
             return (
                 <Menu mode="inline" style={{ padding: '5px' }}>
-                    <div style={{ textAlign: 'center', marginBottom: '15px' }}>
+                    <div style={{ marginBottom: '15px', textAlign: 'center' }}>
                         <Input.Search
                             loading={isSearching}
                             placeholder="Search a feed title"
                             onSearch={(value) => console.log(value)}
-                            style={{ width: 200 }}
+                            style={{ width: 235 }}
                         />
+                    </div>
+                    <div style={{ marginBottom: '15px', textAlign: 'center' }}>
+                        <Button style={{ width: 235 }} onClick={() => console.log('asd')} type="default">
+                            New Feed Title
+						</Button>
                     </div>
                     <Menu.Item key="1">
                         <Icon type="form" />
@@ -36,11 +42,14 @@ export const SiderComponent: React.FunctionComponent = () => {
 
     return (
         <Sider
-            style={{ overflowY: 'scroll', height: '89vh' }}
+            style={{ overflow: 'scroll', height: '100vh' }}
             theme="light"
+            reverseArrow={true}
             collapsible
+            breakpoint="sm"
             collapsedWidth="35"
-            width={'250'}
+            onBreakpoint={(broken) => broken ? setSiderWith('100%') : setSiderWith('250')}
+            width={siderWidth}
             collapsed={collapsed}
             onCollapse={handleChange}
         >

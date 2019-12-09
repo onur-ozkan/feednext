@@ -96,6 +96,7 @@ export class ProductContentComponent extends React.Component {
                         <Pagination simple defaultCurrent={1} total={this.state.totalEntries} />
                     </div>
                     <br/>
+                    <br/>
                         <Comment
                             actions={actions}
                             author={

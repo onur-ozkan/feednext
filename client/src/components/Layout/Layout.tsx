@@ -11,11 +11,11 @@ const { Content } = Layout
 export const LayoutComponent: React.FunctionComponent = props =>
     <Layout style={{ minHeight: '100vh' }}>
         <HeaderComponent/>
-        <Layout>
-            <SiderComponent/>
+        <Layout style={{background: 'white', overflow: 'scroll', height: '100vh'}}>
+        <SiderComponent/>
             <Content
                 style={{
-                background: '#fff',
+                background: 'white',
                 padding: 24,
                 margin: 0,
                 }}
