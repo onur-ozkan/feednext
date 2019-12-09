@@ -1,5 +1,5 @@
 import React from 'react'
-import { Comment, Icon, Tooltip, Tabs, Rate, Form, Input, Button, Dropdown, Menu, message } from 'antd'
+import { Comment, Icon, Tooltip, Tabs, Rate, Form, Input, Button, Dropdown, Menu, message, Pagination } from 'antd'
 import moment from 'moment'
 
 import { TagComponent } from '../Tag/Tag'
@@ -12,7 +12,8 @@ export class ProductContentComponent extends React.Component {
         likes: 0,
         dislikes: 0,
         action: null,
-        submitting: false
+        submitting: false,
+        totalEntries: 10
     }
 
     like = () => {
@@ -91,6 +92,10 @@ export class ProductContentComponent extends React.Component {
                 <br />
                 <Tabs defaultActiveKey="1" onChange={this.callback}>
                     <TabPane tab="English" key="1">
+                    <div style={{float: 'right'}}>
+                        <Pagination simple defaultCurrent={1} total={this.state.totalEntries} />
+                    </div>
+                    <br/>
                         <Comment
                             actions={actions}
                             author={
@@ -111,6 +116,11 @@ export class ProductContentComponent extends React.Component {
                                 </Tooltip>
                             }
                         />
+                        <div style={{float: 'right'}}>
+                            <Pagination simple defaultCurrent={1} total={this.state.totalEntries} />
+                        </div>
+                        <br/>
+                        <br/>
                         <div>
                             <Form.Item>
                                 <TextArea
