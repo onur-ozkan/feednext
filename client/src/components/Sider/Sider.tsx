@@ -13,16 +13,14 @@ export const SiderComponent: React.FunctionComponent = () => {
         if (!collapsed) {
             return (
                 <Menu mode="inline" style={{ padding: '5px' }}>
-                    <div style={{ textAlign: 'center', marginBottom: '-35px', zIndex: -1 }}>
+                    <div style={{ textAlign: 'center', marginBottom: '15px' }}>
                         <Input.Search
                             loading={isSearching}
                             placeholder="Search a feed title"
                             onSearch={(value) => console.log(value)}
-                            style={{ width: 200, zIndex: 1 }}
+                            style={{ width: 200 }}
                         />
                     </div>
-
-                    <Menu.Item style={{ backgroundColor: 'transparent' }} />
                     <Menu.Item key="1">
                         <Icon type="form" />
                         <span> Example Title </span>
@@ -41,6 +39,7 @@ export const SiderComponent: React.FunctionComponent = () => {
             style={{ overflowY: 'scroll', height: '89vh' }}
             theme="light"
             collapsible
+            collapsedWidth="35"
             width={'250'}
             collapsed={collapsed}
             onCollapse={handleChange}
