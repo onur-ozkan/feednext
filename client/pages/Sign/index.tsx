@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
-import SignInComponent from '../src/components/Signin/Signin'
-import SignUpComponent from '../src/components/Signup/Signup'
+import SignInComponent from '../../src/components/Signin/Signin'
+import SignUpComponent from '../../src/components/Signup/Signup'
 
 import { Icon, Row, Menu } from 'antd'
 

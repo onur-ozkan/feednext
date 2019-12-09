@@ -11,7 +11,7 @@ export const Nav: React.FunctionComponent = (props) =>
     >
         <Menu.Item key="1">
             <Link href="/">
-                <a>Top Titles</a>
+                <a>Titles</a>
             </Link>
         </Menu.Item>
         <Menu.Item key="2">
@@ -19,7 +19,7 @@ export const Nav: React.FunctionComponent = (props) =>
                 <a>Top Feeders</a>
             </Link>
         </Menu.Item>
-        <Menu.Item style={{float: 'right'}} key="7">
+        <Menu.Item style={{float: 'right'}} key="3">
             <Link href="/sign">
                 <a>
                     <Icon style={{ fontSize: '15px' }} type="user" />

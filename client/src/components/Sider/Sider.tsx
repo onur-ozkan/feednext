@@ -23,8 +23,13 @@ export const SiderComponent: React.FunctionComponent = () => {
                         />
                     </div>
                     <div style={{ marginBottom: '15px', textAlign: 'center' }}>
-                        <Button style={{ width: 235 }} onClick={() => console.log('asd')} type="default">
-                            New Feed Title
+                        <Button style={{ width: 235 }} onClick={() => console.log('asd')} type="primary">
+                            Create Feed Title
+						</Button>
+                    </div>
+                    <div style={{ marginBottom: '15px', textAlign: 'center' }}>
+                        <Button style={{ width: 235 }} onClick={() => console.log('asd')} type="dashed">
+                            Filter the Feeds
 						</Button>
                     </div>
                     <Menu.Item key="1">
