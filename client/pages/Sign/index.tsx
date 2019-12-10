@@ -5,7 +5,7 @@ import SignUpComponent from '../../src/components/Signup/Signup'
 
 import { Icon, Row, Menu } from 'antd'
 
-declare interface IComponentState {
+interface IComponentState {
     isSignIn: boolean
 }
 
@@ -28,24 +28,28 @@ export default class Sign extends React.Component<{}, IComponentState> {
     render() {
         return (
             <div>
-                <Menu defaultSelectedKeys={['signin']} style={{ display: 'flex', justifyContent: 'center' }} mode="horizontal">
+                <Menu
+                    defaultSelectedKeys={['signin']}
+                    style={{ display: 'flex', justifyContent: 'center', padding: '5px', border: 0 }}
+                    mode="horizontal"
+                >
                     <Menu.Item key="exit">
                         <Link href="/">
                             <a>
                                 <Icon type="left-circle" />
                                 Back to App
-                            </a>
+							</a>
                         </Link>
                     </Menu.Item>
                     <hr />
                     <Menu.Item onClick={() => this.setState({ isSignIn: false })} key="signup">
                         <Icon type="user-add" />
                         Sign Up
-                    </Menu.Item>
+					</Menu.Item>
                     <Menu.Item onClick={() => this.setState({ isSignIn: true })} key="signin">
                         <Icon type="login" />
                         Sign In
-                    </Menu.Item>
+					</Menu.Item>
                 </Menu>
                 <Row type="flex" justify="center" align="middle" style={{ minHeight: '100vh' }}>
                     {this.handleSignScreens()}
