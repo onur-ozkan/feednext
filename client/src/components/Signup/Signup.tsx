@@ -2,7 +2,7 @@ import React, { useState, Dispatch, SetStateAction } from 'react'
 import { FormComponentProps } from 'antd/lib/form/Form'
 import { Form, Input, Tooltip, Icon, Row, Col, Checkbox, Button } from 'antd'
 
-const SignUpComponent: React.FC<FormComponentProps> = props => {
+const SignUpComponent: React.FunctionComponent<FormComponentProps> = props => {
 
     const [confirmDirty, setDirty]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(false)
 

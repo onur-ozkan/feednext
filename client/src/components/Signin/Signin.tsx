@@ -2,7 +2,7 @@ import React from 'react'
 import { FormComponentProps } from 'antd/lib/form/Form'
 import { Form, Icon, Input, Button, Checkbox } from 'antd';
 
-const SignInComponent: React.FC<FormComponentProps> = props => {
+const SignInComponent: React.FunctionComponent<FormComponentProps> = props => {
 
     const handleSubmit = e => {
         e.preventDefault()
@@ -16,7 +16,7 @@ const SignInComponent: React.FC<FormComponentProps> = props => {
     const { getFieldDecorator } = props.form
 
     return (
-        <Form  style={{maxWidth: '300px'}} onSubmit={handleSubmit} className="login-form">
+        <Form style={{ maxWidth: '300px' }} onSubmit={handleSubmit} className="login-form">
             <Form.Item>
                 {getFieldDecorator('username', {
                     rules: [{ required: true, message: 'Please input your username!' }],
@@ -43,10 +43,10 @@ const SignInComponent: React.FC<FormComponentProps> = props => {
                     valuePropName: 'checked',
                     initialValue: true,
                 })(<Checkbox>Remember me</Checkbox>)}
-                <a style={{float: 'right'}} className="login-form-forgot" href="">
+                <a style={{ float: 'right' }} className="login-form-forgot" href="">
                     Forgot password
                 </a>
-                <Button style={{width: '100%'}} type="primary" htmlType="submit" className="login-form-button">
+                <Button style={{ width: '100%' }} type="primary" htmlType="submit" className="login-form-button">
                     Log in
                 </Button>
             </Form.Item>
