@@ -58,11 +58,11 @@ export const SiderComponent: React.FunctionComponent = () => {
                             loading={isSearching}
                             placeholder="Search a feed title"
                             onSearch={(value) => console.log(value)}
-                            style={{ width: 235 }}
+                            style={{ width: '100%' }}
                         />
                     </div>
                     <div style={{ marginBottom: '15px', textAlign: 'center' }}>
-                        <Button style={{ width: 235 }} onClick={() => setIsModal2Visible(true)} type="primary">
+                        <Button style={{ width: '100%' }} onClick={() => setIsModal2Visible(true)} type="primary">
                             Create Feed Title
 						</Button>
                         <Modal
@@ -81,11 +81,14 @@ export const SiderComponent: React.FunctionComponent = () => {
                             />
                             <Divider dashed style={{ margin: '10px' }} />
 
-                            <Input placeholder="Name of the material, stuff, product or someting like that" style={{ width: '100%' }} />
+                            <Input
+                                placeholder="Name of the material, stuff, product or someting like that"
+                                style={{ width: '100%' }}
+                            />
                         </Modal>
                     </div>
                     <div style={{ marginBottom: '15px', textAlign: 'center' }}>
-                        <Button style={{ width: 235 }} onClick={() => setIsModalVisible(true)} type="dashed">
+                        <Button style={{ width: '100%' }} onClick={() => setIsModalVisible(true)} type="dashed">
                             Filter the Feeds
 						</Button>
                         <Modal

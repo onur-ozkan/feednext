@@ -1,19 +1,17 @@
 import React from 'react'
-import { HeaderComponent } from '../Header/Header'
+import { NavbarComponent } from '../Navbar/Navbar'
 import { FooterComponent } from '../Footer/Footer'
 import { SiderComponent } from '../Sider/Sider'
-import { ProductContentComponent } from '../ProductContent/ProductContent'
-
 import { Layout } from 'antd'
 
 const { Content } = Layout
 
 export const LayoutComponent: React.FunctionComponent = (props) => (
     <Layout>
-        <HeaderComponent />
+        <NavbarComponent />
         <Layout style={{ background: 'white', overflow: 'scroll', height: '100vh' }}>
             <SiderComponent />
-            <Layout style={{ background: 'white'}}>
+            <Layout style={{ background: 'white' }}>
                 <Content
                     style={{
                         background: 'white',
@@ -21,7 +19,7 @@ export const LayoutComponent: React.FunctionComponent = (props) => (
                         margin: 0
                     }}
                 >
-                    <ProductContentComponent />
+                    {props.children}
                 </Content>
             </Layout>
         </Layout>
