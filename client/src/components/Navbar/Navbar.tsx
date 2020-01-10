@@ -6,7 +6,7 @@ export const NavbarComponent: React.FunctionComponent = (props) => {
     const [currentPath, setCurrentPath]: [string, Dispatch<SetStateAction<string>>] = useState(null)
     useEffect(() => {
         setCurrentPath(window.location.pathname)
-    })
+    }, [])
     return (
         <Menu
             theme="light"
@@ -25,12 +25,21 @@ export const NavbarComponent: React.FunctionComponent = (props) => {
                 </Link>
             </Menu.Item>
             <Menu.Item style={{ float: 'right' }} key="3">
-                <Link href="/sign">
-                    <a>
-                        <Icon style={{ fontSize: '15px' }} type="user" />
-                        SIGN
-					</a>
-                </Link>
+                { false ?
+                    <Link href="/sign">
+                        <a>
+                            <Icon style={{ fontSize: '15px' }} type="user" />
+                            SIGN
+                        </a>
+                    </Link>
+                    :
+                    <Link href="/profile">
+                        <a>
+                            <Icon style={{ fontSize: '15px' }} type="user" />
+                            Profile
+                        </a>
+                    </Link>
+                }
             </Menu.Item>
         </Menu>
     )
