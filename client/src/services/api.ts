@@ -4,6 +4,7 @@ import * as env from 'dotenv'
 env.config()
 
 axios.defaults.baseURL = process.env.API_URL
+axios.defaults.headers.common.accept = 'application/json'
 
 declare interface signUpInterface {
   fullName: string,
@@ -14,9 +15,5 @@ declare interface signUpInterface {
 
 export default {
     signUp: (params: signUpInterface) =>
-        axios.post('auth/signup', params, {
-            headers: {
-                'content-type': 'application/json',
-            },
-        }),
+        axios.post('auth/signup', params),
 }

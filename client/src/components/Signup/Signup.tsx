@@ -8,7 +8,6 @@ const SignUpComponent: React.FunctionComponent<FormComponentProps> = props => {
 
     const { getFieldDecorator } = props.form
 
-
     const handleSubmit = e => {
         e.preventDefault()
         props.form.validateFieldsAndScroll((err, values) => {
