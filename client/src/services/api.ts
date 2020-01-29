@@ -1,9 +1,7 @@
 import axios from 'axios'
-import * as env from 'dotenv'
+import { API_URL } from '../constants/env'
 
-env.config()
-
-axios.defaults.baseURL = process.env.API_URL
+axios.defaults.baseURL = API_URL
 axios.defaults.headers.common.accept = 'application/json'
 
 declare interface signUpInterface {
