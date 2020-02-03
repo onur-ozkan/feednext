@@ -1,7 +1,9 @@
+// Global dependencies
 import React, { useState } from 'react'
 import { Comment, Icon, Tooltip, Tabs, Rate, Form, Input, Button, Dropdown, Menu, message, Pagination } from 'antd'
 import moment from 'moment'
 
+// Local files
 import { TagComponent } from '../Tag/Tag'
 
 const { TabPane } = Tabs

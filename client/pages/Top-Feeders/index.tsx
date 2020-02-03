@@ -1,5 +1,8 @@
+// Global dependencies
 import * as React from 'react'
 import { Tabs, Table } from 'antd'
+
+// Local files
 import { LayoutComponent } from '../../src/components/Layout/Layout'
 
 const columns = [
@@ -29,7 +32,7 @@ for (let i = 0; i < 100; i++) {
     })
 }
 
-export default (props) => (
+export default props => (
     <LayoutComponent>
         <span style={{ fontSize: '25px', color: '#212121' }}> Top Feeders </span>
         <br />
