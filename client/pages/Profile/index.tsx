@@ -6,27 +6,27 @@ export default props => (
   <LayoutComponent>
   <Row>
       <Col span={7}>
-        <div style={{ backgroundColor: '#111111', paddingTop: 20, paddingBottom: 10, borderRadius: 5 }}>
+        <div style={{ backgroundColor: '#9bbbb1', paddingTop: 20, textAlign: 'justify', paddingBottom: 10, borderRadius: 5 }}>
             <div style={{textAlign: 'center'}}>
-                <Typography.Title style={{color: 'white'}}>Onur Özkan</Typography.Title>
+                <Typography.Title style={{color: '#f5f5f5'}}>Onur Özkan</Typography.Title>
                 <a href="#">
-                    <Typography.Text style={{color: 'white', position: 'relative', bottom: 15}}>
-                        <Icon type="user" style={{color: 'white', paddingLeft: 10}}/> onurozkan
+                    <Typography.Text style={{color: '#f5f5f5', position: 'relative', bottom: 15}}>
+                        <Icon type="user" style={{paddingLeft: 10}}/> onurozkan
                     </Typography.Text>
                 </a>
             </div>
-            <Divider dashed style={{borderColor: '#ff594a'}}/>
+            <Divider dashed style={{borderColor: '#212121'}}/>
             <div style={{textAlign:'center', paddingLeft: 15}}>
-                <Typography.Text style={{color: 'white', fontSize: 20}}>
-                    <Icon type="trophy" style={{color: 'white', paddingLeft: 10}}/> Feed Score
+                <Typography.Text style={{color: '#212121', fontSize: 20}}>
+                    <Icon type="trophy" style={{color: '#212121', paddingLeft: 10}}/> Feed Score
                 </Typography.Text>
             </div>
             <div style={{padding: 20}}>
-                <span style={{color: 'white'}}>
+                <span style={{color: '#212121'}}>
                     <Icon type="global" /> 150
                 </span>
                 <hr style={{ borderColor:'transparent' }} />
-                <span style={{color: 'white'}}>
+                <span style={{color: '#212121'}}>
                     <Icon type="flag" /> 51
                 </span>
             </div>

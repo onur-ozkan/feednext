@@ -7,9 +7,7 @@ import { Icon, Row, Menu } from 'antd'
 import SignInComponent from '../../src/components/Signin/Signin'
 import SignUpComponent from '../../src/components/Signup/Signup'
 
-
-// export default class Sign extends React.Component<{}, IComponentState> 
-const Sign = props => {
+export default props => {
     const [isSignIn, setIsSignIn] = useState(true)
 
     const handleSignScreens = () => {
@@ -50,5 +48,3 @@ const Sign = props => {
         </div>
     )
 }
-
-export default Sign

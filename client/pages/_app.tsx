@@ -1,6 +1,9 @@
+// Global dependencies
 import React from 'react'
 import App from 'next/app'
 import 'isomorphic-fetch'
+
+// Local files
 import '../public/style/main.less'
 
 export default class extends App {
