@@ -2,11 +2,24 @@ import React, { useEffect, Dispatch, SetStateAction, useState } from 'react'
 import Link from 'next/link'
 import { Menu, Icon } from 'antd'
 
-export const NavbarComponent: React.FunctionComponent = (props) => {
+export const NavbarComponent: React.FunctionComponent = (props: any) => {
     const [currentPath, setCurrentPath]: [string, Dispatch<SetStateAction<string>>] = useState(null)
     useEffect(() => {
         setCurrentPath(window.location.pathname)
     }, [])
+
+    const handleIsUserLoggedIn = (isLoggedIn: boolean): React.ReactElement => {
+        return (
+            <Menu.Item style={{ float: 'right' }} key={isLoggedIn ? '/profile' : '/sign'}>
+                <Link href={isLoggedIn ? '/profile' : '/sign'} >
+                    <a>
+                        <Icon style={{ fontSize: '15px' }} type="user" />
+                        {isLoggedIn ? 'Profile' : 'SIGN'}
+                    </a>
+                </Link>
+            </Menu.Item>
+        )
+    }
     return (
         <Menu
             theme="light"
@@ -24,23 +37,7 @@ export const NavbarComponent: React.FunctionComponent = (props) => {
                     <a>Top Feeders</a>
                 </Link>
             </Menu.Item>
-            <Menu.Item style={{ float: 'right' }} key="3">
-                { false ?
-                    <Link href="/sign">
-                        <a>
-                            <Icon style={{ fontSize: '15px' }} type="user" />
-                            SIGN
-                        </a>
-                    </Link>
-                    :
-                    <Link href="/profile">
-                        <a>
-                            <Icon style={{ fontSize: '15px' }} type="user" />
-                            Profile
-                        </a>
-                    </Link>
-                }
-            </Menu.Item>
+            {handleIsUserLoggedIn(true)}
         </Menu>
     )
 }
