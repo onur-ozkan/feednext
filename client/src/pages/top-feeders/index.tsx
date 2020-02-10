@@ -47,10 +47,7 @@ interface TopFeedersState {
   current?: Partial<BasicListItemDataType>;
 }
 
-class TopFeeders extends Component<
-  TopFeedersProps,
-  TopFeedersState
-> {
+class TopFeeders extends Component<TopFeedersProps, TopFeedersState> {
   state: TopFeedersState = { visible: false, done: false, current: undefined };
 
   formLayout = {
@@ -173,7 +170,11 @@ class TopFeeders extends Component<
           <RadioButton value="progress">processing</RadioButton>
           <RadioButton value="waiting">Waiting</RadioButton>
         </RadioGroup>
-        <Search className={styles.extraContentSearch} placeholder="please enter" onSearch={() => ({})} />
+        <Search
+          className={styles.extraContentSearch}
+          placeholder="please enter"
+          onSearch={() => ({})}
+        />
       </div>
     );
 
@@ -271,7 +272,12 @@ class TopFeeders extends Component<
           </FormItem>
           <FormItem {...this.formLayout} label="product description">
             {getFieldDecorator('subDescription', {
-              rules: [{ message: 'Please enter a product description of at least five characters!', min: 5 }],
+              rules: [
+                {
+                  message: 'Please enter a product description of at least five characters!',
+                  min: 5,
+                },
+              ],
               initialValue: current.subDescription,
             })(<TextArea rows={4} placeholder="Please enter at least five characters" />)}
           </FormItem>
@@ -288,7 +294,11 @@ class TopFeeders extends Component<
                   <Info title="My to-do" value="8 tasks" bordered />
                 </Col>
                 <Col sm={8} xs={24}>
-                  <Info title="Task average processing time this week" value="32 minutes" bordered />
+                  <Info
+                    title="Task average processing time this week"
+                    value="32 minutes"
+                    bordered
+                  />
                 </Col>
                 <Col sm={8} xs={24}>
                   <Info title="Tasks completed this week" value="24 tasks" />
