@@ -1,5 +1,5 @@
 {
-  "name": "ant-design-pro",
+  "name": "feednext-client",
   "version": "1.0.0",
   "private": true,
   "description": "Client side of feednext.io",
@@ -119,9 +119,6 @@
   },
   "optionalDependencies": {
     "puppeteer": "^2.0.0"
-  },
-  "engines": {
-    "node": ">=10.0.0"
   },
   "checkFiles": [
     "src/**/*.js*",
