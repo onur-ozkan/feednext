@@ -54,8 +54,8 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
       />
       <NoticeIconView />
       <Avatar />
-      {REACT_APP_ENV && <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>}
       <SelectLang className={styles.action} />
+      {REACT_APP_ENV && <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>}
     </div>
   );
 };
