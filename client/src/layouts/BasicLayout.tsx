@@ -69,7 +69,7 @@ const defaultFooterDom = (
     copyright="2019 Ilter Technology"
     links={[
       {
-        key: 'github',
+        key: 'Github',
         title: <Icon type="github" />,
         href: 'https://github.com/ilter-tech',
         blankTarget: true,

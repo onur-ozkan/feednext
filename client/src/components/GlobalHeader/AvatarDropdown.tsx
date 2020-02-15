@@ -18,7 +18,7 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
   onMenuClick = (event: ClickParam) => {
     const { key } = event;
 
-    if (key === 'logout') {
+    if (key === '/logout') {
       const { dispatch } = this.props;
       if (dispatch) {
         dispatch({
