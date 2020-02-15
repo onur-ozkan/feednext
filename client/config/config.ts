@@ -123,6 +123,12 @@ export default {
               ],
             },
             {
+              name: '个人设置',
+              icon: 'smile',
+              path: '/account/settings',
+              component: './Account/Settings',
+            },
+            {
               name: 'Account',
               icon: 'smile',
               path: '/account',
@@ -175,7 +181,7 @@ export default {
         resourcePath: string;
       },
       _: string,
-      localName: string
+      localName: string,
     ) => {
       if (
         context.resourcePath.includes('node_modules') ||
