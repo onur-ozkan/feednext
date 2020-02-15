@@ -61,9 +61,7 @@ const PageHeaderContent: React.FC<{ currentUser: CurrentUser }> = ({ currentUser
         <Avatar size="large" src={currentUser.avatar} />
       </div>
       <div className={styles.content}>
-        <div className={styles.contentTitle}>
-          {currentUser.name}
-        </div>
+        <div className={styles.contentTitle}>{currentUser.name}</div>
         <div>
           {currentUser.title} |{currentUser.group}
         </div>
