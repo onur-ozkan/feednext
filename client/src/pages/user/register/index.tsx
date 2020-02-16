@@ -207,7 +207,7 @@ class Register extends Component<RegisterProps, RegisterState> {
           <Tabs>
             <Tabs.TabPane
               key="account"
-              tab={formatMessage({ id: 'userandlogin.login.tab-login-credentials' })}
+              tab={formatMessage({ id: 'userandlogin.login.tab-login-signup' })}
             >
               <FormItem>
                 {getFieldDecorator('mail', {

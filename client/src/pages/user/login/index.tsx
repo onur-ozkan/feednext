@@ -77,10 +77,7 @@ class Login extends Component<LoginProps, LoginState> {
             this.loginForm = form;
           }}
         >
-          <Tab
-            key="account"
-            tab={formatMessage({ id: 'userandlogin.login.tab-login-credentials' })}
-          >
+          <Tab key="account" tab={formatMessage({ id: 'userandlogin.login.tab-login-signin' })}>
             {status === 'error' &&
               loginType === 'account' &&
               !submitting &&
