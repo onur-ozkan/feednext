@@ -4,7 +4,7 @@ import Link from 'umi/link';
 import React from 'react';
 import { RouteChildrenProps } from 'dva/router';
 
-const styles = require('style.less');
+import styles from './style.less';
 
 const actions = (
   <div className={styles.actions}>

@@ -202,7 +202,7 @@ export default {
     // secondary text color
     '@disabled-color': 'rgba(0, 0, 0, .25)',
     // disable state color
-    '@border-radius-base': '4px',
+    '@border-radius-base': '1px',
     // major border radius
     '@border-color-base': '#d9d9d9',
     // major border color
