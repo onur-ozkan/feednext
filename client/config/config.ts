@@ -4,6 +4,13 @@ import defaultSettings from './defaultSettings'; // https://umijs.org/config/
 import slash from 'slash2';
 import themePluginConfig from './themePluginConfig';
 import proxy from './proxy';
+import { constants } from '../.constants';
+
+export const getConstant = (key: string): any => {
+  if (!constants[key]) throw new Error(`Missing ${key} variable in _constants file.`);
+  return constants[key];
+};
+
 const { pwa } = defaultSettings; // preview.pro.ant.design only do not use in your production ;
 // preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
 
