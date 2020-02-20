@@ -5,6 +5,7 @@ import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
 // Other dependencies
+import * as cors from 'cors'
 import * as apm from 'swagger-stats'
 import * as fastifyRateLimit from 'fastify-rate-limit'
 import * as helmet from 'fastify-helmet'
@@ -29,6 +30,8 @@ async function bootstrap() {
 
     fastifyAdapter.register(helmet) // Initialize security middleware module 'fastify-helmet'
     fastifyAdapter.register(compress) // Initialize fastify-compress to better handle high-level traffic
+
+    fastifyAdapter.use(cors()) // Enable cors
 
     const app = await NestFactory.create<NestFastifyApplication>(AppModule, fastifyAdapter )
 
