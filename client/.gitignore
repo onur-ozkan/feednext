@@ -37,4 +37,5 @@ screenshot
 .firebase
 .eslintcache
 
+.constants.ts
 build
