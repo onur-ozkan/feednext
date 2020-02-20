@@ -29,6 +29,7 @@
     "@nestjs/typeorm": "^6.2.0",
     "class-transformer": "^0.2.3",
     "class-validator": "^0.11.0",
+    "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "dotenv": "^8.2.0",
     "fastify-compress": "^1.1.0",
