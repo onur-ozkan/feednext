@@ -18,3 +18,5 @@ LICENSE
 *.lock
 yarn-error.log
 .history
+.npmrc
+.nvmrc

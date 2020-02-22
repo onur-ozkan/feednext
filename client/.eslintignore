@@ -2,3 +2,5 @@
 /scripts
 /config
 .history
+.constants.ts
+*.js

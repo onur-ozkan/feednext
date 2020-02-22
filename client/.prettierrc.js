@@ -1,5 +1,7 @@
-const fabric = require('@umijs/fabric');
+const fabric = require('@umijs/fabric')
 
 module.exports = {
-  ...fabric.prettier,
-};
+	...fabric.prettier,
+	semi: false,
+	printWidth: 125,
+}
