@@ -1,9 +1,9 @@
-import request from '@/utils/request';
-import { FormDataType } from './index';
+import request from '@/utils/request'
+import { FormDataType } from './index'
 
-export async function fakeAccountLogin(params: FormDataType) {
-  return request('/api/login/account', {
-    method: 'POST',
-    data: params,
-  });
+export async function fakeAccountLogin(params: FormDataType): Promise<object> {
+	return request('/api/login/account', {
+		method: 'POST',
+		data: params,
+	})
 }

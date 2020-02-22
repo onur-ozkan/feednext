@@ -1,4 +1,7 @@
-import React from 'react';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import React from 'react'
+import { PageHeaderWrapper } from '@ant-design/pro-layout'
+import { getConstant } from '../../config/config'
 
-export default (): React.ReactNode => <PageHeaderWrapper />;
+console.log(getConstant('API_URL'))
+
+export default <PageHeaderWrapper />

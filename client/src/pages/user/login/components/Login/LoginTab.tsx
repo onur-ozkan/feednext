@@ -1,53 +1,50 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
-import { TabPaneProps } from 'antd/es/tabs';
-import { Tabs } from 'antd';
-import LoginContext, { LoginContextProps } from './LoginContext';
+import { TabPaneProps } from 'antd/es/tabs'
+import { Tabs } from 'antd'
+import LoginContext, { LoginContextProps } from './LoginContext'
 
-const { TabPane } = Tabs;
+const { TabPane } = Tabs
 
-const generateId = (() => {
-  let i = 0;
-  return (prefix = '') => {
-    i += 1;
-    return `${prefix}${i}`;
-  };
-})();
+const generateId = ((): ((prefix?: any) => any) => {
+	let i = 0
+	return (prefix = ''): string => {
+		i += 1
+		return `${prefix}${i}`
+	}
+})()
 
 interface LoginTabProps extends TabPaneProps {
-  tabUtil: LoginContextProps['tabUtil'];
+	tabUtil: LoginContextProps['tabUtil']
 }
 
 class LoginTab extends Component<LoginTabProps> {
-  uniqueId: string = '';
+	uniqueId = ''
 
-  constructor(props: LoginTabProps) {
-    super(props);
-    this.uniqueId = generateId('login-tab-');
-  }
+	constructor(props: LoginTabProps) {
+		super(props)
+		this.uniqueId = generateId('login-tab-')
+	}
 
-  componentDidMount() {
-    const { tabUtil } = this.props;
-    if (tabUtil) {
-      tabUtil.addTab(this.uniqueId);
-    }
-  }
+	componentDidMount(): void {
+		const { tabUtil } = this.props
+		if (tabUtil) {
+			tabUtil.addTab(this.uniqueId)
+		}
+	}
 
-  render() {
-    const { children } = this.props;
-    return <TabPane {...this.props}>{children}</TabPane>;
-  }
+	render(): JSX.Element {
+		const { children } = this.props
+		return <TabPane {...this.props}>{children}</TabPane>
+	}
 }
 
 const WrapContext: React.FC<TabPaneProps> & {
-  typeName: string;
+	typeName: string
 } = props => (
-  <LoginContext.Consumer>
-    {value => <LoginTab tabUtil={value.tabUtil} {...props} />}
-  </LoginContext.Consumer>
-);
+	<LoginContext.Consumer>{(value): JSX.Element => <LoginTab tabUtil={value.tabUtil} {...props} />}</LoginContext.Consumer>
+)
 
-// 标志位 用来判断是不是自定义组件
-WrapContext.typeName = 'LoginTab';
+WrapContext.typeName = 'LoginTab'
 
-export default WrapContext;
+export default WrapContext

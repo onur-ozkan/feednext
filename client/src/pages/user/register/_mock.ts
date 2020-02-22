@@ -1,7 +1,10 @@
-import { Request, Response } from 'express';
+import { Request, Response } from 'express'
 
 export default {
-  'POST  /api/register': (_: Request, res: Response) => {
-    res.send({ status: 'ok', currentAuthority: 'user' });
-  },
-};
+	'POST  /api/register': (_: Request, res: Response): void => {
+		res.send({
+			status: 'ok',
+			currentAuthority: 'user',
+		})
+	},
+}
