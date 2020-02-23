@@ -225,7 +225,7 @@ class Account extends Component<AccountProps> {
 									return
 								}}
 								links={links}
-								linkElement={String(Link)}
+								linkElement={Link}
 							/>
 						</Card>
 						<Card

@@ -3,6 +3,7 @@ import { PlusOutlined } from '@ant-design/icons'
 import { Button } from 'antd'
 
 import styles from './index.less'
+import Link from 'umi/link'
 
 export interface EditableLink {
 	title: string
@@ -13,7 +14,7 @@ export interface EditableLink {
 interface EditableLinkGroupProps {
 	onAdd: () => void
 	links: EditableLink[]
-	linkElement: string
+	linkElement: typeof Link
 }
 
 const EditableLinkGroup: React.FC<EditableLinkGroupProps> = props => {
