@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios'
-import { getConstant } from '../../config/config'
+import { getConstant } from '../../config/constants'
 
 axios.defaults.baseURL = getConstant('API_URL')
 
