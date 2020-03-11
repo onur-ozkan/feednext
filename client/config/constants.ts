@@ -5,7 +5,7 @@ declare interface Constants {
 
 const constants: Constants = {
 	DEV: process.env.NODE_ENV !== 'production',
-	API_URL: 'http://localhost',
+	API_URL: 'http://localhost/api',
 }
 
 export const getConstant = (key: string): any => {
