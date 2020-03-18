@@ -1,14 +1,16 @@
-import { Tag } from 'antd'
+import { Tag, Button } from 'antd'
 import React from 'react'
 import { connect } from 'dva'
 import { formatMessage } from 'umi-plugin-react/locale'
 import { ConnectProps, ConnectState } from '@/models/connect'
+import { PlusCircleOutlined } from '@ant-design/icons'
 
 import Avatar from './AvatarDropdown'
 import HeaderSearch from '../HeaderSearch'
 import SelectLang from '../SelectLang'
 import styles from './index.less'
 import NoticeIconView from './NoticeIconView'
+import { router } from 'umi'
 
 export type SiderTheme = 'light' | 'dark'
 export interface GlobalHeaderRightProps extends ConnectProps {
@@ -30,14 +32,27 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
 		className = `${styles.right}  ${styles.dark}`
 	}
 
+	const routeTo = (path: string): void => {
+		router.push(path)
+	}
+
 	return (
 		<div className={className}>
+			<Button
+				onClick={(): void => routeTo('/feeds/create-feed')}
+				type="dashed"
+				shape="round"
+				icon={<PlusCircleOutlined />}
+			>
+				{' '}
+				New Feed{' '}
+			</Button>
 			<HeaderSearch
 				className={`${styles.action} ${styles.search}`}
 				placeholder={formatMessage({
 					id: 'component.globalHeader.search',
 				})}
-				defaultValue="umi ui"
+				// defaultValue="umi ui"
 				dataSource={[
 					formatMessage({
 						id: 'component.globalHeader.search.example1',
