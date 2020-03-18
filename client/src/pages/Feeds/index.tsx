@@ -9,7 +9,7 @@ import { FormComponentProps } from '@ant-design/compatible/es/form'
 import { connect } from 'dva'
 import ArticleListContent from './components/ArticleListContent'
 import { StateType } from './model'
-import { ListItemDataType } from './data.d'
+import { ListItemDataType } from './data'
 import StandardFormRow from './components/StandardFormRow'
 import TagSelect from './components/TagSelect'
 import styles from './style.less'
@@ -19,34 +19,27 @@ const FormItem = Form.Item
 
 const pageSize = 5
 
-interface EntriesProps extends FormComponentProps {
+interface FeedsProps extends FormComponentProps {
 	dispatch: Dispatch<any>
-	entries: StateType
+	feeds: StateType
 	loading: boolean
 }
 
-class Entries extends Component<EntriesProps> {
+class Feeds extends Component<FeedsProps> {
 	componentDidMount(): void {
 		const { dispatch } = this.props
 		dispatch({
-			type: 'entries/fetch',
+			type: 'feeds/fetch',
 			payload: {
 				count: 5,
 			},
 		})
 	}
 
-	setOwner = (): void => {
-		const { form } = this.props
-		form.setFieldsValue({
-			owner: ['wzj'],
-		})
-	}
-
 	fetchMore = (): void => {
 		const { dispatch } = this.props
 		dispatch({
-			type: 'entries/appendFetch',
+			type: 'feeds/appendFetch',
 			payload: {
 				count: pageSize,
 			},
@@ -56,31 +49,19 @@ class Entries extends Component<EntriesProps> {
 	render(): JSX.Element {
 		const {
 			form,
-			entries: { list },
+			feeds: { list },
 			loading,
 		} = this.props
 		const { getFieldDecorator } = form
 
 		const owners = [
 			{
-				id: 'wzj',
-				name: 'Myself',
+				id: 'tr',
+				name: 'Türkçe',
 			},
 			{
-				id: 'wjh',
-				name: 'Wu Jiahao',
-			},
-			{
-				id: 'zxx',
-				name: 'Zhou Xingxing',
-			},
-			{
-				id: 'zly',
-				name: 'Zhao Liying',
-			},
-			{
-				id: 'ym',
-				name: 'Yao Ming',
+				id: 'en',
+				name: 'English',
 			},
 		]
 
@@ -186,27 +167,19 @@ class Entries extends Component<EntriesProps> {
 										<TagSelect.Option value="cat4">Category four</TagSelect.Option>
 										<TagSelect.Option value="cat5">Category five</TagSelect.Option>
 										<TagSelect.Option value="cat6">Category six</TagSelect.Option>
-										<TagSelect.Option value="cat7">Category Seven</TagSelect.Option>
-										<TagSelect.Option value="cat8">Category Eight</TagSelect.Option>
-										<TagSelect.Option value="cat9">Category Nine</TagSelect.Option>
-										<TagSelect.Option value="cat10">Category ten</TagSelect.Option>
-										<TagSelect.Option value="cat11">Category XI</TagSelect.Option>
-										<TagSelect.Option value="cat12">Category 12</TagSelect.Option>
 									</TagSelect>,
 								)}
 							</FormItem>
 						</StandardFormRow>
-						<StandardFormRow title="owner" grid>
-							{getFieldDecorator('owner', {
-								initialValue: ['wjh', 'zxx'],
-							})(
+						<StandardFormRow title="Language" grid>
+							{getFieldDecorator('owner')(
 								<Select
 									mode="multiple"
 									style={{
 										maxWidth: 286,
 										width: '100%',
 									}}
-									placeholder="select owner"
+									placeholder="Language Filter"
 								>
 									{owners.map(owner => (
 										<Option key={owner.id} value={owner.id}>
@@ -215,49 +188,6 @@ class Entries extends Component<EntriesProps> {
 									))}
 								</Select>,
 							)}
-							<a className={styles.selfTrigger} onClick={this.setOwner}>
-								Just look at yourself
-							</a>
-						</StandardFormRow>
-						<StandardFormRow title="Other options" grid last>
-							<Row gutter={16}>
-								<Col xl={8} lg={10} md={12} sm={24} xs={24}>
-									<FormItem {...formItemLayout} label="active user">
-										{getFieldDecorator(
-											'user',
-											{},
-										)(
-											<Select
-												placeholder="Unlimited"
-												style={{
-													maxWidth: 200,
-													width: '100%',
-												}}
-											>
-												<Option value="lisa">Li San</Option>
-											</Select>,
-										)}
-									</FormItem>
-								</Col>
-								<Col xl={8} lg={10} md={12} sm={24} xs={24}>
-									<FormItem {...formItemLayout} label="Praise of">
-										{getFieldDecorator(
-											'rate',
-											{},
-										)(
-											<Select
-												placeholder="Unlimited"
-												style={{
-													maxWidth: 200,
-													width: '100%',
-												}}
-											>
-												<Option value="good">excellent</Option>
-											</Select>,
-										)}
-									</FormItem>
-								</Col>
-							</Row>
 						</StandardFormRow>
 					</Form>
 				</Card>
@@ -311,20 +241,20 @@ class Entries extends Component<EntriesProps> {
 	}
 }
 
-const WarpForm = Form.create<EntriesProps>({
-	onValuesChange({ dispatch }: EntriesProps) {
+const WarpForm = Form.create<FeedsProps>({
+	onValuesChange({ dispatch }: FeedsProps) {
 		// Request data when form items change
 		// Simulation query form takes effect
 		dispatch({
-			type: 'entries/fetch',
+			type: 'feeds/fetch',
 			payload: {
 				count: 8,
 			},
 		})
 	},
-})(Entries)
+})(Feeds)
 
-export default connect(({ entries, loading }: { entries: StateType; loading: { models: { [key: string]: boolean } } }) => ({
-	entries,
-	loading: loading.models.entries,
+export default connect(({ feeds, loading }: { feeds: StateType; loading: { models: { [key: string]: boolean } } }) => ({
+	feeds,
+	loading: loading.models.feeds,
 }))(WarpForm)
