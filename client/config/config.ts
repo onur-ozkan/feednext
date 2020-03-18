@@ -118,6 +118,16 @@ export default {
 					authority: ['admin', 'user'],
 					routes: [
 						{
+							name: 'Feeds',
+							icon: 'smile',
+							path: '/feeds',
+							component: './Feeds',
+						},
+						{
+							path: '/feeds/create-feed',
+							component: './Feeds/CreateFeed',
+						},
+						{
 							path: '/',
 							redirect: '/welcome',
 						},
@@ -160,12 +170,6 @@ export default {
 							icon: 'smile',
 							path: '/top-feeders',
 							component: './top-feeders',
-						},
-						{
-							name: 'Entries',
-							icon: 'smile',
-							path: '/entries',
-							component: './Entries',
 						},
 						{
 							component: './404',

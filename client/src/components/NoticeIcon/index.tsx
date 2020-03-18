@@ -1,4 +1,6 @@
-import { Badge, Icon, Spin, Tabs } from 'antd'
+import { BellOutlined } from '@ant-design/icons'
+
+import { Badge, Spin, Tabs } from 'antd'
 import React, { Component } from 'react'
 import classNames from 'classnames'
 import NoticeList, { NoticeIconTabProps } from './NoticeList'
@@ -150,7 +152,7 @@ export default class NoticeIcon extends Component<NoticeIconProps> {
 		const { visible } = this.state
 		const noticeButtonClass = classNames(className, styles.noticeButton)
 		const notificationBox = this.getNotificationBox()
-		const NoticeBellIcon = bell || <Icon type="bell" className={styles.icon} />
+		const NoticeBellIcon = bell || <BellOutlined className={styles.icon} />
 		const trigger = (
 			<span
 				className={classNames(noticeButtonClass, {

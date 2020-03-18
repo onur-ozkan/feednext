@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { ListItemDataType } from './data.d'
+import { ListItemDataType } from './data'
 
 const titles = ['Alipay', 'Angular', 'Ant Design', 'Ant Design Pro', 'Bootstrap', 'React', 'Vue', 'Webpack']
 const avatars = [

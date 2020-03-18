@@ -1,7 +1,7 @@
 import { AnyAction, Reducer } from 'redux'
 
 import { EffectsCommandMap } from 'dva'
-import { ListItemDataType } from './data.d'
+import { ListItemDataType } from './data'
 import { queryFakeList } from './service'
 
 export interface StateType {
@@ -29,7 +29,7 @@ export interface ModelType {
 }
 
 const Model: ModelType = {
-	namespace: 'entries',
+	namespace: 'feeds',
 
 	state: {
 		list: [],

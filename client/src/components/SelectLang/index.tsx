@@ -1,4 +1,4 @@
-import { Icon, Menu } from 'antd'
+import { Menu } from 'antd'
 import { formatMessage, getLocale, setLocale } from 'umi-plugin-react/locale'
 
 import { ClickParam } from 'antd/es/menu'
@@ -6,6 +6,7 @@ import React from 'react'
 import classNames from 'classnames'
 import HeaderDropdown from '../HeaderDropdown'
 import styles from './index.less'
+import { GlobalOutlined } from '@ant-design/icons'
 
 interface SelectLangProps {
 	className?: string
@@ -42,8 +43,7 @@ const SelectLang: React.FC<SelectLangProps> = props => {
 	return (
 		<HeaderDropdown overlay={langMenu} placement="bottomRight">
 			<span className={classNames(styles.dropDown, className)}>
-				<Icon
-					type="global"
+				<GlobalOutlined
 					title={formatMessage({
 						id: 'navBar.lang',
 					})}
