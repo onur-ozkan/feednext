@@ -124,6 +124,10 @@ export default {
 							component: './Feeds',
 						},
 						{
+							path: '/feeds/create-feed',
+							component: './Feeds/CreateFeed',
+						},
+						{
 							path: '/',
 							redirect: '/welcome',
 						},
