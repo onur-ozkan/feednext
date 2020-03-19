@@ -9,7 +9,7 @@ import React, { useEffect } from 'react'
 import { Link } from 'umi'
 import { Dispatch } from 'redux'
 import { connect } from 'dva'
-import { Icon, Result, Button } from 'antd'
+import { Result, Button } from 'antd'
 import { formatMessage } from 'umi-plugin-react/locale'
 
 import Authorized from '@/utils/Authorized'
@@ -18,6 +18,7 @@ import { ConnectState } from '@/models/connect'
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils'
 import logo from '../assets/logo.svg'
 import { Route } from 'antd/lib/breadcrumb/Breadcrumb'
+import { GithubFilled } from '@ant-design/icons'
 
 const noMatch = (
 	<Result
@@ -66,7 +67,7 @@ const defaultFooterDom = (
 		links={[
 			{
 				key: 'Github',
-				title: <Icon type="github" />,
+				title: <GithubFilled />,
 				href: 'https://github.com/ilter-tech',
 				blankTarget: true,
 			},

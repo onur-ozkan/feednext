@@ -7,9 +7,9 @@ import { formatMessage } from 'umi-plugin-react/locale'
 
 import SelectLang from '@/components/SelectLang'
 import { ConnectProps, ConnectState } from '@/models/connect'
-import { Icon } from 'antd'
 import logo from '../assets/logo.svg'
 import styles from './UserLayout.less'
+import { GithubFilled } from '@ant-design/icons'
 
 export interface UserLayoutProps extends ConnectProps {
 	breadcrumbNameMap: {
@@ -68,7 +68,7 @@ const UserLayout: React.FC<UserLayoutProps> = props => {
 					links={[
 						{
 							key: 'Github',
-							title: <Icon type="github" />,
+							title: <GithubFilled />,
 							href: 'https://github.com/ilter-tech',
 							blankTarget: true,
 						},
