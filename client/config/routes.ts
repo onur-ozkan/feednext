@@ -45,49 +45,32 @@ export const routes = [
 					},
 					{
 						name: 'Feeds',
-						icon: 'smile',
+						icon: 'CopyFilled',
 						path: '/feeds',
 						component: './Feeds',
 					},
 					{
 						path: '/feeds/create-feed',
 						component: './Feeds/CreateFeed',
+						authority: ['admin', 'user'],
 					},
 					{
 						path: '/welcome',
 						component: './Welcome',
 					},
 					{
-						path: '/admin',
-						name: 'admin',
-						icon: 'crown',
-						component: './Admin',
-						authority: ['admin'],
-						routes: [
-							{
-								path: '/admin/sub-page',
-								name: 'sub-page',
-								icon: 'smile',
-								component: './Welcome',
-								authority: ['admin'],
-							},
-						],
-					},
-					{
-						name: '个人设置',
 						icon: 'smile',
 						path: '/account/settings',
 						component: './Account/Settings',
 					},
 					{
-						name: 'Account',
 						icon: 'smile',
 						path: '/account',
 						component: './Account',
 					},
 					{
 						name: 'Top Feeders',
-						icon: 'smile',
+						icon: 'CrownOutlined',
 						path: '/top-feeders',
 						component: './top-feeders',
 					},
