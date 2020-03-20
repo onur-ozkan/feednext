@@ -8,20 +8,14 @@ export const routes = [
 				redirect: '/user/login',
 			},
 			{
-				name: 'login',
-				icon: 'smile',
 				path: '/user/login',
 				component: './user/login',
 			},
 			{
-				name: 'register-result',
-				icon: 'smile',
 				path: '/user/register-result',
 				component: './user/register-result',
 			},
 			{
-				name: 'register',
-				icon: 'smile',
 				path: '/user/register',
 				component: './user/register',
 			},
@@ -55,23 +49,17 @@ export const routes = [
 						authority: ['admin', 'user'],
 					},
 					{
-						path: '/welcome',
-						component: './Welcome',
-					},
-					{
-						icon: 'smile',
-						path: '/account/settings',
-						component: './Account/Settings',
-					},
-					{
-						icon: 'smile',
 						path: '/account',
 						component: './Account',
 					},
 					{
+						path: '/account/settings',
+						component: './Account/Settings',
+					},
+					{
 						name: 'Top Feeders',
 						icon: 'CrownOutlined',
-						path: '/top-feeders',
+						path: 'top-feeders',
 						component: './top-feeders',
 					},
 					{
