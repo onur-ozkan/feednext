@@ -1,4 +1,4 @@
-import { Button, Result, Descriptions, Statistic } from 'antd'
+import { Button, Result, Descriptions } from 'antd'
 import React from 'react'
 import { Dispatch } from 'redux'
 import { connect } from 'dva'
@@ -15,7 +15,6 @@ const Step3: React.FC<Step3Props> = props => {
 	if (!data) {
 		return null
 	}
-	const { payAccount, receiverAccount, receiverName, amount } = data
 	const onFinish = () => {
 		if (dispatch) {
 			dispatch({
@@ -27,11 +26,17 @@ const Step3: React.FC<Step3Props> = props => {
 	const information = (
 		<div className={styles.information}>
 			<Descriptions column={1}>
-				<Descriptions.Item label="付款账户"> {payAccount}</Descriptions.Item>
-				<Descriptions.Item label="收款账户"> {receiverAccount}</Descriptions.Item>
-				<Descriptions.Item label="收款人姓名"> {receiverName}</Descriptions.Item>
-				<Descriptions.Item label="转账金额">
-					<Statistic value={amount} suffix="元" />
+				<Descriptions.Item label="Category"> Phone </Descriptions.Item>
+				<Descriptions.Item label="Title"> Xphone Model 7s Plus</Descriptions.Item>
+				<Descriptions.Item label="Description">
+					{' '}
+					Xphone Model 7s Plus is a phone released at 2014, here is the device you can check better
+					https://example.com/xphone-model-7s-plus
+				</Descriptions.Item>
+				<Descriptions.Item label="Entry">
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+					dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
+					ex ea commodo consequat.
 				</Descriptions.Item>
 			</Descriptions>
 		</div>
@@ -39,13 +44,13 @@ const Step3: React.FC<Step3Props> = props => {
 	const extra = (
 		<>
 			<Button type="primary" onClick={onFinish}>
-				再转一笔
+				OK
 			</Button>
-			<Button>查看账单</Button>
+			<Button>Route to Post</Button>
 		</>
 	)
 	return (
-		<Result status="success" title="操作成功" subTitle="预计两小时内到账" extra={extra} className={styles.result}>
+		<Result status="success" title="Published" extra={extra} className={styles.result}>
 			{information}
 		</Result>
 	)

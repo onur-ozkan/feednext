@@ -30,6 +30,8 @@ const Step1: React.FC<Step1Props> = props => {
 	}
 	const { validateFields } = form
 	const onValidateForm = async () => {
+		if (!form.getFieldValue('category') && !form.getFieldValue('title')) return
+
 		const values = await validateFields()
 		if (dispatch) {
 			dispatch({
@@ -44,24 +46,21 @@ const Step1: React.FC<Step1Props> = props => {
 	}
 	return (
 		<>
-			<Form
-				{...formItemLayout}
-				form={form}
-				layout="horizontal"
-				className={styles.stepForm}
-				hideRequiredMark
-				initialValues={data}
-			>
-				<Form.Item label="Category" rules={[{ required: true, message: 'Please fill the input above' }]}>
+			<Form {...formItemLayout} form={form} layout="horizontal" className={styles.stepForm}>
+				<Form.Item
+					label="Category"
+					name="category"
+					rules={[{ required: true, message: 'Please fill the input above' }]}
+				>
 					<Select mode="tags" placeholder="Phone">
 						<Option value="alipay">Alipay</Option>
 						<Option value="bank">Bank</Option>
 					</Select>
 				</Form.Item>
-				<Form.Item label="Title" rules={[{ required: true, message: 'Please fill the input above' }]}>
+				<Form.Item label="Title" name="title" rules={[{ required: true, message: 'Please fill the input above' }]}>
 					<Input placeholder="Xphone Model 7s Plus" />
 				</Form.Item>
-				<Form.Item label="Description">
+				<Form.Item label="Description" name="description">
 					<TextArea
 						placeholder="Xphone Model 7s Plus is a phone released at 2014, here is the device you can check better https://example.com/xphone-model-7s-plus"
 						allowClear
@@ -77,7 +76,7 @@ const Step1: React.FC<Step1Props> = props => {
 						},
 					}}
 				>
-					<Button type="primary" onClick={onValidateForm}>
+					<Button type="primary" htmlType="submit" onClick={onValidateForm}>
 						Next
 					</Button>
 				</Form.Item>

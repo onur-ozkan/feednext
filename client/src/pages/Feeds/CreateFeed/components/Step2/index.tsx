@@ -1,9 +1,11 @@
 import React from 'react'
-import { Form, Alert, Button, Descriptions, Divider, Statistic, Input } from 'antd'
+import { Form, Button, Descriptions, Divider, Modal } from 'antd'
 import { Dispatch } from 'redux'
 import { connect } from 'dva'
 import { StateType } from '../../model'
 import styles from './index.less'
+import TextArea from 'antd/lib/input/TextArea'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
 
 const formItemLayout = {
 	labelCol: {
@@ -43,6 +45,7 @@ const Step2: React.FC<Step2Props> = props => {
 		}
 	}
 	const onValidateForm = async () => {
+		if (!form.getFieldValue('entry')) return
 		const values = await validateFields()
 		if (dispatch) {
 			dispatch({
@@ -55,32 +58,34 @@ const Step2: React.FC<Step2Props> = props => {
 		}
 	}
 
-	const { payAccount, receiverAccount, receiverName, amount } = data
+	const confirmationModal = (): void => {
+		if (!form.getFieldValue('entry')) return
+		Modal.confirm({
+			centered: true,
+			title: 'You are about to post this feed. Are you sure ?',
+			icon: <ExclamationCircleOutlined />,
+			okText: 'Yes',
+			cancelText: 'No',
+			onOk() {
+				onValidateForm()
+			},
+		})
+	}
+
 	return (
-		<Form
-			{...formItemLayout}
-			form={form}
-			layout="horizontal"
-			className={styles.stepForm}
-			initialValues={{ password: '123456' }}
-		>
-			<Alert closable showIcon message="确认转账后，资金将直接打入对方账户，无法退回。" style={{ marginBottom: 24 }} />
+		<Form {...formItemLayout} form={form} layout="horizontal" className={styles.stepForm}>
 			<Descriptions column={1}>
-				<Descriptions.Item label="付款账户"> {payAccount}</Descriptions.Item>
-				<Descriptions.Item label="收款账户"> {receiverAccount}</Descriptions.Item>
-				<Descriptions.Item label="收款人姓名"> {receiverName}</Descriptions.Item>
-				<Descriptions.Item label="转账金额">
-					<Statistic value={amount} suffix="元" />
+				<Descriptions.Item label="Category"> Phone </Descriptions.Item>
+				<Descriptions.Item label="Title"> Xphone Model 7s Plus</Descriptions.Item>
+				<Descriptions.Item label="Description">
+					{' '}
+					Xphone Model 7s Plus is a phone released at 2014, here is the device you can check better
+					https://example.com/xphone-model-7s-plus
 				</Descriptions.Item>
 			</Descriptions>
 			<Divider style={{ margin: '24px 0' }} />
-			<Form.Item
-				label="支付密码"
-				name="password"
-				required={false}
-				rules={[{ required: true, message: '需要支付密码才能进行支付' }]}
-			>
-				<Input type="password" autoComplete="off" style={{ width: '80%' }} />
+			<Form.Item rules={[{ required: true, message: 'Please fill the input above' }]} label="Entry" name="entry">
+				<TextArea allowClear autoSize={{ minRows: 4 }} />
 			</Form.Item>
 			<Form.Item
 				style={{ marginBottom: 8 }}
@@ -92,13 +97,14 @@ const Step2: React.FC<Step2Props> = props => {
 					},
 				}}
 			>
-				<Button type="primary" onClick={onValidateForm} loading={submitting}>
-					提交
+				<Button type="primary" htmlType="submit" onClick={confirmationModal} loading={submitting}>
+					Post
 				</Button>
 				<Button onClick={onPrev} style={{ marginLeft: 8 }}>
-					上一步
+					Previous Step
 				</Button>
 			</Form.Item>
+			{confirmationModal}
 		</Form>
 	)
 }
