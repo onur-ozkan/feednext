@@ -4,6 +4,7 @@ import defaultSettings from './defaultSettings' // https://umijs.org/config/
 import slash from 'slash2'
 import themePluginConfig from './themePluginConfig'
 import proxy from './proxy'
+import { routes } from './routes'
 
 const { pwa } = defaultSettings // preview.pro.ant.design only do not use in your production ;
 // preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
@@ -76,115 +77,7 @@ export default {
 		ie: 11,
 	},
 	// umi routes: https://umijs.org/zh/guide/router.html
-	routes: [
-		{
-			path: '/user',
-			component: '../layouts/UserLayout',
-			routes: [
-				{
-					path: '/user',
-					redirect: '/user/login',
-				},
-				{
-					name: 'login',
-					icon: 'smile',
-					path: '/user/login',
-					component: './user/login',
-				},
-				{
-					name: 'register-result',
-					icon: 'smile',
-					path: '/user/register-result',
-					component: './user/register-result',
-				},
-				{
-					name: 'register',
-					icon: 'smile',
-					path: '/user/register',
-					component: './user/register',
-				},
-				{
-					component: '404',
-				},
-			],
-		},
-		{
-			path: '/',
-			component: '../layouts/SecurityLayout',
-			routes: [
-				{
-					path: '/',
-					component: '../layouts/BasicLayout',
-					authority: ['admin', 'user'],
-					routes: [
-						{
-							name: 'Feeds',
-							icon: 'smile',
-							path: '/feeds',
-							component: './Feeds',
-						},
-						{
-							path: '/feeds/create-feed',
-							component: './Feeds/CreateFeed',
-						},
-						{
-							path: '/',
-							redirect: '/welcome',
-						},
-						{
-							path: '/welcome',
-							name: 'welcome',
-							icon: 'smile',
-							component: './Welcome',
-						},
-						{
-							path: '/admin',
-							name: 'admin',
-							icon: 'crown',
-							component: './Admin',
-							authority: ['admin'],
-							routes: [
-								{
-									path: '/admin/sub-page',
-									name: 'sub-page',
-									icon: 'smile',
-									component: './Welcome',
-									authority: ['admin'],
-								},
-							],
-						},
-						{
-							name: '个人设置',
-							icon: 'smile',
-							path: '/account/settings',
-							component: './Account/Settings',
-						},
-						{
-							name: 'Account',
-							icon: 'smile',
-							path: '/account',
-							component: './Account',
-						},
-						{
-							name: 'Top Feeders',
-							icon: 'smile',
-							path: '/top-feeders',
-							component: './top-feeders',
-						},
-						{
-							component: './404',
-						},
-					],
-				},
-				{
-					component: './404',
-				},
-			],
-		},
-		{
-			component: './404',
-		},
-	],
+	routes: routes,
 	// Theme for antd: https://ant.design/docs/react/customize-theme-cn
 	theme: {
 		'@primary-color': '#ff2d20',
