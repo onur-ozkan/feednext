@@ -2,7 +2,7 @@ import { IConfig, IPlugin } from 'umi-types'
 import defaultSettings from './defaultSettings' // https://umijs.org/config/
 
 import slash from 'slash2'
-import themePluginConfig from './themePluginConfig'
+import { appTheme, themePlugin } from './themes'
 import proxy from './proxy'
 import { routes } from './routes'
 
@@ -67,7 +67,7 @@ if (isAntDesignProPreview) {
 			code: 'UA-72788897-6',
 		},
 	])
-	plugins.push(['umi-plugin-antd-theme', themePluginConfig])
+	plugins.push(['umi-plugin-antd-theme', themePlugin])
 }
 
 export default {
@@ -76,36 +76,8 @@ export default {
 	targets: {
 		ie: 11,
 	},
-	// umi routes: https://umijs.org/zh/guide/router.html
-	routes: routes,
-	// Theme for antd: https://ant.design/docs/react/customize-theme-cn
-	theme: {
-		'@primary-color': '#ff2d20',
-		// primary color for all components
-		'@link-color': '#1890ff',
-		// link color
-		'@success-color': '#52c41a',
-		// success state color
-		'@warning-color': '#faad14',
-		// warning state color
-		'@error-color': '#d60d17',
-		// error state color
-		'@font-size-base': '14px',
-		// major text font size
-		'@heading-color': 'rgba(0, 0, 0, 0.85)',
-		// heading text color
-		'@text-color': 'rgba(0, 0, 0, 0.65)',
-		// major text color
-		'@text-color-secondary': 'rgba(0, 0, 0, .45)',
-		// secondary text color
-		'@disabled-color': 'rgba(0, 0, 0, .25)',
-		// disable state color
-		'@border-radius-base': '1px',
-		// major border radius
-		'@border-color-base': '#d9d9d9',
-		// major border color
-		'@box-shadow-base': '0 2px 8px rgba(0, 0, 0, 0.15)', // major shadow for layers
-	},
+	routes,
+	theme: appTheme,
 	define: {
 		REACT_APP_ENV: REACT_APP_ENV || false,
 		ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION: ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION || '', // preview.pro.ant.design only do not use in your production ; preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
