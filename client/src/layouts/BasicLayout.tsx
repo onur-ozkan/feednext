@@ -9,7 +9,7 @@ import React, { useEffect } from 'react'
 import { Link } from 'umi'
 import { Dispatch } from 'redux'
 import { connect } from 'dva'
-import { Result, Button } from 'antd'
+import { Result, Button, Row, Col } from 'antd'
 import { formatMessage } from 'umi-plugin-react/locale'
 
 import Authorized from '@/utils/Authorized'
@@ -174,7 +174,11 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
 			{...settings}
 		>
 			<Authorized authority={authorized!.authority} noMatch={noMatch}>
-				{children}
+				<Row>
+					<Col span={18} offset={3}>
+						{children}
+					</Col>
+				</Row>
 			</Authorized>
 		</ProLayout>
 	)
