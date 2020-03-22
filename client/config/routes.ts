@@ -44,6 +44,10 @@ export const routes = [
 						component: './Feeds',
 					},
 					{
+						path: '/feeds/feed',
+						component: './Feeds/Feed',
+					},
+					{
 						path: '/feeds/create-feed',
 						component: './Feeds/CreateFeed',
 						authority: ['admin', 'user'],
