@@ -63,7 +63,7 @@ const UserLayout: React.FC<UserLayoutProps> = props => {
 				<DefaultFooter
 					copyright="2019 Ilter Technology"
 					style={{
-						backgroundColor: 'white',
+						backgroundColor: 'transparent',
 					}}
 					links={[
 						{

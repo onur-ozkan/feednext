@@ -64,6 +64,7 @@ const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
 const defaultFooterDom = (
 	<DefaultFooter
 		copyright="2019 Ilter Technology"
+		style={{ backgroundColor: 'transparent' }}
 		links={[
 			{
 				key: 'Github',
@@ -174,7 +175,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
 			{...settings}
 		>
 			<Authorized authority={authorized!.authority} noMatch={noMatch}>
-				<Row>
+				<Row style={{ backgroundColor: 'transparent' }}>
 					<Col span={18} offset={3}>
 						{children}
 					</Col>
