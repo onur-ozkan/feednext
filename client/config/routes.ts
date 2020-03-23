@@ -61,6 +61,11 @@ export const routes = [
 						component: './Account/Settings',
 					},
 					{
+						path: '/messages',
+						component: './Messages',
+						authority: ['admin', 'user'],
+					},
+					{
 						name: 'Top Feeders',
 						icon: 'CrownOutlined',
 						path: 'top-feeders',
