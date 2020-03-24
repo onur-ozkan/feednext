@@ -83,7 +83,7 @@ class Register extends Component<RegisterProps, RegisterState> {
 		if (userAndregister.status === 'ok') {
 			message.success('注册成功！')
 			router.push({
-				pathname: '/user/register-result',
+				pathname: '/auth/sign-up/result',
 				state: {
 					account,
 				},
@@ -412,7 +412,7 @@ class Register extends Component<RegisterProps, RegisterState> {
 								>
 									<FormattedMessage id="userandregister.register.register" />
 								</Button>
-								<Link className={styles.login} to="/user/login">
+								<Link className={styles.login} to="/auth/sign-in">
 									<FormattedMessage id="userandregister.register.sign-in" />
 								</Link>
 							</FormItem>

@@ -70,9 +70,9 @@ const Model: LoginModelType = {
 		logout(): void {
 			const { redirect } = getPageQuery()
 			// Note: There may be security issues, please note
-			if (window.location.pathname !== '/user/login' && !redirect) {
+			if (window.location.pathname !== '/auth/sign-in' && !redirect) {
 				router.replace({
-					pathname: '/user/login',
+					pathname: '/auth/sign-in',
 					search: stringify({
 						redirect: window.location.href,
 					}),

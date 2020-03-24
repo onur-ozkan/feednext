@@ -159,7 +159,7 @@ class Login extends Component<LoginProps, LoginState> {
 						<FormattedMessage id="userandlogin.login.signin" />
 					</Submit>
 					<div className={styles.other}>
-						<Link className={styles.register} to="/user/register">
+						<Link className={styles.register} to="/auth/sign-up">
 							<FormattedMessage id="userandlogin.login.signup" />
 						</Link>
 					</div>

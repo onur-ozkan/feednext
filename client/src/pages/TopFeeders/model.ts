@@ -2,7 +2,7 @@ import { AnyAction, Reducer } from 'redux'
 import { EffectsCommandMap } from 'dva'
 import { addFakeList, queryFakeList, removeFakeList, updateFakeList } from './service'
 
-import { BasicListItemDataType } from './data.d'
+import { BasicListItemDataType } from './data'
 
 export interface StateType {
 	list: BasicListItemDataType[]

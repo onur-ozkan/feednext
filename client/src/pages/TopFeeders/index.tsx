@@ -8,7 +8,7 @@ import { Dispatch } from 'redux'
 import { FormComponentProps } from '@ant-design/compatible/es/form'
 import { connect } from 'dva'
 import { StateType } from './model'
-import { BasicListItemDataType } from './data.d'
+import { BasicListItemDataType } from './data'
 import Search from 'antd/lib/input/Search'
 
 interface TopFeedersProps extends FormComponentProps {
