@@ -14,16 +14,16 @@ import api from '@/utils/api.ts'
 
 const { Tab, UserName, Password, Submit } = LoginComponents
 
-interface LoginProps {
+declare interface LoginProps {
 	dispatch: Dispatch<any>
 	userAndlogin: StateType
 	submitting: boolean
 }
-interface LoginState {
+declare interface LoginState {
 	type: string
 	autoLogin: boolean
 }
-export interface FormDataType {
+export declare interface FormDataType {
 	username: string
 	password: string
 }

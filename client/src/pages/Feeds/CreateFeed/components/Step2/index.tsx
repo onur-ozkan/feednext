@@ -15,7 +15,7 @@ const formItemLayout = {
 		span: 19,
 	},
 }
-interface Step2Props {
+declare interface Step2Props {
 	data?: StateType['step']
 	dispatch?: Dispatch<any>
 	submitting?: boolean

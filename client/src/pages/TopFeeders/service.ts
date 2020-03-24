@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 import { BasicListItemDataType } from './data'
 
-interface ParamsType extends Partial<BasicListItemDataType> {
+declare interface ParamsType extends Partial<BasicListItemDataType> {
 	count?: number
 }
 

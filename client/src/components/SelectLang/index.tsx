@@ -8,7 +8,7 @@ import HeaderDropdown from '../HeaderDropdown'
 import styles from './index.less'
 import { GlobalOutlined } from '@ant-design/icons'
 
-interface SelectLangProps {
+declare interface SelectLangProps {
 	className?: string
 }
 const SelectLang: React.FC<SelectLangProps> = props => {

@@ -3,7 +3,7 @@ import { Reducer } from 'redux'
 
 import { queryCurrent, query as queryUsers } from '@/services/user'
 
-export interface CurrentUser {
+export declare interface CurrentUser {
 	avatar?: string
 	name?: string
 	title?: string
@@ -17,11 +17,11 @@ export interface CurrentUser {
 	unreadCount?: number
 }
 
-export interface UserModelState {
+export declare interface UserModelState {
 	currentUser?: CurrentUser
 }
 
-export interface UserModelType {
+export declare interface UserModelType {
 	namespace: 'user'
 	state: UserModelState
 	effects: {

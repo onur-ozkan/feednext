@@ -6,12 +6,12 @@ import { stringify } from 'querystring'
 import { ConnectState, ConnectProps } from '@/models/connect'
 import { CurrentUser } from '@/models/user'
 
-interface SecurityLayoutProps extends ConnectProps {
+declare interface SecurityLayoutProps extends ConnectProps {
 	loading?: boolean
 	currentUser?: CurrentUser
 }
 
-interface SecurityLayoutState {
+declare interface SecurityLayoutState {
 	isReady: boolean
 }
 

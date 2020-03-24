@@ -13,14 +13,14 @@ type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 
 export type WrappedLoginItemProps = Omit<LoginItemProps, 'form' | 'type' | 'updateActive'>
 export type LoginItemKeyType = keyof typeof ItemMap
-export interface LoginItemType {
+export declare interface LoginItemType {
 	UserName: React.FC<WrappedLoginItemProps>
 	Password: React.FC<WrappedLoginItemProps>
 	Mobile: React.FC<WrappedLoginItemProps>
 	Captcha: React.FC<WrappedLoginItemProps>
 }
 
-export interface LoginItemProps {
+export declare interface LoginItemProps {
 	name?: string
 	rules?: any[]
 	style?: React.CSSProperties
@@ -42,7 +42,7 @@ export interface LoginItemProps {
 	tabUtil?: any
 }
 
-interface LoginItemState {
+declare interface LoginItemState {
 	count: number
 }
 

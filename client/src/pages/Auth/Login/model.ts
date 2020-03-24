@@ -4,7 +4,7 @@ import { routerRedux } from 'dva/router'
 import { fakeAccountLogin } from './service'
 import { getPageQuery, setAuthority } from './utils/utils'
 
-export interface StateType {
+export declare interface StateType {
 	status?: 'ok' | 'error'
 	type?: string
 	currentAuthority?: 'user' | 'guest' | 'admin'
@@ -17,7 +17,7 @@ export type Effect = (
 	},
 ) => void
 
-export interface ModelType {
+export declare interface ModelType {
 	namespace: string
 	state: StateType
 	effects: {

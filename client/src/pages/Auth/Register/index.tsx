@@ -44,12 +44,12 @@ const passwordProgressMap: {
 	poor: 'exception',
 }
 
-interface RegisterProps extends FormComponentProps {
+declare interface RegisterProps extends FormComponentProps {
 	dispatch: Dispatch<any>
 	userAndregister: StateType
 	submitting: boolean
 }
-interface RegisterState {
+declare interface RegisterState {
 	count: number
 	confirmDirty: boolean
 	visible: boolean
@@ -57,7 +57,7 @@ interface RegisterState {
 	prefix: string
 }
 
-export interface UserRegisterParams {
+export declare interface UserRegisterParams {
 	mail: string
 	password: string
 	confirm: string
@@ -81,7 +81,7 @@ class Register extends Component<RegisterProps, RegisterState> {
 		const { userAndregister, form } = this.props
 		const account = form.getFieldValue('mail')
 		if (userAndregister.status === 'ok') {
-			message.success('注册成功！')
+			message.success('registration success!')
 			router.push({
 				pathname: '/auth/sign-up/result',
 				state: {

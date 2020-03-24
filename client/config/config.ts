@@ -2,12 +2,9 @@ import { IConfig, IPlugin } from 'umi-types'
 import defaultSettings from './defaultSettings' // https://umijs.org/config/
 
 import slash from 'slash2'
-import { appTheme, themePlugin } from './themes'
+import { themePlugin } from './themes'
 import proxy from './proxy'
 import { routes } from './routes'
-
-const { pwa } = defaultSettings // preview.pro.ant.design only do not use in your production ;
-// preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
 
 const { ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION, REACT_APP_ENV } = process.env
 const isAntDesignProPreview = ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION === 'site'
@@ -24,7 +21,7 @@ const plugins: IPlugin[] = [
 				// default false
 				enable: true,
 				// default zh-CN
-				default: 'zh-CN',
+				default: 'en-US',
 				// default true, when it is true, will use `navigator.language` overwrite default
 				baseNavigator: true,
 			},
@@ -33,7 +30,7 @@ const plugins: IPlugin[] = [
 				webpackChunkName: true,
 				level: 3,
 			},
-			pwa: pwa
+			pwa: defaultSettings.pwa
 				? {
 						workboxPluginMode: 'InjectManifest',
 						workboxOptions: {
@@ -60,13 +57,6 @@ const plugins: IPlugin[] = [
 ]
 
 if (isAntDesignProPreview) {
-	// 针对 preview.pro.ant.design 的 GA 统计代码
-	plugins.push([
-		'umi-plugin-ga',
-		{
-			code: 'UA-72788897-6',
-		},
-	])
 	plugins.push(['umi-plugin-antd-theme', themePlugin])
 }
 
@@ -77,7 +67,7 @@ export default {
 		ie: 11,
 	},
 	routes,
-	theme: appTheme,
+	theme: defaultSettings,
 	define: {
 		REACT_APP_ENV: REACT_APP_ENV || false,
 		ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION: ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION || '', // preview.pro.ant.design only do not use in your production ; preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。

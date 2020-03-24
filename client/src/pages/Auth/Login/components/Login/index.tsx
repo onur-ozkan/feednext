@@ -11,7 +11,7 @@ import LoginSubmit from './LoginSubmit'
 import LoginTab from './LoginTab'
 import styles from './index.less'
 
-export interface LoginProps {
+export declare interface LoginProps {
 	defaultActiveKey?: string
 	onTabChange?: (key: string) => void
 	style?: React.CSSProperties
@@ -21,7 +21,7 @@ export interface LoginProps {
 	children: React.ReactElement<typeof LoginTab>[]
 }
 
-interface LoginState {
+declare interface LoginState {
 	tabs?: string[]
 	type?: string
 	active?: {

@@ -15,7 +15,7 @@ import styles from './BaseView.less'
 const FormItem = Form.Item
 const { Option } = Select
 
-// 头像组件 方便以后独立，增加裁剪之类的功能
+// The avatar component is convenient for future independence, adding functions such as cropping
 const AvatarView = ({ avatar }: { avatar: string }): JSX.Element => (
 	<Fragment>
 		<div className={styles.avatar_title}>
@@ -34,7 +34,7 @@ const AvatarView = ({ avatar }: { avatar: string }): JSX.Element => (
 		</Upload>
 	</Fragment>
 )
-interface SelectItem {
+declare interface SelectItem {
 	label: string
 	key: string
 }
@@ -68,7 +68,7 @@ const validatorPhone = (rule: any, value: string, callback: (message?: string) =
 	callback()
 }
 
-interface BaseViewProps extends FormComponentProps {
+declare interface BaseViewProps extends FormComponentProps {
 	currentUser?: CurrentUser
 }
 
@@ -215,7 +215,7 @@ class BaseView extends Component<BaseViewProps> {
 										maxWidth: 220,
 									}}
 								>
-									<Option value="China">中国</Option>
+									<Option value="China">China</Option>
 								</Select>,
 							)}
 						</FormItem>

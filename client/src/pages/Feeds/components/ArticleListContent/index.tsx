@@ -3,7 +3,7 @@ import React from 'react'
 import moment from 'moment'
 import styles from './index.less'
 
-interface ArticleListContentProps {
+declare interface ArticleListContentProps {
 	data: {
 		content: React.ReactNode
 		updatedAt: number

@@ -11,12 +11,12 @@ import { StateType } from './model'
 import { BasicListItemDataType } from './data'
 import Search from 'antd/lib/input/Search'
 
-interface TopFeedersProps extends FormComponentProps {
+declare interface TopFeedersProps extends FormComponentProps {
 	topFeeders: StateType
 	dispatch: Dispatch<any>
 	loading: boolean
 }
-interface TopFeedersState {
+declare interface TopFeedersState {
 	visible: boolean
 	done: boolean
 	current?: Partial<BasicListItemDataType>

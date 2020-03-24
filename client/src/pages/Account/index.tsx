@@ -39,7 +39,7 @@ const links = [
 	},
 ]
 
-interface AccountProps {
+declare interface AccountProps {
 	currentUser?: CurrentUser
 	projectNotice: NoticeType[]
 	activities: ActivitiesType[]

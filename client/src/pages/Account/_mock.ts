@@ -24,7 +24,7 @@ for (let i = 0; i < fakeY2.length; i += 1) {
 const salesData = []
 for (let i = 0; i < 12; i += 1) {
 	salesData.push({
-		x: `${i + 1}月`,
+		x: `${i + 1}month`,
 		y: Math.floor(Math.random() * 1000) + 200,
 	})
 }
@@ -32,7 +32,7 @@ const searchData = []
 for (let i = 0; i < 50; i += 1) {
 	searchData.push({
 		index: i + 1,
-		keyword: `搜索关键词-${i}`,
+		keyword: `search keyword-${i}`,
 		count: Math.floor(Math.random() * 1000),
 		range: Math.floor(Math.random() * 100),
 		status: Math.floor((Math.random() * 10) % 2),

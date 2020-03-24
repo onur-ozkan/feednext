@@ -5,7 +5,7 @@ import { connect } from 'dva'
 import { StateType } from '../../model'
 import styles from './index.less'
 
-interface Step3Props {
+declare interface Step3Props {
 	data?: StateType['step']
 	dispatch?: Dispatch<any>
 }

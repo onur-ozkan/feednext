@@ -11,7 +11,7 @@ import logo from '../assets/logo.svg'
 import styles from './UserLayout.less'
 import { GithubFilled } from '@ant-design/icons'
 
-export interface UserLayoutProps extends ConnectProps {
+export declare interface UserLayoutProps extends ConnectProps {
 	breadcrumbNameMap: {
 		[path: string]: MenuDataItem
 	}

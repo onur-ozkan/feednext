@@ -7,13 +7,13 @@ import { fakeAccountLogin, getFakeCaptcha } from '@/services/login'
 import { setAuthority } from '@/utils/authority'
 import { getPageQuery } from '@/utils/utils'
 
-export interface StateType {
+export declare interface StateType {
 	status?: 'ok' | 'error'
 	type?: string
 	currentAuthority?: 'user' | 'guest' | 'admin'
 }
 
-export interface LoginModelType {
+export declare interface LoginModelType {
 	namespace: string
 	state: StateType
 	effects: {

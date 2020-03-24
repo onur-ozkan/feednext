@@ -1,6 +1,6 @@
 import { createContext } from 'react'
 
-export interface LoginContextProps {
+export declare interface LoginContextProps {
 	tabUtil?: {
 		addTab: (id: string) => void
 		removeTab: (id: string) => void

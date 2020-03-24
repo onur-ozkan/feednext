@@ -10,7 +10,7 @@ import styles from './style.less'
 
 const { Step } = Steps
 
-interface CreateFeedProps {
+declare interface CreateFeedProps {
 	current: StateType['current']
 }
 

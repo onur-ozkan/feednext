@@ -4,7 +4,7 @@ import { addFakeList, queryFakeList, removeFakeList, updateFakeList } from './se
 
 import { BasicListItemDataType } from './data'
 
-export interface StateType {
+export declare interface StateType {
 	list: BasicListItemDataType[]
 }
 
@@ -15,7 +15,7 @@ export type Effect = (
 	},
 ) => void
 
-export interface ModelType {
+export declare interface ModelType {
 	namespace: string
 	state: StateType
 	effects: {

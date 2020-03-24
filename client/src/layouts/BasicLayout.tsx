@@ -33,7 +33,7 @@ const noMatch = (
 	/>
 )
 
-export interface BasicLayoutProps extends ProLayoutProps {
+export declare interface BasicLayoutProps extends ProLayoutProps {
 	breadcrumbNameMap: {
 		[path: string]: MenuDataItem
 	}

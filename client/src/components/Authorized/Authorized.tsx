@@ -5,7 +5,7 @@ import check, { IAuthorityType } from './CheckPermissions'
 import AuthorizedRoute from './AuthorizedRoute'
 import Secured from './Secured'
 
-interface AuthorizedProps {
+declare interface AuthorizedProps {
 	authority: IAuthorityType
 	noMatch?: React.ReactNode
 }

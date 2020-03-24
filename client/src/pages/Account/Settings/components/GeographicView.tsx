@@ -8,7 +8,7 @@ import styles from './GeographicView.less'
 
 const { Option } = Select
 
-interface SelectItem {
+declare interface SelectItem {
 	label: string
 	key: string
 }
@@ -17,7 +17,7 @@ const nullSelectItem: SelectItem = {
 	key: '',
 }
 
-interface GeographicViewProps {
+declare interface GeographicViewProps {
 	dispatch?: Dispatch<any>
 	province?: GeographicItemType[]
 	city?: GeographicItemType[]
@@ -72,7 +72,7 @@ class GeographicView extends Component<GeographicViewProps> {
 		if (!list || list.length < 1) {
 			return (
 				<Option key={0} value={0}>
-					没有找到选项
+					No options found
 				</Option>
 			)
 		}

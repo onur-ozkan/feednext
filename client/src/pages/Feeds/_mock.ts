@@ -27,8 +27,8 @@ const desc = [
 	'At that time, I only thought about what I wanted and never wanted what I had',
 ]
 const user = [
-	'付 小小',
-	'曲 丽丽',
+	'Pay little',
+	'Qu Lili',
 	'Lin Dongdong',
 	'Zhou Xingxing',
 	'Wu Jiahao',

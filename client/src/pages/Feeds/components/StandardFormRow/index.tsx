@@ -2,7 +2,7 @@ import React from 'react'
 import classNames from 'classnames'
 import styles from './index.less'
 
-interface StandardFormRowProps {
+declare interface StandardFormRowProps {
 	title?: string
 	last?: boolean
 	block?: boolean

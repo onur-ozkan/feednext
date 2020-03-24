@@ -14,7 +14,7 @@ const generateId = ((): ((prefix?: any) => any) => {
 	}
 })()
 
-interface LoginTabProps extends TabPaneProps {
+declare interface LoginTabProps extends TabPaneProps {
 	tabUtil: LoginContextProps['tabUtil']
 }
 

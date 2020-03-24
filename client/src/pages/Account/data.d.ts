@@ -1,13 +1,13 @@
-export interface TagType {
+export declare interface TagType {
 	key: string
 	label: string
 }
-export interface VisitDataType {
+export declare interface VisitDataType {
 	x: string
 	y: number
 }
 
-export interface SearchDataType {
+export declare interface SearchDataType {
 	index: number
 	keyword: string
 	count: number
@@ -15,24 +15,24 @@ export interface SearchDataType {
 	status: number
 }
 
-export interface OfflineDataType {
+export declare interface OfflineDataType {
 	name: string
 	cvr: number
 }
 
-export interface OfflineChartData {
+export declare interface OfflineChartData {
 	x: any
 	y1: number
 	y2: number
 }
 
-export interface RadarData {
+export declare interface RadarData {
 	name: string
 	label: string
 	value: number
 }
 
-export interface AnalysisData {
+export declare interface AnalysisData {
 	visitData: VisitDataType[]
 	visitData2: VisitDataType[]
 	salesData: VisitDataType[]
@@ -45,7 +45,7 @@ export interface AnalysisData {
 	radarData: RadarData[]
 }
 
-export interface GeographicType {
+export declare interface GeographicType {
 	province: {
 		label: string
 		key: string
@@ -56,7 +56,7 @@ export interface GeographicType {
 	}
 }
 
-export interface NoticeType {
+export declare interface NoticeType {
 	id: string
 	title: string
 	logo: string
@@ -67,7 +67,7 @@ export interface NoticeType {
 	memberLink: string
 }
 
-export interface CurrentUser {
+export declare interface CurrentUser {
 	name: string
 	avatar: string
 	userid: string
@@ -84,13 +84,13 @@ export interface CurrentUser {
 	address: string
 	phone: string
 }
-export interface Member {
+export declare interface Member {
 	avatar: string
 	name: string
 	id: string
 }
 
-export interface ActivitiesType {
+export declare interface ActivitiesType {
 	id: string
 	updatedAt: string
 	user: {
@@ -109,7 +109,7 @@ export interface ActivitiesType {
 	template: string
 }
 
-export interface RadarDataType {
+export declare interface RadarDataType {
 	label: string
 	name: string
 	value: number

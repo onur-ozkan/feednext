@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 import autoHeight from './autoHeight'
 import styles from './index.less'
 
-export interface RadarProps {
+export declare interface RadarProps {
 	title?: React.ReactNode
 	height?: number
 	padding?: [number, number, number, number]
@@ -21,7 +21,7 @@ export interface RadarProps {
 	tickCount?: number
 	style?: React.CSSProperties
 }
-interface RadarState {
+declare interface RadarState {
 	legendData: {
 		checked: boolean
 		name: string
@@ -66,9 +66,9 @@ class Radar extends Component<RadarProps, RadarState> {
 		| undefined
 		| void => {
 		if (!this.chart) return
-		const geom = this.chart.getAllGeoms()[0] // 获取所有的图形
+		const geom = this.chart.getAllGeoms()[0] // Get all graphics
 		if (!geom) return
-		const items = (geom as any).get('dataArray') || [] // 获取图形对应的
+		const items = (geom as any).get('dataArray') || [] // Get the corresponding graphics
 
 		const legendData = items.map(
 			(

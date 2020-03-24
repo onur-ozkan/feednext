@@ -1,10 +1,10 @@
-export interface Member {
+export declare interface Member {
 	avatar: string
 	name: string
 	id: string
 }
 
-export interface ListItemDataType {
+export declare interface ListItemDataType {
 	id: string
 	owner: string
 	title: string

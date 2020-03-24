@@ -5,13 +5,13 @@ import { Button } from 'antd'
 import styles from './index.less'
 import Link from 'umi/link'
 
-export interface EditableLink {
+export declare interface EditableLink {
 	title: string
 	href: string
 	id?: string
 }
 
-interface EditableLinkGroupProps {
+declare interface EditableLinkGroupProps {
 	onAdd: () => void
 	links: EditableLink[]
 	linkElement: typeof Link
@@ -33,7 +33,7 @@ const EditableLinkGroup: React.FC<EditableLinkGroupProps> = props => {
 				),
 			)}
 			<Button size="small" type="primary" ghost onClick={onAdd}>
-				<PlusOutlined /> 添加
+				<PlusOutlined /> Add to
 			</Button>
 		</div>
 	)

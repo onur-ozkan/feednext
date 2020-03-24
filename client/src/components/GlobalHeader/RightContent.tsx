@@ -13,7 +13,7 @@ import NoticeIconView from './NoticeIconView'
 import { router } from 'umi'
 
 export type SiderTheme = 'light' | 'dark'
-export interface GlobalHeaderRightProps extends ConnectProps {
+export declare interface GlobalHeaderRightProps extends ConnectProps {
 	theme?: SiderTheme
 	layout: 'sidemenu' | 'topmenu'
 }

@@ -3,7 +3,7 @@ import { AnyAction, Reducer } from 'redux'
 import { EffectsCommandMap } from 'dva'
 import { fakeRegister } from './service'
 
-export interface StateType {
+export declare interface StateType {
 	status?: 'ok' | 'error'
 	currentAuthority?: 'user' | 'guest' | 'admin'
 }
@@ -15,7 +15,7 @@ export type Effect = (
 	},
 ) => void
 
-export interface ModelType {
+export declare interface ModelType {
 	namespace: string
 	state: StateType
 	effects: {

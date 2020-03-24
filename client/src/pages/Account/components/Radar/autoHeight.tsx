@@ -27,7 +27,7 @@ function getAutoHeight(n: HTMLDivElement | undefined): number {
 	return height
 }
 
-interface AutoHeightProps {
+declare interface AutoHeightProps {
 	height?: number
 }
 

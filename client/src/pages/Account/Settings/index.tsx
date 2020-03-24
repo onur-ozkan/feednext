@@ -14,13 +14,13 @@ import styles from './style.less'
 
 const { Item } = Menu
 
-interface SettingsProps {
+declare interface SettingsProps {
 	dispatch: Dispatch<any>
 	currentUser: CurrentUser
 }
 
 type SettingsStateKeys = 'base' | 'security' | 'binding' | 'notification'
-interface SettingsState {
+declare interface SettingsState {
 	mode: 'inline' | 'horizontal'
 	menuMap: {
 		[key: string]: React.ReactNode

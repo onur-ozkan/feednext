@@ -1,8 +1,9 @@
 import { MenuTheme } from 'antd/es/menu/MenuContext'
+import { IAppTheme, appTheme } from './themes'
 
 export type ContentWidth = 'Fluid' | 'Fixed'
 
-export interface DefaultSettings {
+export declare interface DefaultSettings {
 	navTheme: MenuTheme
 	primaryColor: string
 	layout: 'sidemenu' | 'topmenu'
@@ -34,4 +35,5 @@ export default {
 	title: 'Feednext',
 	pwa: false,
 	iconfontUrl: '',
-} as DefaultSettings
+	...appTheme,
+} as DefaultSettings & IAppTheme

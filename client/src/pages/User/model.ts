@@ -3,7 +3,7 @@ import { EffectsCommandMap } from 'dva'
 import { ActivitiesType, CurrentUser, NoticeType, RadarDataType } from './data.d'
 import { fakeChartData, queryActivities, queryCurrent, queryProjectNotice } from './service'
 
-export interface ModalState {
+export declare interface ModalState {
 	currentUser?: CurrentUser
 	projectNotice: NoticeType[]
 	activities: ActivitiesType[]
@@ -17,7 +17,7 @@ export type Effect = (
 	},
 ) => void
 
-export interface ModelType {
+export declare interface ModelType {
 	namespace: string
 	state: ModalState
 	reducers: {
