@@ -9,7 +9,7 @@ import React, { useEffect } from 'react'
 import { Link } from 'umi'
 import { Dispatch } from 'redux'
 import { connect } from 'dva'
-import { Icon, Result, Button } from 'antd'
+import { Result, Button, Row, Col } from 'antd'
 import { formatMessage } from 'umi-plugin-react/locale'
 
 import Authorized from '@/utils/Authorized'
@@ -18,6 +18,7 @@ import { ConnectState } from '@/models/connect'
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils'
 import logo from '../assets/logo.svg'
 import { Route } from 'antd/lib/breadcrumb/Breadcrumb'
+import { GithubFilled } from '@ant-design/icons'
 
 const noMatch = (
 	<Result
@@ -26,13 +27,13 @@ const noMatch = (
 		subTitle="Sorry, you are not authorized to access this page."
 		extra={
 			<Button type="primary">
-				<Link to="/user/login">Go Login</Link>
+				<Link to="/auth/sign-in">Go Login</Link>
 			</Button>
 		}
 	/>
 )
 
-export interface BasicLayoutProps extends ProLayoutProps {
+export declare interface BasicLayoutProps extends ProLayoutProps {
 	breadcrumbNameMap: {
 		[path: string]: MenuDataItem
 	}
@@ -63,10 +64,11 @@ const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
 const defaultFooterDom = (
 	<DefaultFooter
 		copyright="2019 Ilter Technology"
+		style={{ backgroundColor: 'transparent' }}
 		links={[
 			{
 				key: 'Github',
-				title: <Icon type="github" />,
+				title: <GithubFilled />,
 				href: 'https://github.com/ilter-tech',
 				blankTarget: true,
 			},
@@ -173,7 +175,11 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
 			{...settings}
 		>
 			<Authorized authority={authorized!.authority} noMatch={noMatch}>
-				{children}
+				<Row style={{ backgroundColor: 'transparent' }}>
+					<Col span={18} offset={3}>
+						{children}
+					</Col>
+				</Row>
 			</Authorized>
 		</ProLayout>
 	)

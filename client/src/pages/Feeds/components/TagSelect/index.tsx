@@ -7,14 +7,14 @@ import styles from './index.less'
 
 const { CheckableTag } = Tag
 
-export interface TagSelectOptionProps {
+export declare interface TagSelectOptionProps {
 	value?: string | number
 	style?: React.CSSProperties
 	checked?: boolean
 	onChange?: (value: string | number | undefined, state: boolean) => void
 }
 
-export interface TagSelectProps {
+export declare interface TagSelectProps {
 	onChange?: (value: (string | number)[]) => void
 	expandable?: boolean
 	value?: (string | number)[]
@@ -41,7 +41,7 @@ const TagSelectOption: React.FC<TagSelectOptionProps> & {
 
 TagSelectOption.isTagSelectOption = true
 
-interface TagSelectState {
+declare interface TagSelectState {
 	expand: boolean
 	value: (string | number)[]
 }

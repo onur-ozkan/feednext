@@ -10,7 +10,7 @@ import styles from './style.less'
 
 const { Step } = Steps
 
-interface CreateFeedProps {
+declare interface CreateFeedProps {
 	current: StateType['current']
 }
 
@@ -37,18 +37,14 @@ const CreateFeed: React.FC<CreateFeedProps> = ({ current }) => {
 	}, [current])
 
 	return (
-		<PageHeaderWrapper content="将一个冗长或用户不熟悉的表单任务分成多个步骤，指导用户完成。">
-			<Card bordered={false}>
-				<>
-					<Steps current={currentStep} className={styles.steps}>
-						<Step title="填写转账信息" />
-						<Step title="确认转账信息" />
-						<Step title="完成" />
-					</Steps>
-					{stepComponent}
-				</>
-			</Card>
-		</PageHeaderWrapper>
+		<Card bordered={false}>
+			<Steps current={currentStep} className={styles.steps}>
+				<Step title="Create Title" />
+				<Step title="Enter First Entry" />
+				<Step title="Confirmation" />
+			</Steps>
+			{stepComponent}
+		</Card>
 	)
 }
 

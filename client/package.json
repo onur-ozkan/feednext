@@ -51,8 +51,8 @@
     "not ie <= 10"
   ],
   "engines": {
-    "node": "12.13.1",
-    "npm": "6.12.1"
+    "node": "12",
+    "npm": "6"
   },
   "dependencies": {
     "@ant-design/compatible": "0.0.1-rc.1",

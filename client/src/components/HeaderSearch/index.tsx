@@ -7,7 +7,7 @@ import classNames from 'classnames'
 import debounce from 'lodash/debounce'
 import styles from './index.less'
 
-export interface HeaderSearchProps {
+export declare interface HeaderSearchProps {
 	onPressEnter: (value: string) => void
 	onSearch: (value: string) => void
 	onChange: (value: string) => void
@@ -21,7 +21,7 @@ export interface HeaderSearchProps {
 	defaultValue?: string
 }
 
-interface HeaderSearchState {
+declare interface HeaderSearchState {
 	value?: string
 	searchMode: boolean
 }

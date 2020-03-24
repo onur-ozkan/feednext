@@ -8,7 +8,7 @@ import { StateType } from './login'
 
 export { GlobalModelState, SettingModelState, UserModelState }
 
-export interface Loading {
+export declare interface Loading {
 	global: boolean
 	effects: {
 		[key: string]: boolean | undefined
@@ -22,7 +22,7 @@ export interface Loading {
 	}
 }
 
-export interface ConnectState {
+export declare interface ConnectState {
 	global: GlobalModelState
 	loading: Loading
 	settings: SettingModelState
@@ -30,13 +30,13 @@ export interface ConnectState {
 	login: StateType
 }
 
-export interface Route extends MenuDataItem {
+export declare interface Route extends MenuDataItem {
 	routes?: Route[]
 }
 
 /**
  * @type T: Params matched in dynamic routing
  */
-export interface ConnectProps<T = {}> extends Partial<RouterTypes<Route, T>> {
+export declare interface ConnectProps<T = {}> extends Partial<RouterTypes<Route, T>> {
 	dispatch?: Dispatch<AnyAction>
 }

@@ -4,7 +4,7 @@ import React from 'react'
 import Authorized from './Authorized'
 import { IAuthorityType } from './CheckPermissions'
 
-interface AuthorizedRoutePops {
+declare interface AuthorizedRoutePops {
 	currentAuthority: string
 	component: React.ComponentClass<any, any>
 	render: (props: any) => React.ReactNode

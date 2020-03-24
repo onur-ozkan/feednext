@@ -12,7 +12,7 @@ import { ConnectProps, ConnectState } from '@/models/connect'
 import styles from './index.less'
 import { MessageType } from 'antd/lib/message'
 
-export interface GlobalHeaderRightProps extends ConnectProps {
+export declare interface GlobalHeaderRightProps extends ConnectProps {
 	notices?: NoticeItem[]
 	currentUser?: CurrentUser
 	fetchingNotices?: boolean

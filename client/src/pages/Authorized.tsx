@@ -5,7 +5,7 @@ import Authorized from '@/utils/Authorized'
 import { getRouteAuthority } from '@/utils/utils'
 import { ConnectProps, ConnectState, UserModelState } from '@/models/connect'
 
-interface AuthComponentProps extends ConnectProps {
+declare interface AuthComponentProps extends ConnectProps {
 	user: UserModelState
 }
 
@@ -25,7 +25,7 @@ const AuthComponent: React.FC<AuthComponentProps> = ({
 	return (
 		<Authorized
 			authority={getRouteAuthority(location.pathname, routes) || ''}
-			noMatch={isLogin ? <Redirect to="/exception/403" /> : <Redirect to="/user/login" />}
+			noMatch={isLogin ? <Redirect to="/exception/403" /> : <Redirect to="/auth/sign-in" />}
 		>
 			{children}
 		</Authorized>

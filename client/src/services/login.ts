@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export interface LoginParamsType {
+export declare interface LoginParamsType {
 	userName: string
 	password: string
 	mobile: string

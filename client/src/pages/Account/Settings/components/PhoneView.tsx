@@ -3,7 +3,7 @@ import React from 'react'
 import { Input } from 'antd'
 import styles from './PhoneView.less'
 
-interface PhoneViewProps {
+declare interface PhoneViewProps {
 	value?: string
 	onChange?: (value: string) => void
 }

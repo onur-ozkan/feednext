@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import { NoticeIconData } from './index'
 import styles from './NoticeList.less'
 
-export interface NoticeIconTabProps {
+export declare interface NoticeIconTabProps {
 	count?: number
 	name?: string
 	showClear?: boolean
@@ -51,7 +51,7 @@ const NoticeList: React.SFC<NoticeIconTabProps> = ({
 					const itemCls = classNames(styles.item, {
 						[styles.read]: item.read,
 					})
-					// eslint-disable-next-line no-nested-ternary
+
 					const leftIcon = item.avatar ? (
 						typeof item.avatar === 'string' ? (
 							<Avatar className={styles.avatar} src={item.avatar} />

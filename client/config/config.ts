@@ -2,11 +2,9 @@ import { IConfig, IPlugin } from 'umi-types'
 import defaultSettings from './defaultSettings' // https://umijs.org/config/
 
 import slash from 'slash2'
-import themePluginConfig from './themePluginConfig'
+import { themePlugin } from './themes'
 import proxy from './proxy'
-
-const { pwa } = defaultSettings // preview.pro.ant.design only do not use in your production ;
-// preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
+import { routes } from './routes'
 
 const { ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION, REACT_APP_ENV } = process.env
 const isAntDesignProPreview = ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION === 'site'
@@ -23,7 +21,7 @@ const plugins: IPlugin[] = [
 				// default false
 				enable: true,
 				// default zh-CN
-				default: 'zh-CN',
+				default: 'en-US',
 				// default true, when it is true, will use `navigator.language` overwrite default
 				baseNavigator: true,
 			},
@@ -32,7 +30,7 @@ const plugins: IPlugin[] = [
 				webpackChunkName: true,
 				level: 3,
 			},
-			pwa: pwa
+			pwa: defaultSettings.pwa
 				? {
 						workboxPluginMode: 'InjectManifest',
 						workboxOptions: {
@@ -59,14 +57,7 @@ const plugins: IPlugin[] = [
 ]
 
 if (isAntDesignProPreview) {
-	// 针对 preview.pro.ant.design 的 GA 统计代码
-	plugins.push([
-		'umi-plugin-ga',
-		{
-			code: 'UA-72788897-6',
-		},
-	])
-	plugins.push(['umi-plugin-antd-theme', themePluginConfig])
+	plugins.push(['umi-plugin-antd-theme', themePlugin])
 }
 
 export default {
@@ -75,144 +66,8 @@ export default {
 	targets: {
 		ie: 11,
 	},
-	// umi routes: https://umijs.org/zh/guide/router.html
-	routes: [
-		{
-			path: '/user',
-			component: '../layouts/UserLayout',
-			routes: [
-				{
-					path: '/user',
-					redirect: '/user/login',
-				},
-				{
-					name: 'login',
-					icon: 'smile',
-					path: '/user/login',
-					component: './user/login',
-				},
-				{
-					name: 'register-result',
-					icon: 'smile',
-					path: '/user/register-result',
-					component: './user/register-result',
-				},
-				{
-					name: 'register',
-					icon: 'smile',
-					path: '/user/register',
-					component: './user/register',
-				},
-				{
-					component: '404',
-				},
-			],
-		},
-		{
-			path: '/',
-			component: '../layouts/SecurityLayout',
-			routes: [
-				{
-					path: '/',
-					component: '../layouts/BasicLayout',
-					authority: ['admin', 'user'],
-					routes: [
-						{
-							name: 'Feeds',
-							icon: 'smile',
-							path: '/feeds',
-							component: './Feeds',
-						},
-						{
-							path: '/feeds/create-feed',
-							component: './Feeds/CreateFeed',
-						},
-						{
-							path: '/',
-							redirect: '/welcome',
-						},
-						{
-							path: '/welcome',
-							name: 'welcome',
-							icon: 'smile',
-							component: './Welcome',
-						},
-						{
-							path: '/admin',
-							name: 'admin',
-							icon: 'crown',
-							component: './Admin',
-							authority: ['admin'],
-							routes: [
-								{
-									path: '/admin/sub-page',
-									name: 'sub-page',
-									icon: 'smile',
-									component: './Welcome',
-									authority: ['admin'],
-								},
-							],
-						},
-						{
-							name: '个人设置',
-							icon: 'smile',
-							path: '/account/settings',
-							component: './Account/Settings',
-						},
-						{
-							name: 'Account',
-							icon: 'smile',
-							path: '/account',
-							component: './Account',
-						},
-						{
-							name: 'Top Feeders',
-							icon: 'smile',
-							path: '/top-feeders',
-							component: './top-feeders',
-						},
-						{
-							component: './404',
-						},
-					],
-				},
-				{
-					component: './404',
-				},
-			],
-		},
-		{
-			component: './404',
-		},
-	],
-	// Theme for antd: https://ant.design/docs/react/customize-theme-cn
-	theme: {
-		'@primary-color': '#ff2d20',
-		// primary color for all components
-		'@link-color': '#1890ff',
-		// link color
-		'@success-color': '#52c41a',
-		// success state color
-		'@warning-color': '#faad14',
-		// warning state color
-		'@error-color': '#d60d17',
-		// error state color
-		'@font-size-base': '14px',
-		// major text font size
-		'@heading-color': 'rgba(0, 0, 0, 0.85)',
-		// heading text color
-		'@text-color': 'rgba(0, 0, 0, 0.65)',
-		// major text color
-		'@text-color-secondary': 'rgba(0, 0, 0, .45)',
-		// secondary text color
-		'@disabled-color': 'rgba(0, 0, 0, .25)',
-		// disable state color
-		'@border-radius-base': '1px',
-		// major border radius
-		'@border-color-base': '#d9d9d9',
-		// major border color
-		'@box-shadow-base': '0 2px 8px rgba(0, 0, 0, 0.15)', // major shadow for layers
-	},
+	routes,
+	theme: defaultSettings,
 	define: {
 		REACT_APP_ENV: REACT_APP_ENV || false,
 		ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION: ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION || '', // preview.pro.ant.design only do not use in your production ; preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。

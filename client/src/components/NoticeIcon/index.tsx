@@ -10,7 +10,7 @@ import styles from './index.less'
 
 const { TabPane } = Tabs
 
-export interface NoticeIconData {
+export declare interface NoticeIconData {
 	avatar?: string | React.ReactNode
 	title?: React.ReactNode
 	description?: React.ReactNode
@@ -21,7 +21,7 @@ export interface NoticeIconData {
 	read?: boolean
 }
 
-export interface NoticeIconProps {
+export declare interface NoticeIconProps {
 	count?: number
 	bell?: React.ReactNode
 	className?: string

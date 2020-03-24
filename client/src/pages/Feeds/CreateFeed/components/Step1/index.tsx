@@ -1,9 +1,10 @@
 import React from 'react'
-import { Form, Button, Divider, Input, Select } from 'antd'
+import { Form, Button, Divider, Input, Select, Row } from 'antd'
 import { Dispatch } from 'redux'
 import { connect } from 'dva'
 import { StateType } from '../../model'
 import styles from './index.less'
+import TextArea from 'antd/lib/input/TextArea'
 
 const { Option } = Select
 
@@ -15,7 +16,7 @@ const formItemLayout = {
 		span: 19,
 	},
 }
-interface Step1Props {
+declare interface Step1Props {
 	data?: StateType['step']
 	dispatch?: Dispatch<any>
 }
@@ -29,6 +30,8 @@ const Step1: React.FC<Step1Props> = props => {
 	}
 	const { validateFields } = form
 	const onValidateForm = async () => {
+		if (!form.getFieldValue('category') && !form.getFieldValue('title')) return
+
 		const values = await validateFields()
 		if (dispatch) {
 			dispatch({
@@ -43,52 +46,26 @@ const Step1: React.FC<Step1Props> = props => {
 	}
 	return (
 		<>
-			<Form
-				{...formItemLayout}
-				form={form}
-				layout="horizontal"
-				className={styles.stepForm}
-				hideRequiredMark
-				initialValues={data}
-			>
-				<Form.Item label="付款账户" name="payAccount" rules={[{ required: true, message: '请选择付款账户' }]}>
-					<Select placeholder="test@example.com">
-						<Option value="ant-design@alipay.com">ant-design@alipay.com</Option>
+			<Form {...formItemLayout} form={form} layout="horizontal" className={styles.stepForm}>
+				<Form.Item
+					label="Category"
+					name="category"
+					rules={[{ required: true, message: 'Please fill the input above' }]}
+				>
+					<Select mode="tags" placeholder="Phone">
+						<Option value="alipay">Alipay</Option>
+						<Option value="bank">Bank</Option>
 					</Select>
 				</Form.Item>
-				<Form.Item label="收款账户">
-					<Input.Group compact>
-						<Select defaultValue="alipay" style={{ width: 100 }}>
-							<Option value="alipay">支付宝</Option>
-							<Option value="bank">银行账户</Option>
-						</Select>
-						<Form.Item
-							noStyle
-							name="receiverAccount"
-							rules={[
-								{ required: true, message: '请输入收款人账户' },
-								{ type: 'email', message: '账户名应为邮箱格式' },
-							]}
-						>
-							<Input style={{ width: 'calc(100% - 100px)' }} placeholder="test@example.com" />
-						</Form.Item>
-					</Input.Group>
+				<Form.Item label="Title" name="title" rules={[{ required: true, message: 'Please fill the input above' }]}>
+					<Input placeholder="Xphone Model 7s Plus" />
 				</Form.Item>
-				<Form.Item label="收款人姓名" name="receiverName" rules={[{ required: true, message: '请输入收款人姓名' }]}>
-					<Input placeholder="请输入收款人姓名" />
-				</Form.Item>
-				<Form.Item
-					label="转账金额"
-					name="amount"
-					rules={[
-						{ required: true, message: '请输入转账金额' },
-						{
-							pattern: /^(\d+)((?:\.\d+)?)$/,
-							message: '请输入合法金额数字',
-						},
-					]}
-				>
-					<Input prefix="￥" placeholder="请输入金额" />
+				<Form.Item label="Description" name="description">
+					<TextArea
+						placeholder="Xphone Model 7s Plus is a phone released at 2014, here is the device you can check better https://example.com/xphone-model-7s-plus"
+						allowClear
+						autoSize={{ minRows: 4 }}
+					/>
 				</Form.Item>
 				<Form.Item
 					wrapperCol={{
@@ -99,22 +76,32 @@ const Step1: React.FC<Step1Props> = props => {
 						},
 					}}
 				>
-					<Button type="primary" onClick={onValidateForm}>
-						下一步
+					<Button type="primary" htmlType="submit" onClick={onValidateForm}>
+						Next
 					</Button>
 				</Form.Item>
 			</Form>
 			<Divider style={{ margin: '40px 0 24px' }} />
 			<div className={styles.desc}>
-				<h3>说明</h3>
-				<h4>转账到支付宝账户</h4>
-				<p>
-					如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。
-				</p>
-				<h4>转账到银行卡</h4>
-				<p>
-					如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。
-				</p>
+				<h3 style={{ fontWeight: 'bold' }}>FORM GUIDE</h3>
+				<Row style={{ alignItems: 'center' }}>
+					<h3 style={{ marginRight: 10, fontWeight: 'bold' }}>Category</h3>
+					<p>
+						You have to make sure the category of your feed pointed correctly. If the category doesnt exist, you
+						can create a new one by typing a new value in input field.
+					</p>
+				</Row>
+				<Row style={{ alignItems: 'center' }}>
+					<h3 style={{ marginRight: 10, fontWeight: 'bold' }}>Title</h3>
+					<p>You have to make sure the title of your feed represents a visible material.</p>
+				</Row>
+				<Row style={{ alignItems: 'center' }}>
+					<h3 style={{ marginRight: 10, fontWeight: 'bold' }}>Description</h3>
+					<p>
+						This is not a required field for known, popular materials. But for some materials, this field may
+						help to increase approvement of the feed.
+					</p>
+				</Row>
 			</div>
 		</>
 	)

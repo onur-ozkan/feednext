@@ -19,7 +19,7 @@ const FormItem = Form.Item
 
 const pageSize = 5
 
-interface FeedsProps extends FormComponentProps {
+declare interface FeedsProps extends FormComponentProps {
 	dispatch: Dispatch<any>
 	feeds: StateType
 	loading: boolean

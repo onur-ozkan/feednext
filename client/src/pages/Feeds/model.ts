@@ -4,7 +4,7 @@ import { EffectsCommandMap } from 'dva'
 import { ListItemDataType } from './data'
 import { queryFakeList } from './service'
 
-export interface StateType {
+export declare interface StateType {
 	list: ListItemDataType[]
 }
 
@@ -15,7 +15,7 @@ export type Effect = (
 	},
 ) => void
 
-export interface ModelType {
+export declare interface ModelType {
 	namespace: string
 	state: StateType
 	effects: {

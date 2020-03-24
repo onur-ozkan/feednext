@@ -3,7 +3,7 @@ import { EffectsCommandMap } from 'dva'
 import { CurrentUser, GeographicItemType } from './data.d'
 import { queryCity, queryCurrent, queryProvince, query as queryUsers } from './service'
 
-export interface ModalState {
+export declare interface ModalState {
 	currentUser?: Partial<CurrentUser>
 	province?: GeographicItemType[]
 	city?: GeographicItemType[]
@@ -17,7 +17,7 @@ export type Effect = (
 	},
 ) => void
 
-export interface ModelType {
+export declare interface ModelType {
 	namespace: string
 	state: ModalState
 	effects: {

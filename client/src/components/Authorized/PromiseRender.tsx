@@ -2,15 +2,14 @@ import React from 'react'
 import { Spin } from 'antd'
 import isEqual from 'lodash/isEqual'
 import { isComponentClass } from './Secured'
-// eslint-disable-next-line import/no-cycle
 
-interface PromiseRenderProps<T, K> {
+declare interface PromiseRenderProps<T, K> {
 	ok: T
 	error: K
 	promise: Promise<boolean>
 }
 
-interface PromiseRenderState {
+declare interface PromiseRenderState {
 	component: React.ComponentClass | React.FunctionComponent
 }
 

@@ -11,7 +11,7 @@ import HeaderDropdown from '../HeaderDropdown'
 import styles from './index.less'
 import { UserOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons'
 
-export interface GlobalHeaderRightProps extends ConnectProps {
+export declare interface GlobalHeaderRightProps extends ConnectProps {
 	currentUser?: CurrentUser
 }
 

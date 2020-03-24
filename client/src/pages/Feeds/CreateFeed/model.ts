@@ -3,7 +3,7 @@ import { AnyAction, Reducer } from 'redux'
 import { EffectsCommandMap } from 'dva'
 import { fakeSubmitForm } from './service'
 
-export interface StateType {
+export declare interface StateType {
 	current?: string
 	step?: {
 		payAccount: string
@@ -18,7 +18,7 @@ export type Effect = (
 	effects: EffectsCommandMap & { select: <T>(func: (state: StateType) => T) => T },
 ) => void
 
-export interface ModelType {
+export declare interface ModelType {
 	namespace: string
 	state: StateType
 	effects: {

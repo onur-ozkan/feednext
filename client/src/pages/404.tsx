@@ -2,8 +2,8 @@ import { Button, Result } from 'antd'
 import React from 'react'
 import { router } from 'umi'
 
-// 这里应该使用 antd 的 404 result 组件，
-// 但是还没发布，先来个简单的。
+// The 404 result component of antd should be used here,
+// But it hasn't been released yet, let's start with a simple one.
 
 const NoFoundPage: React.FC<{}> = () => (
 	<Result
