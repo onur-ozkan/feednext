@@ -1,23 +1,23 @@
 export const routes = [
 	{
-		path: '/user',
+		path: '/auth',
 		component: '../layouts/UserLayout',
 		routes: [
 			{
-				path: '/user',
-				redirect: '/user/login',
+				path: '/auth',
+				redirect: '/auth/sign-in',
 			},
 			{
-				path: '/user/login',
-				component: './user/login',
+				path: '/auth/sign-in',
+				component: './Auth/Login',
 			},
 			{
-				path: '/user/register-result',
-				component: './user/register-result',
+				path: '/auth/sign-up/result',
+				component: './Auth/Register/Result',
 			},
 			{
-				path: '/user/register',
-				component: './user/register',
+				path: '/auth/sign-up',
+				component: './Auth/Register',
 			},
 			{
 				component: '404',
@@ -64,7 +64,7 @@ export const routes = [
 						name: 'Top Feeders',
 						icon: 'CrownOutlined',
 						path: 'top-feeders',
-						component: './top-feeders',
+						component: './TopFeeders',
 					},
 					{
 						component: './404',
