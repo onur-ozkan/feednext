@@ -38,6 +38,10 @@ export const routes = [
 						redirect: '/feeds',
 					},
 					{
+						path: '/user/',
+						component: './User',
+					},
+					{
 						name: 'Feeds',
 						icon: 'CopyFilled',
 						path: '/feeds',
