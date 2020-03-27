@@ -9,6 +9,7 @@ import { Roles } from 'src/shared/Decorators/roles.decorator'
 import { CreateCategoryDto } from '../Dto/create-category.dto'
 import { CategoryService } from '../Service/category.service'
 import { UpdateCategoryDto } from '../Dto/update-category.dto'
+import { SeniorAuthor, Admin, SuperAdmin } from 'src/shared/Constants'
 
 @ApiUseTags(`v1/category`)
 @Controller()
@@ -31,7 +32,7 @@ export class CategoryController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard(`jwt`))
     @Post(`create-category`)
-    @Roles(3)
+    @Roles(SeniorAuthor)
     createCategory(@Body() dto: CreateCategoryDto): Promise<HttpException> {
         return this.categoryService.createCategory(dto)
     }
@@ -39,7 +40,7 @@ export class CategoryController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard(`jwt`))
     @Patch(`:categoryId`)
-    @Roles(4)
+    @Roles(Admin)
     updateCategory(@Param(`categoryId`) categoryId: string, @Body() dto: UpdateCategoryDto): Promise<HttpException> {
         return this.categoryService.updateCategory(categoryId, dto)
     }
@@ -47,7 +48,7 @@ export class CategoryController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard(`jwt`))
     @Delete(`:categoryId`)
-    @Roles(5)
+    @Roles(SuperAdmin)
     deleteCategory(@Param(`categoryId`) categoryId: string): Promise<HttpException> {
         return this.categoryService.deleteCategory(categoryId)
     }

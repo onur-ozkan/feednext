@@ -9,6 +9,7 @@ import { RolesGuard } from 'src/shared/Guards/roles.guard'
 import { Roles } from 'src/shared/Decorators/roles.decorator'
 import { CreateEntryDto } from '../Dto/create-entry.dto'
 import { currentUserService } from 'src/shared/Services/current-user.service'
+import { JuniorAuthor, Admin, SuperAdmin } from 'src/shared/Constants'
 
 @ApiUseTags(`v1/entry`)
 @UseGuards(RolesGuard)
@@ -29,7 +30,7 @@ export class EntryController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard(`jwt`))
     @Patch(`:entryId`)
-    @Roles(4)
+    @Roles(Admin)
     updateCategory(@Headers(`authorization`) bearer: string, @Param(`entryId`) entryId: string, @Body(`text`) text: string): Promise<HttpException> {
         return this.entryService.updateEntry(currentUserService.getCurrentUser(bearer, `username`), entryId, text)
     }
@@ -37,7 +38,7 @@ export class EntryController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard(`jwt`))
     @Post(`create-entry`)
-    @Roles(1)
+    @Roles(JuniorAuthor)
     createEntry(@Headers(`authorization`) bearer: string, @Body() dto: CreateEntryDto): Promise<HttpException> {
         return this.entryService.createEntry(currentUserService.getCurrentUser(bearer, `username`), dto)
     }
@@ -45,7 +46,7 @@ export class EntryController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard(`jwt`))
     @Delete(`:entryId`)
-    @Roles(5)
+    @Roles(SuperAdmin)
     deleteProduct(@Param(`entryId`) entryId: string): Promise<HttpException> {
         return this.entryService.deleteEntry(entryId)
     }
