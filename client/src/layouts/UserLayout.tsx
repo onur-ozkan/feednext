@@ -10,6 +10,8 @@ import { ConnectProps, ConnectState } from '@/models/connect'
 import logo from '../assets/logo.svg'
 import styles from './UserLayout.less'
 import { GithubFilled } from '@ant-design/icons'
+import { Provider } from 'react-redux'
+import { store } from '@/redux/store'
 
 export declare interface UserLayoutProps extends ConnectProps {
 	breadcrumbNameMap: {
@@ -38,7 +40,7 @@ const UserLayout: React.FC<UserLayoutProps> = props => {
 		...props,
 	})
 	return (
-		<>
+		<Provider store={store}>
 			<Helmet>
 				<title>{title}</title>
 				<meta name="description" content={title} />
@@ -75,7 +77,7 @@ const UserLayout: React.FC<UserLayoutProps> = props => {
 					]}
 				/>
 			</div>
-		</>
+		</Provider>
 	)
 }
 

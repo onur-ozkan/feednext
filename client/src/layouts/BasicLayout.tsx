@@ -19,6 +19,8 @@ import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils'
 import logo from '../assets/logo.svg'
 import { Route } from 'antd/lib/breadcrumb/Breadcrumb'
 import { GithubFilled } from '@ant-design/icons'
+import { Provider } from 'react-redux'
+import { store } from '@/redux/store'
 
 const noMatch = (
 	<Result
@@ -138,50 +140,56 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
 	}
 
 	return (
-		<ProLayout
-			logo={logo}
-			menuHeaderRender={(logoDom, titleDom): JSX.Element => (
-				<Link to="/">
-					{logoDom}
-					{titleDom}
-				</Link>
-			)}
-			onCollapse={handleMenuCollapse}
-			menuItemRender={(menuItemProps, defaultDom): React.ReactNode => {
-				if (menuItemProps.isUrl || menuItemProps.children || !menuItemProps.path) {
-					return defaultDom
-				}
-				return <Link to={menuItemProps.path}>{defaultDom}</Link>
-			}}
-			breadcrumbRender={(routers = []): Route[] => [
-				{
-					path: '/',
-					breadcrumbName: formatMessage({
-						id: 'menu.home',
-						defaultMessage: 'Home',
-					}),
-				},
-				...routers,
-			]}
-			itemRender={(route, params, routes, paths): JSX.Element => {
-				const first = routes.indexOf(route) === 0
-				return first ? <Link to={paths.join('/')}>{route.breadcrumbName}</Link> : <span>{route.breadcrumbName}</span>
-			}}
-			footerRender={footerRender}
-			menuDataRender={menuDataRender}
-			formatMessage={formatMessage}
-			rightContentRender={(): JSX.Element => <RightContent />}
-			{...props}
-			{...settings}
-		>
-			<Authorized authority={authorized!.authority} noMatch={noMatch}>
-				<Row style={{ backgroundColor: 'transparent' }}>
-					<Col span={18} offset={3}>
-						{children}
-					</Col>
-				</Row>
-			</Authorized>
-		</ProLayout>
+		<Provider store={store}>
+			<ProLayout
+				logo={logo}
+				menuHeaderRender={(logoDom, titleDom): JSX.Element => (
+					<Link to="/">
+						{logoDom}
+						{titleDom}
+					</Link>
+				)}
+				onCollapse={handleMenuCollapse}
+				menuItemRender={(menuItemProps, defaultDom): React.ReactNode => {
+					if (menuItemProps.isUrl || menuItemProps.children || !menuItemProps.path) {
+						return defaultDom
+					}
+					return <Link to={menuItemProps.path}>{defaultDom}</Link>
+				}}
+				breadcrumbRender={(routers = []): Route[] => [
+					{
+						path: '/',
+						breadcrumbName: formatMessage({
+							id: 'menu.home',
+							defaultMessage: 'Home',
+						}),
+					},
+					...routers,
+				]}
+				itemRender={(route, params, routes, paths): JSX.Element => {
+					const first = routes.indexOf(route) === 0
+					return first ? (
+						<Link to={paths.join('/')}>{route.breadcrumbName}</Link>
+					) : (
+						<span>{route.breadcrumbName}</span>
+					)
+				}}
+				footerRender={footerRender}
+				menuDataRender={menuDataRender}
+				formatMessage={formatMessage}
+				rightContentRender={(): JSX.Element => <RightContent />}
+				{...props}
+				{...settings}
+			>
+				<Authorized authority={authorized!.authority} noMatch={noMatch}>
+					<Row style={{ backgroundColor: 'transparent' }}>
+						<Col span={18} offset={3}>
+							{children}
+						</Col>
+					</Row>
+				</Authorized>
+			</ProLayout>
+		</Provider>
 	)
 }
 
