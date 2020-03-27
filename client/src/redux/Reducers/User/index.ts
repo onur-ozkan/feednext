@@ -1,12 +1,14 @@
 import { SIGN_IN, SIGN_OUT, UserActions } from '../../Actions/User/types'
 
-let userReducerDefaultState: any = null
+const userReducerDefaultState: any = null
 
-export const userReducer = (state = userReducerDefaultState, action: UserActions) => {
+export const userReducer = (state = userReducerDefaultState, action: UserActions): any => {
 	switch (action.type) {
 		case SIGN_IN:
-		// TODO
+			return (state = action.payload.userInformation)
 		case SIGN_OUT:
-			return (userReducerDefaultState = null)
+			return (state = null)
+		default:
+			return state
 	}
 }
