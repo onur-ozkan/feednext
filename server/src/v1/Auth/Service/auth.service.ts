@@ -14,11 +14,10 @@ import { RedisService } from 'src/shared/Services/redis.service'
 import { MailSenderBody } from 'src/shared/Services/Interfaces/mail.sender.interface'
 import { UsersRepository } from 'src/shared/Repositories/users.repository'
 import { MailService } from 'src/shared/Services/mail.service'
-import { OkException } from 'src/shared/Filters/ok-exception.filter'
 import { CreateAccountDto } from '../Dto/create-account.dto'
 import { LoginDto } from '../Dto/login.dto'
 import { AccountRecoveryDto } from '../Dto/account-recovery.dto'
-import { serializerService } from 'src/shared/Services/serializer.service'
+import { serializerService, ISerializeResponse } from 'src/shared/Services/serializer.service'
 
 @Injectable()
 export class AuthService {
@@ -30,7 +29,7 @@ export class AuthService {
         private readonly usersRepository: UsersRepository,
     ) {}
 
-    async signUp(dto: CreateAccountDto): Promise<HttpException> {
+    async signUp(dto: CreateAccountDto): Promise<any> {
         const result: UsersEntity = await this.usersRepository.createUser(dto)
 
         if (configService.isProduction()) {
@@ -56,10 +55,10 @@ export class AuthService {
         const properties: string[] = [`id`, `password`, `updated_at`, `is_verified`]
         await serializerService.deleteProperties(result, properties)
 
-        throw new OkException(`account_informations`, result, `Account has been registered successfully to the database.`, id)
+        return serializerService.serializeResponse(`account_informations`, result, id)
     }
 
-    async signIn(userEntity: UsersEntity): Promise<HttpException> {
+    async signIn(userEntity: UsersEntity): Promise<HttpException | ISerializeResponse> {
         if (!userEntity.is_active) throw new BadRequestException(`Account is not active.`)
 
         const token: string = this.jwtService.sign({
@@ -78,16 +77,17 @@ export class AuthService {
             access_token: token,
             user: userEntity,
         }
-        throw new OkException(`user_information`, responseData, `User successfully has been signed in.`, id)
+
+        return serializerService.serializeResponse(`user_information`, responseData, id)
     }
 
-    async signOut(token: string): Promise<HttpException> {
+    async signOut(token: string): Promise<any> {
         const decodedToken: any = jwt.decode(token)
         const expireDate: number = decodedToken.exp
         const remainingSeconds: number = Math.round(expireDate - Date.now() / 1000)
 
         await this.redisService.setOnlyKey(token, remainingSeconds)
-        throw new OkException(`dead_token`, {token}, `Token has been killed.`)
+        return serializerService.serializeResponse(`dead_token`, {token})
     }
 
     async validateUser(dto: LoginDto): Promise<UsersEntity> {

@@ -9,9 +9,8 @@ import * as jwt from 'jsonwebtoken'
 // Local files
 import { UsersEntity } from 'src/shared/Entities/users.entity'
 import { UsersRepository } from 'src/shared/Repositories/users.repository'
-import { OkException } from 'src/shared/Filters/ok-exception.filter'
 import { UpdateUserDto } from '../Dto/update-user.dto'
-import { serializerService } from 'src/shared/Services/serializer.service'
+import { serializerService, ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { MailService } from 'src/shared/Services/mail.service'
 import { MailSenderBody } from 'src/shared/Services/Interfaces/mail.sender.interface'
 import { ActivateUserDto } from '../Dto/activate-user.dto'
@@ -26,24 +25,24 @@ export class UserService {
         private readonly mailService: MailService,
     ) {}
 
-    async getUser(usernameParam: string): Promise<HttpException> {
+    async getUser(usernameParam: string): Promise<ISerializeResponse> {
         const profile: UsersEntity = await this.usersRepository.getUserByUsername(usernameParam)
         const id: string = String(profile.id)
 
         const properties: string[] = [`id`, `password`, `is_active`, `is_verified`]
         await serializerService.deleteProperties(profile, properties)
 
-        throw new OkException(`user_profile`, profile, `User ${profile.username} is successfully loaded.`, id)
+        return serializerService.serializeResponse(`user_profile`, profile, id)
     }
 
-    async updateUser(usernameParam: string, dto: UpdateUserDto): Promise<HttpException> {
+    async updateUser(usernameParam: string, dto: UpdateUserDto): Promise<ISerializeResponse> {
         const profile = await this.usersRepository.updateUser(usernameParam, dto)
         const id = String(profile.id)
 
         const properties: string[] = [`id`, `password`, `is_active`, `is_verified`]
         await serializerService.deleteProperties(profile, properties)
 
-        throw new OkException(`updated_profile`, profile, `User ${profile.username} is successfully updated.`, id)
+        return serializerService.serializeResponse(`updated_profile`, profile, id)
     }
 
     async verifyUpdateEmail(incToken: string): Promise<HttpException> {

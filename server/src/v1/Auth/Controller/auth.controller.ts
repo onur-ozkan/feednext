@@ -4,13 +4,12 @@ import { AuthGuard } from '@nestjs/passport'
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
 
 // Local files
-import { OkException } from 'src/shared/Filters/ok-exception.filter'
 import { AuthService } from '../Service/auth.service'
 import { CreateAccountDto } from '../Dto/create-account.dto'
 import { LoginDto } from '../Dto/login.dto'
 import { AccountRecoveryDto } from '../Dto/account-recovery.dto'
 import { currentUserService } from 'src/shared/Services/current-user.service'
-import { serializerService } from 'src/shared/Services/serializer.service'
+import { serializerService, ISerializeResponse } from 'src/shared/Services/serializer.service'
 
 @ApiUseTags(`v1/auth`)
 @Controller()
@@ -18,12 +17,12 @@ export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
     @Post(`signup`)
-    signUp(@Body() dto: CreateAccountDto): Promise<HttpException> {
+    signUp(@Body() dto: CreateAccountDto): Promise<ISerializeResponse> {
         return this.authService.signUp(dto)
     }
 
     @Post(`signin`)
-    async signIn(@Body() dto: LoginDto): Promise<HttpException> {
+    async signIn(@Body() dto: LoginDto): Promise<HttpException | ISerializeResponse> {
         const user = await this.authService.validateUser(dto)
         return await this.authService.signIn(user)
     }
@@ -31,7 +30,7 @@ export class AuthController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard(`jwt`))
     @Get(`signout`)
-    async signOut(@Request() request): Promise<HttpException> {
+    async signOut(@Request() request): Promise<ISerializeResponse> {
         const token = await request.headers.authorization.substring(7)
         return await this.authService.signOut(token)
     }
@@ -49,9 +48,9 @@ export class AuthController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard(`jwt`))
     @Get(`me`)
-    async getLoggedInUser(@Headers(`authorization`) bearer: string): Promise<HttpException> {
+    async getLoggedInUser(@Headers(`authorization`) bearer: string): Promise<ISerializeResponse> {
         const data = await currentUserService.getCurrentUser(bearer, `all`)
         serializerService.deleteProperties(data, [`iat`, `exp`])
-        throw new OkException(`profile`, data)
+        return serializerService.serializeResponse(`profile`, data)
     }
 }

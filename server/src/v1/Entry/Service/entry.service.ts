@@ -1,13 +1,13 @@
 // Nest dependencies
-import { Injectable, HttpException, BadRequestException } from '@nestjs/common'
+import { Injectable, BadRequestException, HttpException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 
 // Local files
 import { EntriesRepository } from 'src/shared/Repositories/entries.repository'
 import { EntriesEntity } from 'src/shared/Entities/entries.entity'
-import { OkException } from 'src/shared/Filters/ok-exception.filter'
 import { CreateEntryDto } from '../Dto/create-entry.dto'
 import { ProductsRepository } from 'src/shared/Repositories/products.repository'
+import { serializerService, ISerializeResponse } from 'src/shared/Services/serializer.service'
 
 @Injectable()
 export class EntryService {
@@ -18,26 +18,26 @@ export class EntryService {
         private readonly productsRepository: ProductsRepository,
     ) {}
 
-    async getEntry(entryId: string): Promise<HttpException> {
+    async getEntry(entryId: string): Promise<ISerializeResponse> {
         const entry: EntriesEntity = await this.entriesRepository.getEntry(entryId)
         const id: string = String(entry.id)
         delete entry.id
-        throw new OkException(`entry_detail`, entry, `Entry ${entry.text} is successfully loaded.`, id)
+        return serializerService.serializeResponse(`entry_detail`, entry, id)
     }
 
-    async getEntryList(query: { limit: number, skip: number, orderBy: any }): Promise<HttpException> {
+    async getEntryList(query: { limit: number, skip: number, orderBy: any }): Promise<ISerializeResponse> {
         const result: {entries: EntriesEntity[], count: number} = await this.entriesRepository.getEntryList(query)
-        throw new OkException(`entry_list`, result, `List of entries are successfully loaded.`)
+        return serializerService.serializeResponse(`entry_list`, result)
     }
 
-    async updateEntry(updatedBy: string, entryId: string, text: string): Promise<HttpException> {
+    async updateEntry(updatedBy: string, entryId: string, text: string): Promise<ISerializeResponse> {
         const entry: EntriesEntity = await this.entriesRepository.updateEntry(updatedBy, entryId, text)
         const id: string = String(entry.id)
         delete entry.id
-        throw new OkException(`entry_detail`, entry, `Entry with the id:${entry.id} is successfully updated.`, id)
+        return serializerService.serializeResponse(`entry_detail`, entry, id)
     }
 
-    async createEntry(writtenBy: string, dto: CreateEntryDto): Promise<HttpException> {
+    async createEntry(writtenBy: string, dto: CreateEntryDto): Promise<HttpException | ISerializeResponse> {
         try {
           await this.productsRepository.findOneOrFail(dto.productId)
         } catch (err) {
@@ -45,13 +45,13 @@ export class EntryService {
         }
 
         const newEntry: EntriesEntity = await this.entriesRepository.createEntry(writtenBy, dto)
-        throw new OkException(`entry_detail`, newEntry)
+        return serializerService.serializeResponse(`entry_detail`, newEntry)
     }
 
-    async deleteEntry(entryId: string): Promise<HttpException> {
+    async deleteEntry(entryId: string): Promise<ISerializeResponse> {
         const entry: EntriesEntity = await this.entriesRepository.deleteEntry(entryId)
         const id: string = String(entry.id)
         delete entry.id
-        throw new OkException(`entry_detail`, entry, `Entry ${entry.text} is successfully deleted.`, id)
+        return serializerService.serializeResponse(`entry_detail`, entry, id)
     }
 }

@@ -1,3 +1,10 @@
+export declare interface ISerializeResponse {
+    type: string
+    id?: string
+    attributes: {
+        [key: string]: any,
+    }
+}
 export class SerializerService {
     public async deleteProperties(data: object, properties: string[]): Promise<object> {
         for await (const property of properties) {
@@ -6,8 +13,14 @@ export class SerializerService {
 
         return data
     }
+
+    public serializeResponse(type: string, result: object, id?: string): ISerializeResponse {
+        return {
+            type,
+            id,
+            attributes: result,
+        }
+    }
 }
 
-const serializerService = new SerializerService()
-
-export { serializerService }
+export const serializerService = new SerializerService()

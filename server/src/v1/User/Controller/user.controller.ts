@@ -8,6 +8,7 @@ import { currentUserService } from 'src/shared/Services/current-user.service'
 import { UserService } from '../Service/user.service'
 import { UpdateUserDto } from '../Dto/update-user.dto'
 import { ActivateUserDto } from '../Dto/activate-user.dto'
+import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 
 @ApiUseTags(`v1/user`)
 @Controller()
@@ -15,7 +16,7 @@ export class UsersController {
     constructor(private readonly usersService: UserService) {}
 
     @Get(`:username`)
-    getUser(@Param(`username`) username): Promise<HttpException> {
+    getUser(@Param(`username`) username): Promise<ISerializeResponse> {
         return this.usersService.getUser(username)
     }
 
@@ -26,7 +27,7 @@ export class UsersController {
         @Param(`username`) username: string,
         @Body() dto: UpdateUserDto,
         @Headers(`authorization`) bearer: string,
-    ): Promise<HttpException> {
+    ): Promise<ISerializeResponse> {
         if (username !== currentUserService.getCurrentUser(bearer, `username`)) throw new BadRequestException()
 
         return this.usersService.updateUser(username, dto)

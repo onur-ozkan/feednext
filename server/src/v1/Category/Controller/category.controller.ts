@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Controller, Post, Body, HttpException, UseGuards, Param, Get, Delete, Query, Patch } from '@nestjs/common'
+import { Controller, Post, Body, UseGuards, Param, Get, Delete, Query, Patch } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
 
@@ -10,6 +10,7 @@ import { CreateCategoryDto } from '../Dto/create-category.dto'
 import { CategoryService } from '../Service/category.service'
 import { UpdateCategoryDto } from '../Dto/update-category.dto'
 import { SeniorAuthor, Admin, SuperAdmin } from 'src/shared/Constants'
+import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 
 @ApiUseTags(`v1/category`)
 @Controller()
@@ -20,12 +21,12 @@ export class CategoryController {
     ) {}
 
     @Get(`:categoryId`)
-    getCategory(@Param(`categoryId`) categoryId: string): Promise<HttpException> {
+    getCategory(@Param(`categoryId`) categoryId: string): Promise<ISerializeResponse> {
         return this.categoryService.getCategory(categoryId)
     }
 
     @Get(`all`)
-    getCategoryList(@Query() query: { limit: number, skip: number, orderBy: any }): Promise<HttpException> {
+    getCategoryList(@Query() query: { limit: number, skip: number, orderBy: any }): Promise<ISerializeResponse> {
         return this.categoryService.getCategoryList(query)
     }
 
@@ -33,7 +34,7 @@ export class CategoryController {
     @UseGuards(AuthGuard(`jwt`))
     @Post(`create-category`)
     @Roles(SeniorAuthor)
-    createCategory(@Body() dto: CreateCategoryDto): Promise<HttpException> {
+    createCategory(@Body() dto: CreateCategoryDto): Promise<ISerializeResponse> {
         return this.categoryService.createCategory(dto)
     }
 
@@ -41,7 +42,7 @@ export class CategoryController {
     @UseGuards(AuthGuard(`jwt`))
     @Patch(`:categoryId`)
     @Roles(Admin)
-    updateCategory(@Param(`categoryId`) categoryId: string, @Body() dto: UpdateCategoryDto): Promise<HttpException> {
+    updateCategory(@Param(`categoryId`) categoryId: string, @Body() dto: UpdateCategoryDto): Promise<ISerializeResponse> {
         return this.categoryService.updateCategory(categoryId, dto)
     }
 
@@ -49,7 +50,7 @@ export class CategoryController {
     @UseGuards(AuthGuard(`jwt`))
     @Delete(`:categoryId`)
     @Roles(SuperAdmin)
-    deleteCategory(@Param(`categoryId`) categoryId: string): Promise<HttpException> {
+    deleteCategory(@Param(`categoryId`) categoryId: string): Promise<ISerializeResponse> {
         return this.categoryService.deleteCategory(categoryId)
     }
 }

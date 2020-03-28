@@ -6,9 +6,9 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { ProductsRepository } from 'src/shared/Repositories/products.repository'
 import { CreateProductDto } from '../Dto/create-product.dto'
 import { ProductsEntity } from 'src/shared/Entities/products.entity'
-import { OkException } from 'src/shared/Filters/ok-exception.filter'
 import { CategoriesRepository } from 'src/shared/Repositories/categories.repository'
 import { UpdateProductDto } from '../Dto/update-product.dto'
+import { serializerService, ISerializeResponse } from 'src/shared/Services/serializer.service'
 
 @Injectable()
 export class ProductService {
@@ -19,19 +19,19 @@ export class ProductService {
         private readonly categoriesRepository: CategoriesRepository,
     ) {}
 
-    async getProduct(productId: string): Promise<HttpException> {
+    async getProduct(productId: string): Promise<ISerializeResponse> {
         const product: ProductsEntity = await this.productsRepository.getProduct(productId)
         const id: string = String(product.id)
         delete product.id
-        throw new OkException(`product_detail`, product, `Product ${product.name} is successfully loaded.`, id)
+        return serializerService.serializeResponse(`product_detail`, product, id)
     }
 
-    async getProductList(query: { limit: number, skip: number, orderBy: any }): Promise<HttpException> {
+    async getProductList(query: { limit: number, skip: number, orderBy: any }): Promise<ISerializeResponse> {
         const result: {products: ProductsEntity[], count: number} = await this.productsRepository.getProductList(query)
-        throw new OkException(`product_list`, result, `List of products are successfully loaded.`)
+        return serializerService.serializeResponse(`product_list`, result)
     }
 
-    async createProduct(openedBy: string, dto: CreateProductDto): Promise<HttpException> {
+    async createProduct(openedBy: string, dto: CreateProductDto): Promise<HttpException | ISerializeResponse> {
         try {
           await this.categoriesRepository.findOneOrFail(dto.categoryId)
         } catch (err) {
@@ -39,20 +39,20 @@ export class ProductService {
         }
 
         const newProduct: ProductsEntity = await this.productsRepository.createProduct(openedBy, dto)
-        throw new OkException(`product_detail`, newProduct)
+        return serializerService.serializeResponse(`product_detail`, newProduct)
     }
 
-    async updateProduct(updatedBy: string, productId: string, dto: UpdateProductDto): Promise<HttpException> {
+    async updateProduct(updatedBy: string, productId: string, dto: UpdateProductDto): Promise<ISerializeResponse> {
         const product: ProductsEntity = await this.productsRepository.updateProduct(updatedBy, productId, dto)
         const id: string = String(product.id)
         delete product.id
-        throw new OkException(`product_detail`, product, `Product ${product.name} is successfully updated.`, id)
+        return serializerService.serializeResponse(`product_detail`, product, id)
     }
 
-    async deleteProduct(productId: string): Promise<HttpException> {
+    async deleteProduct(productId: string): Promise<ISerializeResponse> {
         const product: ProductsEntity = await this.productsRepository.deleteProduct(productId)
         const id: string = String(product.id)
         delete product.id
-        throw new OkException(`product_detail`, product, `Product ${product.name} is successfully deleted.`, id)
+        return serializerService.serializeResponse(`product_detail`, product, id)
     }
 }
