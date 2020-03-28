@@ -7,10 +7,10 @@ import { EntriesEntity } from 'src/shared/Entities/entries.entity'
 import { EntriesRepository } from 'src/shared/Repositories/entries.repository'
 import { EntryService } from './Service/entry.service'
 import { EntryController } from './Controller/entry.controller'
-import { ProductsRepository } from 'src/shared/Repositories/products.repository'
+import { TitlesRepository } from 'src/shared/Repositories/title.repository'
 
 @Module({
-    imports: [TypeOrmModule.forFeature([EntriesEntity, EntriesRepository, ProductsRepository])],
+    imports: [TypeOrmModule.forFeature([EntriesEntity, EntriesRepository, TitlesRepository])],
     providers: [EntryService],
     exports: [EntryService],
     controllers: [EntryController],

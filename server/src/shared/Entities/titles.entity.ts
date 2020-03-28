@@ -8,9 +8,9 @@ import {
     UpdateDateColumn,
 } from 'typeorm'
 
-@Entity(`Products`)
-export class ProductsEntity {
-    constructor(partial: Partial<ProductsEntity>) {
+@Entity(`Titles`)
+export class TitlesEntity {
+    constructor(partial: Partial<TitlesEntity>) {
         Object.assign(this, partial)
     }
 

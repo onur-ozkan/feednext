@@ -18,7 +18,7 @@ export class EntriesEntity {
     id: ObjectID
 
     @Column()
-    product_id: string
+    title_id: string
 
     @Column()
     text: string

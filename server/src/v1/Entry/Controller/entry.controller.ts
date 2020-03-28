@@ -52,7 +52,7 @@ export class EntryController {
     @UseGuards(AuthGuard(`jwt`))
     @Delete(`:entryId`)
     @Roles(SuperAdmin)
-    deleteProduct(@Param(`entryId`) entryId: string): Promise<ISerializeResponse> {
+    deleteTitle(@Param(`entryId`) entryId: string): Promise<ISerializeResponse> {
         return this.entryService.deleteEntry(entryId)
     }
 }

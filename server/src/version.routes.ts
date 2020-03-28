@@ -6,8 +6,8 @@ import { V1Module } from './v1/v1.module'
 import { AuthModule } from './v1/Auth/auth.module'
 import { CategoryModule } from './v1/Category/category.module'
 import { EntryModule } from './v1/Entry/entry.module'
-import { ProductModule } from './v1/Product/product.module'
 import { UserModule } from './v1/User/user.module'
+import { TitleModule } from './v1/Title/title.module'
 
 export const versionRoutes: Routes = [
     {
@@ -27,8 +27,8 @@ export const versionRoutes: Routes = [
                 module: EntryModule,
             },
             {
-                path: `/product`,
-                module: ProductModule,
+                path: `/title`,
+                module: TitleModule,
             },
             {
                 path: `/user`,

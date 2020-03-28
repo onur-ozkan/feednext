@@ -41,7 +41,7 @@ async function bootstrap() {
 
     // Configure the Swagger API Doc
     const options = new DocumentBuilder()
-        .setTitle(`Product Analyzer API Documentation`)
+        .setTitle(`Feednext API Documentation`)
         .setVersion(`1.0`)
         .setBasePath(`api`)
         .addBearerAuth()

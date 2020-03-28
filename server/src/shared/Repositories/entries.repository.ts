@@ -50,14 +50,14 @@ export class EntriesRepository extends Repository<EntriesEntity> {
     }
 
     async createEntry(writtenBy: string, dto: CreateEntryDto): Promise<EntriesEntity> {
-        const newProduct: EntriesEntity = new EntriesEntity({
+        const newTitle: EntriesEntity = new EntriesEntity({
             text: dto.text,
-            product_id: dto.productId,
+            title_id: dto.titletId,
             written_by: writtenBy,
         })
 
         try {
-            return await this.save(newProduct)
+            return await this.save(newTitle)
         } catch (err) {
             throw new UnprocessableEntityException(err.errmsg)
         }

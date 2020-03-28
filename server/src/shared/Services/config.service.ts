@@ -8,7 +8,7 @@ import * as env from 'dotenv'
 import { UsersEntity } from '../Entities/users.entity'
 import { CategoriesEntity } from '../Entities/categories.entity'
 import { EntriesEntity } from '../Entities/entries.entity'
-import { ProductsEntity } from '../Entities/products.entity'
+import { TitlesEntity } from '../Entities/titles.entity'
 
 env.config()
 
@@ -32,7 +32,7 @@ export class ConfigService {
             database: this.getEnv(`DB_NAME`),
             synchronize: true,
             useUnifiedTopology: true,
-            entities: [UsersEntity, CategoriesEntity, EntriesEntity, ProductsEntity],
+            entities: [UsersEntity, CategoriesEntity, EntriesEntity, TitlesEntity],
 
             ssl: this.isProduction(),
         }

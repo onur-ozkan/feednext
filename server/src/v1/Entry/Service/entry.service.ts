@@ -6,7 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { EntriesRepository } from 'src/shared/Repositories/entries.repository'
 import { EntriesEntity } from 'src/shared/Entities/entries.entity'
 import { CreateEntryDto } from '../Dto/create-entry.dto'
-import { ProductsRepository } from 'src/shared/Repositories/products.repository'
+import { TitlesRepository } from 'src/shared/Repositories/title.repository'
 import { serializerService, ISerializeResponse } from 'src/shared/Services/serializer.service'
 
 @Injectable()
@@ -14,8 +14,8 @@ export class EntryService {
     constructor(
         @InjectRepository(EntriesRepository)
         private readonly entriesRepository: EntriesRepository,
-        @InjectRepository(ProductsRepository)
-        private readonly productsRepository: ProductsRepository,
+        @InjectRepository(TitlesRepository)
+        private readonly titlesRepository: TitlesRepository,
     ) {}
 
     async getEntry(entryId: string): Promise<ISerializeResponse> {
@@ -39,9 +39,9 @@ export class EntryService {
 
     async createEntry(writtenBy: string, dto: CreateEntryDto): Promise<HttpException | ISerializeResponse> {
         try {
-          await this.productsRepository.findOneOrFail(dto.productId)
+          await this.titlesRepository.findOneOrFail(dto.titletId)
         } catch (err) {
-          throw new BadRequestException(`Product with id:${dto.productId} does not match in database.`)
+          throw new BadRequestException(`Title with id:${dto.titletId} does not match in database.`)
         }
 
         const newEntry: EntriesEntity = await this.entriesRepository.createEntry(writtenBy, dto)

@@ -2,9 +2,9 @@
 import { ApiModelProperty } from '@nestjs/swagger'
 
 // Other dependencies
-import { IsNotEmpty, IsMongoId, MaxLength } from 'class-validator'
+import { IsNotEmpty, IsMongoId, MaxLength, IsOptional } from 'class-validator'
 
-export class CreateProductDto {
+export class UpdateTitleDto {
     @ApiModelProperty({
         required: true,
         example: `Example Name`,
@@ -14,9 +14,10 @@ export class CreateProductDto {
     name: string
 
     @ApiModelProperty({
-        required: true,
+        required: false,
         example: `507f1f77bcf86cd799439011`,
     })
+    @IsOptional()
     @IsMongoId()
     categoryId: string
 }
