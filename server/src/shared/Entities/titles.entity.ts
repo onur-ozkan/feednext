@@ -6,6 +6,7 @@ import {
     ObjectIdColumn,
     CreateDateColumn,
     UpdateDateColumn,
+    BeforeInsert,
 } from 'typeorm'
 
 @Entity(`Titles`)
@@ -26,6 +27,12 @@ export class TitlesEntity {
     })
     name: string
 
+    @Column({ type: 'tinyint' })
+    rate: number
+
+    @Column()
+    entry_count: number
+
     @Column({
         type: `varchar`,
         length: 17,
@@ -43,4 +50,10 @@ export class TitlesEntity {
 
     @UpdateDateColumn()
     updated_at: Date
+
+    @BeforeInsert()
+    fillDefaults() {
+        this.rate = 0
+        this.entry_count = 0
+    }
 }

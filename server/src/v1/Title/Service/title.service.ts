@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Injectable, HttpException, BadRequestException } from '@nestjs/common'
+import { Injectable, HttpException, BadRequestException, HttpStatus } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 
 // Local files
@@ -9,6 +9,7 @@ import { TitlesEntity } from 'src/shared/Entities/titles.entity'
 import { CategoriesRepository } from 'src/shared/Repositories/categories.repository'
 import { UpdateTitleDto } from '../Dto/update-title.dto'
 import { serializerService, ISerializeResponse } from 'src/shared/Services/serializer.service'
+import { EntriesRepository } from 'src/shared/Repositories/entries.repository'
 
 @Injectable()
 export class TitleService {
@@ -17,10 +18,12 @@ export class TitleService {
         private readonly titlesRepository: TitlesRepository,
         @InjectRepository(CategoriesRepository)
         private readonly categoriesRepository: CategoriesRepository,
+        @InjectRepository(EntriesRepository)
+        private readonly entriesRepository: EntriesRepository,
     ) {}
 
-    async getTitle(titletId: string): Promise<ISerializeResponse> {
-        const title: TitlesEntity = await this.titlesRepository.getTitle(titletId)
+    async getTitle(titleId: string): Promise<ISerializeResponse> {
+        const title: TitlesEntity = await this.titlesRepository.getTitle(titleId)
         const id: string = String(title.id)
         delete title.id
         return serializerService.serializeResponse(`title_detail`, title, id)
@@ -42,17 +45,17 @@ export class TitleService {
         return serializerService.serializeResponse(`title_detail`, newTitle)
     }
 
-    async updateTitle(updatedBy: string, titletId: string, dto: UpdateTitleDto): Promise<ISerializeResponse> {
-        const title: TitlesEntity = await this.titlesRepository.updateTitle(updatedBy, titletId, dto)
+    async updateTitle(updatedBy: string, titleId: string, dto: UpdateTitleDto): Promise<ISerializeResponse> {
+        const title: TitlesEntity = await this.titlesRepository.updateTitle(updatedBy, titleId, dto)
         const id: string = String(title.id)
         delete title.id
         return serializerService.serializeResponse(`title_detail`, title, id)
     }
 
-    async deleteTitle(titletId: string): Promise<ISerializeResponse> {
-        const title: TitlesEntity = await this.titlesRepository.deleteTitle(titletId)
-        const id: string = String(title.id)
-        delete title.id
-        return serializerService.serializeResponse(`title_detail`, title, id)
+    async deleteTitle(titleId: string): Promise<HttpException> {
+        const title = await this.titlesRepository.deleteTitle(titleId)
+        await this.entriesRepository.deleteEntriesBelongsToTitle(String(title.id))
+
+        throw new HttpException('Title has been deleted.', HttpStatus.OK)
     }
 }

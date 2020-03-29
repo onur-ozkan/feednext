@@ -21,11 +21,22 @@ export class TitlesRepository extends Repository<TitlesEntity> {
       this.validator = new Validator()
     }
 
-    async getTitle(titletId: string): Promise<TitlesEntity> {
-        if (!this.validator.isMongoId(titletId)) throw new BadRequestException(`Id must be type of a MongoId.`)
+    async getTitle(titleId: string): Promise<TitlesEntity> {
+        if (!this.validator.isMongoId(titleId)) throw new BadRequestException(`Id must be type of a MongoId.`)
         try {
-            const title: TitlesEntity = await this.findOneOrFail(titletId)
+            const title: TitlesEntity = await this.findOneOrFail(titleId)
             return title
+        } catch (err) {
+            throw new NotFoundException(`Title with that id could not found in the database.`)
+        }
+    }
+
+    async updateEntryCount(titleId: string, isIncrement: boolean): Promise<void> {
+        if (!this.validator.isMongoId(titleId)) throw new BadRequestException(`Id must be type of a MongoId.`)
+        try {
+            const title: TitlesEntity = await this.findOneOrFail(titleId)
+            isIncrement ? title.entry_count++ : title.entry_count--
+            this.save(title)
         } catch (err) {
             throw new NotFoundException(`Title with that id could not found in the database.`)
         }
@@ -97,10 +108,10 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         }
     }
 
-    async deleteTitle(titletId: string): Promise<TitlesEntity> {
-        if (!this.validator.isMongoId(titletId)) throw new BadRequestException(`Id must be type of a MongoId.`)
+    async deleteTitle(titleId: string): Promise<TitlesEntity> {
+        if (!this.validator.isMongoId(titleId)) throw new BadRequestException(`Id must be type of a MongoId.`)
         try {
-            const title: TitlesEntity = await this.findOneOrFail(titletId)
+            const title: TitlesEntity = await this.findOneOrFail(titleId)
             await this.delete(title)
             return title
         } catch (err) {

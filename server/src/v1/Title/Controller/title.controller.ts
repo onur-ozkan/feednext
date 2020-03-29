@@ -20,9 +20,9 @@ import { TitleService } from '../Service/title.service'
 export class TitleController {
     constructor(private readonly titleService: TitleService) {}
 
-    @Get(`:titletId`)
-    getTitle(@Param(`titletId`) titletId: string): Promise<ISerializeResponse> {
-        return this.titleService.getTitle(titletId)
+    @Get(`:titleId`)
+    getTitle(@Param(`titleId`) titleId: string): Promise<ISerializeResponse> {
+        return this.titleService.getTitle(titleId)
     }
 
     @Get(`all`)
@@ -40,21 +40,21 @@ export class TitleController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard(`jwt`))
-    @Patch(`:titletId`)
+    @Patch(`:titleId`)
     @Roles(Admin)
     updateTitle(
         @Headers(`authorization`) bearer: string,
-        @Param(`titletId`) titletId: string,
+        @Param(`titleId`) titleId: string,
         @Body() dto: UpdateTitleDto,
     ): Promise<ISerializeResponse> {
-        return this.titleService.updateTitle(currentUserService.getCurrentUser(bearer, `username`), titletId, dto)
+        return this.titleService.updateTitle(currentUserService.getCurrentUser(bearer, `username`), titleId, dto)
     }
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard(`jwt`))
-    @Delete(`:titletId`)
+    @Delete(`:titleId`)
     @Roles(SuperAdmin)
-    deleteTitle(@Param(`titletId`) titletId: string): Promise<ISerializeResponse> {
-        return this.titleService.deleteTitle(titletId)
+    deleteTitle(@Param(`titleId`) titleId: string): Promise<HttpException> {
+        return this.titleService.deleteTitle(titleId)
     }
 }
