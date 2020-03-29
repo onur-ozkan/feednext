@@ -6,6 +6,7 @@ import {
     ObjectIdColumn,
     CreateDateColumn,
     UpdateDateColumn,
+    BeforeInsert,
 } from 'typeorm'
 
 @Entity(`Entries`)
@@ -22,6 +23,12 @@ export class EntriesEntity {
 
     @Column()
     text: string
+
+    @Column()
+    up_votes: number
+
+    @Column()
+    down_votes: number
 
     @Column({
         type: `varchar`,
@@ -40,4 +47,10 @@ export class EntriesEntity {
 
     @UpdateDateColumn()
     updated_at: Date
+
+    @BeforeInsert()
+    fillDefaults() {
+        this.up_votes = 0
+        this.down_votes = 0
+    }
 }

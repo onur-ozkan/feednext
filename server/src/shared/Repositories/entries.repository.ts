@@ -52,7 +52,7 @@ export class EntriesRepository extends Repository<EntriesEntity> {
     async createEntry(writtenBy: string, dto: CreateEntryDto): Promise<EntriesEntity> {
         const newTitle: EntriesEntity = new EntriesEntity({
             text: dto.text,
-            title_id: dto.titletId,
+            title_id: dto.titleId,
             written_by: writtenBy,
         })
 
@@ -94,5 +94,12 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         } catch (err) {
             throw new NotFoundException(`Entry with that id could not found in the database.`)
         }
+    }
+
+    async deleteEntriesBelongsToTitle(titleId: string): Promise<void> {
+        if (!this.validator.isMongoId(titleId)) throw new BadRequestException(`TitleId must be a MongoId.`)
+
+        const entries: any = await this.find({ title_id: titleId })
+        await this.delete(entries)
     }
 }

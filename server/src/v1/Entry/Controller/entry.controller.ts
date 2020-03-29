@@ -43,7 +43,7 @@ export class EntryController {
     @Post(`create-entry`)
     @Roles(JuniorAuthor)
     createEntry(
-        @Headers(`authorization`) bearer: string, @Body() dto: CreateEntryDto
+        @Headers(`authorization`) bearer: string, @Body() dto: CreateEntryDto,
     ): Promise<HttpException | ISerializeResponse> {
         return this.entryService.createEntry(currentUserService.getCurrentUser(bearer, `username`), dto)
     }
@@ -52,7 +52,7 @@ export class EntryController {
     @UseGuards(AuthGuard(`jwt`))
     @Delete(`:entryId`)
     @Roles(SuperAdmin)
-    deleteTitle(@Param(`entryId`) entryId: string): Promise<ISerializeResponse> {
+    deleteTitle(@Param(`entryId`) entryId: string): Promise<HttpException> {
         return this.entryService.deleteEntry(entryId)
     }
 }

@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Injectable, BadRequestException, HttpException } from '@nestjs/common'
+import { Injectable, BadRequestException, HttpException, HttpStatus } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 
 // Local files
@@ -39,19 +39,19 @@ export class EntryService {
 
     async createEntry(writtenBy: string, dto: CreateEntryDto): Promise<HttpException | ISerializeResponse> {
         try {
-          await this.titlesRepository.findOneOrFail(dto.titletId)
+          await this.titlesRepository.updateEntryCount(dto.titleId, true)
         } catch (err) {
-          throw new BadRequestException(`Title with id:${dto.titletId} does not match in database.`)
+          throw new BadRequestException(`Title with id:${dto.titleId} does not match in database.`)
         }
 
         const newEntry: EntriesEntity = await this.entriesRepository.createEntry(writtenBy, dto)
         return serializerService.serializeResponse(`entry_detail`, newEntry)
     }
 
-    async deleteEntry(entryId: string): Promise<ISerializeResponse> {
+    async deleteEntry(entryId: string): Promise<HttpException> {
         const entry: EntriesEntity = await this.entriesRepository.deleteEntry(entryId)
-        const id: string = String(entry.id)
-        delete entry.id
-        return serializerService.serializeResponse(`entry_detail`, entry, id)
+        await this.titlesRepository.updateEntryCount(entry.title_id, false)
+
+        throw new HttpException('Entry has been deleted.', HttpStatus.OK)
     }
 }

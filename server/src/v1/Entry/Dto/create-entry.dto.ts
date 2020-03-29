@@ -18,5 +18,5 @@ export class CreateEntryDto {
     })
     @IsNotEmpty()
     @IsMongoId()
-    titletId: string
+    titleId: string
 }
