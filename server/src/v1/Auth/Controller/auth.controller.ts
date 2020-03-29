@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Controller, Headers, Post, Body, UseGuards, Get, Put, Request, HttpException, Query } from '@nestjs/common'
+import { Controller, Headers, Post, Body, UseGuards, Get, Patch, Request, HttpException, Query } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
 
@@ -35,7 +35,7 @@ export class AuthController {
         return await this.authService.signOut(token)
     }
 
-    @Put(`signin/account-recovery`)
+    @Patch(`signin/account-recovery`)
     accountRecovery(@Body() dto: AccountRecoveryDto): Promise<HttpException> {
         return this.authService.accountRecovery(dto)
     }

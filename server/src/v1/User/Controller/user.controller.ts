@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Get, Param, Controller, Body, Patch, Put, UseGuards, Headers, BadRequestException, HttpException, Post, Query } from '@nestjs/common'
+import { Get, Param, Controller, Body, Patch, UseGuards, Headers, BadRequestException, HttpException, Post, Query } from '@nestjs/common'
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthGuard } from '@nestjs/passport'
 
@@ -40,7 +40,7 @@ export class UsersController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard(`jwt`))
-    @Put(`:username`)
+    @Patch('disable/:username')
     disableUser(
         @Param(`username`) username: string,
         @Headers(`authorization`) bearer: string,
