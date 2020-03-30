@@ -22,6 +22,7 @@ export class TitlesEntity {
     category_id: string
 
     @Column({
+        unique: true,
         type: `varchar`,
         length: 60,
     })
