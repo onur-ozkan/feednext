@@ -1,29 +1,29 @@
 // Nest dependencies
-import { ApiModelProperty } from '@nestjs/swagger'
+import { ApiProperty } from '@nestjs/swagger'
 
 // Other dependencies
 import { MaxLength, IsOptional, IsMongoId, IsBoolean } from 'class-validator'
 
 export class UpdateCategoryDto {
-    @ApiModelProperty({
+    @ApiProperty({
         required: false,
-        example: `Example Name`,
+        example: 'Example Name',
     })
     @IsOptional()
     @MaxLength(50)
     categoryName: string
 
-    @ApiModelProperty({
+    @ApiProperty({
       required: false,
-      example: `507f1f77bcf86cd799439011`,
+      example: '507f1f77bcf86cd799439011',
     })
     @IsOptional()
     @IsMongoId()
     parentCategoryId: string
 
-    @ApiModelProperty({
+    @ApiProperty({
       required: false,
-      example: `true || false`,
+      example: 'true || false',
     })
     @IsBoolean()
     @IsOptional()

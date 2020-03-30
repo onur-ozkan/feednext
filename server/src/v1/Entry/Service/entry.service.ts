@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Injectable, BadRequestException, HttpException, HttpStatus } from '@nestjs/common'
+import { Injectable, BadRequestException, HttpException, HttpStatus, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 
 // Other dependencies
@@ -31,17 +31,17 @@ export class EntryService {
     }
 
     async getEntry(entryId: string): Promise<ISerializeResponse> {
-        if (!this.validator.isMongoId(entryId)) throw new BadRequestException(`EntryId must be a MongoId.`)
+        if (!this.validator.isMongoId(entryId)) throw new BadRequestException('EntryId must be a MongoId.')
 
         const entry: EntriesEntity = await this.entriesRepository.getEntry(entryId)
         const id: string = String(entry.id)
         delete entry.id
-        return serializerService.serializeResponse(`entry_detail`, entry, id)
+        return serializerService.serializeResponse('entry_detail', entry, id)
     }
 
     async getEntryList(query: { limit: number, skip: number, orderBy: any }): Promise<ISerializeResponse> {
-        const result: {entries: EntriesEntity[], count: number} = await this.entriesRepository.getEntryList(query)
-        return serializerService.serializeResponse(`entry_list`, result)
+        const result: { entries: EntriesEntity[], count: number } = await this.entriesRepository.getEntryList(query)
+        return serializerService.serializeResponse('entry_list', result)
     }
 
     async updateEntry(updatedBy: string, entryId: string, text: string): Promise<ISerializeResponse> {
@@ -50,36 +50,48 @@ export class EntryService {
         const entry: EntriesEntity = await this.entriesRepository.updateEntry(updatedBy, entryId, text)
         const id: string = String(entry.id)
         delete entry.id
-        return serializerService.serializeResponse(`entry_detail`, entry, id)
+        return serializerService.serializeResponse('entry_detail', entry, id)
     }
 
     async createEntry(writtenBy: string, dto: CreateEntryDto): Promise<HttpException | ISerializeResponse> {
         if (!this.validator.isMongoId(dto.titleId)) throw new BadRequestException('TitleId must be a MongoId.')
 
         try {
-          await this.titlesRepository.updateEntryCount(dto.titleId, true)
+            await this.titlesRepository.updateEntryCount(dto.titleId, true)
         } catch (err) {
-          throw new BadRequestException(`Title with id:${dto.titleId} does not match in database.`)
+            throw new BadRequestException(`Title with id:${dto.titleId} does not match in the database.`)
         }
 
         const newEntry: EntriesEntity = await this.entriesRepository.createEntry(writtenBy, dto)
-        return serializerService.serializeResponse(`entry_detail`, newEntry)
+        return serializerService.serializeResponse('entry_detail', newEntry)
     }
 
-    async upVoteEntry(entryId: string, username: string): Promise<HttpException> {
+    async undoVoteOfEntry({ entryId, username, isUpVoted }: {entryId: string, username: string, isUpVoted: boolean}): Promise<HttpException> {
         if (!this.validator.isMongoId(entryId)) throw new BadRequestException('EntryId must be a MongoId.')
 
-        await this.usersRepository.addVotedEntry(entryId, username, true)
-        await this.entriesRepository.upVoteEntry(entryId)
-        throw new HttpException('Entry has been up voted.', HttpStatus.OK)
+        try {
+            await this.entriesRepository.findOneOrFail(entryId)
+        } catch (e) {
+            throw new NotFoundException('Entry with that id could not found in the database.')
+        }
+
+        await this.usersRepository.undoVotedEntry({entryId, username, isUpVoted})
+        await this.entriesRepository.voteEntry({entryId, isUpVoted: !isUpVoted})
+        throw new HttpException('Entry has been un voted.', HttpStatus.OK)
     }
 
-    async downVoteEntry(entryId: string, username: string): Promise<HttpException> {
+    async voteEntry({ entryId, username, isUpVoted }: {entryId: string, username: string, isUpVoted: boolean}): Promise<HttpException> {
         if (!this.validator.isMongoId(entryId)) throw new BadRequestException('EntryId must be a MongoId.')
 
-        await this.usersRepository.addVotedEntry(entryId, username, false)
-        await this.entriesRepository.downVoteEntry(entryId)
-        throw new HttpException('Entry has been down voted.', HttpStatus.OK)
+        try {
+            await this.entriesRepository.findOneOrFail(entryId)
+        } catch (e) {
+            throw new NotFoundException('Entry with that id could not found in the database.')
+        }
+
+        await this.usersRepository.addVotedEntry({entryId, username, isUpVoted})
+        await this.entriesRepository.voteEntry({entryId, isUpVoted})
+        throw new HttpException('Entry has been voted.', HttpStatus.OK)
     }
 
     async deleteEntry(entryId: string): Promise<HttpException> {

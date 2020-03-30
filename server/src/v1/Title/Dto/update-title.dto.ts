@@ -1,21 +1,21 @@
 // Nest dependencies
-import { ApiModelProperty } from '@nestjs/swagger'
+import { ApiProperty } from '@nestjs/swagger'
 
 // Other dependencies
 import { IsNotEmpty, IsMongoId, MaxLength, IsOptional } from 'class-validator'
 
 export class UpdateTitleDto {
-    @ApiModelProperty({
+    @ApiProperty({
         required: true,
-        example: `Example Name`,
+        example: 'Phone Y',
     })
     @IsNotEmpty()
     @MaxLength(60)
     name: string
 
-    @ApiModelProperty({
+    @ApiProperty({
         required: false,
-        example: `507f1f77bcf86cd799439011`,
+        example: '507f1f77bcf86cd799439011',
     })
     @IsOptional()
     @IsMongoId()

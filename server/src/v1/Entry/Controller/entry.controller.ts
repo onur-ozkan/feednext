@@ -1,6 +1,6 @@
 // Nest dependencies
 import { Controller, Headers, Get, Param, UseGuards, Post, Body, Query, Patch, Delete, HttpException } from '@nestjs/common'
-import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthGuard } from '@nestjs/passport'
 
 // Local files
@@ -12,62 +12,78 @@ import { currentUserService } from 'src/shared/Services/current-user.service'
 import { JuniorAuthor, Admin, SuperAdmin, User } from 'src/shared/Constants'
 import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 
-@ApiUseTags(`v1/entry`)
+@ApiTags('v1/entry')
 @UseGuards(RolesGuard)
 @Controller()
 export class EntryController {
     constructor(private readonly entryService: EntryService) {}
 
-    @Get(`:entryId`)
-    getEntry(@Param(`entryId`) entryId: string): Promise<ISerializeResponse> {
+    @Get(':entryId')
+    getEntry(@Param('entryId') entryId: string): Promise<ISerializeResponse> {
         return this.entryService.getEntry(entryId)
     }
 
-    @Get(`all`)
+    @Get('all')
     getEntryList(@Query() query: { limit: number, skip: number, orderBy: any }): Promise<ISerializeResponse> {
         return this.entryService.getEntryList(query)
     }
 
     @ApiBearerAuth()
-    @UseGuards(AuthGuard(`jwt`))
-    @Patch(`:entryId`)
+    @UseGuards(AuthGuard('jwt'))
+    @Patch(':entryId')
     @Roles(Admin)
     updateEntry(
-        @Headers(`authorization`) bearer: string, @Param(`entryId`) entryId: string, @Body(`text`) text: string,
+        @Headers('authorization') bearer: string, @Param('entryId') entryId: string, @Body('text') text: string,
     ): Promise<ISerializeResponse> {
-        return this.entryService.updateEntry(currentUserService.getCurrentUser(bearer, `username`), entryId, text)
+        return this.entryService.updateEntry(currentUserService.getCurrentUser(bearer, 'username'), entryId, text)
     }
 
     @ApiBearerAuth()
-    @UseGuards(AuthGuard(`jwt`))
+    @UseGuards(AuthGuard('jwt'))
     @Patch('up-vote/:entryId')
     @Roles(User)
     upVoteEntry(
-        @Param(`entryId`) entryId: string,
+        @Param('entryId') entryId: string,
         @Headers('authorization') bearer: string,
     ): Promise<HttpException> {
-        return this.entryService.upVoteEntry(entryId, currentUserService.getCurrentUser(bearer, 'username'))
+        return this.entryService.voteEntry({entryId, username: currentUserService.getCurrentUser(bearer, 'username'), isUpVoted: true})
     }
 
     @ApiBearerAuth()
-    @UseGuards(AuthGuard(`jwt`))
+    @UseGuards(AuthGuard('jwt'))
     @Patch('down-vote/:entryId')
     @Roles(User)
     downVoteEntry(
-        @Param(`entryId`) entryId: string,
+        @Param('entryId') entryId: string,
         @Headers('authorization') bearer: string,
     ): Promise<HttpException> {
-        return this.entryService.downVoteEntry(entryId, currentUserService.getCurrentUser(bearer, 'username'))
+        return this.entryService.voteEntry({entryId, username: currentUserService.getCurrentUser(bearer, 'username'), isUpVoted: false})
     }
 
     @ApiBearerAuth()
-    @UseGuards(AuthGuard(`jwt`))
-    @Post(`create-entry`)
+    @UseGuards(AuthGuard('jwt'))
+    @Patch('undo-vote/:entryId')
+    @Roles(User)
+    undoVoteEntry(
+        @Param('entryId') entryId: string,
+        @Query('isUpVoted') isUpVoted: string,
+        @Headers('authorization') bearer: string,
+    ): Promise<HttpException> {
+        return this.entryService.undoVoteOfEntry({
+            entryId,
+            username: currentUserService.getCurrentUser(bearer, 'username'),
+            isUpVoted: (isUpVoted === 'true')
+        })
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
+    @Post('create-entry')
     @Roles(JuniorAuthor)
     createEntry(
         @Headers('authorization') bearer: string, @Body() dto: CreateEntryDto,
     ): Promise<HttpException | ISerializeResponse> {
-        return this.entryService.createEntry(currentUserService.getCurrentUser(bearer, `username`), dto)
+        return this.entryService.createEntry(currentUserService.getCurrentUser(bearer, 'username'), dto)
     }
 
     @ApiBearerAuth()

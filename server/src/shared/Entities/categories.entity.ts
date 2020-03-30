@@ -9,7 +9,7 @@ import {
     BeforeInsert,
 } from 'typeorm'
 
-@Entity(`Categories`)
+@Entity('Categories')
 export class CategoriesEntity {
     constructor(partial: Partial<CategoriesEntity>) {
         Object.assign(this, partial)
@@ -18,23 +18,23 @@ export class CategoriesEntity {
     @ObjectIdColumn()
     id: ObjectID
 
-    @Column({ nullable: true })
+    @Column({ type: 'string', nullable: true })
     parent_category: string
 
-    @Column({ length: 50, unique: true })
+    @Column({ type: 'string', length: 50, unique: true})
     name: string
 
-    @Column()
+    @Column({ type: 'boolean' })
     is_lowest_cateogry: boolean
+
+    @CreateDateColumn({ type: 'date' })
+    created_at: Date
+
+    @UpdateDateColumn({ type: 'date' })
+    updated_at: Date
 
     @BeforeInsert()
     fillDefaults() {
         this.is_lowest_cateogry = false
     }
-
-    @CreateDateColumn()
-    created_at: Date
-
-    @UpdateDateColumn()
-    updated_at: Date
 }

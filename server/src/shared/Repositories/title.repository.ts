@@ -16,7 +16,7 @@ export class TitlesRepository extends Repository<TitlesEntity> {
             const title: TitlesEntity = await this.findOneOrFail(titleId)
             return title
         } catch (err) {
-            throw new NotFoundException(`Title with that id could not found in the database.`)
+            throw new NotFoundException('Title with that id could not found in the database.')
         }
     }
 
@@ -26,12 +26,12 @@ export class TitlesRepository extends Repository<TitlesEntity> {
             isIncrement ? title.entry_count++ : title.entry_count--
             this.save(title)
         } catch (err) {
-            throw new NotFoundException(`Title with that id could not found in the database.`)
+            throw new NotFoundException('Title with that id could not found in the database.')
         }
     }
 
     async getTitleList(query: { limit: number, skip: number, orderBy: any }): Promise<{titles: TitlesEntity[], count: number}> {
-        const orderBy = query.orderBy || `ASC`
+        const orderBy = query.orderBy || 'ASC'
 
         try {
             const [titles, total] = await this.findAndCount({
@@ -69,7 +69,7 @@ export class TitlesRepository extends Repository<TitlesEntity> {
             try {
                 await this.findOneOrFail(dto.categoryId)
             } catch (err) {
-                throw new NotFoundException(`Category with that id could not found in the database.`)
+                throw new NotFoundException('Category with that id could not found in the database.')
             }
         }
 
@@ -77,7 +77,7 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         try {
             title = await this.findOneOrFail(titleId)
         } catch {
-            throw new NotFoundException(`Title related to that id could not found in the database.`)
+            throw new NotFoundException('Title related to that id could not found in the database.')
         }
 
         try {
@@ -98,7 +98,7 @@ export class TitlesRepository extends Repository<TitlesEntity> {
             await this.delete(title)
             return title
         } catch (err) {
-            throw new NotFoundException(`Title with that id could not found in the database.`)
+            throw new NotFoundException('Title with that id could not found in the database.')
         }
     }
 }

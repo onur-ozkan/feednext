@@ -15,12 +15,12 @@ export class EntriesRepository extends Repository<EntriesEntity> {
             const entry: EntriesEntity = await this.findOneOrFail(entryId)
             return entry
         } catch (err) {
-            throw new NotFoundException(`Entry with that id could not found in the database.`)
+            throw new NotFoundException('Entry with that id could not found in the database.')
         }
     }
 
     async getEntryList(query: { limit: number, skip: number, orderBy: any }): Promise<{entries: EntriesEntity[], count: number}> {
-        const orderBy = query.orderBy || `ASC`
+        const orderBy = query.orderBy || 'ASC'
 
         try {
             const [entries, total] = await this.findAndCount({
@@ -54,13 +54,13 @@ export class EntriesRepository extends Repository<EntriesEntity> {
     }
 
     async updateEntry(updatedBy: string, entryId: string, text: string): Promise<EntriesEntity> {
-        if (!text) throw new BadRequestException(`Entry text can not be null.`)
+        if (!text) throw new BadRequestException('Entry text can not be null.')
 
         let entry: EntriesEntity
         try {
             entry = await this.findOneOrFail(entryId)
         } catch {
-            throw new NotFoundException(`Entry with that id could not found in the database.`)
+            throw new NotFoundException('Entry with that id could not found in the database.')
         }
 
         try {
@@ -74,24 +74,10 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         }
     }
 
-    async upVoteEntry(entryId: string): Promise<void> {
-        try {
-            const entry: EntriesEntity = await this.findOneOrFail(entryId)
-            entry.votes++
-            this.save(entry)
-        } catch (err) {
-            throw new NotFoundException(`Entry with that id could not found in the database.`)
-        }
-    }
-
-    async downVoteEntry(entryId: string): Promise<void> {
-        try {
-            const entry: EntriesEntity = await this.findOneOrFail(entryId)
-            entry.votes--
-            this.save(entry)
-        } catch (err) {
-            throw new NotFoundException(`Entry with that id could not found in the database.`)
-        }
+    async voteEntry({entryId, isUpVoted}: {entryId: string, isUpVoted: boolean}): Promise<void> {
+        const entry: EntriesEntity = await this.findOneOrFail(entryId)
+        isUpVoted ? entry.votes++ : entry.votes--
+        this.save(entry)
     }
 
     async deleteEntry(entryId: string): Promise<EntriesEntity> {
@@ -100,7 +86,7 @@ export class EntriesRepository extends Repository<EntriesEntity> {
             await this.delete(entry)
             return entry
         } catch (err) {
-            throw new NotFoundException(`Entry with that id could not found in the database.`)
+            throw new NotFoundException('Entry with that id could not found in the database.')
         }
     }
 

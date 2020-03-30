@@ -10,7 +10,7 @@ import {
 } from 'typeorm'
 import * as crypto from 'crypto'
 
-@Entity(`Users`)
+@Entity('Users')
 export class UsersEntity {
     constructor(partial: Partial<UsersEntity>) {
         Object.assign(this, partial)
@@ -20,28 +20,28 @@ export class UsersEntity {
     id: ObjectID
 
     @Column({
-        length: 50,
         type: 'string',
+        length: 50,
     })
     full_name: string
 
     @Column({
+        type: 'string',
         length: 17,
         unique: true,
-        type: 'string',
     })
     username: string
 
     @Column({
-        length: 15,
         type: 'string',
+        length: 15,
     })
     password: string
 
     @Column({
+        type: 'string',
         length: 50,
         unique: true,
-        type: 'string',
     })
     email: string
 
@@ -60,6 +60,12 @@ export class UsersEntity {
     @Column({ type: 'boolean' })
     is_active: boolean
 
+    @CreateDateColumn({ type: 'date' })
+    created_at: Date
+
+    @UpdateDateColumn({ type: 'date' })
+    updated_at: Date
+
     @BeforeInsert()
     hashPassword() {
         this.password = crypto.createHmac('sha256', this.password).digest('hex')
@@ -73,10 +79,4 @@ export class UsersEntity {
         this.up_voted_entries = []
         this.down_voted_entries = []
     }
-
-    @CreateDateColumn({ type: 'date' })
-    created_at: Date
-
-    @UpdateDateColumn({ type: 'date' })
-    updated_at: Date
 }

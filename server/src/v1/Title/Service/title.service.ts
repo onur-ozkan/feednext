@@ -36,12 +36,12 @@ export class TitleService {
         const title: TitlesEntity = await this.titlesRepository.getTitle(titleId)
         const id: string = String(title.id)
         delete title.id
-        return serializerService.serializeResponse(`title_detail`, title, id)
+        return serializerService.serializeResponse('title_detail', title, id)
     }
 
     async getTitleList(query: { limit: number, skip: number, orderBy: any }): Promise<ISerializeResponse> {
         const result: {titles: TitlesEntity[], count: number} = await this.titlesRepository.getTitleList(query)
-        return serializerService.serializeResponse(`title_list`, result)
+        return serializerService.serializeResponse('title_list', result)
     }
 
     async createTitle(openedBy: string, dto: CreateTitleDto): Promise<HttpException | ISerializeResponse> {
@@ -52,7 +52,7 @@ export class TitleService {
         }
 
         const newTitle: TitlesEntity = await this.titlesRepository.createTitle(openedBy, dto)
-        return serializerService.serializeResponse(`title_detail`, newTitle)
+        return serializerService.serializeResponse('title_detail', newTitle)
     }
 
     async updateTitle(updatedBy: string, titleId: string, dto: UpdateTitleDto): Promise<ISerializeResponse> {
@@ -64,7 +64,7 @@ export class TitleService {
         const title: TitlesEntity = await this.titlesRepository.updateTitle(updatedBy, titleId, dto)
         const id: string = String(title.id)
         delete title.id
-        return serializerService.serializeResponse(`title_detail`, title, id)
+        return serializerService.serializeResponse('title_detail', title, id)
     }
 
     async deleteTitle(titleId: string): Promise<HttpException> {

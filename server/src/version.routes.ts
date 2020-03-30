@@ -11,27 +11,27 @@ import { TitleModule } from './v1/Title/title.module'
 
 export const versionRoutes: Routes = [
     {
-        path: `/v1`,
+        path: '/v1',
         module: V1Module,
         children: [
             {
-                path: `/auth`,
+                path: '/auth',
                 module: AuthModule,
             },
             {
-                path: `/category`,
+                path: '/category',
                 module: CategoryModule,
             },
             {
-                path: `/entry`,
+                path: '/entry',
                 module: EntryModule,
             },
             {
-                path: `/title`,
+                path: '/title',
                 module: TitleModule,
             },
             {
-                path: `/user`,
+                path: '/user',
                 module: UserModule,
             },
         ],

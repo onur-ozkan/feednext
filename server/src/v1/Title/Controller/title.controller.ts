@@ -1,6 +1,6 @@
 // Nest dependencies
 import { Controller, UseGuards, Headers, Post, Body, HttpException, Get, Param, Query, Delete, Patch } from '@nestjs/common'
-import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger'
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthGuard } from '@nestjs/passport/dist/auth.guard'
 
 // Local dependencies
@@ -13,48 +13,48 @@ import { JuniorAuthor, Admin, SuperAdmin } from 'src/shared/Constants'
 import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { TitleService } from '../Service/title.service'
 
-@ApiUseTags(`v1/title`)
+@ApiTags('v1/title')
 @Controller()
 @UseGuards(RolesGuard)
 @Controller()
 export class TitleController {
     constructor(private readonly titleService: TitleService) {}
 
-    @Get(`:titleId`)
-    getTitle(@Param(`titleId`) titleId: string): Promise<ISerializeResponse> {
+    @Get(':titleId')
+    getTitle(@Param('titleId') titleId: string): Promise<ISerializeResponse> {
         return this.titleService.getTitle(titleId)
     }
 
-    @Get(`all`)
+    @Get('all')
     getTitleList(@Query() query: { limit: number, skip: number, orderBy: any }): Promise<ISerializeResponse> {
         return this.titleService.getTitleList(query)
     }
 
     @ApiBearerAuth()
-    @UseGuards(AuthGuard(`jwt`))
-    @Post(`create-title`)
+    @UseGuards(AuthGuard('jwt'))
+    @Post('create-title')
     @Roles(JuniorAuthor)
-    createTitle(@Headers(`authorization`) bearer: string, @Body() dto: CreateTitleDto): Promise<HttpException | ISerializeResponse> {
-        return this.titleService.createTitle(currentUserService.getCurrentUser(bearer, `username`), dto)
+    createTitle(@Headers('authorization') bearer: string, @Body() dto: CreateTitleDto): Promise<HttpException | ISerializeResponse> {
+        return this.titleService.createTitle(currentUserService.getCurrentUser(bearer, 'username'), dto)
     }
 
     @ApiBearerAuth()
-    @UseGuards(AuthGuard(`jwt`))
-    @Patch(`:titleId`)
+    @UseGuards(AuthGuard('jwt'))
+    @Patch(':titleId')
     @Roles(Admin)
     updateTitle(
-        @Headers(`authorization`) bearer: string,
-        @Param(`titleId`) titleId: string,
+        @Headers('authorization') bearer: string,
+        @Param('titleId') titleId: string,
         @Body() dto: UpdateTitleDto,
     ): Promise<ISerializeResponse> {
-        return this.titleService.updateTitle(currentUserService.getCurrentUser(bearer, `username`), titleId, dto)
+        return this.titleService.updateTitle(currentUserService.getCurrentUser(bearer, 'username'), titleId, dto)
     }
 
     @ApiBearerAuth()
-    @UseGuards(AuthGuard(`jwt`))
-    @Delete(`:titleId`)
+    @UseGuards(AuthGuard('jwt'))
+    @Delete(':titleId')
     @Roles(SuperAdmin)
-    deleteTitle(@Param(`titleId`) titleId: string): Promise<HttpException> {
+    deleteTitle(@Param('titleId') titleId: string): Promise<HttpException> {
         return this.titleService.deleteTitle(titleId)
     }
 }

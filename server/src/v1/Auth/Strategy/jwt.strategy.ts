@@ -33,7 +33,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         if (!user) {
             throw new UnauthorizedException()
         } else if (!user.is_active) {
-            throw new BadRequestException(`Account is not active.`)
+            throw new BadRequestException('Account is not active.')
         }
 
         const data = {

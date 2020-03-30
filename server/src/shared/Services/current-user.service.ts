@@ -10,11 +10,11 @@ export class CurrentUserService {
         const authData: any = jwt.decode(token.substring(7))
 
         switch (property) {
-            case `id`: return authData.id
-            case `username`: return authData.username
-            case `email`: return authData.email
-            case `role`: return authData.role
-            case `all`: return authData
+            case 'id': return authData.id
+            case 'username': return authData.username
+            case 'email': return authData.email
+            case 'role': return authData.role
+            case 'all': return authData
         }
     }
 }

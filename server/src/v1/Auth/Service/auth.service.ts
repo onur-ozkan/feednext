@@ -38,28 +38,28 @@ export class AuthService {
                 email: dto.email,
                 verificationToken: true,
                 exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
-            }, configService.getEnv(`SECRET_KEY`))
+            }, configService.getEnv('SECRET_KEY'))
 
-            const verificationUrl: string = `${configService.getEnv(`APP_URL`)}/api/v1/auth/account-verification?token=${verifyToken}`
+            const verificationUrl: string = `${configService.getEnv('APP_URL')}/api/v1/auth/account-verification?token=${verifyToken}`
 
             const mailBody: MailSenderBody = {
                 receiver: dto.email,
                 subject: `Verify Your Account [${dto.username}]`,
-                text: `${verificationUrl}`,
+                text: verificationUrl,
             }
             await this.mailService.send(mailBody)
         }
 
         const id: string = String(result.id)
 
-        const properties: string[] = [`id`, `password`, `updated_at`, `is_verified`]
+        const properties: string[] = ['id', 'password', 'updated_at', 'is_verified']
         await serializerService.deleteProperties(result, properties)
 
-        return serializerService.serializeResponse(`account_informations`, result, id)
+        return serializerService.serializeResponse('account_informations', result, id)
     }
 
     async signIn(userEntity: UsersEntity): Promise<HttpException | ISerializeResponse> {
-        if (!userEntity.is_active) throw new BadRequestException(`Account is not active.`)
+        if (!userEntity.is_active) throw new BadRequestException('Account is not active.')
 
         const token: string = this.jwtService.sign({
             id: userEntity.id,
@@ -70,7 +70,7 @@ export class AuthService {
         })
 
         const id: any = userEntity.id
-        const properties: string[] = [`id`, `password`]
+        const properties: string[] = ['id', 'password']
         await serializerService.deleteProperties(userEntity, properties)
 
         const responseData: object = {
@@ -78,7 +78,7 @@ export class AuthService {
             user: userEntity,
         }
 
-        return serializerService.serializeResponse(`user_information`, responseData, id)
+        return serializerService.serializeResponse('user_information', responseData, id)
     }
 
     async signOut(token: string): Promise<any> {
@@ -87,11 +87,11 @@ export class AuthService {
         const remainingSeconds: number = Math.round(expireDate - Date.now() / 1000)
 
         await this.redisService.setOnlyKey(token, remainingSeconds)
-        return serializerService.serializeResponse(`dead_token`, {token})
+        return serializerService.serializeResponse('dead_token', {token})
     }
 
     async validateUser(dto: LoginDto): Promise<UsersEntity> {
-        const passwordHash: string = crypto.createHmac(`sha256`, dto.password).digest(`hex`)
+        const passwordHash: string = crypto.createHmac('sha256', dto.password).digest('hex')
         return await this.usersRepository.validateUser(dto, passwordHash)
     }
 
@@ -105,7 +105,7 @@ export class AuthService {
         }
 
         await this.mailService.send(mailBody)
-        throw new HttpException(`OK`, HttpStatus.OK)
+        throw new HttpException('OK', HttpStatus.OK)
     }
 
     async accountVerification(incToken: string): Promise<HttpException> {
@@ -114,14 +114,14 @@ export class AuthService {
         if (decodedToken.verificationToken) {
             const remainingTime: number = await decodedToken.exp - Math.floor(Date.now() / 1000)
             if (remainingTime <= 0) {
-                throw new BadRequestException(`Incoming token is expired.`)
+                throw new BadRequestException('Incoming token is expired.')
             }
 
             await this.usersRepository.accountVerification(decodedToken)
 
-            throw new HttpException(`Account has been verified.`, HttpStatus.OK)
+            throw new HttpException('Account has been verified.', HttpStatus.OK)
         }
 
-        throw new BadRequestException(`Incoming token is not valid.`)
+        throw new BadRequestException('Incoming token is not valid.')
     }
 }

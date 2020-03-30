@@ -9,7 +9,7 @@ import {
     BeforeInsert,
 } from 'typeorm'
 
-@Entity(`Titles`)
+@Entity('Titles')
 export class TitlesEntity {
     constructor(partial: Partial<TitlesEntity>) {
         Object.assign(this, partial)
@@ -18,12 +18,12 @@ export class TitlesEntity {
     @ObjectIdColumn()
     id: ObjectID
 
-    @Column()
+    @Column({ type: 'string' })
     category_id: string
 
     @Column({
         unique: true,
-        type: `varchar`,
+        type: 'string',
         length: 60,
     })
     name: string
@@ -31,25 +31,25 @@ export class TitlesEntity {
     @Column({ type: 'tinyint' })
     rate: number
 
-    @Column()
+    @Column({ type: 'int' })
     entry_count: number
 
     @Column({
-        type: `varchar`,
+        type: 'string',
         length: 17,
     })
     opened_by: string
 
     @Column({
-        type: `varchar`,
+        type: 'string',
         length: 17,
     })
     updated_by: string
 
-    @CreateDateColumn()
+    @CreateDateColumn({ type: 'date' })
     created_at: Date
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({ type: 'date' })
     updated_at: Date
 
     @BeforeInsert()
