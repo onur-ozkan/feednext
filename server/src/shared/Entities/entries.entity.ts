@@ -25,10 +25,7 @@ export class EntriesEntity {
     text: string
 
     @Column()
-    up_votes: number
-
-    @Column()
-    down_votes: number
+    votes: number
 
     @Column({
         type: `varchar`,
@@ -50,7 +47,6 @@ export class EntriesEntity {
 
     @BeforeInsert()
     fillDefaults() {
-        this.up_votes = 0
-        this.down_votes = 0
+        this.votes = 0
     }
 }

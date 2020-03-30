@@ -3,8 +3,6 @@ import { UnprocessableEntityException, BadRequestException, NotFoundException } 
 
 // Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
-import { ObjectID } from 'mongodb'
-import { Validator } from 'class-validator'
 
 // Local files
 import { TitlesEntity } from '../Entities/titles.entity'
@@ -13,16 +11,7 @@ import { UpdateTitleDto } from 'src/v1/Title/Dto/update-title.dto'
 
 @EntityRepository(TitlesEntity)
 export class TitlesRepository extends Repository<TitlesEntity> {
-
-    private validator: ObjectID
-
-    constructor() {
-      super()
-      this.validator = new Validator()
-    }
-
     async getTitle(titleId: string): Promise<TitlesEntity> {
-        if (!this.validator.isMongoId(titleId)) throw new BadRequestException(`Id must be type of a MongoId.`)
         try {
             const title: TitlesEntity = await this.findOneOrFail(titleId)
             return title
@@ -32,7 +21,6 @@ export class TitlesRepository extends Repository<TitlesEntity> {
     }
 
     async updateEntryCount(titleId: string, isIncrement: boolean): Promise<void> {
-        if (!this.validator.isMongoId(titleId)) throw new BadRequestException(`Id must be type of a MongoId.`)
         try {
             const title: TitlesEntity = await this.findOneOrFail(titleId)
             isIncrement ? title.entry_count++ : title.entry_count--
@@ -77,11 +65,7 @@ export class TitlesRepository extends Repository<TitlesEntity> {
     }
 
     async updateTitle(updatedBy: string, titleId: string, dto: UpdateTitleDto): Promise<TitlesEntity> {
-        if (!this.validator.isMongoId(titleId)) throw new BadRequestException(`TitleId must be a MongoId.`)
-
         if (dto.categoryId) {
-            if (!this.validator.isMongoId(dto.categoryId)) throw new BadRequestException(`TitleId must be a MongoId.`)
-
             try {
                 await this.findOneOrFail(dto.categoryId)
             } catch (err) {
@@ -109,7 +93,6 @@ export class TitlesRepository extends Repository<TitlesEntity> {
     }
 
     async deleteTitle(titleId: string): Promise<TitlesEntity> {
-        if (!this.validator.isMongoId(titleId)) throw new BadRequestException(`Id must be type of a MongoId.`)
         try {
             const title: TitlesEntity = await this.findOneOrFail(titleId)
             await this.delete(title)

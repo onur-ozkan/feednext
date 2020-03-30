@@ -3,8 +3,6 @@ import { NotFoundException, BadRequestException, UnprocessableEntityException } 
 
 // Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
-import { Validator } from 'class-validator'
-import { ObjectID } from 'mongodb'
 
 // Local files
 import { EntriesEntity } from '../Entities/entries.entity'
@@ -12,15 +10,7 @@ import { CreateEntryDto } from 'src/v1/Entry/Dto/create-entry.dto'
 
 @EntityRepository(EntriesEntity)
 export class EntriesRepository extends Repository<EntriesEntity> {
-    private validator: ObjectID
-
-    constructor() {
-        super()
-        this.validator = new Validator()
-    }
-
     async getEntry(entryId: string): Promise<EntriesEntity> {
-        if (!this.validator.isMongoId(entryId)) throw new BadRequestException(`EntryId must be a MongoId.`)
         try {
             const entry: EntriesEntity = await this.findOneOrFail(entryId)
             return entry
@@ -65,7 +55,6 @@ export class EntriesRepository extends Repository<EntriesEntity> {
 
     async updateEntry(updatedBy: string, entryId: string, text: string): Promise<EntriesEntity> {
         if (!text) throw new BadRequestException(`Entry text can not be null.`)
-        if (!this.validator.isMongoId(entryId)) throw new BadRequestException(`EntryId must be a MongoId.`)
 
         let entry: EntriesEntity
         try {
@@ -85,8 +74,27 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         }
     }
 
+    async upVoteEntry(entryId: string): Promise<void> {
+        try {
+            const entry: EntriesEntity = await this.findOneOrFail(entryId)
+            entry.votes++
+            this.save(entry)
+        } catch (err) {
+            throw new NotFoundException(`Entry with that id could not found in the database.`)
+        }
+    }
+
+    async downVoteEntry(entryId: string): Promise<void> {
+        try {
+            const entry: EntriesEntity = await this.findOneOrFail(entryId)
+            entry.votes--
+            this.save(entry)
+        } catch (err) {
+            throw new NotFoundException(`Entry with that id could not found in the database.`)
+        }
+    }
+
     async deleteEntry(entryId: string): Promise<EntriesEntity> {
-        if (!this.validator.isMongoId(entryId)) throw new BadRequestException(`EntryId must be a MongoId.`)
         try {
             const entry: EntriesEntity = await this.findOneOrFail(entryId)
             await this.delete(entry)
@@ -97,8 +105,6 @@ export class EntriesRepository extends Repository<EntriesEntity> {
     }
 
     async deleteEntriesBelongsToTitle(titleId: string): Promise<void> {
-        if (!this.validator.isMongoId(titleId)) throw new BadRequestException(`TitleId must be a MongoId.`)
-
         const entries: any = await this.find({ title_id: titleId })
         await this.delete(entries)
     }

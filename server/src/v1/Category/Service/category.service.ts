@@ -1,6 +1,10 @@
 // Nest dependencies
-import { Injectable } from '@nestjs/common'
+import { Injectable, BadRequestException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+
+// Other dependencies
+import { ObjectID } from 'mongodb'
+import { Validator } from 'class-validator'
 
 // Local files
 import { CategoriesRepository } from 'src/shared/Repositories/categories.repository'
@@ -11,12 +15,19 @@ import { UpdateCategoryDto } from '../Dto/update-category.dto'
 
 @Injectable()
 export class CategoryService {
+
+    private validator: ObjectID
+
     constructor(
         @InjectRepository(CategoriesRepository)
         private readonly categoriesRepository: CategoriesRepository,
-    ) {}
+    ) {
+        this.validator = new Validator()
+    }
 
     async getCategory(categoryId: string): Promise<ISerializeResponse> {
+        if (!this.validator.isMongoId(categoryId)) throw new BadRequestException('CategoryId must be a MongoId.')
+
         const category: CategoriesEntity = await this.categoriesRepository.getCategory(categoryId)
         const id: string = String(category.id)
         delete category.id
@@ -34,6 +45,8 @@ export class CategoryService {
     }
 
     async updateCategory(categoryId: string, dto: UpdateCategoryDto): Promise<ISerializeResponse> {
+        if (!this.validator.isMongoId(categoryId)) throw new BadRequestException('CategoryId must be a MongoId.')
+
         const category: CategoriesEntity = await this.categoriesRepository.updateCategory(categoryId, dto)
         const id: string = String(category.id)
         delete category.id
@@ -41,6 +54,8 @@ export class CategoryService {
     }
 
     async deleteCategory(categoryId: string): Promise<ISerializeResponse> {
+        if (!this.validator.isMongoId(categoryId)) throw new BadRequestException('CategoryId must be a MongoId.')
+
         const category: CategoriesEntity = await this.categoriesRepository.deleteCategory(categoryId)
         const id: string = String(category.id)
         delete category.id

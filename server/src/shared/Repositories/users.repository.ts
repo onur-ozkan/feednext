@@ -1,5 +1,5 @@
 // Nest dependencies
-import { NotFoundException, BadRequestException, UnprocessableEntityException } from '@nestjs/common'
+import { NotFoundException, BadRequestException, UnprocessableEntityException, ConflictException } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
 
 // Other dependencies
@@ -141,6 +141,35 @@ export class UsersRepository extends Repository<UsersEntity> {
         } catch (err) {
             throw new NotFoundException(`User with that username could not found in the database.`)
         }
+    }
+
+    async addVotedEntry(entryId: string, usernameParam: string, isUpVoted: boolean): Promise<void> {
+        let profile: UsersEntity
+        try {
+            profile = await this.findOneOrFail({
+                username: usernameParam,
+            })
+        } catch (err) {
+            throw new NotFoundException('User with that username could not found in the database.')
+        }
+
+        if (isUpVoted) {
+            if (profile.up_voted_entries.includes(entryId)) throw new ConflictException('The entry is already up voted')
+            // If the entry was down voted, undo the vote
+            if (profile.down_voted_entries.includes(entryId)) {
+                profile.down_voted_entries = profile.down_voted_entries.filter(item => item !== entryId)
+            }
+            profile.up_voted_entries.push(entryId)
+        } else {
+            if (profile.down_voted_entries.includes(entryId)) throw new ConflictException('The entry is already down voted')
+            // If the entry was up voted, undo the vote
+            if (profile.up_voted_entries.includes(entryId)) {
+                profile.up_voted_entries = profile.up_voted_entries.filter(item => item !== entryId)
+            }
+            profile.down_voted_entries.push(entryId)
+        }
+
+        await this.save(profile)
     }
 
     async activateUser(decodedToken: { email: string, username: string }) {

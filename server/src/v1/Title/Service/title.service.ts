@@ -11,8 +11,14 @@ import { UpdateTitleDto } from '../Dto/update-title.dto'
 import { serializerService, ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { EntriesRepository } from 'src/shared/Repositories/entries.repository'
 
+import { Validator } from 'class-validator'
+import { ObjectID } from 'mongodb'
+
 @Injectable()
 export class TitleService {
+
+    private validator: ObjectID
+
     constructor(
         @InjectRepository(TitlesRepository)
         private readonly titlesRepository: TitlesRepository,
@@ -20,9 +26,13 @@ export class TitleService {
         private readonly categoriesRepository: CategoriesRepository,
         @InjectRepository(EntriesRepository)
         private readonly entriesRepository: EntriesRepository,
-    ) {}
+    ) {
+        this.validator = new Validator()
+    }
 
     async getTitle(titleId: string): Promise<ISerializeResponse> {
+        if (!this.validator.isMongoId(titleId)) throw new BadRequestException('Id must be type of a MongoId.')
+
         const title: TitlesEntity = await this.titlesRepository.getTitle(titleId)
         const id: string = String(title.id)
         delete title.id
@@ -46,6 +56,11 @@ export class TitleService {
     }
 
     async updateTitle(updatedBy: string, titleId: string, dto: UpdateTitleDto): Promise<ISerializeResponse> {
+        if (!this.validator.isMongoId(titleId)) throw new BadRequestException('TitleId must be a MongoId.')
+        if (dto.categoryId && !this.validator.isMongoId(dto.categoryId)) {
+            throw new BadRequestException('CategoryId must be a MongoId.')
+        }
+
         const title: TitlesEntity = await this.titlesRepository.updateTitle(updatedBy, titleId, dto)
         const id: string = String(title.id)
         delete title.id
@@ -53,9 +68,10 @@ export class TitleService {
     }
 
     async deleteTitle(titleId: string): Promise<HttpException> {
+        if (!this.validator.isMongoId(titleId)) throw new BadRequestException('TitleId must be a MongoId.')
+
         const title = await this.titlesRepository.deleteTitle(titleId)
         await this.entriesRepository.deleteEntriesBelongsToTitle(String(title.id))
-
         throw new HttpException('Title has been deleted.', HttpStatus.OK)
     }
 }

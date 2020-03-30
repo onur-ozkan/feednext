@@ -4,7 +4,6 @@ import { NotFoundException, BadRequestException, UnprocessableEntityException } 
 // Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
 import { ObjectID } from 'mongodb'
-import { Validator } from 'class-validator'
 
 // Local files
 import { CategoriesEntity } from '../Entities/categories.entity'
@@ -13,15 +12,7 @@ import { UpdateCategoryDto } from 'src/v1/Category/Dto/update-category.dto'
 
 @EntityRepository(CategoriesEntity)
 export class CategoriesRepository extends Repository<CategoriesEntity> {
-    private validator: ObjectID
-
-    constructor() {
-      super()
-      this.validator = new Validator()
-    }
-
     async getCategory(categoryId: string): Promise<CategoriesEntity> {
-        if (!this.validator.isMongoId(categoryId)) throw new BadRequestException(`CategoryId must be a MongoId.`)
         try {
             const category: CategoriesEntity = await this.findOneOrFail(categoryId)
             return category
@@ -72,8 +63,6 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
     }
 
     async updateCategory(categoryId: string, dto: UpdateCategoryDto): Promise<CategoriesEntity> {
-        if (!this.validator.isMongoId(categoryId)) throw new BadRequestException(`CategoryId must be a MongoId.`)
-
         if (dto.parentCategoryId) {
             try {
                 await this.findOneOrFail(dto.parentCategoryId)
@@ -102,7 +91,6 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
     }
 
     async deleteCategory(categoryId: string): Promise<CategoriesEntity> {
-        if (!this.validator.isMongoId(categoryId)) throw new BadRequestException(`CategoryId must be a MongoId.`)
         try {
             const category: CategoriesEntity = await this.findOneOrFail(categoryId)
             await this.delete(category)

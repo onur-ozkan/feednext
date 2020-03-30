@@ -9,7 +9,7 @@ import { RolesGuard } from 'src/shared/Guards/roles.guard'
 import { Roles } from 'src/shared/Decorators/roles.decorator'
 import { CreateEntryDto } from '../Dto/create-entry.dto'
 import { currentUserService } from 'src/shared/Services/current-user.service'
-import { JuniorAuthor, Admin, SuperAdmin } from 'src/shared/Constants'
+import { JuniorAuthor, Admin, SuperAdmin, User } from 'src/shared/Constants'
 import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 
 @ApiUseTags(`v1/entry`)
@@ -32,7 +32,7 @@ export class EntryController {
     @UseGuards(AuthGuard(`jwt`))
     @Patch(`:entryId`)
     @Roles(Admin)
-    updateCategory(
+    updateEntry(
         @Headers(`authorization`) bearer: string, @Param(`entryId`) entryId: string, @Body(`text`) text: string,
     ): Promise<ISerializeResponse> {
         return this.entryService.updateEntry(currentUserService.getCurrentUser(bearer, `username`), entryId, text)
@@ -40,19 +40,42 @@ export class EntryController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard(`jwt`))
+    @Patch('up-vote/:entryId')
+    @Roles(User)
+    upVoteEntry(
+        @Param(`entryId`) entryId: string,
+        @Headers('authorization') bearer: string,
+    ): Promise<HttpException> {
+        return this.entryService.upVoteEntry(entryId, currentUserService.getCurrentUser(bearer, 'username'))
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard(`jwt`))
+    @Patch('down-vote/:entryId')
+    @Roles(User)
+    downVoteEntry(
+        @Param(`entryId`) entryId: string,
+        @Headers('authorization') bearer: string,
+    ): Promise<HttpException> {
+        return this.entryService.downVoteEntry(entryId, currentUserService.getCurrentUser(bearer, 'username'))
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard(`jwt`))
     @Post(`create-entry`)
     @Roles(JuniorAuthor)
     createEntry(
-        @Headers(`authorization`) bearer: string, @Body() dto: CreateEntryDto,
+        @Headers('authorization') bearer: string, @Body() dto: CreateEntryDto,
     ): Promise<HttpException | ISerializeResponse> {
         return this.entryService.createEntry(currentUserService.getCurrentUser(bearer, `username`), dto)
     }
 
     @ApiBearerAuth()
-    @UseGuards(AuthGuard(`jwt`))
-    @Delete(`:entryId`)
+    @UseGuards(AuthGuard('jwt'))
+    @Delete(':entryId')
     @Roles(SuperAdmin)
-    deleteTitle(@Param(`entryId`) entryId: string): Promise<HttpException> {
+    deleteTitle(
+        @Param('entryId') entryId: string): Promise<HttpException> {
         return this.entryService.deleteEntry(entryId)
     }
 }
