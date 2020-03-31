@@ -44,6 +44,24 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         }
     }
 
+    async getFeaturedEntryByTitleId({ titleId }: { titleId: string }): Promise<EntriesEntity> {
+        try {
+            const entries = await this.findOneOrFail({
+                where: {
+                    title_id: titleId
+                },
+                order: {
+                    votes: 'DESC',
+                }
+            })
+
+            return entries
+
+        } catch (err) {
+            throw new BadRequestException('No entry found for given titleId')
+        }
+    }
+
     async createEntry(writtenBy: string, dto: CreateEntryDto): Promise<EntriesEntity> {
         const newTitle: EntriesEntity = new EntriesEntity({
             text: dto.text,

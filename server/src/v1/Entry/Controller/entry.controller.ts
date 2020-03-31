@@ -16,7 +16,7 @@ import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 @UseGuards(RolesGuard)
 @Controller()
 export class EntryController {
-    constructor(private readonly entryService: EntryService) {}
+    constructor(private readonly entryService: EntryService) { }
 
     @Get(':entryId')
     getEntry(@Param('entryId') entryId: string): Promise<ISerializeResponse> {
@@ -28,8 +28,14 @@ export class EntryController {
         @Query() query: { limit: number, skip: number, orderBy: any },
         @Param('titleId') titleId: string,
     ): Promise<ISerializeResponse> {
-        console.log(titleId)
-        return this.entryService.getEntriesByTitleId({ titleId, query})
+        return this.entryService.getEntriesByTitleId({ titleId, query })
+    }
+
+    @Get(':titleId/featured')
+    getFeaturedEntryByTitleId(
+        @Param('titleId') titleId: string
+    ): Promise<ISerializeResponse> {
+        return this.entryService.getFeaturedEntryByTitleId({ titleId })
     }
 
     @ApiBearerAuth()
@@ -50,7 +56,7 @@ export class EntryController {
         @Param('entryId') entryId: string,
         @Headers('authorization') bearer: string,
     ): Promise<HttpException> {
-        return this.entryService.voteEntry({entryId, username: currentUserService.getCurrentUser(bearer, 'username'), isUpVoted: true})
+        return this.entryService.voteEntry({ entryId, username: currentUserService.getCurrentUser(bearer, 'username'), isUpVoted: true })
     }
 
     @ApiBearerAuth()
@@ -61,7 +67,7 @@ export class EntryController {
         @Param('entryId') entryId: string,
         @Headers('authorization') bearer: string,
     ): Promise<HttpException> {
-        return this.entryService.voteEntry({entryId, username: currentUserService.getCurrentUser(bearer, 'username'), isUpVoted: false})
+        return this.entryService.voteEntry({ entryId, username: currentUserService.getCurrentUser(bearer, 'username'), isUpVoted: false })
     }
 
     @ApiBearerAuth()

@@ -39,9 +39,18 @@ export class EntryService {
         return serializerService.serializeResponse('entry_detail', entry, id)
     }
 
-    async getEntriesByTitleId({titleId, query}: {titleId: string, query: { limit: number, skip: number, orderBy: any }}): Promise<ISerializeResponse> {
-        const result: { entries: EntriesEntity[], count: number } = await this.entriesRepository.getEntriesByTitleId({titleId, query})
+    async getEntriesByTitleId({ titleId, query }: { titleId: string, query: { limit: number, skip: number, orderBy: any } }): Promise<ISerializeResponse> {
+        if (!this.validator.isMongoId(titleId)) throw new BadRequestException('TitleId must be a MongoId.')
+
+        const result = await this.entriesRepository.getEntriesByTitleId({ titleId, query })
         return serializerService.serializeResponse('entry_list', result)
+    }
+
+    async getFeaturedEntryByTitleId({ titleId }: { titleId: string }): Promise<ISerializeResponse> {
+        if (!this.validator.isMongoId(titleId)) throw new BadRequestException('TitleId must be a MongoId.')
+
+        const result = await this.entriesRepository.getFeaturedEntryByTitleId({ titleId })
+        return serializerService.serializeResponse('featured_entry', result)
     }
 
     async updateEntry(updatedBy: string, entryId: string, text: string): Promise<ISerializeResponse> {
@@ -66,31 +75,31 @@ export class EntryService {
         return serializerService.serializeResponse('entry_detail', newEntry)
     }
 
-    async undoVoteOfEntry({ entryId, username, isUpVoted }: {entryId: string, username: string, isUpVoted: boolean}): Promise<HttpException> {
+    async undoVoteOfEntry({ entryId, username, isUpVoted }: { entryId: string, username: string, isUpVoted: boolean }): Promise<HttpException> {
         if (!this.validator.isMongoId(entryId)) throw new BadRequestException('EntryId must be a MongoId.')
 
         try {
             await this.entriesRepository.findOneOrFail(entryId)
-        } catch (e) {
+        } catch (e) {
             throw new NotFoundException('Entry with that id could not found in the database.')
         }
 
-        await this.usersRepository.undoVotedEntry({entryId, username, isUpVoted})
-        await this.entriesRepository.voteEntry({entryId, isUpVoted: !isUpVoted})
+        await this.usersRepository.undoVotedEntry({ entryId, username, isUpVoted })
+        await this.entriesRepository.voteEntry({ entryId, isUpVoted: !isUpVoted })
         throw new HttpException('Entry has been un voted.', HttpStatus.OK)
     }
 
-    async voteEntry({ entryId, username, isUpVoted }: {entryId: string, username: string, isUpVoted: boolean}): Promise<HttpException> {
+    async voteEntry({ entryId, username, isUpVoted }: { entryId: string, username: string, isUpVoted: boolean }): Promise<HttpException> {
         if (!this.validator.isMongoId(entryId)) throw new BadRequestException('EntryId must be a MongoId.')
 
         try {
             await this.entriesRepository.findOneOrFail(entryId)
-        } catch (e) {
+        } catch (e) {
             throw new NotFoundException('Entry with that id could not found in the database.')
         }
 
-        await this.usersRepository.addVotedEntry({entryId, username, isUpVoted})
-        await this.entriesRepository.voteEntry({entryId, isUpVoted})
+        await this.usersRepository.addVotedEntry({ entryId, username, isUpVoted })
+        await this.entriesRepository.voteEntry({ entryId, isUpVoted })
         throw new HttpException('Entry has been voted.', HttpStatus.OK)
     }
 

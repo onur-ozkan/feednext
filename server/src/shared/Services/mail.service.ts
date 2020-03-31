@@ -28,8 +28,7 @@ export class MailService {
 
         await transporter.sendMail(mailOptions, err => {
             if (err) {
-                // tslint:disable-next-line:no-console
-                console.log(err) // Gonna be logger for prod
+                // console.log(err) // Gonna be logger for prod
             }
         })
     }
