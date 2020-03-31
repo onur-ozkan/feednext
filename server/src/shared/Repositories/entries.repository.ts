@@ -19,11 +19,16 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         }
     }
 
-    async getEntryList(query: { limit: number, skip: number, orderBy: any }): Promise<{entries: EntriesEntity[], count: number}> {
+    async getEntriesByTitleId({ titleId, query }: {
+        titleId: string, query: { limit: number, skip: number, orderBy: any }
+    }): Promise<{ entries: EntriesEntity[], count: number }> {
         const orderBy = query.orderBy || 'ASC'
 
         try {
             const [entries, total] = await this.findAndCount({
+                where: {
+                    title_id: titleId
+                },
                 order: {
                     created_at: orderBy.toUpperCase(),
                 },
@@ -74,7 +79,7 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         }
     }
 
-    async voteEntry({entryId, isUpVoted}: {entryId: string, isUpVoted: boolean}): Promise<void> {
+    async voteEntry({ entryId, isUpVoted }: { entryId: string, isUpVoted: boolean }): Promise<void> {
         const entry: EntriesEntity = await this.findOneOrFail(entryId)
         isUpVoted ? entry.votes++ : entry.votes--
         this.save(entry)

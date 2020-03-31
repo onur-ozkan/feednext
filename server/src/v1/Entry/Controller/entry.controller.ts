@@ -23,9 +23,13 @@ export class EntryController {
         return this.entryService.getEntry(entryId)
     }
 
-    @Get('all')
-    getEntryList(@Query() query: { limit: number, skip: number, orderBy: any }): Promise<ISerializeResponse> {
-        return this.entryService.getEntryList(query)
+    @Get(':titleId/all')
+    getEntriesByTitleId(
+        @Query() query: { limit: number, skip: number, orderBy: any },
+        @Param('titleId') titleId: string,
+    ): Promise<ISerializeResponse> {
+        console.log(titleId)
+        return this.entryService.getEntriesByTitleId({ titleId, query})
     }
 
     @ApiBearerAuth()
