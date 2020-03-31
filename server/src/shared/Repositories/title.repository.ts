@@ -3,6 +3,7 @@ import { UnprocessableEntityException, BadRequestException, NotFoundException } 
 
 // Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
+import slugify from 'slugify'
 
 // Local files
 import { TitlesEntity } from '../Entities/titles.entity'
@@ -11,12 +12,12 @@ import { UpdateTitleDto } from 'src/v1/Title/Dto/update-title.dto'
 
 @EntityRepository(TitlesEntity)
 export class TitlesRepository extends Repository<TitlesEntity> {
-    async getTitle(titleId: string): Promise<TitlesEntity> {
+    async getTitle(titleSlug: string): Promise<TitlesEntity> {
         try {
-            const title: TitlesEntity = await this.findOneOrFail(titleId)
+            const title: TitlesEntity = await this.findOneOrFail({slug: titleSlug})
             return title
         } catch (err) {
-            throw new NotFoundException('Title with that id could not found in the database.')
+            throw new NotFoundException('No title found for given slug')
         }
     }
 
@@ -30,7 +31,7 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         }
     }
 
-    async getTitleList(query: { limit: number, skip: number, orderBy: any }): Promise<{titles: TitlesEntity[], count: number}> {
+    async getTitleList(query: { limit: number, skip: number, orderBy: any }): Promise<{ titles: TitlesEntity[], count: number }> {
         const orderBy = query.orderBy || 'ASC'
 
         try {
@@ -53,6 +54,7 @@ export class TitlesRepository extends Repository<TitlesEntity> {
     async createTitle(openedBy: string, dto: CreateTitleDto): Promise<TitlesEntity> {
         const newTitle: TitlesEntity = new TitlesEntity({
             name: dto.name,
+            slug: slugify(dto.name, { lower: true }),
             category_id: dto.categoryId,
             opened_by: openedBy,
         })
@@ -81,7 +83,10 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         }
 
         try {
-            if (dto.name) title.name = dto.name
+            if (dto.name) {
+                title.name = dto.name
+                title.slug = slugify(dto.name, { lower: true })
+            }
             if (dto.categoryId) title.category_id = dto.categoryId
             title.updated_by = updatedBy
 

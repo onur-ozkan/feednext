@@ -20,9 +20,9 @@ import { TitleService } from '../Service/title.service'
 export class TitleController {
     constructor(private readonly titleService: TitleService) {}
 
-    @Get(':titleId')
-    getTitle(@Param('titleId') titleId: string): Promise<ISerializeResponse> {
-        return this.titleService.getTitle(titleId)
+    @Get(':titleSlug')
+    getTitle(@Param('titleSlug') titleSlug: string): Promise<ISerializeResponse> {
+        return this.titleService.getTitle(titleSlug)
     }
 
     @Get('all')

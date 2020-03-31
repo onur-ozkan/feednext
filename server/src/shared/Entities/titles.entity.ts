@@ -28,6 +28,9 @@ export class TitlesEntity {
     })
     name: string
 
+    @Column({ type: 'string' })
+    slug: string
+
     @Column({ type: 'tinyint' })
     rate: number
 

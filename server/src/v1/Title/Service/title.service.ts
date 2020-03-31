@@ -30,10 +30,8 @@ export class TitleService {
         this.validator = new Validator()
     }
 
-    async getTitle(titleId: string): Promise<ISerializeResponse> {
-        if (!this.validator.isMongoId(titleId)) throw new BadRequestException('Id must be type of a MongoId.')
-
-        const title: TitlesEntity = await this.titlesRepository.getTitle(titleId)
+    async getTitle(titleSlug: string): Promise<ISerializeResponse> {
+        const title: TitlesEntity = await this.titlesRepository.getTitle(titleSlug)
         const id: string = String(title.id)
         delete title.id
         return serializerService.serializeResponse('title_detail', title, id)
