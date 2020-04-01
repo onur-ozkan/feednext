@@ -12,10 +12,6 @@ export const routes = [
 				component: './Auth/Login',
 			},
 			{
-				path: '/auth/sign-up/result',
-				component: './Auth/Register/Result',
-			},
-			{
 				path: '/auth/sign-up',
 				component: './Auth/Register',
 			},
