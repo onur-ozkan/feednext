@@ -27,15 +27,11 @@ export const routes = [
 			{
 				path: '/',
 				component: '../layouts/BasicLayout',
-				authority: ['admin', 'user'],
+				authority: ['guest'],
 				routes: [
 					{
 						path: '/',
 						redirect: '/feeds',
-					},
-					{
-						path: '/user/',
-						component: './User',
 					},
 					{
 						name: 'Feeds',
@@ -48,10 +44,39 @@ export const routes = [
 						component: './Feeds/Feed',
 					},
 					{
+						path: '/user/',
+						component: './User',
+					},
+					{
+						name: 'Top Feeders',
+						icon: 'CrownOutlined',
+						path: '/top-feeders',
+						component: './TopFeeders',
+					},
+					{
+						component: '404',
+					},
+				],
+			},
+			{
+				path: '/feeds/create-feed',
+				component: '../layouts/BasicLayout',
+				authority: ['user'],
+				routes: [
+					{
 						path: '/feeds/create-feed',
 						component: './Feeds/CreateFeed',
-						authority: ['admin', 'user'],
 					},
+					{
+						component: '404',
+					},
+				],
+			},
+			{
+				path: 'account',
+				component: '../layouts/BasicLayout',
+				authority: ['user'],
+				routes: [
 					{
 						path: '/account',
 						component: './Account',
@@ -61,18 +86,21 @@ export const routes = [
 						component: './Account/Settings',
 					},
 					{
+						component: '404',
+					},
+				],
+			},
+			{
+				path: '/feeds/create-feed',
+				component: '../layouts/BasicLayout',
+				authority: ['user'],
+				routes: [
+					{
 						path: '/messages',
 						component: './Messages',
-						authority: ['admin', 'user'],
 					},
 					{
-						name: 'Top Feeders',
-						icon: 'CrownOutlined',
-						path: 'top-feeders',
-						component: './TopFeeders',
-					},
-					{
-						component: './404',
+						component: '404',
 					},
 				],
 			},
