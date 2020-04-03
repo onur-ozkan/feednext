@@ -4,7 +4,7 @@
  * https://github.com/ant-design/ant-design-pro-layout
  */
 
-import ProLayout, { MenuDataItem, BasicLayoutProps as ProLayoutProps, Settings, DefaultFooter } from '@ant-design/pro-layout'
+import ProLayout, { MenuDataItem, Settings, DefaultFooter } from '@ant-design/pro-layout'
 import React, { useEffect } from 'react'
 import { Link } from 'umi'
 import { Dispatch } from 'redux'
@@ -12,7 +12,6 @@ import { connect } from 'dva'
 import { Result, Button, Row, Col } from 'antd'
 import { formatMessage } from 'umi-plugin-react/locale'
 
-import Authorized from '@/utils/Authorized'
 import RightContent from '@/components/GlobalHeader/RightContent'
 import { ConnectState } from '@/models/connect'
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils'
@@ -35,33 +34,21 @@ const noMatch = (
 	/>
 )
 
-export declare interface BasicLayoutProps extends ProLayoutProps {
+export declare interface AppLayoutProps {
 	breadcrumbNameMap: {
 		[path: string]: MenuDataItem
 	}
-	route: ProLayoutProps['route'] & {
+	route: {
 		authority: string[]
 	}
 	settings: Settings
 	dispatch: Dispatch
 }
-export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
+export type AppLayoutContext = { [K in 'location']: AppLayoutProps[K] } & {
 	breadcrumbNameMap: {
 		[path: string]: MenuDataItem
 	}
 }
-
-/**
- * use Authorized check all menu item
- */
-const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
-	menuList.map(item => {
-		const localItem = {
-			...item,
-			children: item.children ? menuDataRender(item.children) : [],
-		}
-		return Authorized.check(item.authority, localItem, null) as MenuDataItem
-	})
 
 const defaultFooterDom = (
 	<DefaultFooter
@@ -78,7 +65,7 @@ const defaultFooterDom = (
 	/>
 )
 
-const footerRender: BasicLayoutProps['footerRender'] = () => {
+const footerRender = () => {
 	if (!isAntDesignPro()) {
 		return defaultFooterDom
 	}
@@ -103,14 +90,11 @@ const footerRender: BasicLayoutProps['footerRender'] = () => {
 	)
 }
 
-const BasicLayout: React.FC<BasicLayoutProps> = props => {
+const AppLayout: React.FC<AppLayoutProps> = props => {
 	const {
 		dispatch,
 		children,
 		settings,
-		location = {
-			pathname: '/',
-		},
 	} = props
 	/**
 	 * constructor
@@ -133,10 +117,6 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
 				payload,
 			})
 		}
-	}
-	// get children authority
-	const authorized: any = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
-		authority: undefined,
 	}
 
 	return (
@@ -175,19 +155,16 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
 					)
 				}}
 				footerRender={footerRender}
-				menuDataRender={menuDataRender}
 				formatMessage={formatMessage}
 				rightContentRender={(): JSX.Element => <RightContent />}
 				{...props}
 				{...settings}
 			>
-				<Authorized authority={authorized!.authority} noMatch={noMatch}>
-					<Row style={{ backgroundColor: 'transparent' }}>
-						<Col span={18} offset={3}>
-							{children}
-						</Col>
-					</Row>
-				</Authorized>
+				<Row style={{ backgroundColor: 'transparent' }}>
+					<Col span={18} offset={3}>
+						{children}
+					</Col>
+				</Row>
 			</ProLayout>
 		</Provider>
 	)
@@ -196,4 +173,4 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
 export default connect(({ global, settings }: ConnectState) => ({
 	collapsed: global.collapsed,
 	settings,
-}))(BasicLayout)
+}))(AppLayout)
