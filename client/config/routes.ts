@@ -1,7 +1,9 @@
+import { User, Guest } from "./constants";
+
 export const routes = [
 	{
 		path: '/auth',
-		component: '../layouts/UserLayout',
+		component: '../layouts/AuthLayout',
 		routes: [
 			{
 				path: '/auth',
@@ -22,12 +24,12 @@ export const routes = [
 	},
 	{
 		path: '/',
-		component: '../layouts/SecurityLayout',
+		component: '../middleware/RouteHandler',
 		routes: [
 			{
 				path: '/',
-				component: '../layouts/BasicLayout',
-				authority: ['guest'],
+				component: '../layouts/AppLayout',
+				authority: Guest,
 				routes: [
 					{
 						path: '/',
@@ -60,8 +62,8 @@ export const routes = [
 			},
 			{
 				path: '/feeds/create-feed',
-				component: '../layouts/BasicLayout',
-				authority: ['user'],
+				component: '../layouts/AppLayout',
+				authority: User,
 				routes: [
 					{
 						path: '/feeds/create-feed',
@@ -74,8 +76,8 @@ export const routes = [
 			},
 			{
 				path: 'account',
-				component: '../layouts/BasicLayout',
-				authority: ['user'],
+				component: '../layouts/AppLayout',
+				authority: User,
 				routes: [
 					{
 						path: '/account',
@@ -92,8 +94,8 @@ export const routes = [
 			},
 			{
 				path: '/feeds/create-feed',
-				component: '../layouts/BasicLayout',
-				authority: ['user'],
+				component: '../layouts/AppLayout',
+				authority: User,
 				routes: [
 					{
 						path: '/messages',
