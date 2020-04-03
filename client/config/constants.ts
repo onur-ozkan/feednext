@@ -1,14 +1,12 @@
-declare interface Constants {
-	DEV: boolean
-	API_URL: string
-}
+// APP
+export const API_URL = 'http://localhost/api'
+export const DEV = process.env.NODE_ENV !== 'production'
 
-const constants: Constants = {
-	DEV: process.env.NODE_ENV !== 'production',
-	API_URL: 'http://localhost/api',
-}
-
-export const getConstant = (key: string): any => {
-	if (!constants[key]) throw new Error(`Missing ${key} variable in _constants file.`)
-	return constants[key]
-}
+// ROLES
+export const Guest = -1
+export const User = 0
+export const JuniorAuthor = 1
+export const MidLevelAuthor = 2
+export const SeniorAuthor = 3
+export const Admin = 4
+export const SuperAdmin = 5
