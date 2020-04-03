@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
-import { getConstant } from '../../config/constants'
+import { API_URL } from '../../config/constants'
 
-axios.defaults.baseURL = getConstant('API_URL')
+axios.defaults.baseURL = API_URL
 
 export default {
 	signIn: (obj: { username?: string; email?: string; password: string }): Promise<AxiosResponse> =>

@@ -1,26 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { Form } from '@ant-design/compatible'
-import { Button, Card, Col, List, Row, Select, Tag, message } from 'antd'
+import { Button, Card, List, Select, Tag, message } from 'antd'
 import {
 	LoadingOutlined,
-	StarOutlined,
-	LikeOutlined,
-	MessageOutlined,
-	VerticalAlignTopOutlined,
 	ArrowUpOutlined,
-	SmallDashOutlined,
-	EllipsisOutlined,
 	LinkOutlined,
 } from '@ant-design/icons'
 import '@ant-design/compatible/assets/index.css'
 
 import ArticleListContent from './components/ArticleListContent'
-import { ListItemDataType } from './data'
 import StandardFormRow from './components/StandardFormRow'
 import TagSelect from './components/TagSelect'
 import styles from './style.less'
 import api from '@/utils/api'
-import { useSelector } from 'react-redux'
 
 const Feeds = () => {
 	const [isLoading, setIsLoading] = useState(true)
@@ -28,8 +20,6 @@ const Feeds = () => {
 
 	const { Option } = Select
 	const FormItem = Form.Item
-
-	console.log(useSelector((state: any) => state.user))
 
 	useEffect(() => {
 		api.fetchAllFeeds()
