@@ -1,13 +1,25 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk, { ThunkMiddleware } from 'redux-thunk'
+import { persistStore, persistReducer } from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
 import { userReducer, settingsReducer } from './Reducers'
 import { AppActions } from './Actions/types'
 
-export const rootReducer = combineReducers({
+const persistConfig = {
+	key: 'root',
+	storage,
+}
+
+const rootReducer = combineReducers({
 	user: userReducer,
 	settings: settingsReducer,
 })
 
-export type AppState = ReturnType<typeof rootReducer>
+const persistedReducer = persistReducer(persistConfig, rootReducer)
 
-export const store = createStore(rootReducer, applyMiddleware(thunk as ThunkMiddleware<AppState, AppActions>))
+type AppState = ReturnType<typeof rootReducer>
+
+const store = createStore(persistedReducer, applyMiddleware(thunk as ThunkMiddleware<AppState, AppActions>))
+const persistor = persistStore(store)
+
+export { store, persistor }
