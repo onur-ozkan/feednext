@@ -47,10 +47,10 @@ export class AuthController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
-    @Get('me')
-    async getLoggedInUser(@Headers('authorization') bearer: string): Promise<ISerializeResponse> {
+    @Get('check-token')
+    async checkJwtToken(@Headers('authorization') bearer: string): Promise<ISerializeResponse> {
         const data = await currentUserService.getCurrentUser(bearer, 'all')
         serializerService.deleteProperties(data, ['iat', 'exp'])
-        return serializerService.serializeResponse('profile', data)
+        return serializerService.serializeResponse('user', data)
     }
 }
