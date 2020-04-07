@@ -8,7 +8,7 @@ import { EntryService } from '../Service/entry.service'
 import { RolesGuard } from 'src/shared/Guards/roles.guard'
 import { Roles } from 'src/shared/Decorators/roles.decorator'
 import { CreateEntryDto } from '../Dto/create-entry.dto'
-import { currentUserService } from 'src/shared/Services/current-user.service'
+import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.service'
 import { JuniorAuthor, Admin, SuperAdmin, User } from 'src/shared/Constants'
 import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 
@@ -45,7 +45,7 @@ export class EntryController {
     updateEntry(
         @Headers('authorization') bearer: string, @Param('entryId') entryId: string, @Body('text') text: string,
     ): Promise<ISerializeResponse> {
-        return this.entryService.updateEntry(currentUserService.getCurrentUser(bearer, 'username'), entryId, text)
+        return this.entryService.updateEntry(jwtManipulationService.decodeJwtToken(bearer, 'username'), entryId, text)
     }
 
     @ApiBearerAuth()
@@ -56,7 +56,7 @@ export class EntryController {
         @Param('entryId') entryId: string,
         @Headers('authorization') bearer: string,
     ): Promise<HttpException> {
-        return this.entryService.voteEntry({ entryId, username: currentUserService.getCurrentUser(bearer, 'username'), isUpVoted: true })
+        return this.entryService.voteEntry({ entryId, username: jwtManipulationService.decodeJwtToken(bearer, 'username'), isUpVoted: true })
     }
 
     @ApiBearerAuth()
@@ -67,7 +67,7 @@ export class EntryController {
         @Param('entryId') entryId: string,
         @Headers('authorization') bearer: string,
     ): Promise<HttpException> {
-        return this.entryService.voteEntry({ entryId, username: currentUserService.getCurrentUser(bearer, 'username'), isUpVoted: false })
+        return this.entryService.voteEntry({ entryId, username: jwtManipulationService.decodeJwtToken(bearer, 'username'), isUpVoted: false })
     }
 
     @ApiBearerAuth()
@@ -81,7 +81,7 @@ export class EntryController {
     ): Promise<HttpException> {
         return this.entryService.undoVoteOfEntry({
             entryId,
-            username: currentUserService.getCurrentUser(bearer, 'username'),
+            username: jwtManipulationService.decodeJwtToken(bearer, 'username'),
             isUpVoted: (isUpVoted === 'true')
         })
     }
@@ -93,7 +93,7 @@ export class EntryController {
     createEntry(
         @Headers('authorization') bearer: string, @Body() dto: CreateEntryDto,
     ): Promise<HttpException | ISerializeResponse> {
-        return this.entryService.createEntry(currentUserService.getCurrentUser(bearer, 'username'), dto)
+        return this.entryService.createEntry(jwtManipulationService.decodeJwtToken(bearer, 'username'), dto)
     }
 
     @ApiBearerAuth()

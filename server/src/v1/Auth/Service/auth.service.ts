@@ -1,10 +1,9 @@
 // Nest dependencies
 import { Injectable, HttpStatus, HttpException, BadRequestException } from '@nestjs/common'
-import { JwtService, JwtModule } from '@nestjs/jwt'
+import { JwtService } from '@nestjs/jwt'
 import { InjectRepository } from '@nestjs/typeorm'
 
 // Other dependencies
-import * as crypto from 'crypto'
 import * as jwt from 'jsonwebtoken'
 
 // Local files
@@ -18,6 +17,7 @@ import { CreateAccountDto } from '../Dto/create-account.dto'
 import { LoginDto } from '../Dto/login.dto'
 import { AccountRecoveryDto } from '../Dto/account-recovery.dto'
 import { serializerService, ISerializeResponse } from 'src/shared/Services/serializer.service'
+import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.service'
 
 @Injectable()
 export class AuthService {
@@ -33,12 +33,12 @@ export class AuthService {
         const result: UsersEntity = await this.usersRepository.createUser(dto)
 
         if (configService.isProduction()) {
-            const verifyToken: JwtModule = jwt.sign({
+            const verifyToken = jwt.sign({
                 username: dto.username,
                 email: dto.email,
                 verificationToken: true,
                 exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
-            }, configService.getEnv('SECRET_KEY'))
+            }, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
 
             const verificationUrl: string = `${configService.getEnv('APP_URL')}/api/v1/auth/account-verification?token=${verifyToken}`
 
@@ -58,16 +58,18 @@ export class AuthService {
         return serializerService.serializeResponse('account_informations', result, id)
     }
 
-    async signIn(userEntity: UsersEntity): Promise<HttpException | ISerializeResponse> {
-        if (!userEntity.is_active) throw new BadRequestException('Account is not active.')
+    async signIn(userEntity: UsersEntity, dto: LoginDto): Promise<HttpException | ISerializeResponse> {
+        if (!userEntity.is_active) throw new BadRequestException('Account is not active')
 
         const token: string = this.jwtService.sign({
             id: userEntity.id,
             role: userEntity.role,
             username: userEntity.username,
             email: userEntity.email,
-            created_at: userEntity.created_at,
+            created_at: userEntity.created_at
         })
+
+        if (dto.rememberMe) userEntity.refresh_token = await this.usersRepository.triggerRefreshToken(dto.email || dto.username)
 
         const id: any = userEntity.id
         const properties: string[] = ['id', 'password']
@@ -81,18 +83,42 @@ export class AuthService {
         return serializerService.serializeResponse('user_information', responseData, id)
     }
 
-    async signOut(token: string): Promise<any> {
-        const decodedToken: any = jwt.decode(token)
+    async signOut(bearer: string): Promise<any> {
+        const decodedToken: any = jwtManipulationService.decodeJwtToken(bearer, 'all')
+        await this.usersRepository.triggerRefreshToken(decodedToken.username)
         const expireDate: number = decodedToken.exp
         const remainingSeconds: number = Math.round(expireDate - Date.now() / 1000)
 
-        await this.redisService.setOnlyKey(token, remainingSeconds)
-        return serializerService.serializeResponse('dead_token', {token})
+        await this.redisService.setOnlyKey(bearer, remainingSeconds)
+        return serializerService.serializeResponse('dead_token', { bearer })
+    }
+
+    async refreshToken(bearer: string): Promise<string> {
+        const decodedToken: any = await jwtManipulationService.decodeJwtToken(bearer, 'all')
+        let user: UsersEntity
+
+        try {
+            user = await this.usersRepository.findOneOrFail({
+                username: decodedToken.username,
+                refresh_token: bearer.split(' ')[1]
+            })
+        } catch (e) {
+            throw new BadRequestException('Refresh token is invalid')
+        }
+
+        const refreshedToken = this.jwtService.sign({
+            id: user.id,
+            role: user.role,
+            username: user.username,
+            email: user.email,
+            created_at: user.created_at
+        })
+
+        return refreshedToken
     }
 
     async validateUser(dto: LoginDto): Promise<UsersEntity> {
-        const passwordHash: string = crypto.createHmac('sha256', dto.password).digest('hex')
-        return await this.usersRepository.validateUser(dto, passwordHash)
+        return await this.usersRepository.validateUser(dto)
     }
 
     async accountRecovery(dto: AccountRecoveryDto): Promise<HttpException> {

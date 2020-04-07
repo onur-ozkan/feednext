@@ -4,7 +4,7 @@ import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthGuard } from '@nestjs/passport'
 
 // Local files
-import { currentUserService } from 'src/shared/Services/current-user.service'
+import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.service'
 import { UserService } from '../Service/user.service'
 import { UpdateUserDto } from '../Dto/update-user.dto'
 import { ActivateUserDto } from '../Dto/activate-user.dto'
@@ -28,7 +28,7 @@ export class UsersController {
         @Body() dto: UpdateUserDto,
         @Headers('authorization') bearer: string,
     ): Promise<ISerializeResponse> {
-        if (username !== currentUserService.getCurrentUser(bearer, 'username')) throw new BadRequestException()
+        if (username !== jwtManipulationService.decodeJwtToken(bearer, 'username')) throw new BadRequestException()
 
         return this.usersService.updateUser(username, dto)
     }
@@ -45,7 +45,7 @@ export class UsersController {
         @Param('username') username: string,
         @Headers('authorization') bearer: string,
     ): Promise<HttpException> {
-        if (username !== currentUserService.getCurrentUser(bearer, 'username')) {
+        if (username !== jwtManipulationService.decodeJwtToken(bearer, 'username')) {
             throw new BadRequestException()
         }
 

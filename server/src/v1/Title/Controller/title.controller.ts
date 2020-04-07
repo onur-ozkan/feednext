@@ -6,7 +6,7 @@ import { AuthGuard } from '@nestjs/passport/dist/auth.guard'
 // Local dependencies
 import { RolesGuard } from 'src/shared/Guards/roles.guard'
 import { CreateTitleDto } from '../Dto/create-title.dto'
-import { currentUserService } from 'src/shared/Services/current-user.service'
+import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.service'
 import { Roles } from 'src/shared/Decorators/roles.decorator'
 import { UpdateTitleDto } from '../Dto/update-title.dto'
 import { JuniorAuthor, Admin, SuperAdmin } from 'src/shared/Constants'
@@ -35,7 +35,7 @@ export class TitleController {
     @Post('create-title')
     @Roles(JuniorAuthor)
     createTitle(@Headers('authorization') bearer: string, @Body() dto: CreateTitleDto): Promise<HttpException | ISerializeResponse> {
-        return this.titleService.createTitle(currentUserService.getCurrentUser(bearer, 'username'), dto)
+        return this.titleService.createTitle(jwtManipulationService.decodeJwtToken(bearer, 'username'), dto)
     }
 
     @ApiBearerAuth()
@@ -47,7 +47,7 @@ export class TitleController {
         @Param('titleId') titleId: string,
         @Body() dto: UpdateTitleDto,
     ): Promise<ISerializeResponse> {
-        return this.titleService.updateTitle(currentUserService.getCurrentUser(bearer, 'username'), titleId, dto)
+        return this.titleService.updateTitle(jwtManipulationService.decodeJwtToken(bearer, 'username'), titleId, dto)
     }
 
     @ApiBearerAuth()

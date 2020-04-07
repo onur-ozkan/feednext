@@ -91,7 +91,7 @@ export class UserService {
             username: user.username,
             activationToken: true,
             exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
-        }, configService.getEnv('SECRET_KEY'))
+        }, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
 
         const activationUrl: string = `${configService.getEnv('APP_URL')}/api/v1/user/activate-user?token=${activateToken}`
         const mailBody: MailSenderBody = {

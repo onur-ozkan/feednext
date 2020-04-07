@@ -23,7 +23,7 @@ import { configService } from 'src/shared/Services/config.service'
         JwtModule.registerAsync({
             useFactory: () => {
                 return {
-                    secret: configService.getEnv('SECRET_KEY'),
+                    secret: configService.getEnv('SECRET_FOR_ACCESS_TOKEN'),
                     signOptions: {
                         ...({ expiresIn: configService.getEnv('JWT_EXPIRATION_TIME') }),
                     },
