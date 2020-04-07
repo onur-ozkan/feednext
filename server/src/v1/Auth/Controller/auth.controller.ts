@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Controller, Headers, Post, Body, UseGuards, Get, Patch, Request, HttpException, Query } from '@nestjs/common'
+import { Controller, Headers, Post, Body, UseGuards, Get, Patch, HttpException, Query } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 
@@ -8,7 +8,7 @@ import { AuthService } from '../Service/auth.service'
 import { CreateAccountDto } from '../Dto/create-account.dto'
 import { LoginDto } from '../Dto/login.dto'
 import { AccountRecoveryDto } from '../Dto/account-recovery.dto'
-import { currentUserService } from 'src/shared/Services/current-user.service'
+import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.service'
 import { serializerService, ISerializeResponse } from 'src/shared/Services/serializer.service'
 
 @ApiTags('v1/auth')
@@ -24,15 +24,14 @@ export class AuthController {
     @Post('signin')
     async signIn(@Body() dto: LoginDto): Promise<HttpException | ISerializeResponse> {
         const user = await this.authService.validateUser(dto)
-        return await this.authService.signIn(user)
+        return await this.authService.signIn(user, dto)
     }
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Get('signout')
-    async signOut(@Request() request): Promise<ISerializeResponse> {
-        const token = await request.headers.authorization.substring(7)
-        return await this.authService.signOut(token)
+    async signOut(@Headers('authorization') bearer: string): Promise<ISerializeResponse> {
+        return await this.authService.signOut(bearer)
     }
 
     @Patch('signin/account-recovery')
@@ -49,8 +48,13 @@ export class AuthController {
     @UseGuards(AuthGuard('jwt'))
     @Get('check-token')
     async checkJwtToken(@Headers('authorization') bearer: string): Promise<ISerializeResponse> {
-        const data = await currentUserService.getCurrentUser(bearer, 'all')
+        const data = await jwtManipulationService.decodeJwtToken(bearer, 'all')
         serializerService.deleteProperties(data, ['iat', 'exp'])
         return serializerService.serializeResponse('user', data)
+    }
+
+    @Get('refresh-token')
+    async refreshJwtToken(@Headers('refresh-token') refreshToken: string): Promise<string> {
+        return await this.authService.refreshToken(refreshToken)
     }
 }

@@ -45,6 +45,9 @@ export class UsersEntity {
     })
     email: string
 
+    @Column({ type: 'string', nullable: true })
+    refresh_token: string
+
     @Column({ type: 'tinyint' })
     role: number
 

@@ -44,25 +44,24 @@ export class UsersRepository extends Repository<UsersEntity> {
         }
     }
 
-    async validateUser(dto: LoginDto, passwordHash: string): Promise<UsersEntity> {
-        if (dto.email) {
-            try {
-                return await this.findOneOrFail({
-                    email: dto.email,
-                    password: passwordHash,
-                })
-            } catch (err) {
-                throw new NotFoundException('Could not find an account that matching with this email and password in the database.')
-            }
-        }
-
+    async validateUser(dto: LoginDto): Promise<UsersEntity> {
+        const passwordHash: string = crypto.createHmac('sha256', dto.password).digest('hex')
         try {
             return await this.findOneOrFail({
-                username: dto.username,
-                password: passwordHash,
+                where: {
+                    $or: [
+                        {
+                            email: dto.email,
+                        },
+                        {
+                            username: dto.username,
+                        },
+                    ],
+                    password: passwordHash
+                }
             })
         } catch (err) {
-            throw new NotFoundException('Could not find an account that matching with this username and password in the database.')
+            throw new NotFoundException('No account found by given credentials.')
         }
     }
 
@@ -101,7 +100,7 @@ export class UsersRepository extends Repository<UsersEntity> {
                 newEmail: dto.email,
                 verifyUpdateEmailToken: true,
                 exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
-            }, configService.getEnv('SECRET_KEY'))
+            }, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
 
             const activationUrl: string = `${configService.getEnv('APP_URL')}/api/v1/user/verfiy-update-email?token=${activateToken}`
             const mailBody: MailSenderBody = {
@@ -114,6 +113,28 @@ export class UsersRepository extends Repository<UsersEntity> {
         }
 
         return await this.save(profile)
+    }
+
+    async triggerRefreshToken(query: string): Promise<string> {
+        const profile: UsersEntity = await this.findOneOrFail({
+            where: {
+                $or: [
+                    {
+                        email: query,
+                    },
+                    {
+                        username: query,
+                    },
+                ]
+            }
+        })
+        profile.refresh_token = jwt.sign({
+            username: profile.username,
+            iat: Date.now()
+        }, configService.getEnv('SECRET_FOR_REFRESH_TOKEN'))
+        await this.save(profile)
+
+        return profile.refresh_token
     }
 
     async verifyUpdateEmail(decodedToken: { email: string, username: string, newEmail: string }): Promise<void>  {
