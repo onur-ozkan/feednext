@@ -29,7 +29,7 @@ export class AuthService {
         private readonly usersRepository: UsersRepository,
     ) {}
 
-    async signUp(dto: CreateAccountDto): Promise<any> {
+    async signUp(dto: CreateAccountDto): Promise<ISerializeResponse> {
         const result: UsersEntity = await this.usersRepository.createUser(dto)
 
         if (configService.isProduction()) {
@@ -83,17 +83,17 @@ export class AuthService {
         return serializerService.serializeResponse('user_information', responseData, id)
     }
 
-    async signOut(bearer: string): Promise<any> {
+    async signOut(bearer: string): Promise<ISerializeResponse> {
         const decodedToken: any = jwtManipulationService.decodeJwtToken(bearer, 'all')
         await this.usersRepository.triggerRefreshToken(decodedToken.username)
         const expireDate: number = decodedToken.exp
         const remainingSeconds: number = Math.round(expireDate - Date.now() / 1000)
 
         await this.redisService.setOnlyKey(bearer, remainingSeconds)
-        return serializerService.serializeResponse('dead_token', { bearer })
+        return serializerService.serializeResponse('dead_token', { access_token: bearer })
     }
 
-    async refreshToken(bearer: string): Promise<string> {
+    async refreshToken(bearer: string): Promise<ISerializeResponse> {
         const decodedToken: any = await jwtManipulationService.decodeJwtToken(bearer, 'all')
         let user: UsersEntity
 
@@ -114,7 +114,7 @@ export class AuthService {
             created_at: user.created_at
         })
 
-        return refreshedToken
+        return serializerService.serializeResponse('refreshed_access_token', { access_token: refreshedToken })
     }
 
     async validateUser(dto: LoginDto): Promise<UsersEntity> {

@@ -54,7 +54,7 @@ export class AuthController {
     }
 
     @Get('refresh-token')
-    async refreshJwtToken(@Headers('refresh-token') refreshToken: string): Promise<string> {
+    async refreshJwtToken(@Headers('refresh-token') refreshToken: string): Promise<ISerializeResponse> {
         return await this.authService.refreshToken(refreshToken)
     }
 }
