@@ -1,5 +1,16 @@
 // Nest dependencies
-import { Controller, Headers, Post, Body, UseGuards, Get, Patch, HttpException, Query } from '@nestjs/common'
+import {
+    Controller,
+    Headers,
+    Post,
+    Body,
+    UseGuards,
+    Get,
+    Patch,
+    HttpException,
+    Query,
+    Res,
+} from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 
@@ -10,6 +21,7 @@ import { LoginDto } from '../Dto/login.dto'
 import { AccountRecoveryDto } from '../Dto/account-recovery.dto'
 import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.service'
 import { serializerService, ISerializeResponse } from 'src/shared/Services/serializer.service'
+import { configService } from 'src/shared/Services/config.service'
 
 @ApiTags('v1/auth')
 @Controller()
@@ -22,9 +34,18 @@ export class AuthController {
     }
 
     @Post('signin')
-    async signIn(@Body() dto: LoginDto): Promise<HttpException | ISerializeResponse> {
+    async signIn(@Body() dto: LoginDto, @Res() res: any): Promise<void> {
         const user = await this.authService.validateUser(dto)
-        return await this.authService.signIn(user, dto)
+        const authResponse: any = await this.authService.signIn(user, dto)
+        const refreshToken = authResponse.attributes.user.refresh_token
+        delete authResponse.attributes.user.refresh_token
+
+        res.setCookie('rt', refreshToken, {
+            domain: configService.getEnv('APP_DOMAIN'),
+            path: '/auth/sign-in',
+            httpOnly: true,
+            secure: true
+        }).send(authResponse)
     }
 
     @ApiBearerAuth()
