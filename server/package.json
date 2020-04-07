@@ -29,10 +29,10 @@
     "@nestjs/typeorm": "^7.0.0",
     "class-transformer": "^0.2.3",
     "class-validator": "^0.11.1",
-    "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "dotenv": "^8.2.0",
     "fastify-compress": "^2.0.1",
+    "fastify-cookie": "^3.6.0",
     "fastify-helmet": "^3.0.2",
     "fastify-metrics": "^5.0.1",
     "fastify-rate-limit": "^3.0.1",
@@ -74,8 +74,8 @@
     "webpack-node-externals": "^1.7.2"
   },
   "engines": {
-    "node": "12.13.1",
-    "npm": "6.12.1"
+    "node": "12",
+    "npm": "6"
   },
   "jest": {
     "moduleFileExtensions": [

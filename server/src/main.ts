@@ -5,7 +5,7 @@ import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
 // Other dependencies
-import * as cors from 'cors'
+import * as fastifyCookie from 'fastify-cookie'
 import * as apm from 'swagger-stats'
 import * as fastifyRateLimit from 'fastify-rate-limit'
 import * as helmet from 'fastify-helmet'
@@ -21,6 +21,11 @@ async function bootstrap() {
         logger: (configService.getEnv('MODE')) === 'PROD' ? false : true,
     })
 
+    fastifyAdapter.enableCors({
+        credentials: true,
+        origin: true
+    })
+
     // Set request limit as 1 for per second
     fastifyAdapter.register(fastifyRateLimit, {
         max: 60,
@@ -30,8 +35,7 @@ async function bootstrap() {
 
     fastifyAdapter.register(helmet) // Initialize security middleware module 'fastify-helmet'
     fastifyAdapter.register(compress) // Initialize fastify-compress to better handle high-level traffic
-
-    fastifyAdapter.use(cors()) // Enable cors
+    fastifyAdapter.register(fastifyCookie) // Initialize fastify-cookie for cookie manipulation
 
     const app = await NestFactory.create<NestFastifyApplication>(AppModule, fastifyAdapter )
 
