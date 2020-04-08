@@ -9,6 +9,7 @@ import {
     Patch,
     HttpException,
     Query,
+    Request,
     Res,
 } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
@@ -40,12 +41,17 @@ export class AuthController {
         const refreshToken = authResponse.attributes.user.refresh_token
         delete authResponse.attributes.user.refresh_token
 
-        res.setCookie('rt', refreshToken, {
-            domain: configService.getEnv('APP_DOMAIN'),
-            path: '/auth/sign-in',
-            httpOnly: true,
-            secure: true
-        }).send(authResponse)
+        if (dto.rememberMe) {
+            res.setCookie('rt', refreshToken, {
+                domain: configService.getEnv('APP_DOMAIN'),
+                path: '/api/v1/auth/refresh-token',
+                httpOnly: true,
+                secure: true
+            }).send(authResponse)
+            return
+        }
+
+        res.send(authResponse)
     }
 
     @ApiBearerAuth()
@@ -75,7 +81,7 @@ export class AuthController {
     }
 
     @Get('refresh-token')
-    async refreshJwtToken(@Headers('refresh-token') refreshToken: string): Promise<ISerializeResponse> {
-        return await this.authService.refreshToken(refreshToken)
+    async refreshJwtToken(@Request() { cookies }): Promise<ISerializeResponse> {
+        return await this.authService.refreshToken(cookies.rt)
     }
 }

@@ -93,14 +93,14 @@ export class AuthService {
         return serializerService.serializeResponse('dead_token', { access_token: bearer })
     }
 
-    async refreshToken(bearer: string): Promise<ISerializeResponse> {
-        const decodedToken: any = await jwtManipulationService.decodeJwtToken(bearer, 'all')
+    async refreshToken(refreshToken: string): Promise<ISerializeResponse> {
+        const decodedToken: any = jwt.decode(refreshToken)
         let user: UsersEntity
 
         try {
             user = await this.usersRepository.findOneOrFail({
                 username: decodedToken.username,
-                refresh_token: bearer.split(' ')[1]
+                refresh_token: refreshToken
             })
         } catch (e) {
             throw new BadRequestException('Refresh token is invalid')
