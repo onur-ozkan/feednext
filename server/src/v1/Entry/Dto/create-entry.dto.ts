@@ -1,22 +1,22 @@
 // Nest dependencies
-import { ApiModelProperty } from '@nestjs/swagger'
+import { ApiProperty } from '@nestjs/swagger'
 
 // Other dependencies
 import { IsNotEmpty, IsMongoId } from 'class-validator'
 
 export class CreateEntryDto {
-    @ApiModelProperty({
+    @ApiProperty({
         required: true,
-        example: `Lorem Ipsum is simply dummy text of the printing and typesetting industry.`,
+        example: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     })
     @IsNotEmpty()
     text: string
 
-    @ApiModelProperty({
+    @ApiProperty({
         required: true,
-        example: `507f1f77bcf86cd799439011`,
+        example: '507f1f77bcf86cd799439011',
     })
     @IsNotEmpty()
     @IsMongoId()
-    productId: string
+    titleId: string
 }

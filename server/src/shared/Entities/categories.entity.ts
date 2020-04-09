@@ -5,11 +5,10 @@ import {
     ObjectID,
     ObjectIdColumn,
     CreateDateColumn,
-    UpdateDateColumn,
-    BeforeInsert,
+    UpdateDateColumn
 } from 'typeorm'
 
-@Entity(`Categories`)
+@Entity('Categories')
 export class CategoriesEntity {
     constructor(partial: Partial<CategoriesEntity>) {
         Object.assign(this, partial)
@@ -18,23 +17,15 @@ export class CategoriesEntity {
     @ObjectIdColumn()
     id: ObjectID
 
-    @Column({ nullable: true })
+    @Column({ type: 'string', nullable: true })
     parent_category: string
 
-    @Column({ length: 50, unique: true })
+    @Column({ type: 'string', length: 50, unique: true})
     name: string
 
-    @Column()
-    is_lowest_cateogry: boolean
-
-    @BeforeInsert()
-    fillDefaults() {
-        this.is_lowest_cateogry = false
-    }
-
-    @CreateDateColumn()
+    @CreateDateColumn({ type: 'date' })
     created_at: Date
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({ type: 'date' })
     updated_at: Date
 }

@@ -8,7 +8,7 @@ import { UserModule } from './User/user.module'
 import { AuthModule } from './Auth/auth.module'
 import { CategoryModule } from './Category/category.module'
 import { EntryModule } from './Entry/entry.module'
-import { ProductModule } from './Product/product.module'
+import { TitleModule } from './Title/title.module'
 
 @Module({
     imports: [
@@ -16,13 +16,13 @@ import { ProductModule } from './Product/product.module'
         AuthModule,
         CategoryModule,
         EntryModule,
-        ProductModule,
+        TitleModule,
     ],
     providers: [RedisService],
 })
 
 export class V1Module {
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(BlacklistMiddleware).forRoutes(`v1/auth/me`, `v1/auth/signout`)
+        consumer.apply(BlacklistMiddleware).forRoutes('v1/auth/check-token', 'v1/auth/signout')
     }
 }

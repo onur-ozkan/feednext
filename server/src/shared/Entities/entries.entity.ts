@@ -6,9 +6,10 @@ import {
     ObjectIdColumn,
     CreateDateColumn,
     UpdateDateColumn,
+    BeforeInsert,
 } from 'typeorm'
 
-@Entity(`Entries`)
+@Entity('Entries')
 export class EntriesEntity {
     constructor(partial: Partial<EntriesEntity>) {
         Object.assign(this, partial)
@@ -17,27 +18,35 @@ export class EntriesEntity {
     @ObjectIdColumn()
     id: ObjectID
 
-    @Column()
-    product_id: string
+    @Column({ type: 'string' })
+    title_id: string
 
-    @Column()
+    @Column({ type: 'string' })
     text: string
 
+    @Column({ type: 'int' })
+    votes: number
+
     @Column({
-        type: `varchar`,
+        type: 'string',
         length: 17,
     })
     written_by: string
 
     @Column({
-        type: `varchar`,
+        type: 'string',
         length: 17,
     })
     updated_by: string
 
-    @CreateDateColumn()
+    @CreateDateColumn({ type: 'date' })
     created_at: Date
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({ type: 'date' })
     updated_at: Date
+
+    @BeforeInsert()
+    fillDefaults() {
+        this.votes = 0
+    }
 }

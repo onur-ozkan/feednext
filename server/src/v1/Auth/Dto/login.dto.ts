@@ -1,29 +1,37 @@
 // Nest dependencies
-import { ApiModelProperty } from '@nestjs/swagger'
+import { ApiProperty } from '@nestjs/swagger'
 
 // Other dependencies
-import { IsEmail, IsNotEmpty, IsOptional } from 'class-validator'
+import { IsEmail, IsNotEmpty, IsOptional, IsBoolean, IsString } from 'class-validator'
 
 export class LoginDto {
-    @ApiModelProperty({
+    @ApiProperty({
         required: false,
-        example: `example@gmail.com`,
+        example: 'demo@demo.com',
     })
     @IsOptional()
     @IsEmail()
     email: string
 
-    @ApiModelProperty({
+    @ApiProperty({
         required: false,
-        example: `your_username`,
+        example: 'demo_user',
     })
     @IsOptional()
     username: string
 
-    @ApiModelProperty({
+    @ApiProperty({
         required: true,
-        example: `your_password123`,
+        example: true
+    })
+    @IsBoolean()
+    rememberMe: boolean
+
+    @ApiProperty({
+        required: true,
+        example: 'demo123',
     })
     @IsNotEmpty()
+    @IsString()
     password: string
 }

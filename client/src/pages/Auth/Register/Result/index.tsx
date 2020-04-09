@@ -1,45 +1,42 @@
-import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale'
-import { Button, Result } from 'antd'
+import { Button, Result, Typography } from 'antd'
 import Link from 'umi/link'
 import React from 'react'
-import { RouteChildrenProps } from 'dva/router'
 
-import styles from './style.less'
+const { Paragraph, Text } = Typography
 
 const actions = (
-	<div className={styles.actions}>
-		<a href="">
-			<Button size="large" type="primary">
-				<FormattedMessage id="userandregister-result.register-result.view-mailbox" />
-			</Button>
-		</a>
-		<Link to="/">
-			<Button size="large">
-				<FormattedMessage id="userandregister-result.register-result.back-home" />
+	<>
+		<Link to="/feeds">
+			<Button style={{ width: '15rem' }} size="large">
+				Send Again
 			</Button>
 		</Link>
-	</div>
+	</>
 )
 
-const RegisterResult: React.FC<RouteChildrenProps> = () => (
-	<Result
-		className={styles.registerResult}
-		status="success"
-		title={
-			<div className={styles.title}>
-				<FormattedMessage
-					id="userandregister-result.register-result.msg"
-					values={{
-						email: 'AntDesign@example.com',
-					}}
-				/>
-			</div>
-		}
-		subTitle={formatMessage({
-			id: 'userandregister-result.register-result.activation-email',
-		})}
-		extra={actions}
-	/>
-)
+const RegisterResult = props => {
+	const signedAccount = props.signedAccount
+	return (
+		<Result
+			status="success"
+			title={<h2>Hey {signedAccount.full_name},</h2>}
+			subTitle={
+				<Paragraph>
+					<Text
+						strong
+						style={{
+							fontSize: 20,
+						}}
+					>
+						Your account verification mail has been sent to{' '}
+						<span style={{ color: '#5199FF' }}>{signedAccount.email}</span>, please check your mails and do the
+						verification to sign in.
+					</Text>
+				</Paragraph>
+			}
+			extra={actions}
+		></Result>
+	)
+}
 
 export default RegisterResult

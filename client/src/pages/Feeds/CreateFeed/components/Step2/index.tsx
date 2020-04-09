@@ -1,11 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Form, Button, Descriptions, Divider, Modal } from 'antd'
-import { Dispatch } from 'redux'
-import { connect } from 'dva'
-import { StateType } from '../../model'
 import styles from './index.less'
 import TextArea from 'antd/lib/input/TextArea'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
+import StepContext from '../../StepContext'
 
 const formItemLayout = {
 	labelCol: {
@@ -15,47 +13,25 @@ const formItemLayout = {
 		span: 19,
 	},
 }
-declare interface Step2Props {
-	data?: StateType['step']
-	dispatch?: Dispatch<any>
-	submitting?: boolean
-}
 
-const Step2: React.FC<Step2Props> = props => {
+const Step2: React.FC = (props: any) => {
 	const [form] = Form.useForm()
-	const { data, dispatch, submitting } = props
-	if (!data) {
-		return null
+	const { createTitleForm, readableCategoryValue, firstEntryForm } = useContext(StepContext)
+
+	const { stepMovementTo, setFirstEntryForm, setIsRequestReady } = props
+
+	const onPrev = (): void => {
+		setFirstEntryForm((state: any) => ({...state, text: form.getFieldValue('entry') }))
+		stepMovementTo('main')
 	}
-	const { validateFields, getFieldsValue } = form
-	const onPrev = () => {
-		if (dispatch) {
-			const values = getFieldsValue()
-			dispatch({
-				type: 'feedsAndCreateFeed/saveStepFormData',
-				payload: {
-					...data,
-					...values,
-				},
-			})
-			dispatch({
-				type: 'feedsAndCreateFeed/saveCurrentStep',
-				payload: 'info',
-			})
-		}
-	}
+
 	const onValidateForm = async () => {
 		if (!form.getFieldValue('entry')) return
-		const values = await validateFields()
-		if (dispatch) {
-			dispatch({
-				type: 'feedsAndCreateFeed/submitStepForm',
-				payload: {
-					...data,
-					...values,
-				},
-			})
-		}
+
+		setFirstEntryForm({
+			text: form.getFieldValue('entry')
+		})
+		setIsRequestReady(true)
 	}
 
 	const confirmationModal = (): void => {
@@ -73,14 +49,16 @@ const Step2: React.FC<Step2Props> = props => {
 	}
 
 	return (
-		<Form {...formItemLayout} form={form} layout="horizontal" className={styles.stepForm}>
+		<Form {...formItemLayout} form={form} initialValues={{ entry: firstEntryForm.text }} layout="horizontal" className={styles.stepForm}>
 			<Descriptions column={1}>
-				<Descriptions.Item label="Category"> Phone </Descriptions.Item>
-				<Descriptions.Item label="Title"> Xphone Model 7s Plus</Descriptions.Item>
+				<Descriptions.Item label="Category">
+					{ readableCategoryValue }
+				</Descriptions.Item>
+				<Descriptions.Item label="Title">
+					{ createTitleForm.name }
+				</Descriptions.Item>
 				<Descriptions.Item label="Description">
-					{' '}
-					Xphone Model 7s Plus is a phone released at 2014, here is the device you can check better
-					https://example.com/xphone-model-7s-plus
+					{ createTitleForm.description }
 				</Descriptions.Item>
 			</Descriptions>
 			<Divider style={{ margin: '24px 0' }} />
@@ -97,7 +75,7 @@ const Step2: React.FC<Step2Props> = props => {
 					},
 				}}
 			>
-				<Button type="primary" htmlType="submit" onClick={confirmationModal} loading={submitting}>
+				<Button type="primary" htmlType="submit" onClick={confirmationModal}>
 					Post
 				</Button>
 				<Button onClick={onPrev} style={{ marginLeft: 8 }}>
@@ -108,17 +86,4 @@ const Step2: React.FC<Step2Props> = props => {
 		</Form>
 	)
 }
-export default connect(
-	({
-		feedsAndCreateFeed,
-		loading,
-	}: {
-		feedsAndCreateFeed: StateType
-		loading: {
-			effects: { [key: string]: boolean }
-		}
-	}) => ({
-		submitting: loading.effects['feedsAndCreateFeed/submitStepForm'],
-		data: feedsAndCreateFeed.step,
-	}),
-)(Step2)
+export default Step2

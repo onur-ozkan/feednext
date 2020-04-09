@@ -1,31 +1,23 @@
 // Nest dependencies
-import { ApiModelProperty } from '@nestjs/swagger'
+import { ApiProperty } from '@nestjs/swagger'
 
 // Other dependencies
-import { IsNotEmpty, MaxLength, IsOptional, IsMongoId, IsBoolean } from 'class-validator'
+import { IsNotEmpty, MaxLength, IsOptional, IsMongoId } from 'class-validator'
 
 export class CreateCategoryDto {
-    @ApiModelProperty({
+    @ApiProperty({
         required: true,
-        example: `Example Name`,
+        example: 'Electronic',
     })
     @IsNotEmpty()
     @MaxLength(50)
     categoryName: string
 
-    @ApiModelProperty({
+    @ApiProperty({
       required: false,
-      example: `507f1f77bcf86cd799439011`,
+      example: '507f1f77bcf86cd799439011',
     })
     @IsMongoId()
     @IsOptional()
     parentCategoryId: string
-
-    @ApiModelProperty({
-      required: false,
-      example: `true || false`,
-    })
-    @IsBoolean()
-    @IsOptional()
-    is_lowest_cateogry: boolean
 }

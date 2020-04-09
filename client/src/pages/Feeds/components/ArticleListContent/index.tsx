@@ -4,22 +4,17 @@ import moment from 'moment'
 import styles from './index.less'
 
 declare interface ArticleListContentProps {
-	data: {
-		content: React.ReactNode
-		updatedAt: number
-		avatar: string
-		owner: string
-		href: string
-	}
+	data: any
 }
 
-const ArticleListContent: React.FC<ArticleListContentProps> = ({ data: { content, updatedAt, avatar, owner, href } }) => (
+const ArticleListContent: React.FC<ArticleListContentProps> = ({
+	data: { text, createdAt, avatar, writtenBy, profileUrl },
+}) => (
 	<div className={styles.listContent}>
-		<div className={styles.description}>{content}</div>
+		<div className={styles.description}>{text}</div>
 		<div className={styles.extra}>
 			<Avatar src={avatar} size="small" />
-			<a href={href}>{owner}</a> Posted on <a href={href}>{href}</a>
-			<em>{moment(updatedAt).format('YYYY-MM-DD HH:mm')}</em>
+			<a href={profileUrl}>{writtenBy}</a> posted at {moment(createdAt).format('YYYY-MM-DD HH:mm')}
 		</div>
 	</div>
 )

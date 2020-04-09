@@ -1,5 +1,5 @@
 // Nest dependencies
-import { NotFoundException, BadRequestException, UnprocessableEntityException } from '@nestjs/common'
+import { NotFoundException, BadRequestException, UnprocessableEntityException, ConflictException } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
 
 // Other dependencies
@@ -27,12 +27,12 @@ export class UsersRepository extends Repository<UsersEntity> {
       super()
     }
 
-    async getUserByUsername(usernameParam: string): Promise<UsersEntity> {
+    async getUserByUsername(username: string): Promise<UsersEntity> {
         try {
-            const profile: UsersEntity = await this.findOneOrFail({ username: usernameParam })
+            const profile: UsersEntity = await this.findOneOrFail({ username })
             return profile
         } catch (err) {
-            throw new NotFoundException(`User with that username could not found in the database.`)
+            throw new NotFoundException('User with that username could not found in the database.')
         }
     }
 
@@ -40,29 +40,28 @@ export class UsersRepository extends Repository<UsersEntity> {
         try {
             return await this.findOneOrFail({ email: emailParam })
         } catch (err) {
-            throw new NotFoundException(`This email does not exist in the database.`)
+            throw new NotFoundException('This email does not exist in the database.')
         }
     }
 
-    async validateUser(dto: LoginDto, passwordHash: string): Promise<UsersEntity> {
-        if (dto.email) {
-            try {
-                return await this.findOneOrFail({
-                    email: dto.email,
-                    password: passwordHash,
-                })
-            } catch (err) {
-                throw new NotFoundException(`Couldn't find an account that matching with this email and password in the database.`)
-            }
-        }
-
+    async validateUser(dto: LoginDto): Promise<UsersEntity> {
+        const passwordHash: string = crypto.createHmac('sha256', dto.password).digest('hex')
         try {
             return await this.findOneOrFail({
-                username: dto.username,
-                password: passwordHash,
+                where: {
+                    $or: [
+                        {
+                            email: dto.email,
+                        },
+                        {
+                            username: dto.username,
+                        },
+                    ],
+                    password: passwordHash
+                }
             })
         } catch (err) {
-            throw new NotFoundException(`Couldn't find an account that matching with this username and password in the database.`)
+            throw new NotFoundException('No account found by given credentials.')
         }
     }
 
@@ -81,16 +80,16 @@ export class UsersRepository extends Repository<UsersEntity> {
         }
     }
 
-    async updateUser(usernameParam: string, dto: UpdateUserDto): Promise<UsersEntity> {
+    async updateUser(username: string, dto: UpdateUserDto): Promise<UsersEntity> {
         const profile: UsersEntity = await this.findOneOrFail({
-            username: usernameParam,
+            username,
         })
 
         if (dto.fullName) profile.full_name = dto.fullName
         if (dto.password) {
-            const hashedPassword = crypto.createHmac(`sha256`, dto.password).digest(`hex`)
-            if (profile.password !== crypto.createHmac(`sha256`, dto.oldPassword).digest(`hex`)) {
-                throw new BadRequestException(`Old password does not match.`)
+            const hashedPassword = crypto.createHmac('sha256', dto.password).digest('hex')
+            if (profile.password !== crypto.createHmac('sha256', dto.oldPassword).digest('hex')) {
+                throw new BadRequestException('Old password does not match.')
             }
             profile.password = hashedPassword
         }
@@ -101,13 +100,13 @@ export class UsersRepository extends Repository<UsersEntity> {
                 newEmail: dto.email,
                 verifyUpdateEmailToken: true,
                 exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
-            }, configService.getEnv(`SECRET_KEY`))
+            }, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
 
-            const activationUrl: string = `${configService.getEnv(`APP_URL`)}/api/v1/user/verfiy-update-email?token=${activateToken}`
+            const activationUrl: string = `${configService.getEnv('APP_URL')}/api/v1/user/verfiy-update-email?token=${activateToken}`
             const mailBody: MailSenderBody = {
-                receiver: `${dto.email}`,
+                receiver: dto.email,
                 subject: `Verify Your New Email [${profile.username}]`,
-                text: `${activationUrl}`,
+                text: activationUrl,
             }
 
             await this.mailService.send(mailBody)
@@ -116,7 +115,29 @@ export class UsersRepository extends Repository<UsersEntity> {
         return await this.save(profile)
     }
 
-    async verifyUpdateEmail(decodedToken: { email: string, username: string, newEmail: string }) {
+    async triggerRefreshToken(query: string): Promise<string> {
+        const profile: UsersEntity = await this.findOneOrFail({
+            where: {
+                $or: [
+                    {
+                        email: query,
+                    },
+                    {
+                        username: query,
+                    },
+                ]
+            }
+        })
+        profile.refresh_token = jwt.sign({
+            username: profile.username,
+            iat: Date.now()
+        }, configService.getEnv('SECRET_FOR_REFRESH_TOKEN'))
+        await this.save(profile)
+
+        return profile.refresh_token
+    }
+
+    async verifyUpdateEmail(decodedToken: { email: string, username: string, newEmail: string }): Promise<void>  {
         try {
             const account: UsersEntity = await this.findOneOrFail({
                 email: decodedToken.email,
@@ -126,24 +147,72 @@ export class UsersRepository extends Repository<UsersEntity> {
             account.email = decodedToken.newEmail
             await this.save(account)
         } catch (err) {
-            throw new BadRequestException(`Incoming token is not valid.`)
+            throw new BadRequestException('Incoming token is not valid.')
         }
     }
 
-    async disableUser(usernameParam: string) {
+    async disableUser(username: string): Promise<void>  {
         try {
             const profile = await this.findOneOrFail({
-                username: usernameParam,
+                username,
             })
 
             profile.is_active = false
             await this.save(profile)
         } catch (err) {
-            throw new NotFoundException(`User with that username could not found in the database.`)
+            throw new NotFoundException('User with that username could not found in the database.')
         }
     }
 
-    async activateUser(decodedToken: { email: string, username: string }) {
+    async undoVotedEntry({ entryId, username, isUpVoted }: {entryId: string, username: string, isUpVoted: boolean}): Promise<void>  {
+        try {
+            const profile = await this.findOneOrFail({
+                username,
+            })
+            // If the entry was down voted, undo the vote
+            if (isUpVoted) {
+                if (!profile.up_voted_entries.includes(entryId)) throw new Error()
+                profile.up_voted_entries = profile.up_voted_entries.filter(item => item !== entryId)
+            } else { // If the entry was up voted, undo the vote
+                if (!profile.down_voted_entries.includes(entryId)) throw new Error()
+                profile.down_voted_entries = profile.down_voted_entries.filter(item => item !== entryId)
+            }
+            await this.save(profile)
+        } catch (e) {
+            throw new NotFoundException('Username could not found or entry have not vote yet.')
+        }
+    }
+
+    async addVotedEntry({ entryId, username, isUpVoted }: {entryId: string, username: string, isUpVoted: boolean}): Promise<void> {
+        let profile: UsersEntity
+        try {
+            profile = await this.findOneOrFail({
+                username,
+            })
+        } catch (e) {
+            throw new NotFoundException('User with that username could not found in the database.')
+        }
+
+        if (isUpVoted) {
+            if (profile.up_voted_entries.includes(entryId)) throw new ConflictException('The entry is already up voted')
+            // If the entry was down voted, undo the vote
+            if (profile.down_voted_entries.includes(entryId)) {
+                profile.down_voted_entries = profile.down_voted_entries.filter(item => item !== entryId)
+            }
+            profile.up_voted_entries.push(entryId)
+        } else {
+            if (profile.down_voted_entries.includes(entryId)) throw new ConflictException('The entry is already down voted')
+            // If the entry was up voted, undo the vote
+            if (profile.up_voted_entries.includes(entryId)) {
+                profile.up_voted_entries = profile.up_voted_entries.filter(item => item !== entryId)
+            }
+            profile.down_voted_entries.push(entryId)
+        }
+
+        await this.save(profile)
+    }
+
+    async activateUser(decodedToken: { email: string, username: string }): Promise<void>  {
         try {
           const account: UsersEntity = await this.findOneOrFail({
               email: decodedToken.email,
@@ -153,7 +222,7 @@ export class UsersRepository extends Repository<UsersEntity> {
           account.is_active = true
           await this.save(account)
         } catch (err) {
-            throw new BadRequestException(`Incoming token is not valid.`)
+            throw new BadRequestException('Incoming token is not valid.')
         }
     }
 
@@ -163,20 +232,20 @@ export class UsersRepository extends Repository<UsersEntity> {
         try {
             account = await this.findOneOrFail({ email: dto.email })
         } catch (err) {
-            throw new NotFoundException(`This email does not exist in the database.`)
+            throw new NotFoundException('This email does not exist in the database.')
         }
 
-        if (!account.is_active) throw new BadRequestException(`Account is not active.`)
+        if (!account.is_active) throw new BadRequestException('Account is not active.')
 
         const generatePassword: string = await kmachine.keymachine()
-        account.password = crypto.createHmac(`sha256`, generatePassword).digest(`hex`)
+        account.password = crypto.createHmac('sha256', generatePassword).digest('hex')
         return {
             account: await this.save(account),
             password: generatePassword,
         }
     }
 
-    async accountVerification(decodedToken: { email: string, username: string}) {
+    async accountVerification(decodedToken: { email: string, username: string}): Promise<void>  {
         try {
             const account: UsersEntity = await this.findOneOrFail({
                 email: decodedToken.email,
@@ -186,7 +255,7 @@ export class UsersRepository extends Repository<UsersEntity> {
             account.is_verified = true
             await this.save(account)
         } catch (err) {
-            throw new BadRequestException(`Incoming token is not valid.`)
+            throw new BadRequestException('Incoming token is not valid.')
         }
     }
 
