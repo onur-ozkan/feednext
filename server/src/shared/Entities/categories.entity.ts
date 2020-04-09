@@ -5,8 +5,7 @@ import {
     ObjectID,
     ObjectIdColumn,
     CreateDateColumn,
-    UpdateDateColumn,
-    BeforeInsert,
+    UpdateDateColumn
 } from 'typeorm'
 
 @Entity('Categories')
@@ -24,17 +23,9 @@ export class CategoriesEntity {
     @Column({ type: 'string', length: 50, unique: true})
     name: string
 
-    @Column({ type: 'boolean' })
-    is_lowest_cateogry: boolean
-
     @CreateDateColumn({ type: 'date' })
     created_at: Date
 
     @UpdateDateColumn({ type: 'date' })
     updated_at: Date
-
-    @BeforeInsert()
-    fillDefaults() {
-        this.is_lowest_cateogry = false
-    }
 }

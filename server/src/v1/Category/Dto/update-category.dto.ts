@@ -2,7 +2,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 
 // Other dependencies
-import { MaxLength, IsOptional, IsMongoId, IsBoolean } from 'class-validator'
+import { MaxLength, IsOptional, IsMongoId } from 'class-validator'
 
 export class UpdateCategoryDto {
     @ApiProperty({
@@ -20,12 +20,4 @@ export class UpdateCategoryDto {
     @IsOptional()
     @IsMongoId()
     parentCategoryId: string
-
-    @ApiProperty({
-      required: false,
-      example: 'true || false',
-    })
-    @IsBoolean()
-    @IsOptional()
-    is_lowest_cateogry: boolean
 }

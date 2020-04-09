@@ -43,7 +43,7 @@ export class AuthController {
 
         if (dto.rememberMe) {
             res.setCookie('rt', refreshToken, {
-                domain: configService.getEnv('APP_DOMAIN'),
+                domain: `.${configService.getEnv('APP_DOMAIN')}`,
                 path: '/api/v1/auth/refresh-token',
                 httpOnly: true,
                 secure: true

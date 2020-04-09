@@ -81,7 +81,6 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
         try {
             if (dto.categoryName) category.name = dto.categoryName
             if (dto.parentCategoryId) category.parent_category = dto.parentCategoryId
-            if (dto.is_lowest_cateogry !== undefined) category.is_lowest_cateogry = dto.is_lowest_cateogry
 
             await this.save(category)
             return category

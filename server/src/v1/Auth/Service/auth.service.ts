@@ -89,7 +89,7 @@ export class AuthService {
         const expireDate: number = decodedToken.exp
         const remainingSeconds: number = Math.round(expireDate - Date.now() / 1000)
 
-        await this.redisService.setOnlyKey(bearer, remainingSeconds)
+        await this.redisService.setOnlyKey(bearer.split(' ')[1], remainingSeconds)
         return serializerService.serializeResponse('dead_token', { access_token: bearer })
     }
 
