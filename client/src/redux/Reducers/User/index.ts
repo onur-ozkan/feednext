@@ -5,7 +5,7 @@ const userReducerDefaultState: any = null
 export const userReducer = (state = userReducerDefaultState, action: UserActions): any => {
 	switch (action.type) {
 		case SIGN_IN:
-			return (state = action.payload.userInformation)
+			return (state = action.user)
 		case SIGN_OUT:
 			return (state = null)
 		default:

@@ -1,21 +1,20 @@
 import { Dispatch } from 'redux'
-import { SIGN_IN, SIGN_OUT, SignInPayload, UserActions } from './types'
+import { SIGN_IN, SIGN_OUT, UserPayload, SignInAction, SignOutAction } from './types'
 
 export const StartUserActions = {
-	SignIn: (payload: SignInPayload) => {
-		return (dispatch: Dispatch<UserActions>): void => {
+	signIn: (userPayload: UserPayload) => {
+		return (dispatch: Dispatch<SignInAction>): void => {
 			dispatch({
 				type: SIGN_IN,
-				payload,
+				user: userPayload
 			})
 		}
 	},
-
-	SignOut: () => {
-		return (dispatch: Dispatch<UserActions>): void => {
+	signOut: () => {
+		return (dispatch: Dispatch<SignOutAction>): void => {
 			dispatch({
 				type: SIGN_OUT,
 			})
 		}
-	},
+	}
 }

@@ -2,7 +2,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk, { ThunkMiddleware } from 'redux-thunk'
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
-import { userReducer, settingsReducer } from './Reducers'
+import { userReducer, settingsReducer, globalReducer } from './Reducers'
 import { AppActions } from './Actions/types'
 
 const persistConfig = {
@@ -13,6 +13,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
 	user: userReducer,
 	settings: settingsReducer,
+	global: globalReducer
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
