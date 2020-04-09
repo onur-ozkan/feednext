@@ -4,7 +4,6 @@ import { NotFoundException, BadRequestException, UnprocessableEntityException } 
 // Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
 import { ObjectID } from 'mongodb'
-import { Validator } from 'class-validator'
 
 // Local files
 import { CategoriesEntity } from '../Entities/categories.entity'
@@ -13,25 +12,17 @@ import { UpdateCategoryDto } from 'src/v1/Category/Dto/update-category.dto'
 
 @EntityRepository(CategoriesEntity)
 export class CategoriesRepository extends Repository<CategoriesEntity> {
-    private validator: ObjectID
-
-    constructor() {
-      super()
-      this.validator = new Validator()
-    }
-
     async getCategory(categoryId: string): Promise<CategoriesEntity> {
-        if (!this.validator.isMongoId(categoryId)) throw new BadRequestException(`CategoryId must be a MongoId.`)
         try {
             const category: CategoriesEntity = await this.findOneOrFail(categoryId)
             return category
         } catch (err) {
-            throw new NotFoundException(`Category with that id could not found in the database.`)
+            throw new NotFoundException('Category with that id could not found in the database.')
         }
     }
 
     async getCategoryList(query: { limit: number, skip: number, orderBy: any }): Promise<{categories: CategoriesEntity[], count: number}> {
-        const orderBy = query.orderBy || `ASC`
+        const orderBy = query.orderBy || 'ASC'
 
         try {
             const [categories, total] = await this.findAndCount({
@@ -72,13 +63,11 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
     }
 
     async updateCategory(categoryId: string, dto: UpdateCategoryDto): Promise<CategoriesEntity> {
-        if (!this.validator.isMongoId(categoryId)) throw new BadRequestException(`CategoryId must be a MongoId.`)
-
         if (dto.parentCategoryId) {
             try {
                 await this.findOneOrFail(dto.parentCategoryId)
             } catch (err) {
-                throw new NotFoundException(`Parent category with that id could not found in the database.`)
+                throw new NotFoundException('Parent category with that id could not found in the database.')
             }
         }
 
@@ -86,13 +75,12 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
         try {
             category = await this.findOneOrFail(categoryId)
         } catch {
-            throw new NotFoundException(`Category with that id could not found in the database.`)
+            throw new NotFoundException('Category with that id could not found in the database.')
         }
 
         try {
             if (dto.categoryName) category.name = dto.categoryName
             if (dto.parentCategoryId) category.parent_category = dto.parentCategoryId
-            if (dto.is_lowest_cateogry !== undefined) category.is_lowest_cateogry = dto.is_lowest_cateogry
 
             await this.save(category)
             return category
@@ -102,13 +90,12 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
     }
 
     async deleteCategory(categoryId: string): Promise<CategoriesEntity> {
-        if (!this.validator.isMongoId(categoryId)) throw new BadRequestException(`CategoryId must be a MongoId.`)
         try {
             const category: CategoriesEntity = await this.findOneOrFail(categoryId)
             await this.delete(category)
             return category
         } catch (err) {
-            throw new NotFoundException(`Category with that id could not found in the database.`)
+            throw new NotFoundException('Category with that id could not found in the database.')
         }
     }
 

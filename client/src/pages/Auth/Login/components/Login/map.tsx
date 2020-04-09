@@ -5,7 +5,7 @@ import styles from './index.less'
 export default {
 	UserName: {
 		props: {
-			size: 'large',
+			size: 'default',
 			id: 'userName',
 			prefix: <UserOutlined className={styles.prefixIcon} />,
 			placeholder: 'admin',
@@ -19,7 +19,7 @@ export default {
 	},
 	Password: {
 		props: {
-			size: 'large',
+			size: 'default',
 			prefix: <LockOutlined className={styles.prefixIcon} />,
 			type: 'password',
 			id: 'password',

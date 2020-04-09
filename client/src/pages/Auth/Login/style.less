@@ -3,37 +3,51 @@
 .main {
 	width: 368px;
 	margin: 0 auto;
-	@media screen and (max-width: @screen-sm) {
-		width: 95%;
-	}
-
-	.icon {
-		margin-left: 16px;
-		color: rgba(0, 0, 0, 0.2);
-		font-size: 24px;
-		vertical-align: middle;
-		cursor: pointer;
-		transition: color 0.3s;
-
-		&:hover {
-			color: @primary-color;
-		}
-	}
-
-	.other {
-		margin-top: 24px;
-		line-height: 22px;
-		text-align: left;
-
-		.register {
-			float: right;
-		}
-	}
 
 	:global {
-		.antd-pro-login-submit {
-			width: 100%;
-			margin-top: 24px;
+		.ant-form-item {
+			margin-bottom: 24px;
+		}
+
+		.ant-tabs .ant-tabs-bar {
+			margin-bottom: 24px;
+			text-align: center;
+			border-bottom: 0;
+		}
+	}
+
+	.submit {
+		width: 50%;
+	}
+
+	.register {
+		float: right;
+		line-height: @btn-height-lg;
+	}
+}
+
+.success,
+.warning,
+.error {
+	transition: color 0.3s;
+}
+
+.success {
+	color: @success-color;
+}
+
+.warning {
+	color: @warning-color;
+}
+
+.error {
+	color: @error-color;
+}
+
+.progress-pass > .progress {
+	:global {
+		.ant-progress-bg {
+			background-color: @warning-color;
 		}
 	}
 }

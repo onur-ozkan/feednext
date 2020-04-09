@@ -1,40 +1,40 @@
 // Nest dependencies
-import { ApiModelProperty } from '@nestjs/swagger'
+import { ApiProperty } from '@nestjs/swagger'
 
 // Other dependencies
 import { IsEmail, IsNotEmpty, NotContains, Length, MaxLength } from 'class-validator'
 
 export class CreateAccountDto {
-    @ApiModelProperty({
+    @ApiProperty({
         required: true,
-        example: `Example Name`,
+        example: 'Demo User',
     })
     @IsNotEmpty()
     @MaxLength(50)
     fullName: string
 
-    @ApiModelProperty({
+    @ApiProperty({
         required: true,
-        example: `example@gmail.com`,
+        example: 'demo@demo.com',
     })
     @IsEmail()
     email: string
 
-    @ApiModelProperty({
+    @ApiProperty({
         required: true,
-        example: `your_username`,
+        example: 'demo_user',
     })
     @IsNotEmpty()
     @NotContains(' ')
     @Length(6, 15)
     username: string
 
-    @ApiModelProperty({
+    @ApiProperty({
         required: true,
-        example: `your_password123`,
+        example: 'demo123',
     })
     @IsNotEmpty()
-    @NotContains(` `)
+    @NotContains(' ')
     @Length(6, 15)
     password: string
 }

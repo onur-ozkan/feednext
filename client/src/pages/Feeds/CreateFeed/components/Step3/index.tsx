@@ -1,42 +1,30 @@
 import { Button, Result, Descriptions } from 'antd'
-import React from 'react'
-import { Dispatch } from 'redux'
-import { connect } from 'dva'
-import { StateType } from '../../model'
+import React, { useContext } from 'react'
 import styles from './index.less'
+import StepContext from '../../StepContext'
+import { router } from 'umi'
 
-declare interface Step3Props {
-	data?: StateType['step']
-	dispatch?: Dispatch<any>
-}
+const Step3: React.FC = () => {
+	const { createTitleForm, readableCategoryValue, firstEntryForm } = useContext(StepContext)
 
-const Step3: React.FC<Step3Props> = props => {
-	const { data, dispatch } = props
-	if (!data) {
-		return null
-	}
 	const onFinish = () => {
-		if (dispatch) {
-			dispatch({
-				type: 'feedsAndCreateFeed/saveCurrentStep',
-				payload: 'info',
-			})
-		}
+		router.push('/feeds')
 	}
+
 	const information = (
 		<div className={styles.information}>
 			<Descriptions column={1}>
-				<Descriptions.Item label="Category"> Phone </Descriptions.Item>
-				<Descriptions.Item label="Title"> Xphone Model 7s Plus</Descriptions.Item>
+				<Descriptions.Item label="Category">
+					{ readableCategoryValue }
+				</Descriptions.Item>
+				<Descriptions.Item label="Title">
+					{ createTitleForm.name }
+				</Descriptions.Item>
 				<Descriptions.Item label="Description">
-					{' '}
-					Xphone Model 7s Plus is a phone released at 2014, here is the device you can check better
-					https://example.com/xphone-model-7s-plus
+					{ createTitleForm.description }
 				</Descriptions.Item>
 				<Descriptions.Item label="Entry">
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-					dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-					ex ea commodo consequat.
+					{ firstEntryForm.text }
 				</Descriptions.Item>
 			</Descriptions>
 		</div>
@@ -56,6 +44,4 @@ const Step3: React.FC<Step3Props> = props => {
 	)
 }
 
-export default connect(({ feedsAndCreateFeed }: { feedsAndCreateFeed: StateType }) => ({
-	data: feedsAndCreateFeed.step,
-}))(Step3)
+export default Step3

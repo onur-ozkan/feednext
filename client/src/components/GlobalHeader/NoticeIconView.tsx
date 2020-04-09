@@ -181,10 +181,4 @@ class GlobalHeaderRight extends Component<GlobalHeaderRightProps> {
 	}
 }
 
-export default connect(({ user, global, loading }: ConnectState) => ({
-	currentUser: user.currentUser,
-	collapsed: global.collapsed,
-	fetchingMoreNotices: loading.effects['global/fetchMoreNotices'],
-	fetchingNotices: loading.effects['global/fetchNotices'],
-	notices: global.notices,
-}))(GlobalHeaderRight)
+export default GlobalHeaderRight

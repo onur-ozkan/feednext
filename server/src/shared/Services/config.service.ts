@@ -8,7 +8,7 @@ import * as env from 'dotenv'
 import { UsersEntity } from '../Entities/users.entity'
 import { CategoriesEntity } from '../Entities/categories.entity'
 import { EntriesEntity } from '../Entities/entries.entity'
-import { ProductsEntity } from '../Entities/products.entity'
+import { TitlesEntity } from '../Entities/titles.entity'
 
 env.config()
 
@@ -21,24 +21,22 @@ export class ConfigService {
     }
 
     public isProduction(): boolean {
-        return this.getEnv(`MODE`) === `PROD`
+        return this.getEnv('MODE') === 'PROD'
     }
 
     public getTypeOrmConfig(): TypeOrmModuleOptions {
         return {
-            type: `mongodb`,
+            type: 'mongodb',
 
-            host: this.getEnv(`DB_HOST`),
-            database: this.getEnv(`DB_NAME`),
+            host: this.getEnv('DB_HOST'),
+            database: this.getEnv('DB_NAME'),
             synchronize: true,
             useUnifiedTopology: true,
-            entities: [UsersEntity, CategoriesEntity, EntriesEntity, ProductsEntity],
+            entities: [UsersEntity, CategoriesEntity, EntriesEntity, TitlesEntity],
 
             ssl: this.isProduction(),
         }
     }
 }
 
-const configService = new ConfigService()
-
-export { configService }
+export const configService = new ConfigService()
