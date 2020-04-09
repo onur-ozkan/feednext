@@ -1,60 +1,69 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { PageLoading } from '@ant-design/pro-layout'
-import { Redirect } from 'umi'
+import { Redirect, router } from 'umi'
 import { stringify } from 'querystring'
-import { ConnectProps } from '@/models/connect'
-import { CurrentUser } from '@/models/user'
-import { getAuthorityFromRouter } from '@/utils/utils'
+import { getAuthorityFromRouter, handleSessionExpiration } from '@/services/utils'
 import { User } from '@/../config/constants'
+import { Result, Button } from 'antd'
+import { useSelector, useDispatch } from 'react-redux'
+import { SET_ACCESS_TOKEN } from '@/redux/Actions/Global/types'
+import { checkAccessToken, refreshToken } from '@/services/api'
 
-declare interface RouteHandlerProps extends ConnectProps {
-	loading?: boolean
-	currentUser?: CurrentUser
-}
+const RouteHandler = ({ children, loading, route }) => {
+	const [isReady, setIsReady] = useState(false)
+	const user = useSelector((state: any) => state.user)
+	const accessToken = useSelector((state: any) => state.global.accessToken)
+	const dispatch = useDispatch()
 
-declare interface RouteHandlerState {
-	isReady: boolean
-}
-
-class RouteHandler extends React.Component<RouteHandlerProps, RouteHandlerState> {
-	state: RouteHandlerState = {
-		isReady: false,
-	}
-
-	componentDidMount(): void {
-		this.setState({
-			isReady: true,
-		})
-		const { dispatch } = this.props
-		if (dispatch) {
-			dispatch({
-				type: 'user/fetchCurrent',
+	const checkSessionSituation = async (): Promise<void> => {
+		await checkAccessToken(`Bearer ${accessToken}`).catch(err => {
+			refreshToken().then(res => {
+				dispatch({
+					type: SET_ACCESS_TOKEN,
+					token: res.data.attributes.access_token
+				})
+			}).catch(e => {
+				handleSessionExpiration()
 			})
-		}
-	}
-
-	render(): React.ReactNode {
-		const { isReady } = this.state
-		const { children, loading, currentUser, route } = this.props
-		// You can replace it to your authentication rule (such as check token exists)
-		// 你可以把它替换成你自己的登录认证规则（比如判断 token 是否存在）
-		const isLogin = currentUser && currentUser.userid
-		const queryString = stringify({
-			redirect: window.location.href,
 		})
-
-		const authorized: any = getAuthorityFromRouter(route?.routes, location.pathname || '/')
-
-		if ((!isLogin && loading) || !isReady) {
-			return <PageLoading />
-		}
-
-		if (!isLogin && window.location.pathname !== '/auth/sign-in' && authorized.authority >= User) {
-			return <Redirect to={`/auth/sign-in?${queryString}`} />
-		}
-
-		return children
+		setIsReady(true)
 	}
+
+	useEffect(() => {
+		if (accessToken) checkSessionSituation()
+		else setIsReady(true)
+	}, [])
+
+	const queryString = stringify({
+		redirect: window.location.href,
+	})
+
+	const authorized: any = getAuthorityFromRouter(route?.routes, location.pathname || '/')
+
+	if (loading || !isReady) {
+		return <PageLoading />
+	}
+
+	if (!user && authorized.authority >= User && window.location.pathname !== '/auth/sign-in') {
+		return <Redirect to={`/auth/sign-in?${queryString}`} />
+	}
+
+	if (user &&  authorized.authority > user.attributes.user.role) {
+		return (
+			<Result
+				status="403"
+				title="403"
+				subTitle="Sorry, your account role doesnt have access to this page"
+				extra={
+					<Button type="primary" onClick={(): void => router.push('/')}>
+						Back Home
+					</Button>
+				}
+			/>
+		)
+	}
+
+	return children
 }
 
 export default RouteHandler
