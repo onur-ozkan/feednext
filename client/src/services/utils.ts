@@ -2,7 +2,8 @@ import { parse, ParsedUrlQuery } from 'querystring'
 import pathRegexp from 'path-to-regexp'
 import { Route } from '@/models/connect'
 import { persistor } from '@/redux/store'
-import { checkAccessToken } from './api'
+import { message } from 'antd'
+import { router } from 'umi'
 
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/
 
@@ -45,9 +46,21 @@ export const getRouteAuthority = (path: string, routeData: Route[]): string | st
 	return authorities
 }
 
-export const checkIsUserExpired = (token: string): void => {
-	checkAccessToken(`Bearer ${token}`).catch(async (_e: any) => {
-		await persistor.purge()
-		window.location.reload()
+export const handleSessionExpiration = async (): Promise<void> => {
+	await persistor.purge()
+	router.push('/auth/sign-in')
+	message.info('User session has been expired, please Sign in again.', 4)
+}
+
+export const forgeDataTree = (dataset: any[]): any[] => {
+	const hashTable = Object.create(null)
+	dataset.forEach((item: { id: string | number }) => (hashTable[item.id] = { ...item, childNodes: [] }))
+
+	const dataTree: any[] = []
+	dataset.forEach((item: { parent_category: string | number; id: string | number }) => {
+		if (item.parent_category) hashTable[item['parent_category']].childNodes.push(hashTable[item.id])
+		else dataTree.push(hashTable[item.id])
 	})
+
+	return dataTree
 }
