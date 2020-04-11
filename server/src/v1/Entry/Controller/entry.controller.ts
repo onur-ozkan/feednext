@@ -23,19 +23,19 @@ export class EntryController {
         return this.entryService.getEntry(entryId)
     }
 
-    @Get(':titleId/all')
-    getEntriesByTitleId(
+    @Get(':titleSlug/all')
+    getEntriesByTitleSlug(
         @Query() query: { limit: number, skip: number, orderBy: any },
-        @Param('titleId') titleId: string,
+        @Param('titleSlug') titleSlug: string,
     ): Promise<ISerializeResponse> {
-        return this.entryService.getEntriesByTitleId({ titleId, query })
+        return this.entryService.getEntriesByTitleSlug({ titleSlug, query })
     }
 
-    @Get(':titleId/featured')
-    getFeaturedEntryByTitleId(
-        @Param('titleId') titleId: string
+    @Get(':titleSlug/featured')
+    getFeaturedEntryByTitleSlug(
+        @Param('titleSlug') titleSlug: string
     ): Promise<ISerializeResponse> {
-        return this.entryService.getFeaturedEntryByTitleId({ titleId })
+        return this.entryService.getFeaturedEntryByTitleSlug({ titleSlug })
     }
 
     @ApiBearerAuth()

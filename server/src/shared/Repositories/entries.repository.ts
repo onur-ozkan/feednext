@@ -19,15 +19,15 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         }
     }
 
-    async getEntriesByTitleId({ titleId, query }: {
-        titleId: string, query: { limit: number, skip: number, orderBy: any }
+    async getEntriesByTitleSlug({ titleSlug, query }: {
+        titleSlug: string, query: { limit: number, skip: number, orderBy: any }
     }): Promise<{ entries: EntriesEntity[], count: number }> {
         const orderBy = query.orderBy || 'ASC'
 
         try {
             const [entries, total] = await this.findAndCount({
                 where: {
-                    title_id: titleId
+                    title_slug: titleSlug
                 },
                 order: {
                     created_at: orderBy.toUpperCase(),
@@ -44,11 +44,11 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         }
     }
 
-    async getFeaturedEntryByTitleId({ titleId }: { titleId: string }): Promise<EntriesEntity> {
+    async getFeaturedEntryByTitleSlug({ titleSlug }: { titleSlug: string }): Promise<EntriesEntity> {
         try {
             const entries = await this.findOneOrFail({
                 where: {
-                    title_id: titleId
+                    title_slug: titleSlug
                 },
                 order: {
                     votes: 'DESC',
@@ -58,14 +58,14 @@ export class EntriesRepository extends Repository<EntriesEntity> {
             return entries
 
         } catch (err) {
-            throw new BadRequestException('No entry found for given titleId')
+            throw new BadRequestException('No entry found for given titleSlug')
         }
     }
 
     async createEntry(writtenBy: string, dto: CreateEntryDto): Promise<EntriesEntity> {
         const newTitle: EntriesEntity = new EntriesEntity({
             text: dto.text,
-            title_id: dto.titleId,
+            title_slug: dto.titleSlug,
             written_by: writtenBy,
         })
 
@@ -113,8 +113,8 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         }
     }
 
-    async deleteEntriesBelongsToTitle(titleId: string): Promise<void> {
-        const entries: any = await this.find({ title_id: titleId })
+    async deleteEntriesBelongsToTitle(titleSlug: string): Promise<void> {
+        const entries: any = await this.find({ title_slug: titleSlug })
         await this.delete(entries)
     }
 }

@@ -21,9 +21,9 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         }
     }
 
-    async updateEntryCount(titleId: string, isIncrement: boolean): Promise<void> {
+    async updateEntryCount(titleSlug: string, isIncrement: boolean): Promise<void> {
         try {
-            const title: TitlesEntity = await this.findOneOrFail(titleId)
+            const title: TitlesEntity = await this.findOneOrFail({ slug: titleSlug })
             isIncrement ? title.entry_count++ : title.entry_count--
             this.save(title)
         } catch (err) {
