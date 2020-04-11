@@ -1,71 +1,77 @@
-import React, { useState } from 'react'
-import { Tooltip, List, Comment, Card } from 'antd'
-import { LikeFilled, LikeOutlined, DislikeFilled, DislikeOutlined } from '@ant-design/icons'
+import React from 'react'
+import { Tooltip, List, Comment, Card, Avatar, message } from 'antd'
+import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons'
 import AddEntry from './AddEntry'
+import { useSelector, useDispatch } from 'react-redux'
+import { voteEntry, undoEntryVote } from '@/services/api'
+import { VOTE_ENTRY, UNDO_ENTRY_VOTE } from '@/redux/Actions/User/types'
 
-const FeedEntries: React.FC = () => {
-	const [action, setAction] = useState(null)
-	const [upVotes, setUpVotes] = useState(0)
-	const [downVotes, setDownVotes] = useState(0)
+const FeedEntries: React.FC = ({ titleData, entryData }) => {
+	const accessToken = useSelector((state: any) => state.global.accessToken)
+	const dispatch = useDispatch()
+
+	const userState = useSelector((state: any) => state.user.attributes.user)
 
 	const paginationOptions = {
 		size: 'small',
 		showLessItems: true,
 		showQuickJumper: true,
-		pageSize: 10,
-		total: 100,
+		pageSize: 7,
+		total: entryData.count > 7 ? entryData.count / 2 : 1,
 	}
 
-	const data = [
-		{
-			author: <span style={{ cursor: 'pointer' }}>@username</span>,
-			avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-			content: (
-				<p>
-					We supply a series of design principles, practical patterns and high quality design resources (Sketch and
-					Axure), to help people create their product prototypes beautifully and efficiently.
-				</p>
-			),
-			datetime: (
-				<Tooltip title={'2 hours ago'}>
-					<span>2 hours ago</span>
-				</Tooltip>
-			),
-		},
-		{
-			author: <span style={{ cursor: 'pointer' }}>@username</span>,
-			avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-			content: (
-				<p>
-					We supply a series of design principles, practical patterns and high quality design resources (Sketch and
-					Axure), to help people create their product prototypes beautifully and efficiently.
-				</p>
-			),
-			datetime: (
-				<Tooltip title={'15 min ago'}>
-					<span>15 min ago</span>
-				</Tooltip>
-			),
-		},
-	]
+	const isEntryAlreadyVoted = (entryId: string, from: 'up' | 'down'): boolean => {
+		if (from === 'up') return userState.up_voted_entries.includes(entryId)
+		return userState.down_voted_entries.includes(entryId)
+	}
 
-	const actions = [
-		<span key="comment-basic-like">
-			<Tooltip title="Like">
-				{React.createElement(action === 'upVoted' ? LikeFilled : LikeOutlined, {
-					onClick: () => null,
-				})}
+	const handleVoteEntry = (entryId: string, voteTo: 'up' | 'down'): void => {
+		const isAlreadyUpVoted = isEntryAlreadyVoted(entryId, 'up')
+		const isAlreadyDownVoted = isEntryAlreadyVoted(entryId, 'down')
+
+		if (isAlreadyUpVoted) {
+			dispatch({
+				type: UNDO_ENTRY_VOTE,
+				from: 'up',
+				entryId
+			})
+			undoEntryVote(entryId, accessToken, true).catch(error => message.error(error.response.data.message))
+		} else if (isAlreadyDownVoted) {
+			dispatch({
+				type: UNDO_ENTRY_VOTE,
+				from: 'down',
+				entryId
+			})
+			undoEntryVote(entryId, accessToken, false).catch(error => message.error(error.response.data.message))
+		}
+
+		if ((isAlreadyUpVoted && voteTo === 'up') || (isAlreadyDownVoted && voteTo === 'down')) return
+
+		dispatch({
+			type: VOTE_ENTRY,
+			entryId: entryId,
+			voteTo: voteTo
+		})
+		voteEntry(entryId, voteTo, accessToken).catch(error => {
+			dispatch({
+				type: UNDO_ENTRY_VOTE,
+				from: voteTo,
+				entryId
+			})
+			message.error(error.response.data.message)
+		})
+	}
+
+	const entryActions = (item: number): JSX.Element[] => [
+		<span style={{ padding: '2px 5px 2px 5px', fontSize: 14, opacity: 1 }} key="comment-basic-like">
+			<Tooltip title="Up Vote">
+				<ArrowUpOutlined onClick={() => handleVoteEntry(item.id, 'up')} style={{ color: (isEntryAlreadyVoted(item.id, 'up')) ? 'red' : 'black' }} />
 			</Tooltip>
-			<span className="comment-action"> {upVotes} </span>
-		</span>,
-		<span key=' key="comment-basic-dislike"'>
-			<Tooltip title="Dislike">
-				{React.createElement(action === 'upVoted' ? DislikeFilled : DislikeOutlined, {
-					onClick: () => null,
-				})}
+			<span style={{ color: '#818181', fontSize: 15 }} className="comment-action"> {item.votes} </span>
+			<Tooltip title="Down Vote">
+				<ArrowDownOutlined onClick={() => handleVoteEntry(item.id, 'down')} style={{ color: (isEntryAlreadyVoted(item.id, 'down')) ? 'red' : 'black' }} />
 			</Tooltip>
-			<span className="comment-action"> {downVotes} </span>
-		</span>,
+		</span>
 	]
 
 	return (
@@ -73,17 +79,29 @@ const FeedEntries: React.FC = () => {
 			<List
 				pagination={paginationOptions}
 				className="comment-list"
-				header={`${data.length} Entries`}
+				header={`${titleData.attributes.entry_count} Entries`}
 				itemLayout="horizontal"
-				dataSource={data}
+				dataSource={entryData.entries}
 				renderItem={item => (
 					<li>
 						<Comment
-							actions={actions}
-							author={item.author}
-							avatar={item.avatar}
-							content={item.content}
-							datetime={item.datetime}
+							actions={entryActions(item)}
+							author={
+								<span style={{ cursor: 'pointer' }}>
+									@{item.written_by}
+								</span>
+							}
+							avatar={ <Avatar style={{ verticalAlign: 'middle' }} size="large">
+							{item.written_by.toUpperCase()[0]}
+						  </Avatar>}
+							content={
+								<p>{item.text}</p>
+							}
+							datetime={
+								<Tooltip title={`Updated at ${item.updated_at}`}>
+									<span>{item.created_at}</span>
+								</Tooltip>
+							}
 						/>
 					</li>
 				)}
