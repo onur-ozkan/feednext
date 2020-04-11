@@ -1,5 +1,7 @@
 export const SIGN_IN = 'SIGN_IN'
 export const SIGN_OUT = 'SIGN_OUT'
+export const VOTE_ENTRY = 'VOTE_ENTRY'
+export const UNDO_ENTRY_VOTE = 'UNDO_ENTRY_VOTE'
 
 export interface UserPayload {
     type: string
@@ -25,4 +27,16 @@ export interface SignOutAction {
 	type: typeof SIGN_OUT
 }
 
-export type UserActions = SignInAction | SignOutAction
+export interface VoteEntryAction {
+	type: typeof VOTE_ENTRY
+	entryId: string
+	voteTo: 'up' | 'down'
+}
+
+export interface UndoEntryVoteAction {
+	type: typeof UNDO_ENTRY_VOTE
+	from: 'up' | 'down'
+	entryId: string
+}
+
+export type UserActions = SignInAction | SignOutAction | VoteEntryAction | UndoEntryVoteAction
