@@ -88,7 +88,7 @@ const appRoutes = {
 					component: './Feeds',
 				},
 				{
-					path: '/feeds/feed',
+					path: '/feeds/:feedSlug',
 					component: './Feeds/Feed',
 				},
 				{
