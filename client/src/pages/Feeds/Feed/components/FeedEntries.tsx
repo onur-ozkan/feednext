@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { voteEntry, undoEntryVote } from '@/services/api'
 import { VOTE_ENTRY, UNDO_ENTRY_VOTE } from '@/redux/Actions/User/types'
 
-const FeedEntries: React.FC = ({ titleData, entryData }) => {
+const FeedEntries: React.FC = ({ titleData, entryData, handleEntryFetching, setEntryList }): JSX.Element => {
 	const accessToken = useSelector((state: any) => state.global.accessToken)
 	const dispatch = useDispatch()
 
@@ -17,7 +17,10 @@ const FeedEntries: React.FC = ({ titleData, entryData }) => {
 		showLessItems: true,
 		showQuickJumper: true,
 		pageSize: 7,
-		total: entryData.count > 7 ? entryData.count / 2 : 1,
+		total: titleData.attributes.entry_count,
+		onChange: (page: number): void => {
+			handleEntryFetching(7 * (page - 1))
+		},
 	}
 
 	const isEntryAlreadyVoted = (entryId: string, from: 'up' | 'down'): boolean => {
@@ -25,7 +28,8 @@ const FeedEntries: React.FC = ({ titleData, entryData }) => {
 		return userState.down_voted_entries.includes(entryId)
 	}
 
-	const handleVoteEntry = (entryId: string, voteTo: 'up' | 'down'): void => {
+	const handleVoteEntry = async (entryId: string, voteTo: 'up' | 'down'): Promise<void> => {
+		const entry = entryData.entries.find((entry) => entry.id === entryId)
 		const isAlreadyUpVoted = isEntryAlreadyVoted(entryId, 'up')
 		const isAlreadyDownVoted = isEntryAlreadyVoted(entryId, 'down')
 
@@ -35,24 +39,29 @@ const FeedEntries: React.FC = ({ titleData, entryData }) => {
 				from: 'up',
 				entryId
 			})
-			undoEntryVote(entryId, accessToken, true).catch(error => message.error(error.response.data.message))
+			entry.votes--
+			await undoEntryVote(entryId, accessToken, true).catch(error => message.error(error.response.data.message))
 		} else if (isAlreadyDownVoted) {
 			dispatch({
 				type: UNDO_ENTRY_VOTE,
 				from: 'down',
 				entryId
 			})
-			undoEntryVote(entryId, accessToken, false).catch(error => message.error(error.response.data.message))
+			entry.votes++
+			await undoEntryVote(entryId, accessToken, false).catch(error => message.error(error.response.data.message))
 		}
 
 		if ((isAlreadyUpVoted && voteTo === 'up') || (isAlreadyDownVoted && voteTo === 'down')) return
+
+		(voteTo === 'up') ? entry.votes++ : entry.votes--
 
 		dispatch({
 			type: VOTE_ENTRY,
 			entryId: entryId,
 			voteTo: voteTo
 		})
-		voteEntry(entryId, voteTo, accessToken).catch(error => {
+
+		await voteEntry(entryId, voteTo, accessToken).catch(error => {
 			dispatch({
 				type: UNDO_ENTRY_VOTE,
 				from: voteTo,
@@ -106,7 +115,7 @@ const FeedEntries: React.FC = ({ titleData, entryData }) => {
 					</li>
 				)}
 			/>
-			<AddEntry />
+			<AddEntry setEntryList={setEntryList} titleSlug={titleData.attributes.slug} accessToken={accessToken} />
 		</Card>
 	)
 }
