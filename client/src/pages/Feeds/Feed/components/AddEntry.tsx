@@ -1,33 +1,44 @@
 import React, { useState } from 'react'
-import { Button, Input, Form, Card } from 'antd'
+import { Button, Input, Form, Card, message } from 'antd'
+import { createEntry } from '@/services/api'
 
-const AddEntry: React.FC = () => {
+const AddEntry: React.FC = ({ titleSlug, accessToken, setEntryList }) => {
 	const [submitting, setSubmitting] = useState(false)
+	const [form] = Form.useForm();
 
-	const Editor = ({ onChange, onSubmit, submitting }) => (
-		<div>
-			<Form.Item>
-				<Input.TextArea placeholder="Start feeding!" rows={4} onChange={onChange} />
-			</Form.Item>
-			<Form.Item>
-				<Button htmlType="submit" loading={submitting} onClick={onSubmit} type="primary">
-					Add Entry
-				</Button>
-			</Form.Item>
-		</div>
-	)
-
-	const handleSubmit = (): void => {
-		// TODO
-	}
-
-	const handleChange = (): void => {
-		// TODO
+	const handleEntryPost = ({ entry }: { entry: string}) => {
+		setSubmitting(true)
+		createEntry({
+			titleSlug,
+			text: entry,
+		}, accessToken)
+		.then(res => {
+			setEntryList((state): any => ({
+				...state,
+				entries: [...state.entries, res.data.attributes]
+			}))
+			setSubmitting(false)
+			message.success('You have been published a entry')
+			form.resetFields()
+		})
+		.catch(error => {
+			setSubmitting(false)
+			message.error(error.response.data.message)
+		})
 	}
 
 	return (
 		<Card bordered={false}>
-			<Editor onChange={handleChange} onSubmit={handleSubmit} submitting={submitting} />
+			<Form form={form} onFinish={handleEntryPost}>
+				<Form.Item name="entry">
+					<Input.TextArea placeholder="Start feeding!" rows={4} />
+				</Form.Item>
+				<Form.Item>
+					<Button htmlType="submit" loading={submitting} type="primary">
+						Add Entry
+					</Button>
+				</Form.Item>
+			</Form>
 		</Card>
 	)
 }
