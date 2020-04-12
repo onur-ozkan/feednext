@@ -3,7 +3,7 @@ import { Form, Input, Checkbox, Button, Tabs, message } from 'antd'
 import styles from './style.less'
 import { formatMessage, FormattedMessage } from 'umi-plugin-react/locale'
 import { Link } from 'umi'
-import api from '@/utils/api'
+import { signUp } from '@/services/api'
 import RegisterResult from './Result'
 
 export declare interface FormDataType {
@@ -18,7 +18,7 @@ const Register = () => {
 	const [signedAccount, setSignedAccount] = useState(null)
 
 	const onSubmit = (values: FormDataType) => {
-		api.signUp({
+		signUp({
 			fullName: values.fullName,
 			username: values.username,
 			email: values.email,

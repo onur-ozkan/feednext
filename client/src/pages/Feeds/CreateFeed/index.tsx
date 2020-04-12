@@ -8,10 +8,13 @@ import { fetchAllCategories, createTitle, createEntry } from '@/services/api'
 import { forgeDataTree } from '@/services/utils'
 import { PageLoading } from '@ant-design/pro-layout'
 import { StepProvider } from './StepContext'
+import { useSelector } from 'react-redux'
 
 const { Step } = Steps
 
 const CreateFeed: React.FC = () => {
+	const accessToken = useSelector((state: any) => state.global.accessToken)
+
 	const [currentStep, setCurrentStep] = useState<number>(0)
 	const [stepComponent, setStepComponent] = useState<React.ReactNode>(null)
 	const [isRequestReady, setIsRequestReady] = useState(false)
@@ -36,11 +39,11 @@ const CreateFeed: React.FC = () => {
 
 	useEffect(() => {
 		if (isRequestReady) {
-			createTitle(createTitleForm).then((res) => {
+			createTitle(createTitleForm, accessToken).then((res) => {
 				createEntry({
-					titleId: res.data.attributes.id,
+					titleSlug: res.data.attributes.slug,
 					text: firstEntryForm.text,
-				}).catch(error => message.error(error.response.data.message))
+				}, accessToken).catch(error => message.error(error.response.data.message))
 			}).then(() => {
 				// eslint-disable-next-line @typescript-eslint/no-use-before-define
 				handleStepMovement('feed-status')

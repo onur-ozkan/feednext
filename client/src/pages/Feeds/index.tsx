@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { Form } from '@ant-design/compatible'
 import { Button, Card, List, Select, Tag, message } from 'antd'
-import {
-	LoadingOutlined,
-	ArrowUpOutlined,
-	LinkOutlined,
-} from '@ant-design/icons'
+import { LoadingOutlined, ArrowUpOutlined, LinkOutlined } from '@ant-design/icons'
 import '@ant-design/compatible/assets/index.css'
 
 import ArticleListContent from './components/ArticleListContent'
 import StandardFormRow from './components/StandardFormRow'
 import TagSelect from './components/TagSelect'
 import styles from './style.less'
-import api from '@/utils/api'
+import { fetchAllFeeds, fetchFeaturedEntryByTitleSlug, fetchOneCategoryById } from '@/services/api'
 
 const Feeds = () => {
 	const [isLoading, setIsLoading] = useState(true)
@@ -22,18 +18,19 @@ const Feeds = () => {
 	const FormItem = Form.Item
 
 	useEffect(() => {
-		api.fetchAllFeeds()
+		fetchAllFeeds()
 			.then(async feedsResponse => {
 				await feedsResponse.data.attributes.titles.map(async (title: any) => {
-					await api
-						.fetchFeaturedEntryByTitleId(title.id)
+					await fetchFeaturedEntryByTitleSlug(title.slug)
 						.then(async featuredEntryResponse => {
 							const feed = {
 								id: title.id,
+								slug: title.slug,
 								name: title.name,
-								categoryName: await api
-									.fetchOneCategoryById(title.category_id)
-									.then(categoryResponse => categoryResponse.data.attributes.name),
+								href: `/feeds/${title.slug}`,
+								categoryName: await fetchOneCategoryById(title.category_id).then(
+									categoryResponse => categoryResponse.data.attributes.name,
+								),
 								rate: title.rate,
 								createdAt: title.created_at,
 								updatedAt: title.updated_at,
@@ -57,7 +54,9 @@ const Feeds = () => {
 			.then(() => {
 				setIsLoading(false)
 			})
-			.catch(error => message.error(error.response.data.message, 3))
+			.catch(error => {
+				message.error(error.response.data.message, 3)
+			})
 	}, [])
 
 	const owners = [

@@ -16,7 +16,7 @@ const RouteHandler = ({ children, loading, route }) => {
 	const dispatch = useDispatch()
 
 	const checkSessionSituation = async (): Promise<void> => {
-		await checkAccessToken(`Bearer ${accessToken}`).catch(err => {
+		await checkAccessToken(accessToken).catch(err => {
 			refreshToken().then(res => {
 				dispatch({
 					type: SET_ACCESS_TOKEN,
@@ -44,11 +44,11 @@ const RouteHandler = ({ children, loading, route }) => {
 		return <PageLoading />
 	}
 
-	if (!user && authorized.authority >= User && window.location.pathname !== '/auth/sign-in') {
+	if (!user && authorized && authorized.authority >= User && window.location.pathname !== '/auth/sign-in') {
 		return <Redirect to={`/auth/sign-in?${queryString}`} />
 	}
 
-	if (user &&  authorized.authority > user.attributes.user.role) {
+	if (user && authorized && authorized.authority > user.attributes.user.role) {
 		return (
 			<Result
 				status="403"

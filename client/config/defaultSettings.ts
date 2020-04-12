@@ -22,7 +22,6 @@ export declare interface DefaultSettings {
 
 export default {
 	navTheme: 'light',
-	primaryColor: '#1890ff',
 	layout: 'topmenu',
 	contentWidth: 'Fluid',
 	fixedHeader: true,
