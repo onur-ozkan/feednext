@@ -48,6 +48,29 @@ export const createTitle = (
 	}
 })
 
+export const rateTitle = (
+	rateValue: number,
+	titleId: string,
+	accessToken: string
+): Promise<AxiosResponse> => axios.patch(`/v1/title/${titleId}/rate`, { rateValue }, {
+	headers: {
+		'Authorization': `Bearer ${accessToken}`,
+	}
+})
+
+export const getUserRateOfTitle = (
+	titleId: string,
+	accessToken: string
+): Promise<AxiosResponse> => axios.get(`/v1/title/${titleId}/rate-of-user`, {
+	headers: {
+		'Authorization': `Bearer ${accessToken}`,
+	}
+})
+
+export const getAverageTitleRate = (
+	titleId: string,
+): Promise<AxiosResponse> => axios.get(`/v1/title/${titleId}/average-rate`)
+
 export const createEntry = (
 	createEntryPayload: { text: string; titleSlug: string },
 	accessToken: string
