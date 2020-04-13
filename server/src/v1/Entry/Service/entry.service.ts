@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Injectable, BadRequestException, HttpException, HttpStatus, NotFoundException } from '@nestjs/common'
+import { Injectable, BadRequestException, HttpException, HttpStatus } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 
 // Other dependencies
@@ -78,7 +78,7 @@ export class EntryService {
         try {
             await this.entriesRepository.findOneOrFail(entryId)
         } catch (e) {
-            throw new NotFoundException('Entry with that id could not found in the database.')
+            throw new BadRequestException('Entry with that id could not found in the database.')
         }
 
         await this.usersRepository.undoVotedEntry({ entryId, username, isUpVoted })
@@ -92,7 +92,7 @@ export class EntryService {
         try {
             await this.entriesRepository.findOneOrFail(entryId)
         } catch (e) {
-            throw new NotFoundException('Entry with that id could not found in the database.')
+            throw new BadRequestException('Entry with that id could not found in the database.')
         }
 
         await this.usersRepository.addVotedEntry({ entryId, username, isUpVoted })

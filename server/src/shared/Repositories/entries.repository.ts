@@ -1,5 +1,5 @@
 // Nest dependencies
-import { NotFoundException, BadRequestException, UnprocessableEntityException } from '@nestjs/common'
+import { BadRequestException, UnprocessableEntityException } from '@nestjs/common'
 
 // Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
@@ -15,7 +15,7 @@ export class EntriesRepository extends Repository<EntriesEntity> {
             const entry: EntriesEntity = await this.findOneOrFail(entryId)
             return entry
         } catch (err) {
-            throw new NotFoundException('Entry with that id could not found in the database.')
+            throw new BadRequestException('Entry with that id could not found in the database.')
         }
     }
 
@@ -83,7 +83,7 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         try {
             entry = await this.findOneOrFail(entryId)
         } catch {
-            throw new NotFoundException('Entry with that id could not found in the database.')
+            throw new BadRequestException('Entry with that id could not found in the database.')
         }
 
         try {
@@ -109,7 +109,7 @@ export class EntriesRepository extends Repository<EntriesEntity> {
             await this.delete(entry)
             return entry
         } catch (err) {
-            throw new NotFoundException('Entry with that id could not found in the database.')
+            throw new BadRequestException('Entry with that id could not found in the database.')
         }
     }
 

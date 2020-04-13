@@ -9,9 +9,10 @@ import { CreateTitleDto } from '../Dto/create-title.dto'
 import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.service'
 import { Roles } from 'src/shared/Decorators/roles.decorator'
 import { UpdateTitleDto } from '../Dto/update-title.dto'
-import { JuniorAuthor, Admin, SuperAdmin } from 'src/shared/Constants'
+import { JuniorAuthor, Admin, SuperAdmin, User } from 'src/shared/Constants'
 import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { TitleService } from '../Service/title.service'
+import { RateTitleDto } from '../Dto/rate-title.dto'
 
 @ApiTags('v1/title')
 @Controller()
@@ -48,6 +49,34 @@ export class TitleController {
         @Body() dto: UpdateTitleDto,
     ): Promise<ISerializeResponse> {
         return this.titleService.updateTitle(jwtManipulationService.decodeJwtToken(bearer, 'username'), titleId, dto)
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
+    @Patch(':titleId/rate')
+    @Roles(User)
+    rateTitle(
+        @Headers('authorization') bearer: string,
+        @Param('titleId') titleId: string,
+        @Body() dto: RateTitleDto
+    ): Promise<HttpException> {
+        return this.titleService.rateTitle(jwtManipulationService.decodeJwtToken(bearer, 'username'), titleId, dto.rateValue)
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
+    @Get(':titleId/rate-of-user')
+    @Roles(User)
+    getRateOfUser(
+        @Headers('authorization') bearer: string,
+        @Param('titleId') titleId: string,
+    ): Promise<HttpException> {
+        return this.titleService.getRateOfUser(jwtManipulationService.decodeJwtToken(bearer, 'username'), titleId)
+    }
+
+    @Patch(':titleId/average-rate')
+    getAvarageRate(@Param('titleId') titleId: string): Promise<ISerializeResponse> {
+        return this.titleService.getAvarageRate(titleId)
     }
 
     @ApiBearerAuth()
