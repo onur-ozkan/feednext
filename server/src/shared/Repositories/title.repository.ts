@@ -74,9 +74,8 @@ export class TitlesRepository extends Repository<TitlesEntity> {
             throw new BadRequestException('Title not found by given title id')
         }
 
-        const docIfAlreadyRated = title.rate.find(item => item.username === ratedBy && item.titleId === titleId)
+        const docIfAlreadyRated = title.rate.find(item => item.username === ratedBy)
         if (docIfAlreadyRated) docIfAlreadyRated.rateValue = rateValue
-
         else title.rate.push({ username: ratedBy, rateValue})
 
         this.save(title)
@@ -90,7 +89,9 @@ export class TitlesRepository extends Repository<TitlesEntity> {
             throw new BadRequestException('Title not found by given title id')
         }
 
-        const userRate: { rateValue: number } | undefined = title.rate.find((item: { username: string, rateValue: number }) => item.username === username)
+        const userRate: { rateValue: number } | undefined = title.rate.find((
+            item: {username: string, rateValue: number }
+        ) => item.username === username)
 
         if (userRate) return userRate!.rateValue
         throw new BadRequestException('This user did not rate this title yet')
