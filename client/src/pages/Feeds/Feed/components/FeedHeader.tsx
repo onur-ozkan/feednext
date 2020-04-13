@@ -1,9 +1,13 @@
 import React, { useState } from 'react'
-import { Button, Dropdown, Menu, Row, PageHeader, Tag, Rate, Col, Modal } from 'antd'
-import { EllipsisOutlined, InfoCircleOutlined, CheckOutlined } from '@ant-design/icons'
+import { Button, Dropdown, Menu, Row, PageHeader, Tag, Rate, Col, Modal, message } from 'antd'
+import { EllipsisOutlined, InfoCircleOutlined, CheckOutlined, LoadingOutlined } from '@ant-design/icons'
+import { getUserRateOfTitle, rateTitle } from '@/services/api'
 
-const FeedHeader: React.FC = ({ titleData, categoryData }): JSX.Element => {
+const FeedHeader: React.FC = (props: any): JSX.Element => {
+	const { titleData, categoryData, accessToken, averageTitleRate, refreshTitleRate } = props
+
 	const [rateModalVisibility, setRateModalVisibility] = useState(false)
+	const [initialRatingModalValue, setInitialRatingModalValue] = useState<number | null>(null)
 	const [rateValue, setRateValue] = useState(0)
 
 	const menu = (
@@ -36,10 +40,18 @@ const FeedHeader: React.FC = ({ titleData, categoryData }): JSX.Element => {
 
 	const handleOnRatingChange = (value: number): void => setRateValue(value)
 
-	const handleTitleVoting = (): void => {
-		// TODO
-		// vote the title with rateValue
+	const handleTitleVoting = async (): Promise<void> => {
+		await rateTitle(rateValue, titleData.id, accessToken)
+			.then(_res => refreshTitleRate(titleData.id))
+			.catch(error => message.error(error.response.data.message))
 		setRateModalVisibility(false)
+	}
+
+	const handleRateModalOpening = async (): Promise<void> => {
+		setRateModalVisibility(true)
+		await getUserRateOfTitle(titleData.id, accessToken)
+			.then(res => setInitialRatingModalValue(res.data.attributes.rate))
+			.catch(_error => setInitialRatingModalValue(0))
 	}
 
 	return (
@@ -53,8 +65,8 @@ const FeedHeader: React.FC = ({ titleData, categoryData }): JSX.Element => {
 								<h1>{titleData.attributes.name}</h1>
 							</Col>
 							<Col>
-								<Rate disabled allowHalf defaultValue={titleData.attributes.rate} />
-								<Button onClick={(): void => setRateModalVisibility(true)} style={{ marginLeft: 5 }} type="primary" size="small">
+								<Rate disabled value={averageTitleRate} />
+								<Button onClick={handleRateModalOpening} style={{ marginLeft: 5 }} type="primary" size="small">
 									Rate
 								</Button>
 							</Col>
@@ -106,8 +118,16 @@ const FeedHeader: React.FC = ({ titleData, categoryData }): JSX.Element => {
 				footer={null}
 				onCancel={(): void => setRateModalVisibility(false)}
 			>
-				<Rate onChange={handleOnRatingChange} style={{ marginRight: 10 }} />
-				<Button shape="circle" icon={<CheckOutlined />} onClick={handleTitleVoting} />
+				{ initialRatingModalValue || initialRatingModalValue === 0  ?
+					<>
+						<Rate defaultValue={initialRatingModalValue} onChange={handleOnRatingChange} style={{ marginRight: 10 }} />
+						<Button shape="circle" icon={<CheckOutlined />} onClick={handleTitleVoting} />
+					</>
+					:
+					<>
+						<LoadingOutlined style={{ fontSize: 24 }} spin />
+					</>
+				}
 			</Modal>
 		</>
 	)

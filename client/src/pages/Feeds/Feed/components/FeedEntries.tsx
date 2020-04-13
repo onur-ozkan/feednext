@@ -6,10 +6,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import { voteEntry, undoEntryVote } from '@/services/api'
 import { VOTE_ENTRY, UNDO_ENTRY_VOTE } from '@/redux/Actions/User/types'
 
-const FeedEntries: React.FC = ({ titleData, entryData, handleEntryFetching, setEntryList }): JSX.Element => {
-	const accessToken = useSelector((state: any) => state.global.accessToken)
+const FeedEntries: React.FC = ({ titleData, entryData, handleEntryFetching, setEntryList, accessToken }): JSX.Element => {
 	const dispatch = useDispatch()
-
 	const userState = useSelector((state: any) => state.user.attributes.user)
 
 	const paginationOptions = {
