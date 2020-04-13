@@ -74,7 +74,7 @@ export class TitleController {
         return this.titleService.getRateOfUser(jwtManipulationService.decodeJwtToken(bearer, 'username'), titleId)
     }
 
-    @Patch(':titleId/average-rate')
+    @Get(':titleId/average-rate')
     getAvarageRate(@Param('titleId') titleId: string): Promise<ISerializeResponse> {
         return this.titleService.getAvarageRate(titleId)
     }
