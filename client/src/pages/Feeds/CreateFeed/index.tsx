@@ -19,7 +19,6 @@ const CreateFeed: React.FC = () => {
 	const [stepComponent, setStepComponent] = useState<React.ReactNode>(null)
 	const [isRequestReady, setIsRequestReady] = useState(false)
 	const [categories, setCategories] = useState<any[] | null>(null)
-
 	const [readableCategoryValue, setReadableCategoryValue] = useState(null)
 	const [firstEntryForm, setFirstEntryForm]: any = useState({
 		text: undefined
@@ -29,6 +28,9 @@ const CreateFeed: React.FC = () => {
 		categoryId: undefined,
 		description: undefined
 	})
+
+	const [feedCreatedSuccessfully, setFeedCreatedSuccessfully] = useState<boolean | null>(null)
+	const [titleSlugForRouting, setTitleSlugForRouting] = useState(null)
 
 	useEffect(() => {
 		fetchAllCategories().then(res => {
@@ -44,14 +46,23 @@ const CreateFeed: React.FC = () => {
 					titleSlug: res.data.attributes.slug,
 					text: firstEntryForm.text,
 				}, accessToken).catch(error => message.error(error.response.data.message))
-			}).then(() => {
-				// eslint-disable-next-line @typescript-eslint/no-use-before-define
-				handleStepMovement('feed-status')
-				setIsRequestReady(false)
+				setTitleSlugForRouting(res.data.attributes.slug)
+				setFeedCreatedSuccessfully(true)
 			})
-			.catch(error => message.error(error.response.data.message))
+			.catch(error => {
+				setFeedCreatedSuccessfully(false)
+				message.error(error.response.data.message)
+			})
 		}
 	}, [isRequestReady])
+
+	useEffect(() => {
+		if (titleSlugForRouting && feedCreatedSuccessfully !== null) {
+			// eslint-disable-next-line @typescript-eslint/no-use-before-define
+			handleStepMovement('feed-status')
+			setIsRequestReady(false)
+		}
+	}, [titleSlugForRouting, feedCreatedSuccessfully])
 
 	const handleStepMovement = (_step?: string): void => {
 		// eslint-disable-next-line @typescript-eslint/no-use-before-define
@@ -66,24 +77,31 @@ const CreateFeed: React.FC = () => {
 				return {
 					step: 1,
 					component:
-					<Step2
-						setFirstEntryForm={setFirstEntryForm}
-						setIsRequestReady={setIsRequestReady}
-						stepMovementTo={handleStepMovement}
-					/>
+						<Step2
+							setFirstEntryForm={setFirstEntryForm}
+							setIsRequestReady={setIsRequestReady}
+							stepMovementTo={handleStepMovement}
+						/>
 				}
 			case 'feed-status':
-				return { step: 2, component: <Step3 stepMovementTo={handleStepMovement} /> }
+				return {
+					step: 2,
+					component:
+						<Step3
+							feedCreatedSuccessfully={feedCreatedSuccessfully}
+							titleSlugForRouting={titleSlugForRouting}
+						/>
+				}
 			default:
 				return {
 					step: 0,
 					component:
-					<Step1
-						stepMovementTo={handleStepMovement}
-						categories={categories}
-						setCreateTitleForm={setCreateTitleForm}
-						setReadableCategoryValue={setReadableCategoryValue}
-					/>
+						<Step1
+							stepMovementTo={handleStepMovement}
+							categories={categories}
+							setCreateTitleForm={setCreateTitleForm}
+							setReadableCategoryValue={setReadableCategoryValue}
+						/>
 				}
 		}
 	}
