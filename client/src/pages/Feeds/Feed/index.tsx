@@ -20,7 +20,7 @@ const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 	}
 
 	const getTitleRate = async (titleId: string): Promise<void> => {
-		await getAverageTitleRate(titleId).then(res => setAverageTitleRate(res.data.attributes.rate))
+		await getAverageTitleRate(titleId).then(res => setAverageTitleRate(res.data.attributes.rate || 0))
 	}
 
 	useEffect(() => {

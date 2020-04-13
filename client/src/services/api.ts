@@ -20,7 +20,7 @@ export const checkAccessToken = (accessToken: string): Promise<AxiosResponse>  =
 
 export const refreshToken = (): Promise<AxiosResponse> => axios.get('/v1/auth/refresh-token', { withCredentials: true })
 
-export const fetchAllFeeds = (): Promise<AxiosResponse> => axios.get('/v1/title/all')
+export const fetchAllFeeds = (skip: number): Promise<AxiosResponse> => axios.get(`/v1/title/all?limit=7&skip=${skip}`)
 
 export const fetchTitleBySlug = (titleSlug: string): Promise<AxiosResponse> => axios.get(`/v1/title/${titleSlug}`)
 
@@ -32,8 +32,8 @@ export const fetchFeaturedEntryByTitleSlug = (
 
 export const fetchEntriesByTitleSlug = (
 	titleSlug: string,
-	page: number
-): Promise<AxiosResponse> => axios.get(`/v1/entry/${titleSlug}/all?limit=7&skip=${page}`)
+	skip: number
+): Promise<AxiosResponse> => axios.get(`/v1/entry/${titleSlug}/all?limit=7&skip=${skip}`)
 
 export const fetchOneCategoryById = (
 	categoryId: string

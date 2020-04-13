@@ -10,15 +10,13 @@ import TagSelect from './components/TagSelect'
 import styles from './style.less'
 import { fetchAllFeeds, fetchFeaturedEntryByTitleSlug, fetchOneCategoryById } from '@/services/api'
 
-const Feeds = () => {
+const Feeds = (): JSX.Element => {
 	const [isLoading, setIsLoading] = useState(true)
 	const [feedList, setFeed]: any = useState([])
-
-	const { Option } = Select
-	const FormItem = Form.Item
+	const [skipValueForPagination, setSkipValueForPagination] = useState(0)
 
 	useEffect(() => {
-		fetchAllFeeds()
+		fetchAllFeeds(skipValueForPagination)
 			.then(async feedsResponse => {
 				await feedsResponse.data.attributes.titles.map(async (title: any) => {
 					await fetchFeaturedEntryByTitleSlug(title.slug)
@@ -31,7 +29,6 @@ const Feeds = () => {
 								categoryName: await fetchOneCategoryById(title.category_id).then(
 									categoryResponse => categoryResponse.data.attributes.name,
 								),
-								rate: title.rate,
 								createdAt: title.created_at,
 								updatedAt: title.updated_at,
 								entryCount: title.entry_count,
@@ -57,7 +54,12 @@ const Feeds = () => {
 			.catch(error => {
 				message.error(error.response.data.message, 3)
 			})
-	}, [])
+	}, [skipValueForPagination])
+
+	const handleFetchMore = (): void => {
+		setIsLoading(true)
+		setSkipValueForPagination(skipValueForPagination + 7)
+	}
 
 	const owners = [
 		{
@@ -70,10 +72,7 @@ const Feeds = () => {
 		},
 	]
 
-	const handleFetchMore = (): void => {
-		// TODO
-		return
-	}
+
 
 	const IconText: React.FC<{
 		type: string
@@ -122,11 +121,9 @@ const Feeds = () => {
 				}}
 			>
 				{isLoading ? (
-					<span>
-						<LoadingOutlined /> Loading...
-					</span>
+					<LoadingOutlined />
 				) : (
-					'load more'
+					'More'
 				)}
 			</Button>
 		</div>
@@ -143,7 +140,7 @@ const Feeds = () => {
 							paddingBottom: 11,
 						}}
 					>
-						<FormItem>
+						<Form.Item>
 							<TagSelect expandable>
 								<TagSelect.Option value="cat1">Category one</TagSelect.Option>
 								<TagSelect.Option value="cat2">Category two</TagSelect.Option>
@@ -152,7 +149,7 @@ const Feeds = () => {
 								<TagSelect.Option value="cat5">Category five</TagSelect.Option>
 								<TagSelect.Option value="cat6">Category six</TagSelect.Option>
 							</TagSelect>
-						</FormItem>
+						</Form.Item>
 					</StandardFormRow>
 					<StandardFormRow title="Language" grid>
 						<Select
@@ -164,9 +161,9 @@ const Feeds = () => {
 							placeholder="Language Filter"
 						>
 							{owners.map(owner => (
-								<Option key={owner.id} value={owner.id}>
+								<Select.Option key={owner.id} value={owner.id}>
 									{owner.name}
-								</Option>
+								</Select.Option>
 							))}
 						</Select>
 					</StandardFormRow>
