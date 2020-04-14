@@ -1,5 +1,5 @@
 import ProLayout, { MenuDataItem, Settings, DefaultFooter } from '@ant-design/pro-layout'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Link } from 'umi'
 import { Dispatch } from 'redux'
 import { Row, Col } from 'antd'
@@ -84,8 +84,8 @@ const AppLayout: React.FC<AppLayoutProps> = props => {
 			{...props}
 			{...settings}
 		>
-			<Row style={{ backgroundColor: 'transparent' }}>
-				<Col span={18} offset={3}>
+			<Row style={{ backgroundColor: 'transparent', justifyContent: 'center' }}>
+				<Col lg={14} md={24}>
 					{props.children}
 				</Col>
 			</Row>
