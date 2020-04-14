@@ -92,6 +92,10 @@ const appRoutes = {
 					component: './Feeds/Feed',
 				},
 				{
+					path: '/entry/:entryId',
+					component: './Entry',
+				},
+				{
 					path: '/user/',
 					component: './User',
 				},
