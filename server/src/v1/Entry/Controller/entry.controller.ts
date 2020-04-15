@@ -23,15 +23,23 @@ export class EntryController {
         return this.entryService.getEntry(entryId)
     }
 
-    @Get(':titleSlug/all')
-    getEntriesByTitleSlug(
+    @Get('by-author/:username/all')
+    getEntriesByAuthorOfIt(
+        @Param('username') username: string,
         @Query() query: { limit: number, skip: number, orderBy: any },
+    ): Promise<any> {
+        return this.entryService.getEntriesByAuthorOfIt({ username, query })
+    }
+
+    @Get('by-title/:titleSlug/all')
+    getEntriesByTitleSlug(
         @Param('titleSlug') titleSlug: string,
+        @Query() query: { limit: number, skip: number, orderBy: any },
     ): Promise<ISerializeResponse> {
         return this.entryService.getEntriesByTitleSlug({ titleSlug, query })
     }
 
-    @Get(':titleSlug/featured')
+    @Get('by-title/:titleSlug/featured')
     getFeaturedEntryByTitleSlug(
         @Param('titleSlug') titleSlug: string
     ): Promise<ISerializeResponse> {

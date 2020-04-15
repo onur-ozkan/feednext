@@ -47,6 +47,14 @@ export class EntryService {
         return serializerService.serializeResponse('entry_list', result)
     }
 
+    async getEntriesByAuthorOfIt({ username, query }: {
+        username: string,
+        query: { limit: number, skip: number, orderBy: any }
+    }): Promise<ISerializeResponse> {
+       const result = await this.entriesRepository.getEntriesByAuthorOfIt({ username, query })
+       return serializerService.serializeResponse('entry_list_of_author', result)
+    }
+
     async getFeaturedEntryByTitleSlug({ titleSlug }: { titleSlug: string }): Promise<ISerializeResponse> {
         const result = await this.entriesRepository.getFeaturedEntryByTitleSlug({ titleSlug })
         return serializerService.serializeResponse('featured_entry', result)

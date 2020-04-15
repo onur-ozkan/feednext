@@ -23,25 +23,36 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         titleSlug: string, query: { limit: number, skip: number, orderBy: any }
     }): Promise<{ entries: EntriesEntity[], count: number }> {
         const orderBy = query.orderBy || 'ASC'
+        const [entries, total] = await this.findAndCount({
+            where: {
+                title_slug: titleSlug
+            },
+            order: {
+                created_at: orderBy.toUpperCase(),
+            },
+            take: Number(query.limit) || 10,
+            skip: Number(query.skip) || 0,
+        })
 
-        try {
-            const [entries, total] = await this.findAndCount({
-                where: {
-                    title_slug: titleSlug
-                },
-                order: {
-                    created_at: orderBy.toUpperCase(),
-                },
-                take: Number(query.limit) || 10,
-                skip: Number(query.skip) || 0,
-            })
-            return {
-                entries,
-                count: total,
-            }
-        } catch (err) {
-            throw new BadRequestException(err)
-        }
+        return { entries, count: total }
+    }
+
+    async getEntriesByAuthorOfIt({ username, query }: {
+        username: string, query: { limit: number, skip: number, orderBy: any }
+    }): Promise<{ entries: EntriesEntity[], count: number }> {
+        const orderBy = query.orderBy || 'ASC'
+        const [entries, total] = await this.findAndCount({
+            where: {
+                written_by: username
+            },
+            order: {
+                created_at: orderBy.toUpperCase(),
+            },
+            take: Number(query.limit) || 10,
+            skip: Number(query.skip) || 0,
+        })
+
+        return { entries, count: total }
     }
 
     async getFeaturedEntryByTitleSlug({ titleSlug }: { titleSlug: string }): Promise<EntriesEntity> {
