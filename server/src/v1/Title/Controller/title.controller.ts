@@ -31,6 +31,14 @@ export class TitleController {
         return this.titleService.getTitleList(query)
     }
 
+    @Get('by-author/:username/all')
+    getTitleListByAuthorOfIt(
+        @Param('username') username: string,
+        @Query() query: { limit: number, skip: number, orderBy: any }
+    ): Promise<ISerializeResponse> {
+        return this.titleService.getTitleListByAuthorOfIt({ username, query })
+    }
+
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Post('create-title')

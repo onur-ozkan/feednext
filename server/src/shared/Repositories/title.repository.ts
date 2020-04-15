@@ -33,21 +33,36 @@ export class TitlesRepository extends Repository<TitlesEntity> {
 
     async getTitleList(query: { limit: number, skip: number, orderBy: any }): Promise<{ titles: TitlesEntity[], count: number }> {
         const orderBy = query.orderBy || 'ASC'
+        const [titles, total] = await this.findAndCount({
+            order: {
+                name: orderBy.toUpperCase(),
+            },
+            take: Number(query.limit) || 10,
+            skip: Number(query.skip) || 0,
+        })
 
-        try {
-            const [titles, total] = await this.findAndCount({
-                order: {
-                    name: orderBy.toUpperCase(),
-                },
-                take: Number(query.limit) || 10,
-                skip: Number(query.skip) || 0,
-            })
-            return {
-                titles,
-                count: total,
-            }
-        } catch (err) {
-            throw new BadRequestException(err)
+        return { titles, count: total }
+    }
+
+    async getTitleListByAuthorOfIt({ username, query }: {
+        username: string
+        query: { limit: number, skip: number, orderBy: any }
+    }): Promise<{ titles: TitlesEntity[], count: number }> {
+        const orderBy = query.orderBy || 'ASC'
+
+        const [titles, total] = await this.findAndCount({
+            where: {
+                opened_by: username
+            },
+            order: {
+                name: orderBy.toUpperCase(),
+            },
+            take: Number(query.limit) || 10,
+            skip: Number(query.skip) || 0,
+        })
+        return {
+            titles,
+            count: total,
         }
     }
 

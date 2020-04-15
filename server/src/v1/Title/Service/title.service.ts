@@ -19,7 +19,6 @@ import { UsersRepository } from 'src/shared/Repositories/users.repository'
 
 @Injectable()
 export class TitleService {
-
     private validator: ObjectID
 
     constructor(
@@ -43,8 +42,22 @@ export class TitleService {
     }
 
     async getTitleList(query: { limit: number, skip: number, orderBy: any }): Promise<ISerializeResponse> {
-        const result: {titles: TitlesEntity[], count: number} = await this.titlesRepository.getTitleList(query)
+        const result: {
+            titles: TitlesEntity[],
+            count: number
+        } = await this.titlesRepository.getTitleList(query)
         return serializerService.serializeResponse('title_list', result)
+    }
+
+    async getTitleListByAuthorOfIt({ username, query }: {
+        username: string
+        query: { limit: number, skip: number, orderBy: any }
+    }): Promise<ISerializeResponse> {
+        const result: {
+            titles: TitlesEntity[],
+            count: number
+        } = await this.titlesRepository.getTitleListByAuthorOfIt({ username, query })
+        return serializerService.serializeResponse('title_list_of_author', result)
     }
 
     async createTitle(openedBy: string, dto: CreateTitleDto): Promise<HttpException | ISerializeResponse> {
