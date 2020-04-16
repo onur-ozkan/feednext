@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Form } from '@ant-design/compatible'
-import { Button, Card, List, Select, Tag, message } from 'antd'
+import { Button, Card, List, Select, Tag, message, BackTop } from 'antd'
 import { LoadingOutlined, ArrowUpOutlined, LinkOutlined } from '@ant-design/icons'
 import '@ant-design/compatible/assets/index.css'
 
@@ -35,7 +35,6 @@ const Feeds = (): JSX.Element => {
 								entry: {
 									id: featuredEntryResponse.data.attributes.id,
 									avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-									profileUrl: '#',
 									text: featuredEntryResponse.data.attributes.text,
 									createdAt: featuredEntryResponse.data.attributes.created_at,
 									updatedAt: featuredEntryResponse.data.attributes.updated_at,
@@ -131,6 +130,7 @@ const Feeds = (): JSX.Element => {
 
 	return (
 		<>
+			<BackTop />
 			<Card bordered={false}>
 				<Form layout="inline">
 					<StandardFormRow

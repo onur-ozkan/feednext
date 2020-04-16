@@ -18,22 +18,37 @@ export const checkAccessToken = (accessToken: string): Promise<AxiosResponse>  =
 	}
 })
 
+export const fetchUserByUsername = (username: string): Promise<AxiosResponse> => axios.get(`/v1/user/${username}`)
+
+
 export const refreshToken = (): Promise<AxiosResponse> => axios.get('/v1/auth/refresh-token', { withCredentials: true })
 
 export const fetchAllFeeds = (skip: number): Promise<AxiosResponse> => axios.get(`/v1/title/all?limit=7&skip=${skip}`)
+
+export const fetchAllFeedsByAuthor = (
+	username: string,
+	skip: number
+): Promise<AxiosResponse> => axios.get(`/v1/title/by-author/${username}/all?limit=10&skip=${skip}`)
 
 export const fetchTitleBySlug = (titleSlug: string): Promise<AxiosResponse> => axios.get(`/v1/title/${titleSlug}`)
 
 export const fetchAllCategories = (): Promise<AxiosResponse> => axios.get('/v1/category/all')
 
+export const fetchEntryByEntryId = (entryId: string): Promise<AxiosResponse> => axios.get(`v1/entry/${entryId}`)
+
 export const fetchFeaturedEntryByTitleSlug = (
 	titleSlug: string
-): Promise<AxiosResponse> => axios.get(`/v1/entry/${titleSlug}/featured`)
+): Promise<AxiosResponse> => axios.get(`/v1/entry/by-title/${titleSlug}/featured`)
 
 export const fetchEntriesByTitleSlug = (
 	titleSlug: string,
 	skip: number
-): Promise<AxiosResponse> => axios.get(`/v1/entry/${titleSlug}/all?limit=7&skip=${skip}`)
+): Promise<AxiosResponse> => axios.get(`/v1/entry/by-title/${titleSlug}/all?limit=7&skip=${skip}`)
+
+export const fetchAllEntriesByAuthor = (
+	username: string,
+	skip: number
+): Promise<AxiosResponse> => axios.get(`/v1/entry/by-author/${username}/all?limit=10&skip=${skip}`)
 
 export const fetchOneCategoryById = (
 	categoryId: string

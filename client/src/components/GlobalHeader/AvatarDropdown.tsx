@@ -1,4 +1,4 @@
-import { Avatar, Menu, Spin } from 'antd'
+import { Avatar, Menu } from 'antd'
 import { FormattedMessage } from 'umi-plugin-react/locale'
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
@@ -6,10 +6,11 @@ import HeaderDropdown from '../HeaderDropdown'
 import styles from './index.less'
 import { UserOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons'
 import { SIGN_OUT } from '@/redux/Actions/User/types'
+import { router } from 'umi'
 
 const AvatarDropdown = () => {
 
-		const user = useSelector((state: any) => state.user)
+		const user = useSelector((state: any) => state.user?.attributes.user)
 		const dispatch = useDispatch()
 
 		const handleSignOut = () => {
@@ -20,7 +21,7 @@ const AvatarDropdown = () => {
 
 		const menuHeaderDropdown = (
 			<Menu className={styles.menu} selectedKeys={[]}>
-				<Menu.Item key="/">
+				<Menu.Item onClick={(): void => router.push(`/user/${user.username}`)} key="/">
 					<UserOutlined />
 					<FormattedMessage id="menu.account" defaultMessage="account center" />
 				</Menu.Item>
@@ -37,21 +38,13 @@ const AvatarDropdown = () => {
 			</Menu>
 		)
 
-		return user ? (
+		return (
 			<HeaderDropdown overlay={menuHeaderDropdown}>
 				<span className={`${styles.action} ${styles.account}`}>
 					<Avatar size="small" className={styles.avatar} alt="avatar" />
-					<span className={styles.name}>{user.attributes.name}</span>
+					<span className={styles.name}>{user.full_name.split(' ')[0]}</span>
 				</span>
 			</HeaderDropdown>
-		) : (
-			<Spin
-				size="small"
-				style={{
-					marginLeft: 8,
-					marginRight: 8,
-				}}
-			/>
 		)
 }
 export default AvatarDropdown

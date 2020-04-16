@@ -5,10 +5,11 @@ import AddEntry from './AddEntry'
 import { useSelector, useDispatch } from 'react-redux'
 import { voteEntry, undoEntryVote } from '@/services/api'
 import { VOTE_ENTRY, UNDO_ENTRY_VOTE } from '@/redux/Actions/User/types'
+import { router } from 'umi'
 
 const FeedEntries: React.FC = ({ titleData, entryData, handleEntryFetching, setEntryList, accessToken }): JSX.Element => {
 	const dispatch = useDispatch()
-	const userState = useSelector((state: any) => state.user.attributes.user)
+	const userState = useSelector((state: any) => state.user?.attributes.user)
 
 	const paginationOptions = {
 		size: 'small',
@@ -25,6 +26,8 @@ const FeedEntries: React.FC = ({ titleData, entryData, handleEntryFetching, setE
 		if (from === 'up') return userState.up_voted_entries.includes(entryId)
 		return userState.down_voted_entries.includes(entryId)
 	}
+
+	const handleEntryRouting = (entryId: string): void => router.push(`/entry/${entryId}`)
 
 	const handleVoteEntry = async (entryId: string, voteTo: 'up' | 'down'): Promise<void> => {
 		const entry = entryData.entries.find((entry) => entry.id === entryId)
@@ -82,7 +85,7 @@ const FeedEntries: React.FC = ({ titleData, entryData, handleEntryFetching, setE
 	]
 
 	return (
-		<Card>
+		<Card bordered={false}>
 			<List
 				pagination={paginationOptions}
 				className="comment-list"
@@ -94,8 +97,8 @@ const FeedEntries: React.FC = ({ titleData, entryData, handleEntryFetching, setE
 						<Comment
 							actions={entryActions(item)}
 							author={
-								<span style={{ cursor: 'pointer' }}>
-									@{item.written_by}
+								<span onClick={(): void => router.push(`/user/${item.written_by}`)} style={{ cursor: 'pointer' }}>
+									{item.written_by}
 								</span>
 							}
 							avatar={ <Avatar style={{ verticalAlign: 'middle' }} size="large">
@@ -106,7 +109,12 @@ const FeedEntries: React.FC = ({ titleData, entryData, handleEntryFetching, setE
 							}
 							datetime={
 								<Tooltip title={`Updated at ${item.updated_at}`}>
-									<span>{item.created_at}</span>
+									<span
+										onClick={(): void => handleEntryRouting(item.id)}
+										style={{ cursor: 'pointer' }}
+									>
+										{item.created_at}
+									</span>
 								</Tooltip>
 							}
 						/>
