@@ -27,12 +27,11 @@ export class UserService {
 
     async getUser(usernameParam: string): Promise<ISerializeResponse> {
         const profile: UsersEntity = await this.usersRepository.getUserByUsername(usernameParam)
-        const id: string = String(profile.id)
 
-        const properties: string[] = ['id', 'password', 'is_active', 'is_verified']
+        const properties: string[] = ['password', 'refresh_token', 'is_active', 'is_verified']
         await serializerService.deleteProperties(profile, properties)
 
-        return serializerService.serializeResponse('user_profile', profile, id)
+        return serializerService.serializeResponse('user_profile', profile)
     }
 
     async updateUser(usernameParam: string, dto: UpdateUserDto): Promise<ISerializeResponse> {
