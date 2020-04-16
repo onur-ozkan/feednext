@@ -45,24 +45,6 @@ const appRoutes = {
 			],
 		},
 		{
-			path: '/account',
-			component: '../layouts/AppLayout',
-			authority: User,
-			routes: [
-				{
-					path: '/account',
-					component: './Account',
-				},
-				{
-					path: '/account/settings',
-					component: './Account/Settings',
-				},
-				{
-					component: '404',
-				},
-			],
-		},
-		{
 			path: '/messages',
 			component: '../layouts/AppLayout',
 			authority: User,
@@ -83,7 +65,7 @@ const appRoutes = {
 			routes: [
 				{
 					name: 'Feeds',
-					icon: 'CopyFilled',
+					icon: 'CopyOutlined',
 					path: '/feeds',
 					component: './Feeds',
 				},
@@ -96,7 +78,7 @@ const appRoutes = {
 					component: './Entry',
 				},
 				{
-					path: '/user/',
+					path: '/user/:username',
 					component: './User',
 				},
 				{
