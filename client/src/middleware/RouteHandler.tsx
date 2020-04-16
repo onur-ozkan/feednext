@@ -6,32 +6,39 @@ import { getAuthorityFromRouter, handleSessionExpiration } from '@/services/util
 import { User } from '@/../config/constants'
 import { Result, Button } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
-import { SET_ACCESS_TOKEN } from '@/redux/Actions/Global/types'
-import { checkAccessToken, refreshToken } from '@/services/api'
+import { SET_ACCESS_TOKEN, SET_CATEGORY_LIST } from '@/redux/Actions/Global/types'
+import { checkAccessToken, refreshToken, fetchAllCategories } from '@/services/api'
 
-const RouteHandler = ({ children, loading, route }) => {
-	const [isReady, setIsReady] = useState(false)
+const RouteHandler = ({ children, route }) => {
+	const [isLoading, setIsLoading] = useState(true)
 	const user = useSelector((state: any) => state.user)
 	const accessToken = useSelector((state: any) => state.global.accessToken)
 	const dispatch = useDispatch()
 
 	const checkSessionSituation = async (): Promise<void> => {
-		await checkAccessToken(accessToken).catch(err => {
+		await checkAccessToken(accessToken).catch(_error => {
 			refreshToken().then(res => {
 				dispatch({
 					type: SET_ACCESS_TOKEN,
 					token: res.data.attributes.access_token
 				})
-			}).catch(e => {
-				handleSessionExpiration()
+			}).catch(_e => handleSessionExpiration())
+		})
+	}
+
+	const handleInitialProcessesOnRoute = async (): Promise<void> => {
+		if (accessToken) await checkSessionSituation()
+		await fetchAllCategories().then(res => {
+			dispatch({
+				type: SET_CATEGORY_LIST,
+				list: res.data.attributes.categories
 			})
 		})
-		setIsReady(true)
+		setIsLoading(false)
 	}
 
 	useEffect(() => {
-		if (accessToken) checkSessionSituation()
-		else setIsReady(true)
+		handleInitialProcessesOnRoute()
 	}, [])
 
 	const queryString = stringify({
@@ -40,7 +47,7 @@ const RouteHandler = ({ children, loading, route }) => {
 
 	const authorized: any = getAuthorityFromRouter(route?.routes, location.pathname || '/')
 
-	if (loading || !isReady) {
+	if (isLoading) {
 		return <PageLoading />
 	}
 
