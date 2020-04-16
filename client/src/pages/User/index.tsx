@@ -17,9 +17,11 @@ import { useSelector } from 'react-redux'
 import { fetchAllFeedsByAuthor, fetchAllEntriesByAuthor, fetchUserByUsername } from '@/services/api'
 import { router } from 'umi'
 import NotFoundPage from '../404'
+import { handleArrayFiltering } from '@/services/utils'
 
 const User: React.FC = ({ computedMatch }): JSX.Element => {
 	const userState = useSelector((state: any) => state.user?.attributes.user)
+	const categoryList = useSelector((state: any) => state.global.categoryList)
 
 	const [user, setUser] = useState(userState || null)
 	const [isUserFound, setIsUserFound] = useState<boolean | null>(null)
@@ -66,7 +68,7 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 			const feedList = await res.data.attributes.titles.map((title) =>
 				<Row key={title.id} style={{ padding: 5 }}>
 					<Col span={4}>
-						<Tag> Phone </Tag>
+						<Tag> {handleArrayFiltering(categoryList, title.category_id).name} </Tag>
 					</Col>
 					<Col span={16}>
 						{title.name}
