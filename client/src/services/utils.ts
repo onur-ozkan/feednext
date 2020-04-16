@@ -64,3 +64,7 @@ export const forgeDataTree = (dataset: any[]): any[] => {
 
 	return dataTree
 }
+
+export const handleArrayFiltering = (list: any[], filterKey: any) => {
+	return list.find(item => item.id === filterKey)
+}
