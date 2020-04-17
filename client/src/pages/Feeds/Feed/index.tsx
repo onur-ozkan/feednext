@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import FeedHeader from './components/FeedHeader'
 import FeedEntries from './components/FeedEntries'
-import { fetchEntriesByTitleSlug, fetchTitleBySlug, fetchOneCategoryById, getAverageTitleRate } from '@/services/api'
+import { fetchEntriesByTitleSlug, fetchTitleBySlug, getAverageTitleRate } from '@/services/api'
 import { PageLoading } from '@ant-design/pro-layout'
 import { useSelector } from 'react-redux'
+import { handleArrayFiltering } from '@/services/utils'
 
 const Feed: React.FC = ({ computedMatch }): JSX.Element => {
+	const categoryList = useSelector((state: any) => state.global.categoryList)
 	const accessToken = useSelector((state: any) => state.global.accessToken)
 
 	const [title, setTitle]: any = useState(null)
@@ -25,7 +27,7 @@ const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 
 	useEffect(() => {
 		fetchTitleBySlug(computedMatch.params.feedSlug).then(async res => {
-			await fetchOneCategoryById(res.data.attributes.category_id).then(res => setCategory(res.data))
+			setCategory(handleArrayFiltering(categoryList, res.data.attributes.category_id))
 			getTitleRate(res.data.id)
 			await setTitle(res.data)
 		})

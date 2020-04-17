@@ -59,7 +59,7 @@ const FeedHeader: React.FC = (props: any): JSX.Element => {
 			<PageHeader
 				title={
 					<>
-						<Tag color="blue">{categoryData.attributes.name}</Tag>
+						<Tag color="blue">{categoryData.name}</Tag>
 						<Row>
 							<Col style={{ margin: '0px 5px -15px 0px' }}>
 								<h1>{titleData.attributes.name}</h1>

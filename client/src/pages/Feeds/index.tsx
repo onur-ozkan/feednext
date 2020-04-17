@@ -8,9 +8,13 @@ import ArticleListContent from './components/ArticleListContent'
 import StandardFormRow from './components/StandardFormRow'
 import TagSelect from './components/TagSelect'
 import styles from './style.less'
-import { fetchAllFeeds, fetchFeaturedEntryByTitleSlug, fetchOneCategoryById } from '@/services/api'
+import { fetchAllFeeds, fetchFeaturedEntryByTitleSlug } from '@/services/api'
+import { useSelector } from 'react-redux'
+import { handleArrayFiltering } from '@/services/utils'
 
 const Feeds = (): JSX.Element => {
+	const categoryList = useSelector((state: any) => state.global.categoryList)
+
 	const [isLoading, setIsLoading] = useState(true)
 	const [feedList, setFeed]: any = useState([])
 	const [skipValueForPagination, setSkipValueForPagination] = useState(0)
@@ -26,9 +30,7 @@ const Feeds = (): JSX.Element => {
 								slug: title.slug,
 								name: title.name,
 								href: `/feeds/${title.slug}`,
-								categoryName: await fetchOneCategoryById(title.category_id).then(
-									categoryResponse => categoryResponse.data.attributes.name,
-								),
+								categoryName: handleArrayFiltering(categoryList, title.category_id).name,
 								createdAt: title.created_at,
 								updatedAt: title.updated_at,
 								entryCount: title.entry_count,

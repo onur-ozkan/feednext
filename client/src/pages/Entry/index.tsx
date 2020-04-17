@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { Comment, Tag, Avatar, Tooltip, PageHeader, Row, Col, Rate, Divider } from 'antd'
 import { PageLoading } from '@ant-design/pro-layout'
-import { fetchEntryByEntryId, fetchTitleBySlug, getAverageTitleRate, fetchOneCategoryById } from '@/services/api'
+import { fetchEntryByEntryId, fetchTitleBySlug, getAverageTitleRate } from '@/services/api'
 import NotFoundPage from '../404'
 import { ArrowUpOutlined } from '@ant-design/icons'
+import { handleArrayFiltering } from '@/services/utils'
+import { useSelector } from 'react-redux'
 
 const Entry = ({ computedMatch }): JSX.Element => {
+	const categoryList = useSelector((state: any) => state.global.categoryList)
 
 	const [isFetchingSuccess, setIsFetchingSuccess] = useState(null)
-
 	const [averageTitleRate, setAverageTitleRate] = useState(null)
 	const [titleData, setTitleData] = useState(null)
 	const [entryData, setEntryData] = useState(null)
@@ -27,13 +29,12 @@ const Entry = ({ computedMatch }): JSX.Element => {
 				fetchTitleBySlug(fRes.data.attributes.title_slug)
 					.then(sRes => {
 						setTitleData(sRes.data)
-						// Fetch category
-						fetchOneCategoryById(sRes.data.attributes.category_id)
-							.then(tRes => setCategoryName(tRes.data.attributes.name))
-							.catch(error => setIsFetchingSuccess(false))
+						// Get category
+						const category = handleArrayFiltering(categoryList,sRes.data.attributes.category_id)
+						setCategoryName(category.name)
 						// Fetch average rate of title
 						getAverageTitleRate(sRes.data.id)
-							.then(frRes => setAverageTitleRate(frRes.data.attributes.rate || 0))
+							.then(trRes => setAverageTitleRate(trRes.data.attributes.rate || 0))
 							.catch(error => setIsFetchingSuccess(false))
 					})
 					.catch(error => setIsFetchingSuccess(false))
