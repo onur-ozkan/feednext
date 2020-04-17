@@ -6,6 +6,7 @@ import NotFoundPage from '../404'
 import { ArrowUpOutlined } from '@ant-design/icons'
 import { handleArrayFiltering } from '@/services/utils'
 import { useSelector } from 'react-redux'
+import { router } from 'umi'
 
 const Entry = ({ computedMatch }): JSX.Element => {
 	const categoryList = useSelector((state: any) => state.global.categoryList)
@@ -51,7 +52,10 @@ const Entry = ({ computedMatch }): JSX.Element => {
 			<Tag color="blue"> {categoryName} </Tag>
 			<Row>
 				<Col style={{ margin: '0px 5px -15px 0px' }}>
-					<h1> {titleData.attributes.name} </h1>
+					<h1
+						style={{ cursor: 'pointer' }}
+						onClick={(): void => router.push(`/feeds/${titleData.attributes.slug}`)}
+					> {titleData.attributes.name} </h1>
 				</Col>
 				<Col>
 					<Rate disabled value={averageTitleRate} />
@@ -91,7 +95,7 @@ const Entry = ({ computedMatch }): JSX.Element => {
 					actions={handleCommentVotes()}
 					datetime={handleCommentTime()}
 					author={
-						<span style={{ cursor: 'pointer' }}>@{entryData.attributes.written_by}</span>
+						<span onClick={(): void => router.push(`/user/${entryData.attributes.written_by}`)} style={{ cursor: 'pointer' }}>{entryData.attributes.written_by}</span>
 					}
 					avatar={
 						<Avatar size="large">
