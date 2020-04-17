@@ -20,6 +20,11 @@ export const checkAccessToken = (accessToken: string): Promise<AxiosResponse>  =
 
 export const fetchUserByUsername = (username: string): Promise<AxiosResponse> => axios.get(`/v1/user/${username}`)
 
+export const fetchUserVotes = (
+	username: string,
+	voteType: 'up' | 'down',
+	skip: number
+): Promise<AxiosResponse> => axios.get(`/v1/user/${username}/votes?voteType=${voteType}&limit=10&skip=${skip}`)
 
 export const refreshToken = (): Promise<AxiosResponse> => axios.get('/v1/auth/refresh-token', { withCredentials: true })
 
@@ -49,10 +54,6 @@ export const fetchAllEntriesByAuthor = (
 	username: string,
 	skip: number
 ): Promise<AxiosResponse> => axios.get(`/v1/entry/by-author/${username}/all?limit=10&skip=${skip}`)
-
-export const fetchOneCategoryById = (
-	categoryId: string
-): Promise<AxiosResponse> => axios.get(`/v1/category/${categoryId}`)
 
 export const createTitle = (
 	createTitlePayload: { name: string; categoryId: string; description?: string },

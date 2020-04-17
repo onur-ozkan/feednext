@@ -14,7 +14,7 @@ import {
 	LoadingOutlined,
 } from '@ant-design/icons'
 import { useSelector } from 'react-redux'
-import { fetchAllFeedsByAuthor, fetchAllEntriesByAuthor, fetchUserByUsername } from '@/services/api'
+import { fetchAllFeedsByAuthor, fetchAllEntriesByAuthor, fetchUserByUsername, fetchUserVotes } from '@/services/api'
 import { router } from 'umi'
 import NotFoundPage from '../404'
 import { handleArrayFiltering } from '@/services/utils'
@@ -93,10 +93,40 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 				return
 			}
 
-			const feedList = await res.data.attributes.entries.map((entry) =>
+			const entryList = await res.data.attributes.entries.map((entry) =>
 				<Row key={entry.id} style={{ padding: 5 }}>
 					<Col span={20}>
-						{entry.text}
+						<Typography.Paragraph ellipsis={{ rows: 2}} >
+							{entry.text}
+						</Typography.Paragraph>
+					</Col>
+					<Col span={1} />
+					<Col span={3}>
+						<Button onClick={(): void => router.push(`/entry/${entry.id}`)} size="small" type="primary">
+							Open
+						</Button>
+					</Col>
+				</Row>
+			)
+			setTabView(entryList)
+		})
+	}
+
+	const handleVotesTabView = (voteType: 'up' | 'down', skip: number): void => {
+		fetchUserVotes(computedMatch.params.username, voteType, skip).then(async res => {
+			setTotalItems(res.data.attributes.count)
+
+			if (res.data.attributes.entries.length === 0) {
+				setTabView(<Empty description="No Entry Found" image={Empty.PRESENTED_IMAGE_SIMPLE} />)
+				return
+			}
+
+			const entryList = await res.data.attributes.entries.map((entry) =>
+				<Row key={entry.id} style={{ padding: 5 }}>
+					<Col span={20}>
+						<Typography.Paragraph ellipsis={{ rows: 2}} >
+							{entry.text}
+						</Typography.Paragraph>
 					</Col>
 					<Col span={4}>
 						<Button onClick={(): void => router.push(`/entry/${entry.id}`)} size="small" type="primary">
@@ -105,7 +135,7 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 					</Col>
 				</Row>
 			)
-			setTabView(feedList)
+			setTabView(entryList)
 		})
 	}
 
@@ -115,7 +145,7 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 		</div>
 	)
 
-	const handlePagination = (func: Function): JSX.Element => (
+	const handlePagination = (func: Function, voteType?: 'up' | 'down'): JSX.Element => (
 		<Pagination
 			size="small"
 			showLessItems={true}
@@ -124,10 +154,16 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 			pageSize={10}
 			total={totalItems}
 			onChange={
-				(page: number): void => {
-					setTabView(handleLoadingView)
-					func(10 * ( page -1))
-				}
+				voteType ?
+					(page: number): void => {
+						setTabView(handleLoadingView)
+						func(voteType, 10 * ( page -1))
+					}
+				:
+					(page: number): void => {
+						setTabView(handleLoadingView)
+						func(10 * ( page -1))
+					}
 			}
 		/>
 	)
@@ -144,7 +180,11 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 			case 'entries':
 				handleEntriesTabView(0)
 				break
-			case 'votes':
+			case 'up-votes':
+				handleVotesTabView('up', 0)
+				break
+			case 'down-votes':
+				handleVotesTabView('down', 0)
 				break
 		}
 	}, [currentTab])
@@ -197,13 +237,13 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 						<Tag style={{ margin: '3px 5px 3px 0px' }}> Example Category </Tag>
 					</Card>
 				</Col>
-				<Col lg={12} md={24}>
+				<Col lg={14} md={24}>
 					<Card bordered={false}>
-						<Tabs onChange={handleTabChange} defaultActiveKey={currentTab}>
+						<Tabs size="small" animated={false} onChange={handleTabChange} defaultActiveKey={currentTab}>
 							<Tabs.TabPane
 								tab={
 									<Typography.Text strong>
-										<CopyOutlined /> Feeds
+										<CopyOutlined style={{ marginRight: 0 }} /> Created Feeds
 									</Typography.Text>
 								}
 								key="feeds"
@@ -219,7 +259,7 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 							<Tabs.TabPane
 								tab={
 									<Typography.Text strong>
-										<EditOutlined /> Entries
+										<EditOutlined style={{ marginRight: 0 }} /> Created Entries
 									</Typography.Text>
 								}
 								key="entries"
@@ -235,13 +275,34 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 							<Tabs.TabPane
 								tab={
 									<Typography.Text strong>
-										<UpOutlined />
-										<DownOutlined style={{ margin: '0px 0px 0px -9px'}} /> Votes
+										<UpOutlined style={{ marginRight: 0 }} /> Up Voted Entries
 									</Typography.Text>
 								}
-								key="votes"
+								key="up-votes"
 							>
 								{tabView}
+								{totalItems > 0 &&
+									<>
+										<Divider />
+										{handlePagination(handleVotesTabView, 'up')}
+									</>
+								}
+							</Tabs.TabPane>
+							<Tabs.TabPane
+								tab={
+									<Typography.Text strong>
+										<DownOutlined style={{ marginRight: 0 }} /> Down Voted Entries
+									</Typography.Text>
+								}
+								key="down-votes"
+							>
+								{tabView}
+								{totalItems > 0 &&
+									<>
+										<Divider />
+										{handlePagination(handleVotesTabView, 'down')}
+									</>
+								}
 							</Tabs.TabPane>
 						</Tabs>
 					</Card>
