@@ -3,6 +3,7 @@ import { BadRequestException, UnprocessableEntityException } from '@nestjs/commo
 
 // Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
+import { ObjectId } from 'mongodb'
 
 // Local files
 import { EntriesEntity } from '../Entities/entries.entity'
@@ -17,6 +18,25 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         } catch (err) {
             throw new BadRequestException('Entry with that id could not found in the database.')
         }
+    }
+
+    async getVotedEntriesByIds({ idList, query }: {
+        idList: ObjectId[],
+        query: { limit: number, skip: number, orderBy: any }
+    }): Promise<{ entries: EntriesEntity[], count: number }> {
+        const orderBy = query.orderBy || 'ASC'
+        const [entries, total] = await this.findAndCount({
+            where: {
+                '_id': { $in: idList }
+            },
+            order: {
+                created_at: orderBy.toUpperCase(),
+            },
+            take: Number(query.limit) || 10,
+            skip: Number(query.skip) || 0,
+        })
+
+        return { entries, count: total }
     }
 
     async getEntriesByTitleSlug({ titleSlug, query }: {

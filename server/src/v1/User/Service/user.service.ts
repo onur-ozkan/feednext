@@ -5,6 +5,7 @@ import { JwtModule } from '@nestjs/jwt'
 
 // Other dependencies
 import * as jwt from 'jsonwebtoken'
+import { ObjectId } from 'mongodb'
 
 // Local files
 import { UsersEntity } from 'src/shared/Entities/users.entity'
@@ -15,6 +16,7 @@ import { MailService } from 'src/shared/Services/mail.service'
 import { MailSenderBody } from 'src/shared/Services/Interfaces/mail.sender.interface'
 import { ActivateUserDto } from '../Dto/activate-user.dto'
 import { configService } from 'src/shared/Services/config.service'
+import { EntriesRepository } from 'src/shared/Repositories/entries.repository'
 
 @Injectable()
 export class UserService {
@@ -22,6 +24,8 @@ export class UserService {
     constructor(
         @InjectRepository(UsersRepository)
         private readonly usersRepository: UsersRepository,
+        @InjectRepository(EntriesRepository)
+        private readonly entriesRepository: EntriesRepository,
         private readonly mailService: MailService,
     ) {}
 
@@ -33,6 +37,26 @@ export class UserService {
 
         return serializerService.serializeResponse('user_profile', profile)
     }
+
+    async getVotes({ username, query, voteType }: {
+        username: string,
+        query: {
+            limit: number, skip: number, orderBy: any
+        },
+        voteType: 'up' | 'down'
+   }): Promise<any> {
+       const user = await this.usersRepository.getUserByUsername(username)
+
+       // Convert string types to Mongo ObjectId
+       const idList = user[(voteType === 'down') ? 'down_voted_entries' : 'up_voted_entries']
+           .map(item => ObjectId(item))
+
+       const result = await this.entriesRepository.getVotedEntriesByIds({
+           idList,
+           query
+       })
+       return serializerService.serializeResponse(`user_${voteType}_vote_list`, result)
+   }
 
     async updateUser(usernameParam: string, dto: UpdateUserDto): Promise<ISerializeResponse> {
         const profile = await this.usersRepository.updateUser(usernameParam, dto)
