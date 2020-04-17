@@ -61,7 +61,16 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 			setTotalItems(res.data.attributes.count)
 
 			if (res.data.attributes.titles.length === 0) {
-				setTabView(<Empty description="No Feed Found" image={Empty.PRESENTED_IMAGE_SIMPLE} />)
+				setTabView(
+					<div style={{
+						minHeight: 460,
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center'
+					}}>
+						<Empty description="No Feed Found" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+					</div>
+				)
 				return
 			}
 
@@ -80,7 +89,11 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 					</Col>
 				</Row>
 			)
-			setTabView(feedList)
+			setTabView(
+				<div style={{ minHeight: 460 }}>
+					{feedList}
+				</div>
+			)
 		})
 	}
 
@@ -89,14 +102,23 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 			setTotalItems(res.data.attributes.count)
 
 			if (res.data.attributes.entries.length === 0) {
-				setTabView(<Empty description="No Entry Found" image={Empty.PRESENTED_IMAGE_SIMPLE} />)
+				setTabView(
+					<div style={{
+						minHeight: 460,
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center'
+					}}>
+						<Empty description="No Entry Found" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+					</div>
+				)
 				return
 			}
 
 			const entryList = await res.data.attributes.entries.map((entry) =>
 				<Row key={entry.id} style={{ padding: 5 }}>
 					<Col span={20}>
-						<Typography.Paragraph ellipsis={{ rows: 2}} >
+						<Typography.Paragraph ellipsis>
 							{entry.text}
 						</Typography.Paragraph>
 					</Col>
@@ -108,7 +130,11 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 					</Col>
 				</Row>
 			)
-			setTabView(entryList)
+			setTabView(
+				<div style={{ minHeight: 460 }}>
+					{entryList}
+				</div>
+			)
 		})
 	}
 
@@ -117,30 +143,52 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 			setTotalItems(res.data.attributes.count)
 
 			if (res.data.attributes.entries.length === 0) {
-				setTabView(<Empty description="No Entry Found" image={Empty.PRESENTED_IMAGE_SIMPLE} />)
+				setTabView(
+					<div style={{
+						minHeight: 460,
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center'
+					}}>
+						<Empty
+							description={`This user has not ${voteType} vote any entry yet`}
+							image={Empty.PRESENTED_IMAGE_SIMPLE}
+						/>
+					</div>
+				)
 				return
 			}
 
 			const entryList = await res.data.attributes.entries.map((entry) =>
 				<Row key={entry.id} style={{ padding: 5 }}>
 					<Col span={20}>
-						<Typography.Paragraph ellipsis={{ rows: 2}} >
+						<Typography.Paragraph ellipsis>
 							{entry.text}
 						</Typography.Paragraph>
 					</Col>
-					<Col span={4}>
+					<Col span={1} />
+					<Col span={3}>
 						<Button onClick={(): void => router.push(`/entry/${entry.id}`)} size="small" type="primary">
 							Open
 						</Button>
 					</Col>
 				</Row>
 			)
-			setTabView(entryList)
+			setTabView(
+				<div style={{ minHeight: 460 }}>
+					{entryList}
+				</div>
+			)
 		})
 	}
 
 	const handleLoadingView = (
-		<div style={{ textAlign: 'center' }}>
+		<div style={{
+			minHeight: 460,
+			display: 'flex',
+			alignItems: 'center',
+			justifyContent: 'center'
+		}}>
 			<LoadingOutlined style={{ fontSize: 20 }} />
 		</div>
 	)
