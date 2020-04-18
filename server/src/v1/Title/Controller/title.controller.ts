@@ -26,6 +26,11 @@ export class TitleController {
         return this.titleService.getTitle(titleSlug)
     }
 
+    @Get('search')
+    searchTitle(@Query('searchValue') searchValue: string): Promise<ISerializeResponse> {
+        return this.titleService.searchTitle({ searchValue })
+    }
+
     @Get('all')
     getTitleList(@Query() query: { limit: number, skip: number, orderBy: any }): Promise<ISerializeResponse> {
         return this.titleService.getTitleList(query)

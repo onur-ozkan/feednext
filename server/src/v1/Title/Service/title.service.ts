@@ -41,6 +41,11 @@ export class TitleService {
         return serializerService.serializeResponse('title_detail', title, id)
     }
 
+    async searchTitle({ searchValue } : { searchValue: string }): Promise<ISerializeResponse> {
+        const result = await this.titlesRepository.searchTitle({ searchValue })
+        return serializerService.serializeResponse('searched_title_list', result)
+    }
+
     async getTitleList(query: { limit: number, skip: number, orderBy: any }): Promise<ISerializeResponse> {
         const result: {
             titles: TitlesEntity[],

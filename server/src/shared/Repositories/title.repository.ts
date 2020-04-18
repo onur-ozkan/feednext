@@ -21,6 +21,20 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         }
     }
 
+    async searchTitle({ searchValue } : { searchValue: string }): Promise<{ titles: TitlesEntity[] }> {
+        const [titles] = await this.findAndCount({
+            where: {
+                name: new RegExp(searchValue, 'i')
+            },
+            take: 5,
+            order: {
+                entry_count: 'DESC'
+            }
+        })
+
+        return { titles }
+    }
+
     async updateEntryCount(titleSlug: string, isIncrement: boolean): Promise<void> {
         try {
             const title: TitlesEntity = await this.findOneOrFail({ slug: titleSlug })
@@ -60,10 +74,8 @@ export class TitlesRepository extends Repository<TitlesEntity> {
             take: Number(query.limit) || 10,
             skip: Number(query.skip) || 0,
         })
-        return {
-            titles,
-            count: total,
-        }
+
+        return { titles, count: total }
     }
 
     async createTitle(openedBy: string, dto: CreateTitleDto): Promise<TitlesEntity> {
