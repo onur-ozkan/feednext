@@ -1,6 +1,5 @@
 import { Tag, Button } from 'antd'
 import React from 'react'
-import { formatMessage } from 'umi-plugin-react/locale'
 import { PlusCircleOutlined, LoginOutlined } from '@ant-design/icons'
 
 import Avatar from './AvatarDropdown'
@@ -63,30 +62,7 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
 
 	return (
 		<div className={className}>
-			<HeaderSearch
-				className={`${styles.action} ${styles.search}`}
-				placeholder={formatMessage({
-					id: 'component.globalHeader.search',
-				})}
-				// defaultValue="umi ui"
-				dataSource={[
-					formatMessage({
-						id: 'component.globalHeader.search.example1',
-					}),
-					formatMessage({
-						id: 'component.globalHeader.search.example2',
-					}),
-					formatMessage({
-						id: 'component.globalHeader.search.example3',
-					}),
-				]}
-				onSearch={(): void => {
-					return
-				}}
-				onPressEnter={(): void => {
-					return
-				}}
-			/>
+			<HeaderSearch />
 			{handleAuthorizedElements()}
 			<SelectLang className={styles.action} />
 			{REACT_APP_ENV && <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>}
