@@ -46,7 +46,8 @@ const HeaderSearch: React.FC = (): JSX.Element => {
 						options: []
 					}
 				})
-				if (foundTitles.length > 0) setAutoCompleteView(foundTitles)
+				if (foundTitles.length === 0) setAutoCompleteView(null)
+				else setAutoCompleteView(foundTitles)
 			})
 		}
 	}, [value])
