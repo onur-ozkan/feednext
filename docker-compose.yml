@@ -16,6 +16,8 @@ services:
       - ${BACKEND_PORT}:80
     volumes:
       - ./.docker/nginx/conf.d/:/etc/nginx/conf.d
+    depends_on:
+      - node_server
     networks:
       - app-network
 
@@ -39,7 +41,6 @@ services:
     depends_on:
       - redis
       - mongo
-      - webserver
     networks:
       - app-network
 
