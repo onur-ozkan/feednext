@@ -30,6 +30,8 @@ export const refreshToken = (): Promise<AxiosResponse> => axios.get('/v1/auth/re
 
 export const fetchAllFeeds = (skip: number): Promise<AxiosResponse> => axios.get(`/v1/title/all?limit=7&skip=${skip}`)
 
+export const searchTitle = (searchValue: string): Promise<AxiosResponse> => axios.get(`/v1/title/search?searchValue=${searchValue}`)
+
 export const fetchAllFeedsByAuthor = (
 	username: string,
 	skip: number
