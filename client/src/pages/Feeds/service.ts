@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/services/request'
 import { ListItemDataType } from './data'
 
 export async function queryFakeList(params: ListItemDataType): Promise<object> {

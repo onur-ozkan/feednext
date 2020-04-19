@@ -1,48 +1,27 @@
-import { Avatar, Menu, Spin } from 'antd'
-import { ClickParam } from 'antd/es/menu'
+import { Avatar, Menu } from 'antd'
 import { FormattedMessage } from 'umi-plugin-react/locale'
 import React from 'react'
-import { connect } from 'dva'
-import { router } from 'umi'
-
-import { ConnectProps, ConnectState } from '@/models/connect'
-import { CurrentUser } from '@/models/user'
+import { useSelector, useDispatch } from 'react-redux'
 import HeaderDropdown from '../HeaderDropdown'
 import styles from './index.less'
 import { UserOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons'
+import { SIGN_OUT } from '@/redux/Actions/User/types'
+import { router } from 'umi'
 
-export declare interface GlobalHeaderRightProps extends ConnectProps {
-	currentUser?: CurrentUser
-}
+const AvatarDropdown = () => {
 
-class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
-	onMenuClick = (event: ClickParam): void => {
-		const { key } = event
+		const user = useSelector((state: any) => state.user?.attributes.user)
+		const dispatch = useDispatch()
 
-		if (key === '/logout') {
-			const { dispatch } = this.props
-			if (dispatch) {
-				dispatch({
-					type: 'login/logout',
-				})
-			}
-
-			return
+		const handleSignOut = () => {
+			dispatch({
+				type: SIGN_OUT
+			})
 		}
-		router.push(`/account${key}`)
-	}
-
-	render(): React.ReactNode {
-		const {
-			currentUser = {
-				avatar: '',
-				name: '',
-			},
-		} = this.props
 
 		const menuHeaderDropdown = (
-			<Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
-				<Menu.Item key="/">
+			<Menu className={styles.menu} selectedKeys={[]}>
+				<Menu.Item onClick={(): void => router.push(`/user/${user.username}`)} key="/">
 					<UserOutlined />
 					<FormattedMessage id="menu.account" defaultMessage="account center" />
 				</Menu.Item>
@@ -52,29 +31,20 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
 					<FormattedMessage id="menu.account.settings" defaultMessage="account settings" />
 				</Menu.Item>
 
-				<Menu.Item key="/logout">
+				<Menu.Item onClick={handleSignOut} key="/logout">
 					<LogoutOutlined />
 					<FormattedMessage id="menu.account.logout" defaultMessage="logout" />
 				</Menu.Item>
 			</Menu>
 		)
 
-		return currentUser && currentUser.name ? (
+		return (
 			<HeaderDropdown overlay={menuHeaderDropdown}>
 				<span className={`${styles.action} ${styles.account}`}>
-					<Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
-					<span className={styles.name}>{currentUser.name}</span>
+					<Avatar size="small" className={styles.avatar} alt="avatar" />
+					<span className={styles.name}>{user.full_name.split(' ')[0]}</span>
 				</span>
 			</HeaderDropdown>
-		) : (
-			<Spin
-				size="small"
-				style={{
-					marginLeft: 8,
-					marginRight: 8,
-				}}
-			/>
 		)
-	}
 }
 export default AvatarDropdown

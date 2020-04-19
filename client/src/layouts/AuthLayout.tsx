@@ -13,13 +13,13 @@ import { GithubFilled } from '@ant-design/icons'
 import { Provider } from 'react-redux'
 import { store } from '@/redux/store'
 
-export declare interface UserLayoutProps extends ConnectProps {
+export declare interface AuthLayoutProps extends ConnectProps {
 	breadcrumbNameMap: {
 		[path: string]: MenuDataItem
 	}
 }
 
-const UserLayout: React.FC<UserLayoutProps> = props => {
+const AuthLayout: React.FC<AuthLayoutProps> = props => {
 	const {
 		route = {
 			routes: [],
@@ -40,7 +40,7 @@ const UserLayout: React.FC<UserLayoutProps> = props => {
 		...props,
 	})
 	return (
-		<Provider store={store}>
+		<>
 			<Helmet>
 				<title>{title}</title>
 				<meta name="description" content={title} />
@@ -77,10 +77,8 @@ const UserLayout: React.FC<UserLayoutProps> = props => {
 					]}
 				/>
 			</div>
-		</Provider>
+		</>
 	)
 }
 
-export default connect(({ settings }: ConnectState) => ({
-	...settings,
-}))(UserLayout)
+export default AuthLayout

@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/services/request'
 import { UserRegisterParams } from './index'
 
 export async function fakeRegister(params: UserRegisterParams): Promise<object> {

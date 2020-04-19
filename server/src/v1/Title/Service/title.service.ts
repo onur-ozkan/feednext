@@ -2,6 +2,10 @@
 import { Injectable, HttpException, BadRequestException, HttpStatus } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 
+// Other dependencies
+import { Validator } from 'class-validator'
+import { ObjectID } from 'mongodb'
+
 // Local files
 import { TitlesRepository } from 'src/shared/Repositories/title.repository'
 import { CreateTitleDto } from '../Dto/create-title.dto'
@@ -10,13 +14,11 @@ import { CategoriesRepository } from 'src/shared/Repositories/categories.reposit
 import { UpdateTitleDto } from '../Dto/update-title.dto'
 import { serializerService, ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { EntriesRepository } from 'src/shared/Repositories/entries.repository'
+import { UsersRepository } from 'src/shared/Repositories/users.repository'
 
-import { Validator } from 'class-validator'
-import { ObjectID } from 'mongodb'
 
 @Injectable()
 export class TitleService {
-
     private validator: ObjectID
 
     constructor(
@@ -26,6 +28,8 @@ export class TitleService {
         private readonly categoriesRepository: CategoriesRepository,
         @InjectRepository(EntriesRepository)
         private readonly entriesRepository: EntriesRepository,
+        @InjectRepository(UsersRepository)
+        private readonly usersRepository: UsersRepository,
     ) {
         this.validator = new Validator()
     }
@@ -37,9 +41,28 @@ export class TitleService {
         return serializerService.serializeResponse('title_detail', title, id)
     }
 
+    async searchTitle({ searchValue } : { searchValue: string }): Promise<ISerializeResponse> {
+        const result = await this.titlesRepository.searchTitle({ searchValue })
+        return serializerService.serializeResponse('searched_title_list', result)
+    }
+
     async getTitleList(query: { limit: number, skip: number, orderBy: any }): Promise<ISerializeResponse> {
-        const result: {titles: TitlesEntity[], count: number} = await this.titlesRepository.getTitleList(query)
+        const result: {
+            titles: TitlesEntity[],
+            count: number
+        } = await this.titlesRepository.getTitleList(query)
         return serializerService.serializeResponse('title_list', result)
+    }
+
+    async getTitleListByAuthorOfIt({ username, query }: {
+        username: string
+        query: { limit: number, skip: number, orderBy: any }
+    }): Promise<ISerializeResponse> {
+        const result: {
+            titles: TitlesEntity[],
+            count: number
+        } = await this.titlesRepository.getTitleListByAuthorOfIt({ username, query })
+        return serializerService.serializeResponse('title_list_of_author', result)
     }
 
     async createTitle(openedBy: string, dto: CreateTitleDto): Promise<HttpException | ISerializeResponse> {
@@ -51,6 +74,38 @@ export class TitleService {
 
         const newTitle: TitlesEntity = await this.titlesRepository.createTitle(openedBy, dto)
         return serializerService.serializeResponse('title_detail', newTitle)
+    }
+
+    async rateTitle(ratedBy: string, titleId: string, rateValue: number): Promise<HttpException> {
+        if (!this.validator.isMongoId(titleId)) throw new BadRequestException('TitleId must be a MongoId.')
+
+        try {
+            this.usersRepository.findOneOrFail({ username: ratedBy })
+        } catch (error) {
+            throw new BadRequestException('User not found by given username')
+        }
+
+        await this.titlesRepository.rateTitle(ratedBy, titleId, rateValue)
+        throw new HttpException('Title has been rated', HttpStatus.OK)
+    }
+
+    async getRateOfUser(username: string, titleId: string): Promise<any> {
+        if (!this.validator.isMongoId(titleId)) throw new BadRequestException('TitleId must be a MongoId.')
+
+        try {
+            this.usersRepository.findOneOrFail({ username })
+        } catch (error) {
+            throw new BadRequestException('User not found by given username')
+        }
+
+        const rate = await this.titlesRepository.getRateOfUser(username, titleId)
+        return serializerService.serializeResponse('title_rate_of_user', { title_id: titleId, rate })
+    }
+
+    async getAvarageRate(titleId: string): Promise<ISerializeResponse> {
+        if (!this.validator.isMongoId(titleId)) throw new BadRequestException('TitleId must be a MongoId.')
+        const averageRate = await this.titlesRepository.getAvarageRate(titleId)
+        return serializerService.serializeResponse('average_title_rate', { title_id: titleId, rate: averageRate })
     }
 
     async updateTitle(updatedBy: string, titleId: string, dto: UpdateTitleDto): Promise<ISerializeResponse> {
@@ -69,7 +124,7 @@ export class TitleService {
         if (!this.validator.isMongoId(titleId)) throw new BadRequestException('TitleId must be a MongoId.')
 
         const title = await this.titlesRepository.deleteTitle(titleId)
-        await this.entriesRepository.deleteEntriesBelongsToTitle(String(title.id))
+        await this.entriesRepository.deleteEntriesBelongsToTitle(title.slug)
         throw new HttpException('Title has been deleted.', HttpStatus.OK)
     }
 }

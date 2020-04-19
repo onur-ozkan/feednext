@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Injectable, BadRequestException, HttpException, HttpStatus, NotFoundException } from '@nestjs/common'
+import { Injectable, BadRequestException, HttpException, HttpStatus } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 
 // Other dependencies
@@ -39,17 +39,24 @@ export class EntryService {
         return serializerService.serializeResponse('entry_detail', entry, id)
     }
 
-    async getEntriesByTitleId({ titleId, query }: { titleId: string, query: { limit: number, skip: number, orderBy: any } }): Promise<ISerializeResponse> {
-        if (!this.validator.isMongoId(titleId)) throw new BadRequestException('TitleId must be a MongoId.')
-
-        const result = await this.entriesRepository.getEntriesByTitleId({ titleId, query })
+    async getEntriesByTitleSlug({ titleSlug, query }: {
+         titleSlug: string,
+         query: { limit: number, skip: number, orderBy: any }
+    }): Promise<ISerializeResponse> {
+        const result = await this.entriesRepository.getEntriesByTitleSlug({ titleSlug, query })
         return serializerService.serializeResponse('entry_list', result)
     }
 
-    async getFeaturedEntryByTitleId({ titleId }: { titleId: string }): Promise<ISerializeResponse> {
-        if (!this.validator.isMongoId(titleId)) throw new BadRequestException('TitleId must be a MongoId.')
+    async getEntriesByAuthorOfIt({ username, query }: {
+        username: string,
+        query: { limit: number, skip: number, orderBy: any }
+    }): Promise<ISerializeResponse> {
+       const result = await this.entriesRepository.getEntriesByAuthorOfIt({ username, query })
+       return serializerService.serializeResponse('entry_list_of_author', result)
+    }
 
-        const result = await this.entriesRepository.getFeaturedEntryByTitleId({ titleId })
+    async getFeaturedEntryByTitleSlug({ titleSlug }: { titleSlug: string }): Promise<ISerializeResponse> {
+        const result = await this.entriesRepository.getFeaturedEntryByTitleSlug({ titleSlug })
         return serializerService.serializeResponse('featured_entry', result)
     }
 
@@ -63,12 +70,10 @@ export class EntryService {
     }
 
     async createEntry(writtenBy: string, dto: CreateEntryDto): Promise<HttpException | ISerializeResponse> {
-        if (!this.validator.isMongoId(dto.titleId)) throw new BadRequestException('TitleId must be a MongoId.')
-
         try {
-            await this.titlesRepository.updateEntryCount(dto.titleId, true)
+            await this.titlesRepository.updateEntryCount(dto.titleSlug, true)
         } catch (err) {
-            throw new BadRequestException(`Title with id:${dto.titleId} does not match in the database.`)
+            throw new BadRequestException(`${dto.titleSlug} slug does not match in the database.`)
         }
 
         const newEntry: EntriesEntity = await this.entriesRepository.createEntry(writtenBy, dto)
@@ -81,7 +86,7 @@ export class EntryService {
         try {
             await this.entriesRepository.findOneOrFail(entryId)
         } catch (e) {
-            throw new NotFoundException('Entry with that id could not found in the database.')
+            throw new BadRequestException('Entry with that id could not found in the database.')
         }
 
         await this.usersRepository.undoVotedEntry({ entryId, username, isUpVoted })
@@ -95,7 +100,7 @@ export class EntryService {
         try {
             await this.entriesRepository.findOneOrFail(entryId)
         } catch (e) {
-            throw new NotFoundException('Entry with that id could not found in the database.')
+            throw new BadRequestException('Entry with that id could not found in the database.')
         }
 
         await this.usersRepository.addVotedEntry({ entryId, username, isUpVoted })
@@ -107,7 +112,7 @@ export class EntryService {
         if (!this.validator.isMongoId(entryId)) throw new BadRequestException('EntryId must be a MongoId.')
 
         const entry: EntriesEntity = await this.entriesRepository.deleteEntry(entryId)
-        await this.titlesRepository.updateEntryCount(entry.title_id, false)
+        await this.titlesRepository.updateEntryCount(entry.title_slug, false)
         throw new HttpException('Entry has been deleted.', HttpStatus.OK)
     }
 }

@@ -1,5 +1,5 @@
 // Nest dependencies
-import { UnprocessableEntityException, BadRequestException, NotFoundException } from '@nestjs/common'
+import { UnprocessableEntityException, BadRequestException } from '@nestjs/common'
 
 // Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
@@ -17,38 +17,65 @@ export class TitlesRepository extends Repository<TitlesEntity> {
             const title: TitlesEntity = await this.findOneOrFail({slug: titleSlug})
             return title
         } catch (err) {
-            throw new NotFoundException('No title found for given slug')
+            throw new BadRequestException('No title found for given slug')
         }
     }
 
-    async updateEntryCount(titleId: string, isIncrement: boolean): Promise<void> {
+    async searchTitle({ searchValue } : { searchValue: string }): Promise<{ titles: TitlesEntity[] }> {
+        const [titles] = await this.findAndCount({
+            where: {
+                name: new RegExp(searchValue, 'i')
+            },
+            take: 5,
+            order: {
+                entry_count: 'DESC'
+            }
+        })
+
+        return { titles }
+    }
+
+    async updateEntryCount(titleSlug: string, isIncrement: boolean): Promise<void> {
         try {
-            const title: TitlesEntity = await this.findOneOrFail(titleId)
+            const title: TitlesEntity = await this.findOneOrFail({ slug: titleSlug })
             isIncrement ? title.entry_count++ : title.entry_count--
             this.save(title)
         } catch (err) {
-            throw new NotFoundException('Title with that id could not found in the database.')
+            throw new BadRequestException('Title with that id could not found in the database')
         }
     }
 
     async getTitleList(query: { limit: number, skip: number, orderBy: any }): Promise<{ titles: TitlesEntity[], count: number }> {
         const orderBy = query.orderBy || 'ASC'
+        const [titles, total] = await this.findAndCount({
+            order: {
+                name: orderBy.toUpperCase(),
+            },
+            take: Number(query.limit) || 10,
+            skip: Number(query.skip) || 0,
+        })
 
-        try {
-            const [titles, total] = await this.findAndCount({
-                order: {
-                    name: orderBy.toUpperCase(),
-                },
-                take: Number(query.limit) || 10,
-                skip: Number(query.skip) || 0,
-            })
-            return {
-                titles,
-                count: total,
-            }
-        } catch (err) {
-            throw new BadRequestException(err)
-        }
+        return { titles, count: total }
+    }
+
+    async getTitleListByAuthorOfIt({ username, query }: {
+        username: string
+        query: { limit: number, skip: number, orderBy: any }
+    }): Promise<{ titles: TitlesEntity[], count: number }> {
+        const orderBy = query.orderBy || 'ASC'
+
+        const [titles, total] = await this.findAndCount({
+            where: {
+                opened_by: username
+            },
+            order: {
+                name: orderBy.toUpperCase(),
+            },
+            take: Number(query.limit) || 10,
+            skip: Number(query.skip) || 0,
+        })
+
+        return { titles, count: total }
     }
 
     async createTitle(openedBy: string, dto: CreateTitleDto): Promise<TitlesEntity> {
@@ -66,12 +93,59 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         }
     }
 
+    async rateTitle(ratedBy: string, titleId: string, rateValue: number): Promise<void> {
+        let title
+        try {
+            title = await this.findOneOrFail(titleId)
+        } catch (error) {
+            throw new BadRequestException('Title not found by given title id')
+        }
+
+        const docIfAlreadyRated = title.rate.find(item => item.username === ratedBy)
+        if (docIfAlreadyRated) docIfAlreadyRated.rateValue = rateValue
+        else title.rate.push({ username: ratedBy, rateValue})
+
+        this.save(title)
+    }
+
+    async getRateOfUser(username: string, titleId: string): Promise<any> {
+        let title: TitlesEntity
+        try {
+            title = await this.findOneOrFail(titleId)
+        } catch (error) {
+            throw new BadRequestException('Title not found by given title id')
+        }
+
+        const userRate: { rateValue: number } | undefined = title.rate.find((
+            item: {username: string, rateValue: number }
+        ) => item.username === username)
+
+        if (userRate) return userRate!.rateValue
+        throw new BadRequestException('This user did not rate this title yet')
+    }
+
+    async getAvarageRate(titleId: string): Promise<number> {
+        let title: TitlesEntity
+        try {
+            title = await this.findOneOrFail(titleId)
+        } catch (error) {
+            throw new BadRequestException('Title not found by given title id')
+        }
+
+        const averageRate = title.rate.reduce((
+            total,
+            next: { username: string, rateValue: number }
+        ) => total + next.rateValue, 0) / title.rate.length
+
+        return Math.round(averageRate)
+    }
+
     async updateTitle(updatedBy: string, titleId: string, dto: UpdateTitleDto): Promise<TitlesEntity> {
         if (dto.categoryId) {
             try {
                 await this.findOneOrFail(dto.categoryId)
             } catch (err) {
-                throw new NotFoundException('Category with that id could not found in the database.')
+                throw new BadRequestException('Title could not found that belongs to given category id.')
             }
         }
 
@@ -79,7 +153,7 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         try {
             title = await this.findOneOrFail(titleId)
         } catch {
-            throw new NotFoundException('Title related to that id could not found in the database.')
+            throw new BadRequestException('Title related to that id could not found in the database.')
         }
 
         try {
@@ -103,7 +177,7 @@ export class TitlesRepository extends Repository<TitlesEntity> {
             await this.delete(title)
             return title
         } catch (err) {
-            throw new NotFoundException('Title with that id could not found in the database.')
+            throw new BadRequestException('Title with that id could not found in the database.')
         }
     }
 }

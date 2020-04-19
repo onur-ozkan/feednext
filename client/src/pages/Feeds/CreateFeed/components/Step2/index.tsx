@@ -25,7 +25,7 @@ const Step2: React.FC = (props: any) => {
 		stepMovementTo('main')
 	}
 
-	const onValidateForm = async () => {
+	const onValidateForm = (): void => {
 		if (!form.getFieldValue('entry')) return
 
 		setFirstEntryForm({

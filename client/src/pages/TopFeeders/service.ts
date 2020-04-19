@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/services/request'
 import { BasicListItemDataType } from './data'
 
 declare interface ParamsType extends Partial<BasicListItemDataType> {

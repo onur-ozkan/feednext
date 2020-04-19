@@ -1,12 +1,11 @@
 import ProLayout, { MenuDataItem, Settings, DefaultFooter } from '@ant-design/pro-layout'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Link } from 'umi'
 import { Dispatch } from 'redux'
 import { Row, Col } from 'antd'
 import { formatMessage } from 'umi-plugin-react/locale'
 
 import RightContent from '@/components/GlobalHeader/RightContent'
-import { checkIsUserExpired } from '@/services/utils'
 import logo from '../assets/logo.svg'
 import { Route } from 'antd/lib/breadcrumb/Breadcrumb'
 import { GithubFilled } from '@ant-design/icons'
@@ -45,11 +44,6 @@ const handleFooterRendering = (): JSX.Element => (
 
 const AppLayout: React.FC<AppLayoutProps> = props => {
 	const settings = useSelector((state: any) => state.settings)
-	const user = useSelector((state: any) => state.user)
-
-	useEffect(() => {
-		if (user) checkIsUserExpired(user.attributes.access_token)
-	}, [])
 
 	return (
 		<ProLayout
@@ -90,8 +84,8 @@ const AppLayout: React.FC<AppLayoutProps> = props => {
 			{...props}
 			{...settings}
 		>
-			<Row style={{ backgroundColor: 'transparent' }}>
-				<Col span={18} offset={3}>
+			<Row style={{ backgroundColor: 'transparent', justifyContent: 'center' }}>
+				<Col xxl={14} xl={16} lg={18} md={22} sm={24}>
 					{props.children}
 				</Col>
 			</Row>

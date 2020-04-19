@@ -20,6 +20,15 @@ export class UsersController {
         return this.usersService.getUser(username)
     }
 
+    @Get(':username/votes')
+    getVotes(
+        @Param('username') username,
+        @Query() query: { limit: number, skip: number, orderBy: any },
+        @Query('voteType') voteType: 'up' | 'down',
+    ): Promise<ISerializeResponse> {
+        return this.usersService.getVotes({username, query, voteType})
+    }
+
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Patch(':username')

@@ -8,15 +8,17 @@ import { fetchAllCategories, createTitle, createEntry } from '@/services/api'
 import { forgeDataTree } from '@/services/utils'
 import { PageLoading } from '@ant-design/pro-layout'
 import { StepProvider } from './StepContext'
+import { useSelector } from 'react-redux'
 
 const { Step } = Steps
 
 const CreateFeed: React.FC = () => {
+	const accessToken = useSelector((state: any) => state.global.accessToken)
+
 	const [currentStep, setCurrentStep] = useState<number>(0)
 	const [stepComponent, setStepComponent] = useState<React.ReactNode>(null)
 	const [isRequestReady, setIsRequestReady] = useState(false)
 	const [categories, setCategories] = useState<any[] | null>(null)
-
 	const [readableCategoryValue, setReadableCategoryValue] = useState(null)
 	const [firstEntryForm, setFirstEntryForm]: any = useState({
 		text: undefined
@@ -27,6 +29,9 @@ const CreateFeed: React.FC = () => {
 		description: undefined
 	})
 
+	const [feedCreatedSuccessfully, setFeedCreatedSuccessfully] = useState<boolean | null>(null)
+	const [titleSlugForRouting, setTitleSlugForRouting] = useState(null)
+
 	useEffect(() => {
 		fetchAllCategories().then(res => {
 			const forgedCategories = forgeDataTree(res.data.attributes.categories)
@@ -36,19 +41,28 @@ const CreateFeed: React.FC = () => {
 
 	useEffect(() => {
 		if (isRequestReady) {
-			createTitle(createTitleForm).then((res) => {
+			createTitle(createTitleForm, accessToken).then((res) => {
 				createEntry({
-					titleId: res.data.attributes.id,
+					titleSlug: res.data.attributes.slug,
 					text: firstEntryForm.text,
-				}).catch(error => message.error(error.response.data.message))
-			}).then(() => {
-				// eslint-disable-next-line @typescript-eslint/no-use-before-define
-				handleStepMovement('feed-status')
-				setIsRequestReady(false)
+				}, accessToken).catch(error => message.error(error.response.data.message))
+				setTitleSlugForRouting(res.data.attributes.slug)
+				setFeedCreatedSuccessfully(true)
 			})
-			.catch(error => message.error(error.response.data.message))
+			.catch(error => {
+				setFeedCreatedSuccessfully(false)
+				message.error(error.response.data.message)
+			})
 		}
 	}, [isRequestReady])
+
+	useEffect(() => {
+		if (titleSlugForRouting && feedCreatedSuccessfully !== null) {
+			// eslint-disable-next-line @typescript-eslint/no-use-before-define
+			handleStepMovement('feed-status')
+			setIsRequestReady(false)
+		}
+	}, [titleSlugForRouting, feedCreatedSuccessfully])
 
 	const handleStepMovement = (_step?: string): void => {
 		// eslint-disable-next-line @typescript-eslint/no-use-before-define
@@ -63,24 +77,31 @@ const CreateFeed: React.FC = () => {
 				return {
 					step: 1,
 					component:
-					<Step2
-						setFirstEntryForm={setFirstEntryForm}
-						setIsRequestReady={setIsRequestReady}
-						stepMovementTo={handleStepMovement}
-					/>
+						<Step2
+							setFirstEntryForm={setFirstEntryForm}
+							setIsRequestReady={setIsRequestReady}
+							stepMovementTo={handleStepMovement}
+						/>
 				}
 			case 'feed-status':
-				return { step: 2, component: <Step3 stepMovementTo={handleStepMovement} /> }
+				return {
+					step: 2,
+					component:
+						<Step3
+							feedCreatedSuccessfully={feedCreatedSuccessfully}
+							titleSlugForRouting={titleSlugForRouting}
+						/>
+				}
 			default:
 				return {
 					step: 0,
 					component:
-					<Step1
-						stepMovementTo={handleStepMovement}
-						categories={categories}
-						setCreateTitleForm={setCreateTitleForm}
-						setReadableCategoryValue={setReadableCategoryValue}
-					/>
+						<Step1
+							stepMovementTo={handleStepMovement}
+							categories={categories}
+							setCreateTitleForm={setCreateTitleForm}
+							setReadableCategoryValue={setReadableCategoryValue}
+						/>
 				}
 		}
 	}

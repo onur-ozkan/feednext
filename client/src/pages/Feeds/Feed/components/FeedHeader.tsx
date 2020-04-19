@@ -1,8 +1,15 @@
-import React from 'react'
-import { Button, Dropdown, Menu, Row, PageHeader, Tag, Rate, Col } from 'antd'
-import { EllipsisOutlined, InfoCircleOutlined } from '@ant-design/icons'
+import React, { useState } from 'react'
+import { Button, Dropdown, Menu, Row, PageHeader, Tag, Rate, Col, Modal, message } from 'antd'
+import { EllipsisOutlined, InfoCircleOutlined, CheckOutlined, LoadingOutlined } from '@ant-design/icons'
+import { getUserRateOfTitle, rateTitle } from '@/services/api'
 
-const FeedHeader: React.FC = () => {
+const FeedHeader: React.FC = (props: any): JSX.Element => {
+	const { titleData, categoryData, accessToken, averageTitleRate, refreshTitleRate } = props
+
+	const [rateModalVisibility, setRateModalVisibility] = useState(false)
+	const [initialRatingModalValue, setInitialRatingModalValue] = useState<number | null>(null)
+	const [rateValue, setRateValue] = useState(0)
+
 	const menu = (
 		<Menu>
 			<Menu.Item>
@@ -23,43 +30,6 @@ const FeedHeader: React.FC = () => {
 		</Menu>
 	)
 
-	const DropdownMenu = () => {
-		return (
-			<Dropdown trigger={['click']} key="more" overlay={menu}>
-				<Button
-					style={{
-						border: 'none',
-						padding: 0,
-					}}
-				>
-					<EllipsisOutlined
-						style={{
-							fontSize: 20,
-							verticalAlign: 'top',
-						}}
-					/>
-				</Button>
-			</Dropdown>
-		)
-	}
-
-	const IconLink = ({ src, text }) => (
-		<a
-			style={{
-				marginRight: 16,
-			}}
-		>
-			<img
-				style={{
-					marginRight: 8,
-				}}
-				src={src}
-				alt={text}
-			/>
-			{text}
-		</a>
-	)
-
 	const Content = ({ children, extraContent }) => {
 		return (
 			<Row>
@@ -68,18 +38,37 @@ const FeedHeader: React.FC = () => {
 		)
 	}
 
+	const handleOnRatingChange = (value: number): void => setRateValue(value)
+
+	const handleTitleVoting = async (): Promise<void> => {
+		await rateTitle(rateValue, titleData.id, accessToken)
+			.then(_res => refreshTitleRate(titleData.id))
+			.catch(error => message.error(error.response.data.message))
+		setRateModalVisibility(false)
+	}
+
+	const handleRateModalOpening = async (): Promise<void> => {
+		setRateModalVisibility(true)
+		await getUserRateOfTitle(titleData.id, accessToken)
+			.then(res => setInitialRatingModalValue(res.data.attributes.rate))
+			.catch(_error => setInitialRatingModalValue(0))
+	}
+
 	return (
 		<>
 			<PageHeader
 				title={
 					<>
-						<Tag color="blue">Phone</Tag>
+						<Tag color="blue">{categoryData.name}</Tag>
 						<Row>
 							<Col style={{ margin: '0px 5px -15px 0px' }}>
-								<h1>Xphone Model 7s Plus</h1>
+								<h1>{titleData.attributes.name}</h1>
 							</Col>
 							<Col>
-								<Rate allowHalf defaultValue={2.5} />
+								<Rate disabled value={averageTitleRate} />
+								<Button onClick={handleRateModalOpening} style={{ marginLeft: 5 }} type="primary" size="small">
+									Rate
+								</Button>
 							</Col>
 						</Row>
 					</>
@@ -117,8 +106,29 @@ const FeedHeader: React.FC = () => {
 							width="100%"
 						/>
 					}
-				></Content>
+				/>
 			</PageHeader>
+			<Modal
+				transitionName='fade'
+				style={{ textAlign: 'center'}}
+				visible={rateModalVisibility}
+				onOk={handleTitleVoting}
+				closable={false}
+				width='225px'
+				footer={null}
+				onCancel={(): void => setRateModalVisibility(false)}
+			>
+				{ initialRatingModalValue || initialRatingModalValue === 0  ?
+					<>
+						<Rate defaultValue={initialRatingModalValue} onChange={handleOnRatingChange} style={{ marginRight: 10 }} />
+						<Button shape="circle" icon={<CheckOutlined />} onClick={handleTitleVoting} />
+					</>
+					:
+					<>
+						<LoadingOutlined style={{ fontSize: 24 }} spin />
+					</>
+				}
+			</Modal>
 		</>
 	)
 }

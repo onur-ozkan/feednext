@@ -1,11 +1,14 @@
 @import '~antd/es/style/themes/default.less';
 
+@pro-header-hover-bg: rgba(0, 0, 0, 0.025);
+
 .headerSearch {
 	:global(.anticon-search) {
 		font-size: 16px;
 		cursor: pointer;
 	}
 	.input {
+		margin-right: 12px;
 		width: 0;
 		background: transparent;
 		border-radius: 0;
@@ -13,6 +16,31 @@
 		:global(.ant-select-selection) {
 			background: transparent;
 		}
+
+		.action {
+			display: inline-block;
+			height: 100%;
+			padding: 0 12px;
+			cursor: pointer;
+			transition: all 0.3s;
+			> i {
+				color: @text-color;
+				vertical-align: middle;
+			}
+			&:hover {
+				background: @pro-header-hover-bg;
+			}
+			&:global(.opened) {
+				background: @pro-header-hover-bg;
+			}
+		}
+		.search {
+			padding: 0 12px;
+			&:hover {
+				background: transparent;
+			}
+		}
+
 		input {
 			padding-right: 0;
 			padding-left: 0;

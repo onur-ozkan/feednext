@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux'
-import { SET_ACCESS_TOKEN, SetAccessTokenAction } from './types'
+import { SET_ACCESS_TOKEN, SetAccessTokenAction, SET_CATEGORY_LIST, SetCategoryListAction } from './types'
 
 export const StartGlobalActions = {
 	setAccessToken: (token: string) => {
@@ -7,6 +7,14 @@ export const StartGlobalActions = {
 			dispatch({
 				type: SET_ACCESS_TOKEN,
 				token,
+			})
+		}
+	},
+	setCategoryList: (list: []) => {
+		return (dispatch: Dispatch<SetCategoryListAction>): void => {
+			dispatch({
+				type: SET_CATEGORY_LIST,
+				list,
 			})
 		}
 	}

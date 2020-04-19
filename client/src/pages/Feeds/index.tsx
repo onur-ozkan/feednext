@@ -1,47 +1,42 @@
 import React, { useEffect, useState } from 'react'
 import { Form } from '@ant-design/compatible'
-import { Button, Card, List, Select, Tag, message } from 'antd'
-import {
-	LoadingOutlined,
-	ArrowUpOutlined,
-	LinkOutlined,
-} from '@ant-design/icons'
+import { Button, Card, List, Select, Tag, message, BackTop } from 'antd'
+import { LoadingOutlined, ArrowUpOutlined, LinkOutlined } from '@ant-design/icons'
 import '@ant-design/compatible/assets/index.css'
 
 import ArticleListContent from './components/ArticleListContent'
 import StandardFormRow from './components/StandardFormRow'
 import TagSelect from './components/TagSelect'
 import styles from './style.less'
-import api from '@/utils/api'
+import { fetchAllFeeds, fetchFeaturedEntryByTitleSlug } from '@/services/api'
+import { useSelector } from 'react-redux'
+import { handleArrayFiltering } from '@/services/utils'
 
-const Feeds = () => {
+const Feeds = (): JSX.Element => {
+	const categoryList = useSelector((state: any) => state.global.categoryList)
+
 	const [isLoading, setIsLoading] = useState(true)
 	const [feedList, setFeed]: any = useState([])
-
-	const { Option } = Select
-	const FormItem = Form.Item
+	const [skipValueForPagination, setSkipValueForPagination] = useState(0)
 
 	useEffect(() => {
-		api.fetchAllFeeds()
+		fetchAllFeeds(skipValueForPagination)
 			.then(async feedsResponse => {
 				await feedsResponse.data.attributes.titles.map(async (title: any) => {
-					await api
-						.fetchFeaturedEntryByTitleId(title.id)
+					await fetchFeaturedEntryByTitleSlug(title.slug)
 						.then(async featuredEntryResponse => {
 							const feed = {
 								id: title.id,
+								slug: title.slug,
 								name: title.name,
-								categoryName: await api
-									.fetchOneCategoryById(title.category_id)
-									.then(categoryResponse => categoryResponse.data.attributes.name),
-								rate: title.rate,
+								href: `/feeds/${title.slug}`,
+								categoryName: handleArrayFiltering(categoryList, title.category_id).name,
 								createdAt: title.created_at,
 								updatedAt: title.updated_at,
 								entryCount: title.entry_count,
 								entry: {
 									id: featuredEntryResponse.data.attributes.id,
 									avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-									profileUrl: '#',
 									text: featuredEntryResponse.data.attributes.text,
 									createdAt: featuredEntryResponse.data.attributes.created_at,
 									updatedAt: featuredEntryResponse.data.attributes.updated_at,
@@ -57,8 +52,15 @@ const Feeds = () => {
 			.then(() => {
 				setIsLoading(false)
 			})
-			.catch(error => message.error(error.response.data.message, 3))
-	}, [])
+			.catch(error => {
+				message.error(error.response.data.message, 3)
+			})
+	}, [skipValueForPagination])
+
+	const handleFetchMore = (): void => {
+		setIsLoading(true)
+		setSkipValueForPagination(skipValueForPagination + 7)
+	}
 
 	const owners = [
 		{
@@ -71,10 +73,7 @@ const Feeds = () => {
 		},
 	]
 
-	const handleFetchMore = (): void => {
-		// TODO
-		return
-	}
+
 
 	const IconText: React.FC<{
 		type: string
@@ -123,11 +122,9 @@ const Feeds = () => {
 				}}
 			>
 				{isLoading ? (
-					<span>
-						<LoadingOutlined /> Loading...
-					</span>
+					<LoadingOutlined />
 				) : (
-					'load more'
+					'More'
 				)}
 			</Button>
 		</div>
@@ -135,6 +132,7 @@ const Feeds = () => {
 
 	return (
 		<>
+			<BackTop />
 			<Card bordered={false}>
 				<Form layout="inline">
 					<StandardFormRow
@@ -144,7 +142,7 @@ const Feeds = () => {
 							paddingBottom: 11,
 						}}
 					>
-						<FormItem>
+						<Form.Item>
 							<TagSelect expandable>
 								<TagSelect.Option value="cat1">Category one</TagSelect.Option>
 								<TagSelect.Option value="cat2">Category two</TagSelect.Option>
@@ -153,7 +151,7 @@ const Feeds = () => {
 								<TagSelect.Option value="cat5">Category five</TagSelect.Option>
 								<TagSelect.Option value="cat6">Category six</TagSelect.Option>
 							</TagSelect>
-						</FormItem>
+						</Form.Item>
 					</StandardFormRow>
 					<StandardFormRow title="Language" grid>
 						<Select
@@ -165,9 +163,9 @@ const Feeds = () => {
 							placeholder="Language Filter"
 						>
 							{owners.map(owner => (
-								<Option key={owner.id} value={owner.id}>
+								<Select.Option key={owner.id} value={owner.id}>
 									{owner.name}
-								</Option>
+								</Select.Option>
 							))}
 						</Select>
 					</StandardFormRow>

@@ -1,292 +1,363 @@
-import { Avatar, Card, Col, List, Skeleton, Row, Statistic } from 'antd'
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
+import { Card, Row, Col, Avatar, Typography, Tag, Tabs, Button, Pagination, Divider, Empty } from 'antd'
+import { GridContent, PageLoading } from '@ant-design/pro-layout'
+import {
+	UserOutlined,
+	EditOutlined,
+	DownOutlined,
+	UpOutlined,
+	CopyOutlined,
+	SettingTwoTone,
+	IdcardTwoTone,
+	UpSquareTwoTone,
+	CrownTwoTone,
+	LoadingOutlined,
+} from '@ant-design/icons'
+import { useSelector } from 'react-redux'
+import { fetchAllFeedsByAuthor, fetchAllEntriesByAuthor, fetchUserByUsername, fetchUserVotes } from '@/services/api'
+import { router } from 'umi'
+import NotFoundPage from '../404'
+import { handleArrayFiltering } from '@/services/utils'
 
-import { Dispatch } from 'redux'
-import Link from 'umi/link'
-import { PageHeaderWrapper } from '@ant-design/pro-layout'
-import { connect } from 'dva'
-import moment from 'moment'
-import Radar from './components/Radar'
-import { ModalState } from './model'
-import EditableLinkGroup from './components/EditableLinkGroup'
-import styles from './style.less'
-import { ActivitiesType, CurrentUser, NoticeType, RadarDataType } from './data.d'
+const User: React.FC = ({ computedMatch }): JSX.Element => {
+	const userState = useSelector((state: any) => state.user?.attributes.user)
+	const categoryList = useSelector((state: any) => state.global.categoryList)
 
-const links = [
-	{
-		title: 'Link',
-		href: '',
-	},
-	{
-		title: 'Link 2',
-		href: '',
-	},
-	{
-		title: 'Link 3',
-		href: '',
-	},
-	{
-		title: 'Link 4',
-		href: '',
-	},
-	{
-		title: 'Link 5',
-		href: '',
-	},
-	{
-		title: 'Link 6',
-		href: '',
-	},
-]
+	const [user, setUser] = useState(userState || null)
+	const [isUserFound, setIsUserFound] = useState<boolean | null>(null)
 
-declare interface AccountProps {
-	currentUser?: CurrentUser
-	projectNotice: NoticeType[]
-	activities: ActivitiesType[]
-	radarData: RadarDataType[]
-	dispatch: Dispatch
-	currentUserLoading: boolean
-	projectLoading: boolean
-	activitiesLoading: boolean
-}
-
-const PageHeaderContent: React.FC<{ currentUser: CurrentUser }> = ({ currentUser }) => {
-	const loading = currentUser && Object.keys(currentUser).length
-	if (!loading) {
-		return (
-			<Skeleton
-				avatar
-				paragraph={{
-					rows: 1,
-				}}
-				active
-			/>
-		)
-	}
-	return (
-		<div className={styles.pageHeaderContent}>
-			<div className={styles.avatar}>
-				<Avatar size="large" src={currentUser.avatar} />
-			</div>
-			<div className={styles.content}>
-				<div className={styles.contentTitle}>{currentUser.name}</div>
-				<div>
-					{currentUser.title} |{currentUser.group}
-				</div>
-			</div>
+	const [currentTab, setCurrentTab] = useState('feeds')
+	const [totalItems, setTotalItems] = useState<number>(0)
+	const [tabView, setTabView] = useState<JSX.Element>(
+		<div style={{ textAlign: 'center' }}>
+			<LoadingOutlined style={{ fontSize: 20 }} />
 		</div>
+	)
+
+	const readableRoles = {
+		0: 'User',
+		1: 'Junior Author',
+		2: 'Mid Level Author',
+		3: 'Senior Author',
+		4: 'Admin',
+		5: 'Super Admin',
+	}
+
+	useEffect(() => {
+		if (!user || user.name !== computedMatch.params.username) {
+			fetchUserByUsername(computedMatch.params.username)
+				.then(res => {
+					setUser(res.data.attributes)
+					setIsUserFound(true)
+				})
+				.catch(error => setIsUserFound(false))
+			return
+		}
+		setIsUserFound(true)
+	}, [])
+
+	const handleFeedsTabView = (skip: number): void => {
+		fetchAllFeedsByAuthor(computedMatch.params.username, skip).then(async res => {
+			setTotalItems(res.data.attributes.count)
+
+			if (res.data.attributes.titles.length === 0) {
+				setTabView(
+					<div style={{
+						minHeight: 460,
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center'
+					}}>
+						<Empty description="No Feed Found" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+					</div>
+				)
+				return
+			}
+
+			const feedList = await res.data.attributes.titles.map((title) =>
+				<Row key={title.id} style={{ padding: 5 }}>
+					<Col span={4}>
+						<Tag> {handleArrayFiltering(categoryList, title.category_id).name} </Tag>
+					</Col>
+					<Col span={16}>
+						{title.name}
+					</Col>
+					<Col span={4}>
+						<Button onClick={(): void => router.push(`/feeds/${title.slug}`)} size="small" type="primary">
+							Open
+						</Button>
+					</Col>
+				</Row>
+			)
+			setTabView(
+				<div style={{ minHeight: 460 }}>
+					{feedList}
+				</div>
+			)
+		})
+	}
+
+	const handleEntriesTabView = (skip: number): void => {
+		fetchAllEntriesByAuthor(computedMatch.params.username, skip).then(async res => {
+			setTotalItems(res.data.attributes.count)
+
+			if (res.data.attributes.entries.length === 0) {
+				setTabView(
+					<div style={{
+						minHeight: 460,
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center'
+					}}>
+						<Empty description="No Entry Found" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+					</div>
+				)
+				return
+			}
+
+			const entryList = await res.data.attributes.entries.map((entry) =>
+				<Row key={entry.id} style={{ padding: 5 }}>
+					<Col span={20}>
+						<Typography.Paragraph ellipsis>
+							{entry.text}
+						</Typography.Paragraph>
+					</Col>
+					<Col span={1} />
+					<Col span={3}>
+						<Button onClick={(): void => router.push(`/entry/${entry.id}`)} size="small" type="primary">
+							Open
+						</Button>
+					</Col>
+				</Row>
+			)
+			setTabView(
+				<div style={{ minHeight: 460 }}>
+					{entryList}
+				</div>
+			)
+		})
+	}
+
+	const handleVotesTabView = (voteType: 'up' | 'down', skip: number): void => {
+		fetchUserVotes(computedMatch.params.username, voteType, skip).then(async res => {
+			setTotalItems(res.data.attributes.count)
+
+			if (res.data.attributes.entries.length === 0) {
+				setTabView(
+					<div style={{
+						minHeight: 460,
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center'
+					}}>
+						<Empty
+							description={`This user has not ${voteType} vote any entry yet`}
+							image={Empty.PRESENTED_IMAGE_SIMPLE}
+						/>
+					</div>
+				)
+				return
+			}
+
+			const entryList = await res.data.attributes.entries.map((entry) =>
+				<Row key={entry.id} style={{ padding: 5 }}>
+					<Col span={20}>
+						<Typography.Paragraph ellipsis>
+							{entry.text}
+						</Typography.Paragraph>
+					</Col>
+					<Col span={1} />
+					<Col span={3}>
+						<Button onClick={(): void => router.push(`/entry/${entry.id}`)} size="small" type="primary">
+							Open
+						</Button>
+					</Col>
+				</Row>
+			)
+			setTabView(
+				<div style={{ minHeight: 460 }}>
+					{entryList}
+				</div>
+			)
+		})
+	}
+
+	const handleLoadingView = (
+		<div style={{
+			minHeight: 460,
+			display: 'flex',
+			alignItems: 'center',
+			justifyContent: 'center'
+		}}>
+			<LoadingOutlined style={{ fontSize: 20 }} />
+		</div>
+	)
+
+	const handlePagination = (func: Function, voteType?: 'up' | 'down'): JSX.Element => (
+		<Pagination
+			size="small"
+			showLessItems={true}
+			showQuickJumper={true}
+			defaultCurrent={1}
+			pageSize={10}
+			total={totalItems}
+			onChange={
+				voteType ?
+					(page: number): void => {
+						setTabView(handleLoadingView)
+						func(voteType, 10 * ( page -1))
+					}
+				:
+					(page: number): void => {
+						setTabView(handleLoadingView)
+						func(10 * ( page -1))
+					}
+			}
+		/>
+	)
+
+	const handleTabChange = (key: string): void => setCurrentTab(key)
+
+	useEffect(() => {
+		setTabView(handleLoadingView)
+		setTotalItems(null)
+		switch (currentTab) {
+			case 'feeds':
+				handleFeedsTabView(0)
+				break
+			case 'entries':
+				handleEntriesTabView(0)
+				break
+			case 'up-votes':
+				handleVotesTabView('up', 0)
+				break
+			case 'down-votes':
+				handleVotesTabView('down', 0)
+				break
+		}
+	}, [currentTab])
+
+	if (isUserFound === null) return <PageLoading />
+	if (isUserFound === false) return <NotFoundPage />
+
+	return (
+		<GridContent>
+			<Row gutter={24}>
+				<Col lg={10} md={24}>
+					<Card bordered={false}>
+						{userState &&
+							<div style={{ textAlign: 'right', margin: '-4px 0px 5px 0px'}}>
+								<SettingTwoTone style={{ fontSize: 18 }} />
+							</div>
+						}
+						<div style={{ textAlign: 'center' }}>
+							<Avatar style={{ marginBottom: 10 }} size={115} icon={<UserOutlined />} />
+							<Typography.Title level={3}> {user.full_name} </Typography.Title>
+						</div>
+
+						<Row>
+							<Col span={24}>
+								<Typography.Text>
+									<IdcardTwoTone style={{ marginRight: 3 }} /> {user.username}
+								</Typography.Text>
+							</Col>
+							<Col span={24}>
+								<Typography.Text>
+									<UpSquareTwoTone style={{ marginRight: 3 }} /> {readableRoles[user.role]}
+								</Typography.Text>
+							</Col>
+							<Col span={24}>
+								<Typography.Text>
+									<CrownTwoTone style={{ marginRight: 3 }} /> 61
+								</Typography.Text>
+							</Col>
+						</Row>
+					</Card>
+					<Card bordered>
+						<Typography.Title level={4}> Most feeded categories </Typography.Title>
+						<Tag style={{ margin: '3px 5px 3px 0px' }}> Example Category </Tag>
+						<Tag style={{ margin: '3px 5px 3px 0px' }}> Example Category </Tag>
+						<Tag style={{ margin: '3px 5px 3px 0px' }}> Example Category </Tag>
+						<Tag style={{ margin: '3px 5px 3px 0px' }}> Example Category </Tag>
+						<Tag style={{ margin: '3px 5px 3px 0px' }}> Example Category </Tag>
+						<Tag style={{ margin: '3px 5px 3px 0px' }}> Example Category </Tag>
+						<Tag style={{ margin: '3px 5px 3px 0px' }}> Example Category </Tag>
+						<Tag style={{ margin: '3px 5px 3px 0px' }}> Example Category </Tag>
+					</Card>
+				</Col>
+				<Col lg={14} md={24}>
+					<Card bordered={false}>
+						<Tabs size="small" animated={false} onChange={handleTabChange} defaultActiveKey={currentTab}>
+							<Tabs.TabPane
+								tab={
+									<Typography.Text strong>
+										<CopyOutlined style={{ marginRight: 0 }} /> Created Feeds
+									</Typography.Text>
+								}
+								key="feeds"
+							>
+								{tabView}
+								{totalItems > 0 &&
+									<>
+										<Divider />
+										{handlePagination(handleFeedsTabView)}
+									</>
+								}
+							</Tabs.TabPane>
+							<Tabs.TabPane
+								tab={
+									<Typography.Text strong>
+										<EditOutlined style={{ marginRight: 0 }} /> Created Entries
+									</Typography.Text>
+								}
+								key="entries"
+							>
+								{tabView}
+								{totalItems > 0 &&
+									<>
+										<Divider />
+										{handlePagination(handleEntriesTabView)}
+									</>
+								}
+							</Tabs.TabPane>
+							<Tabs.TabPane
+								tab={
+									<Typography.Text strong>
+										<UpOutlined style={{ marginRight: 0 }} /> Up Voted Entries
+									</Typography.Text>
+								}
+								key="up-votes"
+							>
+								{tabView}
+								{totalItems > 0 &&
+									<>
+										<Divider />
+										{handlePagination(handleVotesTabView, 'up')}
+									</>
+								}
+							</Tabs.TabPane>
+							<Tabs.TabPane
+								tab={
+									<Typography.Text strong>
+										<DownOutlined style={{ marginRight: 0 }} /> Down Voted Entries
+									</Typography.Text>
+								}
+								key="down-votes"
+							>
+								{tabView}
+								{totalItems > 0 &&
+									<>
+										<Divider />
+										{handlePagination(handleVotesTabView, 'down')}
+									</>
+								}
+							</Tabs.TabPane>
+						</Tabs>
+					</Card>
+				</Col>
+			</Row>
+		</GridContent>
 	)
 }
 
-const ExtraContent: React.FC<{}> = () => (
-	<div className={styles.extraContent}>
-		<div className={styles.statItem}>
-			<Statistic title="Example Bar" value={56} />
-		</div>
-		<div className={styles.statItem}>
-			<Statistic title="Example Bar 1" value={8} suffix="/ 24" />
-		</div>
-		<div className={styles.statItem}>
-			<Statistic title="Example Bar 2" value={2223} />
-		</div>
-	</div>
-)
-
-class Account extends Component<AccountProps> {
-	componentDidMount(): void {
-		const { dispatch } = this.props
-		dispatch({
-			type: 'account/init',
-		})
-	}
-
-	componentWillUnmount(): void {
-		const { dispatch } = this.props
-		dispatch({
-			type: 'account/clear',
-		})
-	}
-
-	renderActivities = (item: ActivitiesType): JSX.Element => {
-		const events = item.template.split(/@\{([^{}]*)\}/gi).map(key => {
-			if (item[key]) {
-				return (
-					<a href={item[key].link} key={item[key].name}>
-						{item[key].name}
-					</a>
-				)
-			}
-			return key
-		})
-		return (
-			<List.Item key={item.id}>
-				<List.Item.Meta
-					avatar={<Avatar src={item.user.avatar} />}
-					title={
-						<span>
-							<a className={styles.username}>{item.user.name}</a>
-							&nbsp;
-							<span className={styles.event}>{events}</span>
-						</span>
-					}
-					description={
-						<span className={styles.datetime} title={item.updatedAt}>
-							{moment(item.updatedAt).fromNow()}
-						</span>
-					}
-				/>
-			</List.Item>
-		)
-	}
-
-	render(): JSX.Element | null {
-		const { currentUser, activities, projectNotice, projectLoading, activitiesLoading, radarData } = this.props
-
-		if (!currentUser || !currentUser.userid) {
-			return null
-		}
-		return (
-			<PageHeaderWrapper content={<PageHeaderContent currentUser={currentUser} />} extraContent={<ExtraContent />}>
-				<Row gutter={24}>
-					<Col xl={16} lg={24} md={24} sm={24} xs={24}>
-						<Card
-							className={styles.projectList}
-							style={{
-								marginBottom: 24,
-							}}
-							title="Card Title"
-							bordered={false}
-							extra={<Link to="/">Example Button</Link>}
-							loading={projectLoading}
-							bodyStyle={{
-								padding: 0,
-							}}
-						>
-							{projectNotice.map(item => (
-								<Card.Grid className={styles.projectGrid} key={item.id}>
-									<Card
-										bodyStyle={{
-											padding: 0,
-										}}
-										bordered={false}
-									>
-										<Card.Meta
-											title={
-												<div className={styles.cardTitle}>
-													<Avatar size="small" src={item.logo} />
-													<Link to={item.href}>{item.title}</Link>
-												</div>
-											}
-											description={item.description}
-										/>
-										<div className={styles.projectItemContent}>
-											<Link to={item.memberLink}>{item.member || ''}</Link>
-											{item.updatedAt && (
-												<span className={styles.datetime} title={item.updatedAt}>
-													{moment(item.updatedAt).fromNow()}
-												</span>
-											)}
-										</div>
-									</Card>
-								</Card.Grid>
-							))}
-						</Card>
-						<Card
-							bodyStyle={{
-								padding: 0,
-							}}
-							bordered={false}
-							className={styles.activeCard}
-							title="Recent Activities"
-							loading={activitiesLoading}
-						>
-							<List<ActivitiesType>
-								loading={activitiesLoading}
-								renderItem={(item: ActivitiesType): JSX.Element => this.renderActivities(item)}
-								dataSource={activities}
-								className={styles.activitiesList}
-								size="large"
-							/>
-						</Card>
-					</Col>
-					<Col xl={8} lg={24} md={24} sm={24} xs={24}>
-						<Card
-							style={{
-								marginBottom: 24,
-							}}
-							title="Links / Buttons"
-							bordered={false}
-							bodyStyle={{
-								padding: 0,
-							}}
-						>
-							<EditableLinkGroup
-								onAdd={(): void => {
-									return
-								}}
-								links={links}
-								linkElement={Link}
-							/>
-						</Card>
-						<Card
-							style={{
-								marginBottom: 24,
-							}}
-							bordered={false}
-							title="Graphical Values"
-							loading={radarData.length === 0}
-						>
-							<div className={styles.chart}>
-								<Radar hasLegend height={343} data={radarData} />
-							</div>
-						</Card>
-						<Card
-							bodyStyle={{
-								paddingTop: 12,
-								paddingBottom: 12,
-							}}
-							bordered={false}
-							title="Profile Links"
-							loading={projectLoading}
-						>
-							<div className={styles.members}>
-								<Row gutter={48}>
-									{projectNotice.map(item => (
-										<Col span={12} key={`members-item-${item.id}`}>
-											<Link to={item.href}>
-												<Avatar src={item.logo} size="small" />
-												<span className={styles.member}>{item.member}</span>
-											</Link>
-										</Col>
-									))}
-								</Row>
-							</div>
-						</Card>
-					</Col>
-				</Row>
-			</PageHeaderWrapper>
-		)
-	}
-}
-
-export default connect(
-	({
-		account: { currentUser, projectNotice, activities, radarData },
-		loading,
-	}: {
-		account: ModalState
-		loading: {
-			effects: {
-				[key: string]: boolean
-			}
-		}
-	}) => ({
-		currentUser,
-		projectNotice,
-		activities,
-		radarData,
-		currentUserLoading: loading.effects['account/fetchUserCurrent'],
-		projectLoading: loading.effects['account/fetchProjectNotice'],
-		activitiesLoading: loading.effects['account/fetchActivitiesList'],
-	}),
-)(Account)
+export default User

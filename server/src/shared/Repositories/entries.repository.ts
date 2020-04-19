@@ -1,8 +1,9 @@
 // Nest dependencies
-import { NotFoundException, BadRequestException, UnprocessableEntityException } from '@nestjs/common'
+import { BadRequestException, UnprocessableEntityException } from '@nestjs/common'
 
 // Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
+import { ObjectId } from 'mongodb'
 
 // Local files
 import { EntriesEntity } from '../Entities/entries.entity'
@@ -15,40 +16,70 @@ export class EntriesRepository extends Repository<EntriesEntity> {
             const entry: EntriesEntity = await this.findOneOrFail(entryId)
             return entry
         } catch (err) {
-            throw new NotFoundException('Entry with that id could not found in the database.')
+            throw new BadRequestException('Entry with that id could not found in the database.')
         }
     }
 
-    async getEntriesByTitleId({ titleId, query }: {
-        titleId: string, query: { limit: number, skip: number, orderBy: any }
+    async getVotedEntriesByIds({ idList, query }: {
+        idList: ObjectId[],
+        query: { limit: number, skip: number, orderBy: any }
     }): Promise<{ entries: EntriesEntity[], count: number }> {
         const orderBy = query.orderBy || 'ASC'
+        const [entries, total] = await this.findAndCount({
+            where: {
+                '_id': { $in: idList }
+            },
+            order: {
+                created_at: orderBy.toUpperCase(),
+            },
+            take: Number(query.limit) || 10,
+            skip: Number(query.skip) || 0,
+        })
 
-        try {
-            const [entries, total] = await this.findAndCount({
-                where: {
-                    title_id: titleId
-                },
-                order: {
-                    created_at: orderBy.toUpperCase(),
-                },
-                take: Number(query.limit) || 10,
-                skip: Number(query.skip) || 0,
-            })
-            return {
-                entries,
-                count: total,
-            }
-        } catch (err) {
-            throw new BadRequestException(err)
-        }
+        return { entries, count: total }
     }
 
-    async getFeaturedEntryByTitleId({ titleId }: { titleId: string }): Promise<EntriesEntity> {
+    async getEntriesByTitleSlug({ titleSlug, query }: {
+        titleSlug: string, query: { limit: number, skip: number, orderBy: any }
+    }): Promise<{ entries: EntriesEntity[], count: number }> {
+        const orderBy = query.orderBy || 'ASC'
+        const [entries, total] = await this.findAndCount({
+            where: {
+                title_slug: titleSlug
+            },
+            order: {
+                created_at: orderBy.toUpperCase(),
+            },
+            take: Number(query.limit) || 10,
+            skip: Number(query.skip) || 0,
+        })
+
+        return { entries, count: total }
+    }
+
+    async getEntriesByAuthorOfIt({ username, query }: {
+        username: string, query: { limit: number, skip: number, orderBy: any }
+    }): Promise<{ entries: EntriesEntity[], count: number }> {
+        const orderBy = query.orderBy || 'ASC'
+        const [entries, total] = await this.findAndCount({
+            where: {
+                written_by: username
+            },
+            order: {
+                created_at: orderBy.toUpperCase(),
+            },
+            take: Number(query.limit) || 10,
+            skip: Number(query.skip) || 0,
+        })
+
+        return { entries, count: total }
+    }
+
+    async getFeaturedEntryByTitleSlug({ titleSlug }: { titleSlug: string }): Promise<EntriesEntity> {
         try {
             const entries = await this.findOneOrFail({
                 where: {
-                    title_id: titleId
+                    title_slug: titleSlug
                 },
                 order: {
                     votes: 'DESC',
@@ -58,14 +89,14 @@ export class EntriesRepository extends Repository<EntriesEntity> {
             return entries
 
         } catch (err) {
-            throw new BadRequestException('No entry found for given titleId')
+            throw new BadRequestException('No entry found for given titleSlug')
         }
     }
 
     async createEntry(writtenBy: string, dto: CreateEntryDto): Promise<EntriesEntity> {
         const newTitle: EntriesEntity = new EntriesEntity({
             text: dto.text,
-            title_id: dto.titleId,
+            title_slug: dto.titleSlug,
             written_by: writtenBy,
         })
 
@@ -83,7 +114,7 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         try {
             entry = await this.findOneOrFail(entryId)
         } catch {
-            throw new NotFoundException('Entry with that id could not found in the database.')
+            throw new BadRequestException('Entry with that id could not found in the database.')
         }
 
         try {
@@ -109,12 +140,12 @@ export class EntriesRepository extends Repository<EntriesEntity> {
             await this.delete(entry)
             return entry
         } catch (err) {
-            throw new NotFoundException('Entry with that id could not found in the database.')
+            throw new BadRequestException('Entry with that id could not found in the database.')
         }
     }
 
-    async deleteEntriesBelongsToTitle(titleId: string): Promise<void> {
-        const entries: any = await this.find({ title_id: titleId })
+    async deleteEntriesBelongsToTitle(titleSlug: string): Promise<void> {
+        const entries: any = await this.find({ title_slug: titleSlug })
         await this.delete(entries)
     }
 }

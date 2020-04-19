@@ -1,5 +1,5 @@
 // Nest dependencies
-import { NotFoundException, BadRequestException, UnprocessableEntityException, ConflictException } from '@nestjs/common'
+import { BadRequestException, UnprocessableEntityException, ConflictException } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
 
 // Other dependencies
@@ -32,7 +32,7 @@ export class UsersRepository extends Repository<UsersEntity> {
             const profile: UsersEntity = await this.findOneOrFail({ username })
             return profile
         } catch (err) {
-            throw new NotFoundException('User with that username could not found in the database.')
+            throw new BadRequestException('User with that username could not found in the database.')
         }
     }
 
@@ -40,7 +40,7 @@ export class UsersRepository extends Repository<UsersEntity> {
         try {
             return await this.findOneOrFail({ email: emailParam })
         } catch (err) {
-            throw new NotFoundException('This email does not exist in the database.')
+            throw new BadRequestException('This email does not exist in the database.')
         }
     }
 
@@ -61,7 +61,7 @@ export class UsersRepository extends Repository<UsersEntity> {
                 }
             })
         } catch (err) {
-            throw new NotFoundException('No account found by given credentials.')
+            throw new BadRequestException('No account found by given credentials.')
         }
     }
 
@@ -160,7 +160,7 @@ export class UsersRepository extends Repository<UsersEntity> {
             profile.is_active = false
             await this.save(profile)
         } catch (err) {
-            throw new NotFoundException('User with that username could not found in the database.')
+            throw new BadRequestException('User with that username could not found in the database.')
         }
     }
 
@@ -179,7 +179,7 @@ export class UsersRepository extends Repository<UsersEntity> {
             }
             await this.save(profile)
         } catch (e) {
-            throw new NotFoundException('Username could not found or entry have not vote yet.')
+            throw new BadRequestException('Username could not found or entry have not vote yet.')
         }
     }
 
@@ -190,7 +190,7 @@ export class UsersRepository extends Repository<UsersEntity> {
                 username,
             })
         } catch (e) {
-            throw new NotFoundException('User with that username could not found in the database.')
+            throw new BadRequestException('User with that username could not found in the database.')
         }
 
         if (isUpVoted) {
@@ -232,7 +232,7 @@ export class UsersRepository extends Repository<UsersEntity> {
         try {
             account = await this.findOneOrFail({ email: dto.email })
         } catch (err) {
-            throw new NotFoundException('This email does not exist in the database.')
+            throw new BadRequestException('This email does not exist in the database.')
         }
 
         if (!account.is_active) throw new BadRequestException('Account is not active.')

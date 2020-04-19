@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/services/request'
 import { FormDataType } from './index'
 
 export async function fakeAccountLogin(params: FormDataType): Promise<object> {

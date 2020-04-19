@@ -5,7 +5,7 @@ import { router } from 'umi'
 // The 404 result component of antd should be used here,
 // But it hasn't been released yet, let's start with a simple one.
 
-const NoFoundPage: React.FC<{}> = () => (
+const NotFoundPage: React.FC<{}> = () => (
 	<Result
 		status="404"
 		title="404"
@@ -18,4 +18,4 @@ const NoFoundPage: React.FC<{}> = () => (
 	/>
 )
 
-export default NoFoundPage
+export default NotFoundPage

@@ -23,19 +23,27 @@ export class EntryController {
         return this.entryService.getEntry(entryId)
     }
 
-    @Get(':titleId/all')
-    getEntriesByTitleId(
+    @Get('by-author/:username/all')
+    getEntriesByAuthorOfIt(
+        @Param('username') username: string,
         @Query() query: { limit: number, skip: number, orderBy: any },
-        @Param('titleId') titleId: string,
-    ): Promise<ISerializeResponse> {
-        return this.entryService.getEntriesByTitleId({ titleId, query })
+    ): Promise<any> {
+        return this.entryService.getEntriesByAuthorOfIt({ username, query })
     }
 
-    @Get(':titleId/featured')
-    getFeaturedEntryByTitleId(
-        @Param('titleId') titleId: string
+    @Get('by-title/:titleSlug/all')
+    getEntriesByTitleSlug(
+        @Param('titleSlug') titleSlug: string,
+        @Query() query: { limit: number, skip: number, orderBy: any },
     ): Promise<ISerializeResponse> {
-        return this.entryService.getFeaturedEntryByTitleId({ titleId })
+        return this.entryService.getEntriesByTitleSlug({ titleSlug, query })
+    }
+
+    @Get('by-title/:titleSlug/featured')
+    getFeaturedEntryByTitleSlug(
+        @Param('titleSlug') titleSlug: string
+    ): Promise<ISerializeResponse> {
+        return this.entryService.getFeaturedEntryByTitleSlug({ titleSlug })
     }
 
     @ApiBearerAuth()

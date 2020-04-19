@@ -5,33 +5,46 @@ import React, { useEffect } from 'react'
 import Link from 'umi/link'
 import { useDispatch, useSelector } from 'react-redux'
 import styles from './style.less'
-import api from '@/utils/api.ts'
-import { StartUserActions } from '@/redux/Actions/User'
+import { signIn } from '@/services/api'
 import { router } from 'umi'
+import { SIGN_IN } from '@/redux/Actions/User/types'
+import { SET_ACCESS_TOKEN } from '@/redux/Actions/Global/types'
 
 export declare interface FormDataType {
 	usernameOrEmail: string
 	password: string
+	remember: boolean
 }
 
 const Login: React.FunctionComponent = () => {
 	const [form] = Form.useForm()
 	const user = useSelector((state: any) => state.user)
+
 	const dispatch = useDispatch()
 
 	useEffect(() => {
 		if (user) console.log(user)
 	}, [user])
 
-	const onSubmit = (values: FormDataType) => {
+	const onSubmit = (values: FormDataType): void => {
 		const isEmail = /\S+@\S+\.\S+/.test(values.usernameOrEmail)
 
-		api.signIn({
+		signIn({
 			...(isEmail ? { email: values.usernameOrEmail } : { username: values.usernameOrEmail }),
+			rememberMe: values.remember ? true : false,
 			password: values.password,
 		})
 			.then(res => {
-				dispatch(StartUserActions.SignIn({ userInformation: res.data }))
+				dispatch({
+					type: SET_ACCESS_TOKEN,
+					token: res.data.attributes.access_token
+				})
+				delete res.data.attributes.access_token
+
+				dispatch({
+					type: SIGN_IN,
+					user: res.data,
+				})
 				router.push('/feeds')
 			})
 			.catch(error => {
