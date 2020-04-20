@@ -9,10 +9,10 @@ import { CreateTitleDto } from '../Dto/create-title.dto'
 import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.service'
 import { Roles } from 'src/shared/Decorators/roles.decorator'
 import { UpdateTitleDto } from '../Dto/update-title.dto'
-import { JuniorAuthor, Admin, SuperAdmin, User } from 'src/shared/Constants'
 import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { TitleService } from '../Service/title.service'
 import { RateTitleDto } from '../Dto/rate-title.dto'
+import { Role } from 'src/shared/Enums/Roles'
 
 @ApiTags('v1/title')
 @Controller()
@@ -47,7 +47,7 @@ export class TitleController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Post('create-title')
-    @Roles(JuniorAuthor)
+    @Roles(Role.JuniorAuthor)
     createTitle(@Headers('authorization') bearer: string, @Body() dto: CreateTitleDto): Promise<HttpException | ISerializeResponse> {
         return this.titleService.createTitle(jwtManipulationService.decodeJwtToken(bearer, 'username'), dto)
     }
@@ -55,7 +55,7 @@ export class TitleController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Patch(':titleId')
-    @Roles(Admin)
+    @Roles(Role.Admin)
     updateTitle(
         @Headers('authorization') bearer: string,
         @Param('titleId') titleId: string,
@@ -67,7 +67,7 @@ export class TitleController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Patch(':titleId/rate')
-    @Roles(User)
+    @Roles(Role.User)
     rateTitle(
         @Headers('authorization') bearer: string,
         @Param('titleId') titleId: string,
@@ -79,7 +79,7 @@ export class TitleController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Get(':titleId/rate-of-user')
-    @Roles(User)
+    @Roles(Role.User)
     getRateOfUser(
         @Headers('authorization') bearer: string,
         @Param('titleId') titleId: string,
@@ -95,7 +95,7 @@ export class TitleController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Delete(':titleId')
-    @Roles(SuperAdmin)
+    @Roles(Role.SuperAdmin)
     deleteTitle(@Param('titleId') titleId: string): Promise<HttpException> {
         return this.titleService.deleteTitle(titleId)
     }
