@@ -64,8 +64,6 @@ const appRoutes = {
 			authority: Guest,
 			routes: [
 				{
-					name: 'Feeds',
-					icon: 'CopyOutlined',
 					path: '/feeds',
 					component: './Feeds',
 				},
@@ -80,12 +78,6 @@ const appRoutes = {
 				{
 					path: '/user/:username',
 					component: './User',
-				},
-				{
-					name: 'Top Feeders',
-					icon: 'CrownOutlined',
-					path: '/top-feeders',
-					component: './TopFeeders',
 				},
 				{
 					component: '404',
