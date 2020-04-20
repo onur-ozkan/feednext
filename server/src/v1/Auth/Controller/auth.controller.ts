@@ -11,6 +11,7 @@ import {
     Query,
     Request,
     Res,
+    HttpStatus,
 } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
@@ -20,8 +21,7 @@ import { AuthService } from '../Service/auth.service'
 import { CreateAccountDto } from '../Dto/create-account.dto'
 import { LoginDto } from '../Dto/login.dto'
 import { AccountRecoveryDto } from '../Dto/account-recovery.dto'
-import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.service'
-import { serializerService, ISerializeResponse } from 'src/shared/Services/serializer.service'
+import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { configService } from 'src/shared/Services/config.service'
 
 @ApiTags('v1/auth')
@@ -74,10 +74,8 @@ export class AuthController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Get('check-token')
-    async checkJwtToken(@Headers('authorization') bearer: string): Promise<ISerializeResponse> {
-        const data = await jwtManipulationService.decodeJwtToken(bearer, 'all')
-        serializerService.deleteProperties(data, ['iat', 'exp'])
-        return serializerService.serializeResponse('user', data)
+    async checkJwtToken(): Promise<ISerializeResponse> {
+        throw new HttpException('Token is valid', HttpStatus.OK)
     }
 
     @Get('refresh-token')

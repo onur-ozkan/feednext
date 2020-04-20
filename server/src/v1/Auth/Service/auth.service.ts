@@ -59,7 +59,8 @@ export class AuthService {
     }
 
     async signIn(userEntity: UsersEntity, dto: LoginDto): Promise<HttpException | ISerializeResponse> {
-        if (!userEntity.is_active) throw new BadRequestException('Account is not active')
+        if (!userEntity.is_verified) throw new BadRequestException('Account is not verified, please verify your accunt')
+        else if (!userEntity.is_active) throw new BadRequestException('Account is not active')
 
         const token: string = this.jwtService.sign({
             id: userEntity.id,

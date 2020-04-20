@@ -232,10 +232,11 @@ export class UsersRepository extends Repository<UsersEntity> {
         try {
             account = await this.findOneOrFail({ email: dto.email })
         } catch (err) {
-            throw new BadRequestException('This email does not exist in the database.')
+            throw new BadRequestException('This email does not exist in the database')
         }
 
-        if (!account.is_active) throw new BadRequestException('Account is not active.')
+        if (!account.is_verified) throw new BadRequestException('Account is not verified, please verify your accunt')
+        else if (!account.is_active) throw new BadRequestException('Account is not active')
 
         const generatePassword: string = await kmachine.keymachine()
         account.password = crypto.createHmac('sha256', generatePassword).digest('hex')

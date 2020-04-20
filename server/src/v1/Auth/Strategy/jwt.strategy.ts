@@ -9,6 +9,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt'
 // Local files
 import { UsersRepository } from 'src/shared/Repositories/users.repository'
 import { configService } from 'src/shared/Services/config.service'
+import { UsersEntity } from 'src/shared/Entities/users.entity'
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -29,12 +30,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             throw new UnauthorizedException()
         }
 
-        const user = await this.usersRepository.findOne(id)
-        if (!user) {
+        let user: UsersEntity
+        try {
+            user = await this.usersRepository.findOneOrFail(id)
+        } catch (error) {
             throw new UnauthorizedException()
-        } else if (!user.is_active) {
-            throw new BadRequestException('Account is not active.')
         }
+
+        if (!user.is_verified ) throw new BadRequestException('Account is not verified, please verify your accunt')
+        else if (!user.is_active ) throw new BadRequestException('Account is not active')
 
         const data = {
             full_name: user.full_name,
