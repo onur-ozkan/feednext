@@ -59,6 +59,20 @@ const appRoutes = {
 			],
 		},
 		{
+			path: '/settings',
+			component: '../layouts/AppLayout',
+			authority: User,
+			routes: [
+				{
+					path: '/settings',
+					component: './Settings',
+				},
+				{
+					component: '404',
+				},
+			],
+		},
+		{
 			path: '/',
 			component: '../layouts/AppLayout',
 			authority: Guest,
