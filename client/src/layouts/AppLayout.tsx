@@ -29,7 +29,7 @@ export type AppLayoutContext = { [K in 'location']: AppLayoutProps[K] } & {
 
 const handleFooterRendering = (): JSX.Element => (
 	<DefaultFooter
-		copyright="2019 Ilter Technology"
+		copyright="2019 Feednext"
 		style={{ backgroundColor: 'transparent' }}
 		links={[
 			{
@@ -47,6 +47,7 @@ const AppLayout: React.FC<AppLayoutProps> = props => {
 
 	return (
 		<ProLayout
+			collapsedButtonRender={false}
 			logo={logo}
 			menuHeaderRender={(logoDom, titleDom): JSX.Element => (
 				<Link to="/">

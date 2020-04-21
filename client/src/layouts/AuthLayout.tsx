@@ -63,7 +63,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = props => {
 					{children}
 				</div>
 				<DefaultFooter
-					copyright="2019 Ilter Technology"
+					copyright="2019 Feednext"
 					style={{
 						backgroundColor: 'transparent',
 					}}
