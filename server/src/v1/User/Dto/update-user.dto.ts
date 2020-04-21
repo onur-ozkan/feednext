@@ -21,15 +21,14 @@ export class UpdateUserDto {
     @IsEmail()
     email: string
 
+
     @ApiProperty({
-        required: true,
-        example: '123demo',
+        required: false,
+        example: 'Demo User, X Years old.',
     })
-    @ValidateIf(o => o.password !== undefined )
-    @IsNotEmpty()
-    @NotContains(' ')
-    @Length(6, 15)
-    oldPassword: string
+    @IsOptional()
+    @MaxLength(155)
+    biography: string
 
     @ApiProperty({
         required: false,
@@ -39,4 +38,14 @@ export class UpdateUserDto {
     @NotContains(' ')
     @Length(6, 15)
     password: string
+
+    @ApiProperty({
+        required: true,
+        example: '123demo',
+    })
+    @ValidateIf(o => o.password !== undefined )
+    @IsNotEmpty()
+    @NotContains(' ')
+    @Length(6, 15)
+    oldPassword: string
 }

@@ -45,6 +45,17 @@ export class UsersEntity {
     })
     email: string
 
+    @Column({
+        type: 'string',
+        length: 155,
+    })
+    biography: string
+
+    @Column({
+        type: 'string'
+    })
+    pp_url: string
+
     @Column({ type: 'string', nullable: true })
     refresh_token: string
 
@@ -77,6 +88,8 @@ export class UsersEntity {
     @BeforeInsert()
     fillDefaults() {
         this.role = 0
+        this.biography = ''
+        this.pp_url = ''
         this.is_active = true
         this.is_verified = false,
         this.up_voted_entries = []
