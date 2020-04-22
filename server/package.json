@@ -35,6 +35,7 @@
     "fastify-cookie": "^3.6.0",
     "fastify-helmet": "^3.0.2",
     "fastify-metrics": "^5.0.1",
+    "fastify-multipart": "^1.0.5",
     "fastify-rate-limit": "^3.0.1",
     "fastify-swagger": "^2.5.0",
     "ioredis": "^4.16.1",
