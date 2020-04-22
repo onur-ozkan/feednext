@@ -18,6 +18,25 @@ export const checkAccessToken = (accessToken: string): Promise<AxiosResponse>  =
 	}
 })
 
+export const updateUser = (username: string, accessToken: string, payload: {
+	fullName?: string,
+	email?: string,
+	biography?: string,
+	oldPassword?: string,
+	password?: string
+}): Promise<AxiosResponse> => axios.patch(`v1/user/${username}`, payload, {
+	headers: {
+		'Authorization': `Bearer ${accessToken}`,
+	}
+})
+
+export const uploadProfilePicture = (file: any, accessToken: string):
+	Promise<AxiosResponse> => axios.put('v1/user/pp', file, {
+		headers: {
+			'Authorization': `Bearer ${accessToken}`,
+		}
+	})
+
 export const fetchUserByUsername = (username: string): Promise<AxiosResponse> => axios.get(`/v1/user/${username}`)
 
 export const fetchUserVotes = (
