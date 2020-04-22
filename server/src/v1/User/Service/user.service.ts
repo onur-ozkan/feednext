@@ -45,6 +45,11 @@ export class UserService {
         return this.awsService.getPictureBuffer(username)
     }
 
+    async uploadProfilePicture(username, file) {
+        await this.usersRepository.getUserByUsername(username)
+        this.awsService.uploadPicture(username, file)
+    }
+
     async getVotes({ username, query, voteType }: {
         username: string,
         query: {

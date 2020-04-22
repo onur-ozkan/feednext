@@ -1,5 +1,21 @@
 // Nest dependencies
-import { Get, Param, Controller, Body, Patch, UseGuards, Headers, BadRequestException, HttpException, Post, Query, Res } from '@nestjs/common'
+import {
+    BadRequestException,
+    HttpException,
+    Controller,
+    UseGuards,
+    Get,
+    Post,
+    Patch,
+    Put,
+    Param,
+    Body,
+    Headers,
+    Query,
+    Res,
+    Req,
+    HttpStatus
+} from '@nestjs/common'
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthGuard } from '@nestjs/passport'
 
@@ -33,6 +49,25 @@ export class UsersController {
     async getProfilePicture(@Param('username') username,  @Res() res: any): Promise<void> {
         const buffer = await this.usersService.getProfilePictureBuffer(username)
         res.type('image/jpeg').send(buffer)
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
+    @Put('pp')
+    uploadProfilePicture(@Headers('authorization') bearer: string, @Req() req): Promise<HttpException> {
+        const username = jwtManipulationService.decodeJwtToken(bearer, 'username')
+
+        return new Promise((resolve, reject) => {
+            const handler = (_field, file, _filename, _encoding, mimetype) => {
+                if (mimetype !== 'image/jpeg' && mimetype !== 'image/png') reject(new BadRequestException('File must be image'))
+                this.usersService.uploadProfilePicture(username, file)
+            }
+
+            req.multipart(handler, (error) => {
+                if (error) reject(error)
+                resolve(new HttpException('Upload successfully ended', HttpStatus.OK))
+            })
+        })
     }
 
     @ApiBearerAuth()
