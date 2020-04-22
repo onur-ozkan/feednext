@@ -45,7 +45,7 @@ export class UserService {
         return this.awsService.getPictureBuffer(username)
     }
 
-    async uploadProfilePicture(username, file) {
+    async uploadProfilePicture(username, file): Promise<void> {
         await this.usersRepository.getUserByUsername(username)
         this.awsService.uploadPicture(username, file)
     }

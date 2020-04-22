@@ -27,7 +27,7 @@ export class AwsService {
         })
     }
 
-    uploadPicture(fileName: string, file: Buffer) {
+    uploadPicture(fileName: string, file: Buffer): void {
         this.s3Instance().upload({
             Bucket: configService.getEnv('AWS_S3_BUCKET'),
             Key: `${fileName}.jpg`,
