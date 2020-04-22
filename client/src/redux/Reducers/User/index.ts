@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { SIGN_IN, SIGN_OUT, UserActions, VOTE_ENTRY, UNDO_ENTRY_VOTE } from '../../Actions/User/types'
+import { SIGN_IN, SIGN_OUT, UserActions, VOTE_ENTRY, UNDO_ENTRY_VOTE, UPDATE_USER } from '../../Actions/User/types'
 
 const userReducerDefaultState: any = null
 
@@ -9,6 +9,19 @@ export const userReducer = (state = userReducerDefaultState, action: UserActions
 			return (state = action.user)
 		case SIGN_OUT:
 			return (state = null)
+		case UPDATE_USER:
+			return {
+				...state,
+				attributes: {
+					...state.attributes,
+					user: {
+						...state.attributes.user,
+						// eslint-disable-next-line @typescript-eslint/camelcase
+						...action.payload.biography && { biography: action.payload.biography },
+						...action.payload.fullName && { full_name: action.payload.fullName },
+					}
+				}
+			}
 		case VOTE_ENTRY:
 			return {
 				...state,
