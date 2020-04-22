@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Get, Param, Controller, Body, Patch, UseGuards, Headers, BadRequestException, HttpException, Post, Query } from '@nestjs/common'
+import { Get, Param, Controller, Body, Patch, UseGuards, Headers, BadRequestException, HttpException, Post, Query, Res } from '@nestjs/common'
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthGuard } from '@nestjs/passport'
 
@@ -27,6 +27,12 @@ export class UsersController {
         @Query('voteType') voteType: 'up' | 'down',
     ): Promise<ISerializeResponse> {
         return this.usersService.getVotes({username, query, voteType})
+    }
+
+    @Get(':username/pp')
+    async getProfilePicture(@Param('username') username,  @Res() res: any): Promise<void> {
+        const buffer = await this.usersService.getProfilePictureBuffer(username)
+        res.type('image/jpeg').send(buffer)
     }
 
     @ApiBearerAuth()

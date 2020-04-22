@@ -17,6 +17,7 @@ import { MailSenderBody } from 'src/shared/Services/Interfaces/mail.sender.inter
 import { ActivateUserDto } from '../Dto/activate-user.dto'
 import { configService } from 'src/shared/Services/config.service'
 import { EntriesRepository } from 'src/shared/Repositories/entries.repository'
+import { AwsService } from 'src/shared/Services/aws.service'
 
 @Injectable()
 export class UserService {
@@ -27,6 +28,7 @@ export class UserService {
         @InjectRepository(EntriesRepository)
         private readonly entriesRepository: EntriesRepository,
         private readonly mailService: MailService,
+        private readonly awsService: AwsService,
     ) {}
 
     async getUser(usernameParam: string): Promise<ISerializeResponse> {
@@ -36,6 +38,11 @@ export class UserService {
         await serializerService.deleteProperties(profile, properties)
 
         return serializerService.serializeResponse('user_profile', profile)
+    }
+
+    async getProfilePictureBuffer(username: string): Promise<unknown> {
+        await this.usersRepository.getUserByUsername(username)
+        return this.awsService.getPictureBuffer(username)
     }
 
     async getVotes({ username, query, voteType }: {

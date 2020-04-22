@@ -32,7 +32,7 @@ export class UsersRepository extends Repository<UsersEntity> {
             const profile: UsersEntity = await this.findOneOrFail({ username })
             return profile
         } catch (err) {
-            throw new BadRequestException('User with that username could not found in the database.')
+            throw new BadRequestException('User could not found')
         }
     }
 
@@ -161,7 +161,7 @@ export class UsersRepository extends Repository<UsersEntity> {
             profile.is_active = false
             await this.save(profile)
         } catch (err) {
-            throw new BadRequestException('User with that username could not found in the database.')
+            throw new BadRequestException('User could not found')
         }
     }
 
@@ -191,7 +191,7 @@ export class UsersRepository extends Repository<UsersEntity> {
                 username,
             })
         } catch (e) {
-            throw new BadRequestException('User with that username could not found in the database.')
+            throw new BadRequestException('User could not found')
         }
 
         if (isUpVoted) {

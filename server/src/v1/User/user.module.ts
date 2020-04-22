@@ -10,10 +10,11 @@ import { UserService } from './Service/user.service'
 import { UsersController } from './Controller/user.controller'
 import { MailService } from 'src/shared/Services/mail.service'
 import { EntriesRepository } from 'src/shared/Repositories/entries.repository'
+import { AwsService } from 'src/shared/Services/aws.service'
 
 @Module({
     imports: [TypeOrmModule.forFeature([UsersEntity, UsersRepository, EntriesRepository])],
-    providers: [UserService, ConfigService, MailService],
+    providers: [UserService, ConfigService, MailService, AwsService],
     exports: [UserService],
     controllers: [UsersController],
 })
