@@ -54,6 +54,17 @@ export class TitleService {
         return serializerService.serializeResponse('title_list', result)
     }
 
+    async getTitleListByCategory({ categoryId, query }: {
+        categoryId: string
+        query: { limit: number, skip: number, orderBy: any }
+    }): Promise<ISerializeResponse> {
+        const result: {
+            titles: TitlesEntity[],
+            count: number
+        } = await this.titlesRepository.getTitleListByCategory({ categoryId, query })
+        return serializerService.serializeResponse('title_list_of_category', result)
+    }
+
     async getTitleListByAuthorOfIt({ username, query }: {
         username: string
         query: { limit: number, skip: number, orderBy: any }

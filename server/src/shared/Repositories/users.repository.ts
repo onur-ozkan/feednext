@@ -90,7 +90,7 @@ export class UsersRepository extends Repository<UsersEntity> {
         if (dto.password) {
             const hashedPassword = crypto.createHmac('sha256', dto.password).digest('hex')
             if (profile.password !== crypto.createHmac('sha256', dto.oldPassword).digest('hex')) {
-                throw new BadRequestException('Old password does not match.')
+                throw new BadRequestException('Old password does not match')
             }
             profile.password = hashedPassword
         }

@@ -36,6 +36,14 @@ export class TitleController {
         return this.titleService.getTitleList(query)
     }
 
+    @Get('by-category/:categoryId/all')
+    getTitleListByCategory(
+        @Param('categoryId') categoryId: string,
+        @Query() query: { limit: number, skip: number, orderBy: any }
+    ): Promise<ISerializeResponse> {
+        return this.titleService.getTitleListByCategory({ categoryId, query })
+    }
+
     @Get('by-author/:username/all')
     getTitleListByAuthorOfIt(
         @Param('username') username: string,

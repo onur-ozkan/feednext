@@ -74,7 +74,7 @@ export class UserService {
         const profile = await this.usersRepository.updateUser(usernameParam, dto)
         const id = String(profile.id)
 
-        const properties: string[] = ['id', 'password', 'is_active', 'is_verified']
+        const properties: string[] = ['id', 'password', 'is_active', 'is_verified', 'refresh_token']
         await serializerService.deleteProperties(profile, properties)
 
         return serializerService.serializeResponse('updated_profile', profile, id)
