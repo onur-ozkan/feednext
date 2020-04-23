@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 
 // Other dependencies
 import { Validator } from 'class-validator'
-import { ObjectID } from 'mongodb'
+import { ObjectId } from 'mongodb'
 
 // Local files
 import { TitlesRepository } from 'src/shared/Repositories/title.repository'
@@ -19,7 +19,7 @@ import { UsersRepository } from 'src/shared/Repositories/users.repository'
 
 @Injectable()
 export class TitleService {
-    private validator: ObjectID
+    private validator: ObjectId
 
     constructor(
         @InjectRepository(TitlesRepository)
@@ -46,34 +46,12 @@ export class TitleService {
         return serializerService.serializeResponse('searched_title_list', result)
     }
 
-    async getTitleList(query: { limit: number, skip: number, orderBy: any }): Promise<ISerializeResponse> {
+    async getTitleList(query: { limit: number, skip: number, orderBy: any, categoryIds: any, author: string }): Promise<ISerializeResponse> {
         const result: {
             titles: TitlesEntity[],
             count: number
         } = await this.titlesRepository.getTitleList(query)
         return serializerService.serializeResponse('title_list', result)
-    }
-
-    async getTitleListByCategory({ categoryId, query }: {
-        categoryId: string
-        query: { limit: number, skip: number, orderBy: any }
-    }): Promise<ISerializeResponse> {
-        const result: {
-            titles: TitlesEntity[],
-            count: number
-        } = await this.titlesRepository.getTitleListByCategory({ categoryId, query })
-        return serializerService.serializeResponse('title_list_of_category', result)
-    }
-
-    async getTitleListByAuthorOfIt({ username, query }: {
-        username: string
-        query: { limit: number, skip: number, orderBy: any }
-    }): Promise<ISerializeResponse> {
-        const result: {
-            titles: TitlesEntity[],
-            count: number
-        } = await this.titlesRepository.getTitleListByAuthorOfIt({ username, query })
-        return serializerService.serializeResponse('title_list_of_author', result)
     }
 
     async createTitle(openedBy: string, dto: CreateTitleDto): Promise<HttpException | ISerializeResponse> {
