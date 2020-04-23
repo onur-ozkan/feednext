@@ -1,119 +1,98 @@
 import React, { useEffect, useState } from 'react'
 import { Form } from '@ant-design/compatible'
-import { Button, Card, List, Select, Tag, message, BackTop } from 'antd'
-import { LoadingOutlined, ArrowUpOutlined, LinkOutlined } from '@ant-design/icons'
+import { Button, Card, List, Tag, message, BackTop, TreeSelect, Row, Col, Typography, Dropdown, Menu } from 'antd'
+import { LoadingOutlined, ArrowUpOutlined, LinkOutlined, SlidersOutlined, FilterOutlined, RiseOutlined, FireOutlined, StarOutlined } from '@ant-design/icons'
 import '@ant-design/compatible/assets/index.css'
 
 import ArticleListContent from './components/ArticleListContent'
-import StandardFormRow from './components/StandardFormRow'
-import TagSelect from './components/TagSelect'
 import styles from './style.less'
 import { fetchAllFeeds, fetchFeaturedEntryByTitleSlug } from '@/services/api'
 import { useSelector } from 'react-redux'
-import { handleArrayFiltering } from '@/services/utils'
+import { handleArrayFiltering, forgeDataTree } from '@/services/utils'
+import { PageLoading } from '@ant-design/pro-layout'
+import { API_URL } from '../../../config/constants'
 
 const Feeds = (): JSX.Element => {
 	const categoryList = useSelector((state: any) => state.global.categoryList)
 
+	const [categories, setCategories] = useState<any[] | null>(null)
 	const [isLoading, setIsLoading] = useState(true)
+	const [categoryFilter, setCategoryFilter] = useState(null)
 	const [feedList, setFeed]: any = useState([])
+	const [sortBy, setSortBy] = useState('top')
 	const [skipValueForPagination, setSkipValueForPagination] = useState(0)
 
+
 	useEffect(() => {
-		fetchAllFeeds(skipValueForPagination)
-			.then(async feedsResponse => {
-				await feedsResponse.data.attributes.titles.map(async (title: any) => {
-					await fetchFeaturedEntryByTitleSlug(title.slug)
-						.then(async featuredEntryResponse => {
-							const feed = {
-								id: title.id,
-								slug: title.slug,
-								name: title.name,
-								href: `/feeds/${title.slug}`,
-								categoryName: handleArrayFiltering(categoryList, title.category_id).name,
-								createdAt: title.created_at,
-								updatedAt: title.updated_at,
-								entryCount: title.entry_count,
-								entry: {
-									id: featuredEntryResponse.data.attributes.id,
-									avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-									text: featuredEntryResponse.data.attributes.text,
-									createdAt: featuredEntryResponse.data.attributes.created_at,
-									updatedAt: featuredEntryResponse.data.attributes.updated_at,
-									votes: featuredEntryResponse.data.attributes.votes,
-									writtenBy: featuredEntryResponse.data.attributes.written_by,
-								},
-							}
-							await setFeed((feedList: any) => [...feedList, feed])
-						})
-						.catch(error => message.error(error.response.data.message, 3))
+		// Convert flat categories to tree category list
+		const forgedCategories = forgeDataTree(categoryList)
+		setCategories(forgedCategories)
+	}, [])
+
+	useEffect(() => {
+		// To refresh list after applying category filters
+		setFeed([])
+	}, [categoryFilter])
+
+	useEffect(() => {
+		if (categories) {
+			fetchAllFeeds(skipValueForPagination, null, categoryFilter)
+				.then(async feedsResponse => {
+					await feedsResponse.data.attributes.titles.map(async (title: any) => {
+						await fetchFeaturedEntryByTitleSlug(title.slug)
+							.then(async featuredEntryResponse => {
+								const feed = {
+									id: title.id,
+									slug: title.slug,
+									name: title.name,
+									href: `/feeds/${title.slug}`,
+									categoryName: handleArrayFiltering(categoryList, title.category_id).name,
+									createdAt: title.created_at,
+									updatedAt: title.updated_at,
+									entryCount: title.entry_count,
+									entry: {
+										id: featuredEntryResponse.data.attributes.id,
+										avatar: `${API_URL}/v1/user/${featuredEntryResponse.data.attributes.written_by}/pp`,
+										text: featuredEntryResponse.data.attributes.text,
+										createdAt: featuredEntryResponse.data.attributes.created_at,
+										updatedAt: featuredEntryResponse.data.attributes.updated_at,
+										votes: featuredEntryResponse.data.attributes.votes,
+										writtenBy: featuredEntryResponse.data.attributes.written_by,
+									},
+								}
+								await setFeed((feedList: any) => [...feedList, feed])
+							})
+							.catch(error => message.error(error.response.data.message, 3))
+					})
 				})
-			})
-			.then(() => {
-				setIsLoading(false)
-			})
-			.catch(error => {
-				message.error(error.response.data.message, 3)
-			})
-	}, [skipValueForPagination])
+				.then(() => {
+					setIsLoading(false)
+				})
+				.catch(error => {
+					message.error(error.response.data.message, 3)
+				})
+		}
+	}, [skipValueForPagination, categories, categoryFilter])
+
 
 	const handleFetchMore = (): void => {
 		setIsLoading(true)
 		setSkipValueForPagination(skipValueForPagination + 7)
 	}
 
-	const owners = [
-		{
-			id: 'tr',
-			name: 'Türkçe',
-		},
-		{
-			id: 'en',
-			name: 'English',
-		},
-	]
-
-
-
-	const IconText: React.FC<{
-		type: string
-		text: React.ReactNode
-	}> = ({ type, text }) => {
-		switch (type) {
-			case 'link':
-				return (
-					<span>
-						<LinkOutlined
-							style={{
-								marginRight: 8,
-							}}
-						/>
-						{text}
-					</span>
-				)
-			case 'up':
-				return (
-					<span>
-						<ArrowUpOutlined
-							style={{
-								marginRight: 8,
-							}}
-						/>
-						{text}
-					</span>
-				)
-			default:
-				return null
+	const handleSortByIcon = (): JSX.Element | void => {
+		switch(sortBy){
+			case 'top':
+				return <RiseOutlined />
+			case 'hot':
+				return <FireOutlined />
+			case 'new':
+				return <StarOutlined />
 		}
 	}
 
 	const loadMore = feedList.length > 0 && (
-		<div
-			style={{
-				textAlign: 'center',
-				marginTop: 16,
-			}}
-		>
+		<div style={{ textAlign: 'center', marginTop: 16 }}>
 			<Button
 				onClick={handleFetchMore}
 				style={{
@@ -130,46 +109,53 @@ const Feeds = (): JSX.Element => {
 		</div>
 	)
 
+	if (isLoading) return <PageLoading />
+
+	const handleReadableCategoryValue = (id: string[]): void => setCategoryFilter(String(id))
+
 	return (
 		<>
 			<BackTop />
-			<Card bordered={false}>
-				<Form layout="inline">
-					<StandardFormRow
-						title="Category"
-						block
-						style={{
-							paddingBottom: 11,
-						}}
-					>
-						<Form.Item>
-							<TagSelect expandable>
-								<TagSelect.Option value="cat1">Category one</TagSelect.Option>
-								<TagSelect.Option value="cat2">Category two</TagSelect.Option>
-								<TagSelect.Option value="cat3">Category three</TagSelect.Option>
-								<TagSelect.Option value="cat4">Category four</TagSelect.Option>
-								<TagSelect.Option value="cat5">Category five</TagSelect.Option>
-								<TagSelect.Option value="cat6">Category six</TagSelect.Option>
-							</TagSelect>
-						</Form.Item>
-					</StandardFormRow>
-					<StandardFormRow title="Language" grid>
-						<Select
-							mode="multiple"
-							style={{
-								maxWidth: 286,
-								width: '100%',
-							}}
-							placeholder="Language Filter"
-						>
-							{owners.map(owner => (
-								<Select.Option key={owner.id} value={owner.id}>
-									{owner.name}
-								</Select.Option>
+			<Card bordered={true}>
+				<Row>
+					<Col xs={19} sm={16} md={13}>
+						<TreeSelect onChange={handleReadableCategoryValue}  multiple style={{ width: '100%' }} placeholder="All Categories" allowClear>
+							{categories.map((data: any) => (
+								<TreeSelect.TreeNode key={data.id} value={data.id} title={data.name}>
+									{data.childNodes.map((child: any) => (
+										<TreeSelect.TreeNode key={child.id} value={child.id} title={child.name} />
+									))}
+								</TreeSelect.TreeNode>
 							))}
-						</Select>
-					</StandardFormRow>
-				</Form>
+						</TreeSelect>
+					</Col>
+					<Col />
+					<Dropdown
+						overlay={
+							<Menu>
+								<Menu.Item onClick={(): void => setSortBy('hot')}>
+									<Typography.Text>
+										<FireOutlined /> Hot
+									</Typography.Text>
+								</Menu.Item>
+								<Menu.Item onClick={(): void => setSortBy('top')}>
+									<Typography.Text>
+									 	<RiseOutlined /> Top
+									</Typography.Text>
+								</Menu.Item>
+								<Menu.Item onClick={(): void => setSortBy('new')}>
+									<Typography.Text>
+										<StarOutlined /> New
+									</Typography.Text>
+								</Menu.Item>
+							</Menu>
+						}
+					>
+						<Button>
+							SORT BY {handleSortByIcon()}
+						</Button>
+					</Dropdown>
+				</Row>
 			</Card>
 			<Card
 				style={{
@@ -181,6 +167,7 @@ const Feeds = (): JSX.Element => {
 				}}
 			>
 				<List<any>
+					style={{ margin: 15 }}
 					size="large"
 					loading={feedList.length === 0 ? isLoading : false}
 					rowKey="id"
@@ -191,8 +178,18 @@ const Feeds = (): JSX.Element => {
 						<List.Item
 							key={item.id}
 							actions={[
-								<IconText key="up" type="up" text={item.entry.votes} />,
-								<IconText key="link" type="link" text="Share" />,
+								<span>
+									<ArrowUpOutlined
+										style={{
+											marginRight: 8,
+										}}
+									/>
+									{item.entry.votes}
+								</span>,
+								<span>
+									<LinkOutlined style={{ marginRight: 8 }} />
+									Share
+								</span>
 							]}
 							extra={<div className={styles.listItemExtra} />}
 						>

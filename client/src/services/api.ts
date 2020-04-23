@@ -43,18 +43,29 @@ export const fetchUserVotes = (
 	username: string,
 	voteType: 'up' | 'down',
 	skip: number
-): Promise<AxiosResponse> => axios.get(`/v1/user/${username}/votes?voteType=${voteType}&limit=10&skip=${skip}`)
+): Promise<AxiosResponse> => axios.get(
+	`/v1/user/${username}/votes`, {
+		params: {
+			voteType,
+			limit: 10,
+			skip
+		}
+	}
+)
 
 export const refreshToken = (): Promise<AxiosResponse> => axios.get('/v1/auth/refresh-token', { withCredentials: true })
 
-export const fetchAllFeeds = (skip: number): Promise<AxiosResponse> => axios.get(`/v1/title/all?limit=7&skip=${skip}`)
+export const fetchAllFeeds = (skip: number, username?: string, categoryIds?: string): Promise<AxiosResponse> => axios.get(
+	'/v1/title/all', {
+		params: {
+			...username && { author: username },
+			...categoryIds && { categoryIds },
+			skip
+		}
+	}
+)
 
 export const searchTitle = (searchValue: string): Promise<AxiosResponse> => axios.get(`/v1/title/search?searchValue=${searchValue}`)
-
-export const fetchAllFeedsByAuthor = (
-	username: string,
-	skip: number
-): Promise<AxiosResponse> => axios.get(`/v1/title/by-author/${username}/all?limit=10&skip=${skip}`)
 
 export const fetchTitleBySlug = (titleSlug: string): Promise<AxiosResponse> => axios.get(`/v1/title/${titleSlug}`)
 
