@@ -5,8 +5,7 @@ import styles from './index.less'
 import { API_URL } from '../../../config/constants'
 import { useSelector, useDispatch } from 'react-redux'
 import { updateUser, uploadProfilePicture } from '@/services/api'
-import { SIGN_IN, UPDATE_USER } from '@/redux/Actions/User/types'
-import { router } from 'umi'
+import { UPDATE_USER } from '@/redux/Actions/User/types'
 
 interface UpdatePayload {
 	fullName?: string
@@ -94,17 +93,74 @@ const Settings = (): JSX.Element => {
 							<Input placeholder="Full Name"/>
 						</Form.Item>
 						<Divider> Email </Divider>
-						<Form.Item name="email">
+						<Form.Item
+							name="email"
+							rules={[
+								{
+									type: 'email',
+									message: 'The is not a valid Email',
+								},
+								{
+									required: true,
+									message: 'Please enter your Email!',
+								},
+							]}
+						>
 							<Input placeholder="Email"/>
 						</Form.Item>
 
 						<Divider> Password </Divider>
-						<Form.Item name="oldPassword" style={{ marginBottom: 0 }}>
-							<Input.Password style={{ marginBottom: 10 }} placeholder="Old Password" />
+						<Form.Item
+							name="oldPassword"
+							rules={[
+								{
+									min: 6,
+									message: 'Password length must be equal or longer than 6'
+								},
+								({ getFieldValue }) => ({
+									required: getFieldValue('password'),
+									message: 'Please enter your current password!',
+								})
+							]}
+							style={{ marginBottom: 0 }}
+						>
+							<Input.Password style={{ marginBottom: 10 }} placeholder="Current Password" />
 						</Form.Item>
-						<Input.Password style={{ marginBottom: 10 }} placeholder="New Password" />
-						<Form.Item name="password">
-							<Input.Password style={{ marginBottom: 10 }} placeholder="New Password Again" />
+						<Form.Item
+							name="password"
+							rules={[
+								{
+									min: 6,
+									message: 'Password length must be equal or longer than 6'
+								}
+							]}
+						>
+							<Input.Password style={{ marginBottom: 10 }} placeholder="New Password" />
+						</Form.Item>
+						<Form.Item
+							name="password-confirm"
+							dependencies={['password']}
+							hasFeedback
+							rules={[
+								{
+									min: 6,
+									message: 'Password length must be equal or longer than 6'
+								},
+								({ getFieldValue }) => ({
+									required: getFieldValue('password'),
+									message: 'Please confirm your password!',
+								}),
+								({ getFieldValue }) => ({
+									validator(rule, value) {
+										if (!value || getFieldValue('password') === value) {
+											return Promise.resolve()
+										}
+										return Promise.reject('The two passwords that you entered do not match!')
+									},
+								}),
+							]}
+						>
+							<Input.Password placeholder="Confirm New Password" />
 						</Form.Item>
 						<Divider> Biography </Divider>
 						<Form.Item name="biography">
