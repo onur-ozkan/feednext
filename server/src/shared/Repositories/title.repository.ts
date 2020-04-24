@@ -46,9 +46,8 @@ export class TitlesRepository extends Repository<TitlesEntity> {
     }
 
     async getTitleList(
-        query: { limit: number, skip: number, orderBy: any, categoryIds: any, author: string }
+        query: { limit: number, skip: number, categoryIds: any, author: string }
     ): Promise<{ titles: TitlesEntity[], count: number }> {
-        const orderBy = query.orderBy || 'ASC'
 
         const [titles, total] = await this.findAndCount({
             ...query.categoryIds && { where: {
@@ -60,10 +59,28 @@ export class TitlesRepository extends Repository<TitlesEntity> {
                 }
             }},
             order: {
-                name: orderBy.toUpperCase(),
+                name: 'ASC',
             },
             take: Number(query.limit) || 10,
             skip: Number(query.skip) || 0,
+        })
+
+        return { titles, count: total }
+    }
+
+    async getTitleListBySlugs(slugList: string[]): Promise<{ titles: TitlesEntity[], count: number }> {
+
+        const [titles, total] = await this.findAndCount({
+            where: {
+                slug: {
+                    $in: slugList
+                }
+            },
+            order: {
+                entry_count: 'DESC'
+            },
+            take: 5,
+            skip: 0,
         })
 
         return { titles, count: total }

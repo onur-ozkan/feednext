@@ -22,15 +22,14 @@ export class EntriesRepository extends Repository<EntriesEntity> {
 
     async getVotedEntriesByIds({ idList, query }: {
         idList: ObjectId[],
-        query: { limit: number, skip: number, orderBy: any }
+        query: { limit: number, skip: number }
     }): Promise<{ entries: EntriesEntity[], count: number }> {
-        const orderBy = query.orderBy || 'ASC'
         const [entries, total] = await this.findAndCount({
             where: {
                 '_id': { $in: idList }
             },
             order: {
-                created_at: orderBy.toUpperCase(),
+                created_at: 'DESC',
             },
             take: Number(query.limit) || 10,
             skip: Number(query.skip) || 0,
@@ -40,15 +39,14 @@ export class EntriesRepository extends Repository<EntriesEntity> {
     }
 
     async getEntriesByTitleSlug({ titleSlug, query }: {
-        titleSlug: string, query: { limit: number, skip: number, orderBy: any }
+        titleSlug: string, query: { limit: number, skip: number }
     }): Promise<{ entries: EntriesEntity[], count: number }> {
-        const orderBy = query.orderBy || 'ASC'
         const [entries, total] = await this.findAndCount({
             where: {
                 title_slug: titleSlug
             },
             order: {
-                created_at: orderBy.toUpperCase(),
+                created_at: 'ASC',
             },
             take: Number(query.limit) || 10,
             skip: Number(query.skip) || 0,
@@ -58,18 +56,29 @@ export class EntriesRepository extends Repository<EntriesEntity> {
     }
 
     async getEntriesByAuthorOfIt({ username, query }: {
-        username: string, query: { limit: number, skip: number, orderBy: any }
+        username: string, query: { limit: number, skip: number }
     }): Promise<{ entries: EntriesEntity[], count: number }> {
-        const orderBy = query.orderBy || 'ASC'
         const [entries, total] = await this.findAndCount({
             where: {
                 written_by: username
             },
             order: {
-                created_at: orderBy.toUpperCase(),
+                created_at: 'DESC',
             },
             take: Number(query.limit) || 10,
             skip: Number(query.skip) || 0,
+        })
+
+        return { entries, count: total }
+    }
+
+    async getLatestEntries(): Promise<{ entries: EntriesEntity[], count: number }> {
+        const [entries, total] = await this.findAndCount({
+            order: {
+                created_at: 'DESC',
+            },
+            skip: 0,
+            take: 250,
         })
 
         return { entries, count: total }

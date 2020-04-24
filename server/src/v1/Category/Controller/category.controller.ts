@@ -26,8 +26,13 @@ export class CategoryController {
     }
 
     @Get('all')
-    getCategoryList(@Query() query: { limit: number, skip: number, orderBy: any }): Promise<ISerializeResponse> {
+    getCategoryList(@Query() query: { limit: number, skip: number }): Promise<ISerializeResponse> {
         return this.categoryService.getCategoryList(query)
+    }
+
+    @Get('trending-categories')
+    getTrendingCategories(): Promise<any> {
+        return this.categoryService.getTrendingCategories()
     }
 
     @ApiBearerAuth()

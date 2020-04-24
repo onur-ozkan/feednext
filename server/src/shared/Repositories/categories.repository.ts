@@ -3,7 +3,7 @@ import { BadRequestException, UnprocessableEntityException } from '@nestjs/commo
 
 // Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
-import { ObjectID } from 'mongodb'
+import { ObjectId } from 'mongodb'
 
 // Local files
 import { CategoriesEntity } from '../Entities/categories.entity'
@@ -21,24 +21,24 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
         }
     }
 
-    async getCategoryList(query: { limit: number, skip: number, orderBy: any }): Promise<{categories: CategoriesEntity[], count: number}> {
-        const orderBy = query.orderBy || 'ASC'
+    async getCategoryList(query: { limit: number, skip: number }): Promise<{categories: CategoriesEntity[], count: number}> {
+        const [categories, total] = await this.findAndCount({
+            take: Number(query.limit) || 10,
+            skip: Number(query.skip) || 0,
+        })
+        return { categories, count: total }
+    }
 
-        try {
-            const [categories, total] = await this.findAndCount({
-                order: {
-                    name: orderBy.toUpperCase(),
-                },
-                take: Number(query.limit) || 10,
-                skip: Number(query.skip) || 0,
-            })
-            return {
-                categories,
-                count: total,
-            }
-        } catch (err) {
-            throw new BadRequestException(err)
-        }
+    async getCategoryListByIds(idList: string[]): Promise<{categories: CategoriesEntity[], count: number}> {
+        const [categories, total] = await this.findAndCount({
+            where: {
+                '_id': {
+                    $in: idList
+                }
+            },
+            skip: 0,
+        })
+        return { categories, count: total }
     }
 
     async createCategory(dto: CreateCategoryDto): Promise<CategoriesEntity> {
@@ -52,7 +52,7 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
 
         const newCategory: CategoriesEntity = new CategoriesEntity({
             name: dto.categoryName,
-            parent_category: (dto.parentCategoryId) ? ObjectID(dto.parentCategoryId) : null,
+            parent_category: (dto.parentCategoryId) ? ObjectId(dto.parentCategoryId) : null,
         })
 
         try {

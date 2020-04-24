@@ -53,7 +53,7 @@ export class UserService {
     async getVotes({ username, query, voteType }: {
         username: string,
         query: {
-            limit: number, skip: number, orderBy: any
+            limit: number, skip: number
         },
         voteType: 'up' | 'down'
    }): Promise<any> {

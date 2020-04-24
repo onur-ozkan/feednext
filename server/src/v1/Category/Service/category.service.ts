@@ -3,7 +3,7 @@ import { Injectable, BadRequestException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 
 // Other dependencies
-import { ObjectID } from 'mongodb'
+import { ObjectId } from 'mongodb'
 import { Validator } from 'class-validator'
 
 // Local files
@@ -12,15 +12,21 @@ import { CategoriesEntity } from 'src/shared/Entities/categories.entity'
 import { serializerService, ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { CreateCategoryDto } from '../Dto/create-category.dto'
 import { UpdateCategoryDto } from '../Dto/update-category.dto'
+import { EntriesRepository } from 'src/shared/Repositories/entries.repository'
+import { TitlesRepository } from 'src/shared/Repositories/title.repository'
 
 @Injectable()
 export class CategoryService {
 
-    private validator: ObjectID
+    private validator: ObjectId
 
     constructor(
         @InjectRepository(CategoriesRepository)
         private readonly categoriesRepository: CategoriesRepository,
+        @InjectRepository(EntriesRepository)
+        private readonly entriesRepository: EntriesRepository,
+        @InjectRepository(TitlesRepository)
+        private readonly titlesRepository: TitlesRepository,
     ) {
         this.validator = new Validator()
     }
@@ -34,9 +40,35 @@ export class CategoryService {
         return serializerService.serializeResponse('category_detail', category, id)
     }
 
-    async getCategoryList(query: { limit: number, skip: number, orderBy: any }): Promise<ISerializeResponse> {
+    async getCategoryList(query: { limit: number, skip: number }): Promise<ISerializeResponse> {
         const result: {categories: CategoriesEntity[], count: number} = await this.categoriesRepository.getCategoryList(query)
         return serializerService.serializeResponse('category_list', result)
+    }
+
+    async getTrendingCategories(): Promise<any> {
+        const latestEntries = await this.entriesRepository.getLatestEntries()
+
+        // Parse most belonged titles
+        const topTitlesOfLatestEntries = [...latestEntries.entries.reduce((r, e) => {
+            const k = e.title_slug
+            if(!r.has(k)) r.set(k, {titleSlug: e.title_slug, entryCount: 1})
+            else r.get(k).entryCount++
+            return r
+        // tslint:disable-next-line:new-parens
+        }, new Map).values()]
+
+        // Sort the title list by desc of entry counts and then take first 5 of them (Because trending category count will be 5)
+        const topFiveTitlesSlugs = topTitlesOfLatestEntries.sort((x, y) => y.entryCount - x.entryCount).slice(0, 5)
+
+        // Make flat slug list and query them to get titles belongs to that slugs
+        const slugList = topFiveTitlesSlugs.map(item => item.titleSlug)
+        const topFiveTitles = await this.titlesRepository.getTitleListBySlugs(slugList)
+
+        // Make flat category_id list to get trending categories
+        const categoryIdList = topFiveTitles.titles.map(item => ObjectId(item.category_id))
+        const trendingCategories = await this.categoriesRepository.getCategoryListByIds(categoryIdList)
+
+        return serializerService.serializeResponse('trending_categories', trendingCategories)
     }
 
     async createCategory(dto: CreateCategoryDto): Promise<ISerializeResponse> {
