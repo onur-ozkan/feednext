@@ -71,6 +71,8 @@ export const fetchTitleBySlug = (titleSlug: string): Promise<AxiosResponse> => a
 
 export const fetchAllCategories = (): Promise<AxiosResponse> => axios.get('/v1/category/all')
 
+export const fetchTrendingCategories = (): Promise<AxiosResponse> => axios.get('/v1/category/trending-categories')
+
 export const fetchEntryByEntryId = (entryId: string): Promise<AxiosResponse> => axios.get(`v1/entry/${entryId}`)
 
 export const fetchFeaturedEntryByTitleSlug = (

@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Form } from '@ant-design/compatible'
 import { Button, Card, List, Tag, message, BackTop, TreeSelect, Row, Col, Typography, Dropdown, Menu, Modal } from 'antd'
-import { LoadingOutlined, ArrowUpOutlined, LinkOutlined, SlidersOutlined, FilterOutlined, RiseOutlined, FireOutlined, StarOutlined, FilterFilled, CheckOutlined } from '@ant-design/icons'
+import { LoadingOutlined, ArrowUpOutlined, LinkOutlined, RiseOutlined, FireOutlined, StarOutlined, FilterFilled, CheckOutlined } from '@ant-design/icons'
 import '@ant-design/compatible/assets/index.css'
 
 import ArticleListContent from './components/ArticleListContent'
 import styles from './style.less'
-import { fetchAllFeeds, fetchFeaturedEntryByTitleSlug } from '@/services/api'
+import { fetchAllFeeds, fetchFeaturedEntryByTitleSlug, fetchTrendingCategories } from '@/services/api'
 import { useSelector } from 'react-redux'
 import { handleArrayFiltering, forgeDataTree } from '@/services/utils'
 import { PageLoading } from '@ant-design/pro-layout'
@@ -20,67 +19,68 @@ const Feeds = (): JSX.Element => {
 	const [isLoading, setIsLoading] = useState(true)
 	const [displayFilterModal, setDisplayFilterModal] = useState(false)
 	const [selectedCategoryFromTree, setSelectedCategoryFromTree] = useState(null)
+	const [trendingCategories, setTrendingCategories] = useState(null)
 	const [categoryFilter, setCategoryFilter] = useState(null)
 	const [feedList, setFeed]: any = useState([])
 	const [sortBy, setSortBy] = useState('top')
 	const [skipValueForPagination, setSkipValueForPagination] = useState(0)
 
-
 	useEffect(() => {
-		// Convert flat categories to tree category list
-		const forgedCategories = forgeDataTree(categoryList)
-		setCategories(forgedCategories)
-	}, [])
-
-	useEffect(() => {
-		// To refresh list after applying category filters
 		setFeed([])
 	}, [categoryFilter])
 
-	useEffect(() => {
-		if (categories) {
-			fetchAllFeeds(skipValueForPagination, null, categoryFilter)
-				.then(async feedsResponse => {
-					await feedsResponse.data.attributes.titles.map(async (title: any) => {
-						await fetchFeaturedEntryByTitleSlug(title.slug)
-							.then(async featuredEntryResponse => {
-								const feed = {
-									id: title.id,
-									slug: title.slug,
-									name: title.name,
-									href: `/feeds/${title.slug}`,
-									categoryName: handleArrayFiltering(categoryList, title.category_id).name,
-									createdAt: title.created_at,
-									updatedAt: title.updated_at,
-									entryCount: title.entry_count,
-									entry: {
-										id: featuredEntryResponse.data.attributes.id,
-										avatar: `${API_URL}/v1/user/${featuredEntryResponse.data.attributes.written_by}/pp`,
-										text: featuredEntryResponse.data.attributes.text,
-										createdAt: featuredEntryResponse.data.attributes.created_at,
-										updatedAt: featuredEntryResponse.data.attributes.updated_at,
-										votes: featuredEntryResponse.data.attributes.votes,
-										writtenBy: featuredEntryResponse.data.attributes.written_by,
-									},
-								}
-								await setFeed((feedList: any) => [...feedList, feed])
-							})
-							.catch(error => message.error(error.response.data.message, 3))
-					})
-					setIsLoading(false)
-				})
-				.catch(error => {
-					message.error(error.response.data.message, 3)
-				})
+	const handleDataFetching = (): void => {
+		const forgedCategories = forgeDataTree(categoryList)
+		setCategories(forgedCategories)
 
+		fetchAllFeeds(skipValueForPagination, null, categoryFilter)
+			.then(feedsResponse => {
+				feedsResponse.data.attributes.titles.map((title: any) => {
+					fetchFeaturedEntryByTitleSlug(title.slug)
+						.then(featuredEntryResponse => {
+							const feed = {
+								id: title.id,
+								slug: title.slug,
+								name: title.name,
+								href: `/feeds/${title.slug}`,
+								categoryName: handleArrayFiltering(categoryList, title.category_id).name,
+								createdAt: title.created_at,
+								updatedAt: title.updated_at,
+								entryCount: title.entry_count,
+								entry: {
+									id: featuredEntryResponse.data.attributes.id,
+									avatar: `${API_URL}/v1/user/${featuredEntryResponse.data.attributes.written_by}/pp`,
+									text: featuredEntryResponse.data.attributes.text,
+									createdAt: featuredEntryResponse.data.attributes.created_at,
+									updatedAt: featuredEntryResponse.data.attributes.updated_at,
+									votes: featuredEntryResponse.data.attributes.votes,
+									writtenBy: featuredEntryResponse.data.attributes.written_by,
+								},
+							}
+							setFeed((feedList: any) => [...feedList, feed])
+						})
+						.catch(error => message.error(error.response.data.message, 3))
+				})
+			})
+			.catch(error => {
+				message.error(error.response.data.message, 3)
+			})
+
+		if (isLoading) {
+			fetchTrendingCategories().then(res => {
+				setTrendingCategories(res.data.attributes.categories)
+				setIsLoading(false)
+			})
 		}
-	}, [skipValueForPagination, categories, categoryFilter])
 
-
-	const handleFetchMore = (): void => {
-		setIsLoading(true)
-		setSkipValueForPagination(skipValueForPagination + 7)
 	}
+
+	useEffect(() => {
+		handleDataFetching()
+	}, [skipValueForPagination, categoryFilter])
+
+
+	const handleFetchMore = (): void => setSkipValueForPagination(skipValueForPagination + 7)
 
 	const handleSortByIcon = (): JSX.Element | void => {
 		switch(sortBy){
@@ -154,9 +154,8 @@ const Feeds = (): JSX.Element => {
 		<>
 			<BackTop />
 			<Row style={{ marginTop: 15 }}>
-				<Col span={18} style={{ paddingRight: 15 }}>
+				<Col lg={16} md={24} style={{ padding: 7 }}>
 					<Card
-
 						bordered={false}
 						bodyStyle={{
 							padding: '8px 32px 32px 32px',
@@ -166,10 +165,13 @@ const Feeds = (): JSX.Element => {
 						<Col />
 							<Button
 								onClick={(): void => setDisplayFilterModal(true)}
+								className={styles.antBtnLink}
+								type="link"
 								style={{ marginRight: 5 }}
-								shape="circle"
 								icon={<FilterFilled />}
-							/>
+							>
+								Filter
+							</Button>
 							<Dropdown
 								trigger={['click']}
 								overlay={
@@ -241,26 +243,23 @@ const Feeds = (): JSX.Element => {
 						/>
 					</Card>
 				</Col>
-				<Col span={6}>
-					<Card style={{ marginBottom: 15 }} bordered={false} title="Trending Categories">
-						<List.Item
-							style={{ marginBottom: -10 }}
-							actions={[<Button type="primary" key="trending-category">Display</Button>]}
-						>
-							Phone
-						</List.Item>
-						<List.Item
-							style={{ marginBottom: -10 }}
-							actions={[<Button type="primary" key="trending-category">Display</Button>]}
-						>
-							Computers
-						</List.Item>
-						<List.Item
-							style={{ marginBottom: -10 }}
-							actions={[<Button type="primary" key="trending-category">Display</Button>]}
-						>
-							Digital Games
-						</List.Item>
+				<Col lg={8} md={24} style={{ padding: 7 }}>
+					<Card style={{ marginBottom: 14 }} bordered={false} title="Trending Categories">
+						{trendingCategories.map(category => {
+							return (
+								<List.Item
+									key={category.id}
+									style={{ marginBottom: -10 }}
+									actions={[
+										<Button onClick={(): void => setCategoryFilter(category.id)} type="primary" key={category.id}>
+											Display
+										</Button>
+									]}
+								>
+									{category.name}
+								</List.Item>
+							)
+						})}
 					</Card>
 					<Card>
 						<Row style={{ marginBottom: 15 }}>
@@ -302,6 +301,7 @@ const Feeds = (): JSX.Element => {
 					</Card>
 				</Col>
 			</Row>
+			<br/>
 		</>
 	)
 }
