@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Form } from '@ant-design/compatible'
-import { Button, Card, List, Tag, message, BackTop, TreeSelect, Row, Col, Typography, Dropdown, Menu } from 'antd'
-import { LoadingOutlined, ArrowUpOutlined, LinkOutlined, SlidersOutlined, FilterOutlined, RiseOutlined, FireOutlined, StarOutlined } from '@ant-design/icons'
+import { Button, Card, List, Tag, message, BackTop, TreeSelect, Row, Col, Typography, Dropdown, Menu, Modal } from 'antd'
+import { LoadingOutlined, ArrowUpOutlined, LinkOutlined, SlidersOutlined, FilterOutlined, RiseOutlined, FireOutlined, StarOutlined, FilterFilled, CheckOutlined } from '@ant-design/icons'
 import '@ant-design/compatible/assets/index.css'
 
 import ArticleListContent from './components/ArticleListContent'
@@ -11,12 +11,15 @@ import { useSelector } from 'react-redux'
 import { handleArrayFiltering, forgeDataTree } from '@/services/utils'
 import { PageLoading } from '@ant-design/pro-layout'
 import { API_URL } from '../../../config/constants'
+import { router } from 'umi'
 
 const Feeds = (): JSX.Element => {
 	const categoryList = useSelector((state: any) => state.global.categoryList)
 
 	const [categories, setCategories] = useState<any[] | null>(null)
 	const [isLoading, setIsLoading] = useState(true)
+	const [displayFilterModal, setDisplayFilterModal] = useState(false)
+	const [selectedCategoryFromTree, setSelectedCategoryFromTree] = useState(null)
 	const [categoryFilter, setCategoryFilter] = useState(null)
 	const [feedList, setFeed]: any = useState([])
 	const [sortBy, setSortBy] = useState('top')
@@ -64,13 +67,12 @@ const Feeds = (): JSX.Element => {
 							})
 							.catch(error => message.error(error.response.data.message, 3))
 					})
-				})
-				.then(() => {
 					setIsLoading(false)
 				})
 				.catch(error => {
 					message.error(error.response.data.message, 3)
 				})
+
 		}
 	}, [skipValueForPagination, categories, categoryFilter])
 
@@ -109,107 +111,197 @@ const Feeds = (): JSX.Element => {
 		</div>
 	)
 
-	if (isLoading) return <PageLoading />
+	const handleCategoryFilter = (): void => {
+		setCategoryFilter(selectedCategoryFromTree)
+		setDisplayFilterModal(false)
+	}
 
-	const handleReadableCategoryValue = (id: string[]): void => setCategoryFilter(String(id))
+	const onModalCancel = (): void => {
+		setSelectedCategoryFromTree(null)
+		setDisplayFilterModal(false)
+	}
+
+
+	const handleModalScreen = (): JSX.Element => (
+		<Modal
+			transitionName='fade'
+			style={{ textAlign: 'center'}}
+			visible={displayFilterModal}
+			closable={false}
+			footer={null}
+			onCancel={onModalCancel}
+		>
+			<Row>
+				<Col style={{ marginRight: 10 }}>
+					<TreeSelect onChange={(id: string[]): void => setSelectedCategoryFromTree(String(id))}  multiple style={{ width: '100%' }} placeholder="All Categories" allowClear>
+						{categories.map((data: any) => (
+							<TreeSelect.TreeNode key={data.id} value={data.id} title={data.name}>
+								{data.childNodes.map((child: any) => (
+									<TreeSelect.TreeNode key={child.id} value={child.id} title={child.name} />
+								))}
+							</TreeSelect.TreeNode>
+						))}
+					</TreeSelect>
+				</Col>
+				<Button shape="circle" icon={<CheckOutlined />} onClick={handleCategoryFilter} />
+			</Row>
+		</Modal>
+	)
+
+	if (isLoading) return <PageLoading />
 
 	return (
 		<>
 			<BackTop />
-			<Card bordered={true}>
-				<Row>
-					<Col xs={19} sm={16} md={13}>
-						<TreeSelect onChange={handleReadableCategoryValue}  multiple style={{ width: '100%' }} placeholder="All Categories" allowClear>
-							{categories.map((data: any) => (
-								<TreeSelect.TreeNode key={data.id} value={data.id} title={data.name}>
-									{data.childNodes.map((child: any) => (
-										<TreeSelect.TreeNode key={child.id} value={child.id} title={child.name} />
-									))}
-								</TreeSelect.TreeNode>
-							))}
-						</TreeSelect>
-					</Col>
-					<Col />
-					<Dropdown
-						overlay={
-							<Menu>
-								<Menu.Item onClick={(): void => setSortBy('hot')}>
-									<Typography.Text>
-										<FireOutlined /> Hot
-									</Typography.Text>
-								</Menu.Item>
-								<Menu.Item onClick={(): void => setSortBy('top')}>
-									<Typography.Text>
-									 	<RiseOutlined /> Top
-									</Typography.Text>
-								</Menu.Item>
-								<Menu.Item onClick={(): void => setSortBy('new')}>
-									<Typography.Text>
-										<StarOutlined /> New
-									</Typography.Text>
-								</Menu.Item>
-							</Menu>
-						}
+			<Row style={{ marginTop: 15 }}>
+				<Col span={18} style={{ paddingRight: 15 }}>
+					<Card
+
+						bordered={false}
+						bodyStyle={{
+							padding: '8px 32px 32px 32px',
+						}}
 					>
-						<Button>
-							SORT BY {handleSortByIcon()}
-						</Button>
-					</Dropdown>
-				</Row>
-			</Card>
-			<Card
-				style={{
-					marginTop: 24,
-				}}
-				bordered={false}
-				bodyStyle={{
-					padding: '8px 32px 32px 32px',
-				}}
-			>
-				<List<any>
-					style={{ margin: 15 }}
-					size="large"
-					loading={feedList.length === 0 ? isLoading : false}
-					rowKey="id"
-					itemLayout="vertical"
-					loadMore={loadMore}
-					dataSource={feedList}
-					renderItem={(item): JSX.Element => (
-						<List.Item
-							key={item.id}
-							actions={[
-								<span>
-									<ArrowUpOutlined
-										style={{
-											marginRight: 8,
-										}}
-									/>
-									{item.entry.votes}
-								</span>,
-								<span>
-									<LinkOutlined style={{ marginRight: 8 }} />
-									Share
-								</span>
-							]}
-							extra={<div className={styles.listItemExtra} />}
-						>
-							<List.Item.Meta
-								title={
-									<a className={styles.listItemMetaTitle} href={item.href}>
-										{item.name}
-									</a>
-								}
-								description={
-									<span>
-										<Tag>{item.categoryName}</Tag>
-									</span>
-								}
+						<Row style={{ margin: '10px -15px -35px 0px', position: 'relative', zIndex: 1 }}>
+						<Col />
+							<Button
+								onClick={(): void => setDisplayFilterModal(true)}
+								style={{ marginRight: 5 }}
+								shape="circle"
+								icon={<FilterFilled />}
 							/>
-							<ArticleListContent data={item.entry} />
+							<Dropdown
+								trigger={['click']}
+								overlay={
+									<Menu>
+										<Menu.Item onClick={(): void => setSortBy('hot')}>
+											<Typography.Text>
+												<FireOutlined /> Hot
+											</Typography.Text>
+										</Menu.Item>
+										<Menu.Item onClick={(): void => setSortBy('top')}>
+											<Typography.Text>
+												<RiseOutlined /> Top
+											</Typography.Text>
+										</Menu.Item>
+										<Menu.Item onClick={(): void => setSortBy('new')}>
+											<Typography.Text>
+												<StarOutlined /> New
+											</Typography.Text>
+										</Menu.Item>
+									</Menu>
+								}
+							>
+								<Button className={styles.antBtnLink} type="link">
+									SORT BY {handleSortByIcon()}
+								</Button>
+							</Dropdown>
+						</Row>
+						{handleModalScreen()}
+						<List<any>
+							style={{ margin: 15 }}
+							size="large"
+							loading={isLoading}
+							rowKey="id"
+							itemLayout="vertical"
+							loadMore={loadMore}
+							dataSource={feedList}
+							renderItem={(item): JSX.Element => (
+								<List.Item
+									key={item.id}
+									actions={[
+										<>
+											<span style={{ marginRight: 10 }}>
+												<ArrowUpOutlined style={{ marginRight: 3 }} />
+												{item.entry.votes}
+											</span>
+											<span>
+												<LinkOutlined style={{ marginRight: 3 }} />
+												Share
+											</span>
+										</>
+									]}
+									extra={<div className={styles.listItemExtra} />}
+								>
+									<List.Item.Meta
+										title={
+											<span style={{ cursor: 'pointer' }} onClick={(): void => router.push(item.href)}>
+												<Typography.Text> {item.name} </Typography.Text>
+											</span>
+										}
+										description={
+											<span>
+												<Tag>{item.categoryName}</Tag>
+											</span>
+										}
+									/>
+									<ArticleListContent data={item.entry} />
+								</List.Item>
+							)}
+						/>
+					</Card>
+				</Col>
+				<Col span={6}>
+					<Card style={{ marginBottom: 15 }} bordered={false} title="Trending Categories">
+						<List.Item
+							style={{ marginBottom: -10 }}
+							actions={[<Button type="primary" key="trending-category">Display</Button>]}
+						>
+							Phone
 						</List.Item>
-					)}
-				/>
-			</Card>
+						<List.Item
+							style={{ marginBottom: -10 }}
+							actions={[<Button type="primary" key="trending-category">Display</Button>]}
+						>
+							Computers
+						</List.Item>
+						<List.Item
+							style={{ marginBottom: -10 }}
+							actions={[<Button type="primary" key="trending-category">Display</Button>]}
+						>
+							Digital Games
+						</List.Item>
+					</Card>
+					<Card>
+						<Row style={{ marginBottom: 15 }}>
+							<Col span={12}>
+								<Row>
+									<Typography.Text strong>
+										About
+									</Typography.Text>
+								</Row>
+								<Row>
+									<Typography.Text strong>
+										Github
+									</Typography.Text>
+								</Row>
+								<Row>
+									<Typography.Text strong>
+										Policy
+									</Typography.Text>
+								</Row>
+							</Col>
+							<Col span={12}>
+								<Row>
+									<Typography.Text strong>
+										Support
+									</Typography.Text>
+								</Row>
+								<Row>
+									<Typography.Text strong>
+										API
+									</Typography.Text>
+								</Row>
+							</Col>
+						</Row>
+						<Row>
+							<Typography.Text>
+								Feednext © 2020. All rights reserved
+							</Typography.Text>
+						</Row>
+					</Card>
+				</Col>
+			</Row>
 		</>
 	)
 }
