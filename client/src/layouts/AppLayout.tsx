@@ -27,21 +27,6 @@ export type AppLayoutContext = { [K in 'location']: AppLayoutProps[K] } & {
 	}
 }
 
-const handleFooterRendering = (): JSX.Element => (
-	<DefaultFooter
-		copyright="2019 Feednext"
-		style={{ backgroundColor: 'transparent' }}
-		links={[
-			{
-				key: 'Github',
-				title: <GithubFilled />,
-				href: 'https://github.com/ilter-tech',
-				blankTarget: true,
-			},
-		]}
-	/>
-)
-
 const AppLayout: React.FC<AppLayoutProps> = props => {
 	const settings = useSelector((state: any) => state.settings)
 
@@ -79,14 +64,13 @@ const AppLayout: React.FC<AppLayoutProps> = props => {
 					<span>{route.breadcrumbName}</span>
 				)
 			}}
-			footerRender={handleFooterRendering}
 			formatMessage={formatMessage}
 			rightContentRender={(): JSX.Element => <RightContent />}
 			{...props}
 			{...settings}
 		>
 			<Row style={{ backgroundColor: 'transparent', justifyContent: 'center' }}>
-				<Col xxl={14} xl={16} lg={18} md={22} sm={24}>
+				<Col xxl={12} xl={16} lg={18} md={22} sm={24}>
 					{props.children}
 				</Col>
 			</Row>
