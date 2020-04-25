@@ -10,6 +10,7 @@ import { UPDATE_USER } from '@/redux/Actions/User/types'
 interface UpdatePayload {
 	fullName?: string
 	email?: string
+	link?: string
 	biography?: string
 	oldPassword?: string
 	password?: string
@@ -53,6 +54,7 @@ const Settings = (): JSX.Element => {
 			...(values.fullName !== user.full_name) && { fullName: values.fullName },
 			...(values.email !== user.email) && { email: values.email },
 			...(values.biography !== user.biography) && { biography: values.biography },
+			...(values.link !== user.link) && { link: values.link },
 			...(values.oldPassword) && { oldPassword: values.oldPassword },
 			...(values.password) && { password: values.password },
 		}
@@ -64,6 +66,7 @@ const Settings = (): JSX.Element => {
 					type: UPDATE_USER,
 					payload: {
 						...(values.fullName !== user.full_name) && { fullName: values.fullName },
+						...(values.link !== user.link) && { link: values.link },
 						...(values.biography !== user.biography) && { biography: values.biography },
 					}
 				})
@@ -82,6 +85,7 @@ const Settings = (): JSX.Element => {
 						initialValues={{
 							fullName: user.full_name,
 							email: user.email,
+							link: user.link,
 							biography: user.biography
 						}}
 						form={form}
@@ -122,11 +126,12 @@ const Settings = (): JSX.Element => {
 									message: 'Please enter your current password!',
 								})
 							]}
-							style={{ marginBottom: 0 }}
+							style={{ marginBottom: 10 }}
 						>
-							<Input.Password style={{ marginBottom: 10 }} placeholder="Current Password" />
+							<Input.Password placeholder="Current Password" />
 						</Form.Item>
 						<Form.Item
+							style={{ marginBottom: 10 }}
 							name="password"
 							rules={[
 								{
@@ -135,7 +140,7 @@ const Settings = (): JSX.Element => {
 								}
 							]}
 						>
-							<Input.Password style={{ marginBottom: 10 }} placeholder="New Password" />
+							<Input.Password placeholder="New Password" />
 						</Form.Item>
 						<Form.Item
 							name="password-confirm"
@@ -161,6 +166,13 @@ const Settings = (): JSX.Element => {
 							]}
 						>
 							<Input.Password placeholder="Confirm New Password" />
+						</Form.Item>
+						<Divider> Link </Divider>
+						<Form.Item name="link">
+							<Input
+								maxLength={90}
+								placeholder="Link"
+							/>
 						</Form.Item>
 						<Divider> Biography </Divider>
 						<Form.Item name="biography">

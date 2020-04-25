@@ -17,8 +17,9 @@ export const userReducer = (state = userReducerDefaultState, action: UserActions
 					user: {
 						...state.attributes.user,
 						// eslint-disable-next-line @typescript-eslint/camelcase
-						...action.payload.biography && { biography: action.payload.biography },
 						...action.payload.fullName && { full_name: action.payload.fullName },
+						...action.payload.link && { link: action.payload.link },
+						...action.payload.biography && { biography: action.payload.biography },
 					}
 				}
 			}

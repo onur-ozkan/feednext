@@ -19,6 +19,12 @@ export interface UserPayload {
     }
 }
 
+export interface UpdateUserPayload {
+	fullName?: string
+	link?: string
+	biography?: string
+}
+
 export interface SignInAction {
 	type: typeof SIGN_IN
 	user: UserPayload
@@ -30,10 +36,7 @@ export interface SignOutAction {
 
 export interface UpdateUserAction {
 	type: typeof UPDATE_USER
-	payload: {
-		fullName?: string
-		biography?: string
-	}
+	payload: UpdateUserPayload
 }
 
 export interface VoteEntryAction {

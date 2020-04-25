@@ -10,7 +10,8 @@ import {
 	UndoEntryVoteAction,
 	UNDO_ENTRY_VOTE,
 	UpdateUserAction,
-	UPDATE_USER
+	UPDATE_USER,
+	UpdateUserPayload
 } from './types'
 
 export const StartUserActions = {
@@ -29,10 +30,7 @@ export const StartUserActions = {
 			})
 		}
 	},
-	updateUser: (payload: {
-		fullName?: string,
-		biography?: string
-	}) => {
+	updateUser: (payload: UpdateUserPayload) => {
 		return (dispatch: Dispatch<UpdateUserAction>): void => {
 			dispatch({
 				type: UPDATE_USER,
