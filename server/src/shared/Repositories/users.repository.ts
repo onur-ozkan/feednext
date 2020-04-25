@@ -86,6 +86,7 @@ export class UsersRepository extends Repository<UsersEntity> {
         })
 
         if (dto.fullName) profile.full_name = dto.fullName
+        if (dto.link) profile.link = dto.link
         if (dto.biography) profile.biography = dto.biography
         if (dto.password) {
             const hashedPassword = crypto.createHmac('sha256', dto.password).digest('hex')

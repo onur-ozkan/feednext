@@ -21,6 +21,13 @@ export class UpdateUserDto {
     @IsEmail()
     email: string
 
+    @ApiProperty({
+        required: false,
+        example: 'https://twitter.com/_ozkanonur',
+    })
+    @IsOptional()
+    @MaxLength(90)
+    link: string
 
     @ApiProperty({
         required: false,

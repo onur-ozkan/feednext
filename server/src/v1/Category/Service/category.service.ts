@@ -45,7 +45,7 @@ export class CategoryService {
         return serializerService.serializeResponse('category_list', result)
     }
 
-    async getTrendingCategories(): Promise<any> {
+    async getTrendingCategories(): Promise<ISerializeResponse> {
         const latestEntries = await this.entriesRepository.getLatestEntries()
 
         // Parse most belonged titles

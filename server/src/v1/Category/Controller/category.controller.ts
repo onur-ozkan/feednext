@@ -31,7 +31,7 @@ export class CategoryController {
     }
 
     @Get('trending-categories')
-    getTrendingCategories(): Promise<any> {
+    getTrendingCategories(): Promise<ISerializeResponse> {
         return this.categoryService.getTrendingCategories()
     }
 

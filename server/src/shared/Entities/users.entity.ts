@@ -47,6 +47,12 @@ export class UsersEntity {
 
     @Column({
         type: 'string',
+        length: 90,
+    })
+    link: string
+
+    @Column({
+        type: 'string',
         length: 155,
     })
     biography: string
@@ -84,6 +90,7 @@ export class UsersEntity {
     fillDefaults() {
         this.role = 0
         this.biography = ''
+        this.link = ''
         this.is_active = true
         this.is_verified = false,
         this.up_voted_entries = []
