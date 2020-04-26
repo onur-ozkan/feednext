@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import FeedHeader from './components/FeedHeader'
 import FeedEntries from './components/FeedEntries'
+import styles from './style.less'
 import { fetchEntriesByTitleId, fetchTitle, getAverageTitleRate, updateTitle } from '@/services/api'
 import { PageLoading } from '@ant-design/pro-layout'
 import { useSelector } from 'react-redux'
@@ -58,6 +59,7 @@ const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 		<>
 			<FeedHeader
 				accessToken={accessToken}
+				styles={styles}
 				openUpdateModal={(): void => setUpdateModalVisibility(true)}
 				userRole={userRole}
 				titleData={title}
