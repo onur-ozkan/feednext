@@ -37,12 +37,12 @@ const HeaderSearch: React.FC = (): JSX.Element => {
 				const foundTitles = res.data.attributes.titles.map(title => {
 					return {
 						label:
-							<Typography.Text
-								style={{ fontSize: 15 }}
+							<div
+								style={{ width: '100%' }}
 								onClick={(): void => handleTitleRouting(`/feeds/${title.slug}`)}
 							>
-								{title.name}
-							</Typography.Text>,
+								<Typography.Text style={{ fontSize: 15 }}> {title.name} </Typography.Text>
+							</div>,
 						options: []
 					}
 				})
@@ -63,9 +63,6 @@ const HeaderSearch: React.FC = (): JSX.Element => {
 		<span className={inputClass} onClick={enterSearchMode}>
 			<SearchOutlined
 				key="Icon"
-				style={{
-					cursor: 'pointer',
-				}}
 			/>
 			<AutoComplete
 				className={inputClass}
