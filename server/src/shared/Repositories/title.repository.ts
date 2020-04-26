@@ -3,6 +3,7 @@ import { UnprocessableEntityException, BadRequestException } from '@nestjs/commo
 
 // Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
+import { ObjectId } from 'mongodb'
 import slugify from 'slugify'
 
 // Local files
@@ -12,12 +13,21 @@ import { UpdateTitleDto } from 'src/v1/Title/Dto/update-title.dto'
 
 @EntityRepository(TitlesEntity)
 export class TitlesRepository extends Repository<TitlesEntity> {
-    async getTitle(titleSlug: string): Promise<TitlesEntity> {
+    async getTitleBySlug(titleSlug: string): Promise<TitlesEntity> {
         try {
             const title: TitlesEntity = await this.findOneOrFail({slug: titleSlug})
             return title
         } catch (err) {
             throw new BadRequestException('No title found for given slug')
+        }
+    }
+
+    async getTitleById(titleId: string): Promise<TitlesEntity> {
+        try {
+            const title: TitlesEntity = await this.findOneOrFail(titleId)
+            return title
+        } catch (err) {
+            throw new BadRequestException('No title found for given id')
         }
     }
 
@@ -35,9 +45,9 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         return { titles }
     }
 
-    async updateEntryCount(titleSlug: string, isIncrement: boolean): Promise<void> {
+    async updateEntryCount(titleId: ObjectId, isIncrement: boolean): Promise<void> {
         try {
-            const title: TitlesEntity = await this.findOneOrFail({ slug: titleSlug })
+            const title: TitlesEntity = await this.findOneOrFail(titleId)
             isIncrement ? title.entry_count++ : title.entry_count--
             this.save(title)
         } catch (err) {
@@ -50,14 +60,16 @@ export class TitlesRepository extends Repository<TitlesEntity> {
     ): Promise<{ titles: TitlesEntity[], count: number }> {
 
         const [titles, total] = await this.findAndCount({
-            ...query.categoryIds && { where: {
-                category_id: {
-                    $in: query.categoryIds
-                },
+            where: {
                 ...query.author && {
                     opened_by: query.author
-                }
-            }},
+                },
+                ...query.categoryIds && {
+                    category_id: {
+                        $in: query.categoryIds
+                    }
+                },
+            },
             order: {
                 name: 'ASC',
             },
@@ -68,12 +80,12 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         return { titles, count: total }
     }
 
-    async getTitleListBySlugs(slugList: string[]): Promise<{ titles: TitlesEntity[], count: number }> {
+    async getTitleListByIds(idList: ObjectId[]): Promise<{ titles: TitlesEntity[], count: number }> {
 
         const [titles, total] = await this.findAndCount({
             where: {
-                slug: {
-                    $in: slugList
+                '_id': {
+                    $in: idList
                 }
             },
             order: {
@@ -149,14 +161,6 @@ export class TitlesRepository extends Repository<TitlesEntity> {
     }
 
     async updateTitle(updatedBy: string, titleId: string, dto: UpdateTitleDto): Promise<TitlesEntity> {
-        if (dto.categoryId) {
-            try {
-                await this.findOneOrFail(dto.categoryId)
-            } catch (err) {
-                throw new BadRequestException('Title could not found that belongs to given category id.')
-            }
-        }
-
         let title: TitlesEntity
         try {
             title = await this.findOneOrFail(titleId)

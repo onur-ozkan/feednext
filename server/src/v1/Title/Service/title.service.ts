@@ -34,11 +34,17 @@ export class TitleService {
         this.validator = new Validator()
     }
 
-    async getTitle(titleSlug: string): Promise<ISerializeResponse> {
-        const title: TitlesEntity = await this.titlesRepository.getTitle(titleSlug)
-        const id: string = String(title.id)
-        delete title.id
-        return serializerService.serializeResponse('title_detail', title, id)
+    async getTitle(titleQueryData: string, isId: boolean): Promise<ISerializeResponse> {
+        let title: TitlesEntity
+
+        if (isId) {
+            if (!this.validator.isMongoId(titleQueryData)) throw new BadRequestException('TitleId must be a MongoId.')
+            title = await this.titlesRepository.getTitleById(titleQueryData)
+        } else {
+            title = await this.titlesRepository.getTitleBySlug(titleQueryData)
+        }
+
+        return serializerService.serializeResponse('title_detail', title)
     }
 
     async searchTitle({ searchValue } : { searchValue: string }): Promise<ISerializeResponse> {
@@ -101,6 +107,14 @@ export class TitleService {
         if (!this.validator.isMongoId(titleId)) throw new BadRequestException('TitleId must be a MongoId.')
         if (dto.categoryId && !this.validator.isMongoId(dto.categoryId)) {
             throw new BadRequestException('CategoryId must be a MongoId.')
+        }
+
+        if (dto.categoryId) {
+            try {
+                await this.categoriesRepository.findOneOrFail(dto.categoryId)
+            } catch (err) {
+                throw new BadRequestException('Title could not found that belongs to given category id.')
+            }
         }
 
         const title: TitlesEntity = await this.titlesRepository.updateTitle(updatedBy, titleId, dto)

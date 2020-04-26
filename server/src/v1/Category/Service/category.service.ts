@@ -50,19 +50,19 @@ export class CategoryService {
 
         // Parse most belonged titles
         const topTitlesOfLatestEntries = [...latestEntries.entries.reduce((r, e) => {
-            const k = e.title_slug
-            if(!r.has(k)) r.set(k, {titleSlug: e.title_slug, entryCount: 1})
+            const k = e.title_id
+            if(!r.has(k)) r.set(k, {id: e.title_id, entryCount: 1})
             else r.get(k).entryCount++
             return r
         // tslint:disable-next-line:new-parens
         }, new Map).values()]
 
         // Sort the title list by desc of entry counts and then take first 5 of them (Because trending category count will be 5)
-        const topFiveTitlesSlugs = topTitlesOfLatestEntries.sort((x, y) => y.entryCount - x.entryCount).slice(0, 5)
+        const topFiveTitlesIds = topTitlesOfLatestEntries.sort((x, y) => y.entryCount - x.entryCount).slice(0, 5)
 
         // Make flat slug list and query them to get titles belongs to that slugs
-        const slugList = topFiveTitlesSlugs.map(item => item.titleSlug)
-        const topFiveTitles = await this.titlesRepository.getTitleListBySlugs(slugList)
+        const idList = topFiveTitlesIds.map(item => ObjectId(item.id))
+        const topFiveTitles = await this.titlesRepository.getTitleListByIds(idList)
 
         // Make flat category_id list to get trending categories
         const categoryIdList = topFiveTitles.titles.map(item => ObjectId(item.category_id))

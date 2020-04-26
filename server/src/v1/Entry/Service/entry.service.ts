@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 
 // Other dependencies
 import { Validator } from 'class-validator'
-import { ObjectID } from 'mongodb'
+import { ObjectId } from 'mongodb'
 
 // Local files
 import { EntriesRepository } from 'src/shared/Repositories/entries.repository'
@@ -17,7 +17,7 @@ import { UsersRepository } from 'src/shared/Repositories/users.repository'
 @Injectable()
 export class EntryService {
 
-    private validator: ObjectID
+    private validator: ObjectId
 
     constructor(
         @InjectRepository(EntriesRepository)
@@ -39,11 +39,11 @@ export class EntryService {
         return serializerService.serializeResponse('entry_detail', entry, id)
     }
 
-    async getEntriesByTitleSlug({ titleSlug, query }: {
-         titleSlug: string,
+    async getEntriesByTitleId({ titleId, query }: {
+         titleId: string,
          query: { limit: number, skip: number }
     }): Promise<ISerializeResponse> {
-        const result = await this.entriesRepository.getEntriesByTitleSlug({ titleSlug, query })
+        const result = await this.entriesRepository.getEntriesByTitleId({ titleId, query })
         return serializerService.serializeResponse('entry_list', result)
     }
 
@@ -55,8 +55,8 @@ export class EntryService {
        return serializerService.serializeResponse('entry_list_of_author', result)
     }
 
-    async getFeaturedEntryByTitleSlug({ titleSlug }: { titleSlug: string }): Promise<ISerializeResponse> {
-        const result = await this.entriesRepository.getFeaturedEntryByTitleSlug({ titleSlug })
+    async getFeaturedEntryByTitleId({ titleId }: { titleId: string }): Promise<ISerializeResponse> {
+        const result = await this.entriesRepository.getFeaturedEntryByTitleId({ titleId })
         return serializerService.serializeResponse('featured_entry', result)
     }
 
@@ -71,9 +71,9 @@ export class EntryService {
 
     async createEntry(writtenBy: string, dto: CreateEntryDto): Promise<HttpException | ISerializeResponse> {
         try {
-            await this.titlesRepository.updateEntryCount(dto.titleSlug, true)
+            await this.titlesRepository.updateEntryCount(dto.titleId, true)
         } catch (err) {
-            throw new BadRequestException(`${dto.titleSlug} slug does not match in the database.`)
+            throw new BadRequestException(`${dto.titleId} does not match in the database`)
         }
 
         const newEntry: EntriesEntity = await this.entriesRepository.createEntry(writtenBy, dto)
@@ -86,7 +86,7 @@ export class EntryService {
         try {
             await this.entriesRepository.findOneOrFail(entryId)
         } catch (e) {
-            throw new BadRequestException('Entry with that id could not found in the database.')
+            throw new BadRequestException('Entry with that id could not found in the database')
         }
 
         await this.usersRepository.undoVotedEntry({ entryId, username, isUpVoted })
@@ -112,7 +112,7 @@ export class EntryService {
         if (!this.validator.isMongoId(entryId)) throw new BadRequestException('EntryId must be a MongoId.')
 
         const entry: EntriesEntity = await this.entriesRepository.deleteEntry(entryId)
-        await this.titlesRepository.updateEntryCount(entry.title_slug, false)
+        await this.titlesRepository.updateEntryCount(entry.id, false)
         throw new HttpException('Entry has been deleted.', HttpStatus.OK)
     }
 }

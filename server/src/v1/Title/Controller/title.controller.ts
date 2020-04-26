@@ -21,9 +21,12 @@ import { Role } from 'src/shared/Enums/Roles'
 export class TitleController {
     constructor(private readonly titleService: TitleService) {}
 
-    @Get(':titleSlug')
-    getTitle(@Param('titleSlug') titleSlug: string): Promise<ISerializeResponse> {
-        return this.titleService.getTitle(titleSlug)
+    @Get(':titleQueryData')
+    getTitle(
+        @Param('titleQueryData') titleQueryData: string,
+        @Query('type') type: 'id' | 'slug'
+    ): Promise<ISerializeResponse> {
+        return this.titleService.getTitle(titleQueryData, type === 'id')
     }
 
     @Get('search')
