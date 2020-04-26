@@ -4,7 +4,7 @@ import Step1 from './components/Step1'
 import Step2 from './components/Step2'
 import Step3 from './components/Step3'
 import styles from './style.less'
-import { fetchAllCategories, createTitle, createEntry } from '@/services/api'
+import { createTitle, createEntry } from '@/services/api'
 import { forgeDataTree } from '@/services/utils'
 import { PageLoading } from '@ant-design/pro-layout'
 import { StepProvider } from './StepContext'
@@ -14,6 +14,7 @@ const { Step } = Steps
 
 const CreateFeed: React.FC = () => {
 	const accessToken = useSelector((state: any) => state.global.accessToken)
+	const categoryList = useSelector((state: any) => state.global.categoryList)
 
 	const [currentStep, setCurrentStep] = useState<number>(0)
 	const [stepComponent, setStepComponent] = useState<React.ReactNode>(null)
@@ -33,17 +34,15 @@ const CreateFeed: React.FC = () => {
 	const [titleSlugForRouting, setTitleSlugForRouting] = useState(null)
 
 	useEffect(() => {
-		fetchAllCategories().then(res => {
-			const forgedCategories = forgeDataTree(res.data.attributes.categories)
-			setCategories(forgedCategories)
-		})
+		const forgedCategories = forgeDataTree(categoryList)
+		setCategories(forgedCategories)
 	}, [])
 
 	useEffect(() => {
 		if (isRequestReady) {
 			createTitle(createTitleForm, accessToken).then((res) => {
 				createEntry({
-					titleSlug: res.data.attributes.slug,
+					titleId: res.data.attributes.id,
 					text: firstEntryForm.text,
 				}, accessToken).catch(error => message.error(error.response.data.message))
 				setTitleSlugForRouting(res.data.attributes.slug)

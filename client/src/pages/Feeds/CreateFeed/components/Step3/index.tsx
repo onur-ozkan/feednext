@@ -33,7 +33,7 @@ const Step3: React.FC = ({ titleSlugForRouting, feedCreatedSuccessfully }) => {
 			<Button type="primary" onClick={onFinish}>
 				OK
 			</Button>
-			<Button onClick={handleOnPostRoute}>Route to Post</Button>
+			<Button onClick={handleOnPostRoute}>Route to Feed</Button>
 		</>
 	)
 	return (

@@ -1,23 +1,25 @@
 import React, { useState, useEffect } from 'react'
-import { Card, Row, Col, Avatar, Typography, Tag, Tabs, Button, Pagination, Divider, Empty } from 'antd'
+import { Card, Row, Col, Avatar, Typography, Tag, Tabs, Button, Pagination, Divider, Empty, Tooltip } from 'antd'
 import { GridContent, PageLoading } from '@ant-design/pro-layout'
 import {
-	UserOutlined,
 	EditOutlined,
 	DownOutlined,
 	UpOutlined,
 	CopyOutlined,
-	SettingTwoTone,
-	IdcardTwoTone,
-	UpSquareTwoTone,
-	CrownTwoTone,
 	LoadingOutlined,
+	SettingOutlined,
+	IdcardOutlined,
+	UpSquareOutlined,
+	LinkOutlined,
+	SolutionOutlined,
 } from '@ant-design/icons'
 import { useSelector } from 'react-redux'
-import { fetchAllFeedsByAuthor, fetchAllEntriesByAuthor, fetchUserByUsername, fetchUserVotes } from '@/services/api'
+import { fetchAllEntriesByAuthor, fetchUserByUsername, fetchUserVotes, fetchAllFeeds } from '@/services/api'
 import { router } from 'umi'
+import styles from './style.less'
 import NotFoundPage from '../404'
 import { handleArrayFiltering } from '@/services/utils'
+import { API_URL } from '../../../config/constants'
 
 const User: React.FC = ({ computedMatch }): JSX.Element => {
 	const userState = useSelector((state: any) => state.user?.attributes.user)
@@ -57,7 +59,7 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 	}, [])
 
 	const handleFeedsTabView = (skip: number): void => {
-		fetchAllFeedsByAuthor(computedMatch.params.username, skip).then(async res => {
+		fetchAllFeeds(skip, computedMatch.params.username).then(async res => {
 			setTotalItems(res.data.attributes.count)
 
 			if (res.data.attributes.titles.length === 0) {
@@ -245,44 +247,66 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 			<Row gutter={24}>
 				<Col lg={10} md={24}>
 					<Card bordered={false}>
-						{userState &&
-							<div style={{ textAlign: 'right', margin: '-4px 0px 5px 0px'}}>
-								<SettingTwoTone style={{ fontSize: 18 }} />
-							</div>
-						}
+						<div style={{ textAlign: 'right', margin: '-4px 0px 5px 0px'}}>
+							{userState && (userState.username === computedMatch.params.username) &&
+								<SettingOutlined
+									onClick={(): void => router.push('/settings')}
+									style={{ fontSize: 18, cursor: 'pointer', color: '#ff2d20' }}
+								/>
+							}
+						</div>
 						<div style={{ textAlign: 'center' }}>
-							<Avatar style={{ marginBottom: 10 }} size={115} icon={<UserOutlined />} />
+							<Avatar
+								style={{ marginBottom: 10 }}
+								size={115}
+								src={`${API_URL}/v1/user/${computedMatch.params.username}/pp`}
+							/>
 							<Typography.Title level={3}> {user.full_name} </Typography.Title>
 						</div>
 
-						<Row>
-							<Col span={24}>
-								<Typography.Text>
-									<IdcardTwoTone style={{ marginRight: 3 }} /> {user.username}
-								</Typography.Text>
+						<Row style={{ padding: 20 }}>
+							<Col span={24} style={{ fontSize: 16 }}>
+								<Tooltip placement="bottom" title="Username">
+									<Typography.Text>
+										<IdcardOutlined style={{ marginRight: 3, color: '#ff2d20' }} /> {user.username}
+									</Typography.Text>
+								</Tooltip>
 							</Col>
-							<Col span={24}>
-								<Typography.Text>
-									<UpSquareTwoTone style={{ marginRight: 3 }} /> {readableRoles[user.role]}
-								</Typography.Text>
+							<Col span={24} style={{ fontSize: 16 }}>
+								<Tooltip placement="bottom" title="Role">
+									<Typography.Text>
+										<UpSquareOutlined style={{ marginRight: 3, color: '#ff2d20' }} /> {readableRoles[user.role]}
+									</Typography.Text>
+								</Tooltip>
 							</Col>
-							<Col span={24}>
-								<Typography.Text>
-									<CrownTwoTone style={{ marginRight: 3 }} /> 61
-								</Typography.Text>
+							<Col span={24} style={{ fontSize: 16 }}>
+								<Tooltip placement="bottom" title="Link">
+									<LinkOutlined style={{ marginRight: 3, color: '#ff2d20' }} />
+									{user.link ?
+										( <a href={user.link} target="_"> {user.link} </a> )
+										:
+										( <Typography.Text> - </Typography.Text> )
+									}
+								</Tooltip>
 							</Col>
 						</Row>
-					</Card>
-					<Card bordered>
-						<Typography.Title level={4}> Most feeded categories </Typography.Title>
-						<Tag style={{ margin: '3px 5px 3px 0px' }}> Example Category </Tag>
-						<Tag style={{ margin: '3px 5px 3px 0px' }}> Example Category </Tag>
-						<Tag style={{ margin: '3px 5px 3px 0px' }}> Example Category </Tag>
-						<Tag style={{ margin: '3px 5px 3px 0px' }}> Example Category </Tag>
-						<Tag style={{ margin: '3px 5px 3px 0px' }}> Example Category </Tag>
-						<Tag style={{ margin: '3px 5px 3px 0px' }}> Example Category </Tag>
-						<Tag style={{ margin: '3px 5px 3px 0px' }}> Example Category </Tag>
-						<Tag style={{ margin: '3px 5px 3px 0px' }}> Example Category </Tag>
+						<Divider>
+							<Typography.Text code>
+								<SolutionOutlined style={{ marginRight: 3 }} /> Biography
+							</Typography.Text>
+						</Divider>
+						<Col span={24} style={{ fontSize: 16 }}>
+							{user.biography ?
+								(<Typography.Text> {user.biography} </Typography.Text>)
+								:
+								(<Typography.Text> - </Typography.Text>)
+							}
+						</Col>
+						<Divider style={{ marginBottom: 0 }} orientation="right">
+							<Typography.Text secondary style={{ fontSize: 13 }}>
+								Joined at {user.created_at}
+							</Typography.Text>
+						</Divider>
 					</Card>
 				</Col>
 				<Col lg={14} md={24}>
@@ -356,6 +380,7 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 					</Card>
 				</Col>
 			</Row>
+			<br/>
 		</GridContent>
 	)
 }

@@ -67,7 +67,11 @@ export const fetchAllFeeds = (skip: number, username?: string, categoryIds?: str
 
 export const searchTitle = (searchValue: string): Promise<AxiosResponse> => axios.get(`/v1/title/search?searchValue=${searchValue}`)
 
-export const fetchTitleBySlug = (titleSlug: string): Promise<AxiosResponse> => axios.get(`/v1/title/${titleSlug}`)
+export const fetchTitle = (titleSlug: string, type: 'id' | 'slug'): Promise<AxiosResponse> => axios.get(`/v1/title/${titleSlug}`, {
+	params: {
+		type
+	}
+})
 
 export const fetchAllCategories = (): Promise<AxiosResponse> => axios.get('/v1/category/all')
 
@@ -75,14 +79,14 @@ export const fetchTrendingCategories = (): Promise<AxiosResponse> => axios.get('
 
 export const fetchEntryByEntryId = (entryId: string): Promise<AxiosResponse> => axios.get(`v1/entry/${entryId}`)
 
-export const fetchFeaturedEntryByTitleSlug = (
-	titleSlug: string
-): Promise<AxiosResponse> => axios.get(`/v1/entry/by-title/${titleSlug}/featured`)
+export const fetchFeaturedEntryByTitleId = (
+	titleId: string
+): Promise<AxiosResponse> => axios.get(`/v1/entry/by-title/${titleId}/featured`)
 
-export const fetchEntriesByTitleSlug = (
-	titleSlug: string,
+export const fetchEntriesByTitleId = (
+	titleId: string,
 	skip: number
-): Promise<AxiosResponse> => axios.get(`/v1/entry/by-title/${titleSlug}/all?limit=7&skip=${skip}`)
+): Promise<AxiosResponse> => axios.get(`/v1/entry/by-title/${titleId}/all?limit=7&skip=${skip}`)
 
 export const fetchAllEntriesByAuthor = (
 	username: string,
@@ -108,6 +112,28 @@ export const rateTitle = (
 	}
 })
 
+export const deleteTitle = (
+	accessToken: string,
+	categoryId: string
+): Promise<AxiosResponse> => axios.delete(`/v1/title/${categoryId}`, {
+	headers: {
+		'Authorization': `Bearer ${accessToken}`,
+	}
+})
+
+export const updateTitle = (
+	accessToken: string,
+	titleId: string,
+	payload: {
+		name: string,
+		categoryId: string
+	}
+): Promise<AxiosResponse> => axios.patch(`/v1/title/${titleId}`, payload, {
+	headers: {
+		'Authorization': `Bearer ${accessToken}`,
+	}
+})
+
 export const getUserRateOfTitle = (
 	titleId: string,
 	accessToken: string
@@ -122,7 +148,7 @@ export const getAverageTitleRate = (
 ): Promise<AxiosResponse> => axios.get(`/v1/title/${titleId}/average-rate`)
 
 export const createEntry = (
-	createEntryPayload: { text: string; titleSlug: string },
+	createEntryPayload: { text: string; titleId: string },
 	accessToken: string
 ): Promise<AxiosResponse> => axios.post('/v1/entry/create-entry', createEntryPayload, {
 	headers: {

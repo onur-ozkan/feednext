@@ -121,7 +121,7 @@ const FeedEntries: React.FC = ({ titleData, entryData, handleEntryFetching, setE
 					</li>
 				)}
 			/>
-			<AddEntry setEntryList={setEntryList} titleSlug={titleData.attributes.slug} accessToken={accessToken} />
+			<AddEntry setEntryList={setEntryList} titleId={titleData.id} accessToken={accessToken} />
 		</Card>
 	)
 }

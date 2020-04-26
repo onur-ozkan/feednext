@@ -232,30 +232,33 @@ const Settings = (): JSX.Element => {
 	const handleTabChange = (key: string): void => setActiveTab(key)
 
 	return (
-		<Card>
-			<Tabs size="default" tabPosition="top" animated={false} defaultActiveKey="profile" onChange={handleTabChange}>
-				<Tabs.TabPane
-					tab={
-						<Typography.Text strong>
-							<UserOutlined style={{ margin: 0 }} /> Account Settings
-						</Typography.Text>
-					}
-					key="account"
-				>
-					{tabView}
-				</Tabs.TabPane>
-				<Tabs.TabPane
-					tab={
-						<Typography.Text strong>
-							<SettingOutlined style={{ margin: 0 }} /> Application Settings
-						</Typography.Text>
-					}
-					key="application"
-				>
-					{tabView}
-				</Tabs.TabPane>
-			</Tabs>
-		</Card>
+		<>
+			<Card>
+				<Tabs size="default" tabPosition="top" animated={false} defaultActiveKey="profile" onChange={handleTabChange}>
+					<Tabs.TabPane
+						tab={
+							<Typography.Text strong>
+								<UserOutlined style={{ margin: 0 }} /> Account Settings
+							</Typography.Text>
+						}
+						key="account"
+					>
+						{tabView}
+					</Tabs.TabPane>
+					<Tabs.TabPane
+						tab={
+							<Typography.Text strong>
+								<SettingOutlined style={{ margin: 0 }} /> Application Settings
+							</Typography.Text>
+						}
+						key="application"
+					>
+						{tabView}
+					</Tabs.TabPane>
+				</Tabs>
+			</Card>
+			<br/>
+		</>
 	)
 }
 

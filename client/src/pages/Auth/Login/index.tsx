@@ -18,13 +18,7 @@ export declare interface FormDataType {
 
 const Login: React.FunctionComponent = () => {
 	const [form] = Form.useForm()
-	const user = useSelector((state: any) => state.user)
-
 	const dispatch = useDispatch()
-
-	useEffect(() => {
-		if (user) console.log(user)
-	}, [user])
 
 	const onSubmit = (values: FormDataType): void => {
 		const isEmail = /\S+@\S+\.\S+/.test(values.usernameOrEmail)

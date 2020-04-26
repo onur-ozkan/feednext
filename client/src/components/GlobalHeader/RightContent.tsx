@@ -47,7 +47,9 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
 					>
 						New Feed
 					</Button>
-					<NoticeIconView />
+					{
+						// <NoticeIconView />
+					}
 					<Avatar />
 				</>
 			)

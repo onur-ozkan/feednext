@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import { Button, Input, Form, Card, message } from 'antd'
 import { createEntry } from '@/services/api'
 
-const AddEntry: React.FC = ({ titleSlug, accessToken, setEntryList }) => {
+const AddEntry: React.FC = ({ titleId, accessToken, setEntryList }) => {
 	const [submitting, setSubmitting] = useState(false)
 	const [form] = Form.useForm();
 
 	const handleEntryPost = ({ entry }: { entry: string}) => {
 		setSubmitting(true)
 		createEntry({
-			titleSlug,
+			titleId,
 			text: entry,
 		}, accessToken)
 		.then(res => {

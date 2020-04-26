@@ -5,7 +5,7 @@ import '@ant-design/compatible/assets/index.css'
 
 import ArticleListContent from './components/ArticleListContent'
 import styles from './style.less'
-import { fetchAllFeeds, fetchFeaturedEntryByTitleSlug, fetchTrendingCategories } from '@/services/api'
+import { fetchAllFeeds, fetchFeaturedEntryByTitleId, fetchTrendingCategories } from '@/services/api'
 import { useSelector } from 'react-redux'
 import { handleArrayFiltering, forgeDataTree } from '@/services/utils'
 import { PageLoading } from '@ant-design/pro-layout'
@@ -27,6 +27,7 @@ const Feeds = (): JSX.Element => {
 
 	useEffect(() => {
 		setFeed([])
+		setSkipValueForPagination(0)
 	}, [categoryFilter])
 
 	const handleDataFetching = (): void => {
@@ -36,7 +37,7 @@ const Feeds = (): JSX.Element => {
 		fetchAllFeeds(skipValueForPagination, null, categoryFilter)
 			.then(feedsResponse => {
 				feedsResponse.data.attributes.titles.map((title: any) => {
-					fetchFeaturedEntryByTitleSlug(title.slug)
+					fetchFeaturedEntryByTitleId(title.id)
 						.then(featuredEntryResponse => {
 							const feed = {
 								id: title.id,
@@ -154,14 +155,14 @@ const Feeds = (): JSX.Element => {
 		<>
 			<BackTop />
 			<Row style={{ marginTop: 15 }}>
-				<Col lg={16} md={24} style={{ padding: 7 }}>
+				<Col lg={15} md={24} style={{ padding: 7 }}>
 					<Card
 						bordered={false}
 						bodyStyle={{
 							padding: '8px 32px 32px 32px',
 						}}
 					>
-						<Row style={{ margin: '10px -15px -35px 0px', position: 'relative', zIndex: 1 }}>
+						<Row style={{ margin: '10px -15px -25px 0px', position: 'relative', zIndex: 1 }}>
 						<Col />
 							<Button
 								onClick={(): void => setDisplayFilterModal(true)}
@@ -202,7 +203,6 @@ const Feeds = (): JSX.Element => {
 						{handleModalScreen()}
 						<List<any>
 							style={{ margin: 15 }}
-							size="large"
 							loading={isLoading}
 							rowKey="id"
 							itemLayout="vertical"
@@ -210,6 +210,7 @@ const Feeds = (): JSX.Element => {
 							dataSource={feedList}
 							renderItem={(item): JSX.Element => (
 								<List.Item
+									style={{ width: '100vh' }}
 									key={item.id}
 									actions={[
 										<>
@@ -243,23 +244,25 @@ const Feeds = (): JSX.Element => {
 						/>
 					</Card>
 				</Col>
-				<Col lg={8} md={24} style={{ padding: 7 }}>
+				<Col lg={9} md={24} style={{ padding: 7 }}>
 					<Card style={{ marginBottom: 14 }} bordered={false} title="Trending Categories">
-						{trendingCategories.map(category => {
-							return (
-								<List.Item
-									key={category.id}
-									style={{ marginBottom: -10 }}
-									actions={[
-										<Button onClick={(): void => setCategoryFilter(category.id)} type="primary" key={category.id}>
-											Display
-										</Button>
-									]}
-								>
-									{category.name}
-								</List.Item>
-							)
-						})}
+						<div style={{ marginTop: -20 }}>
+							{trendingCategories.map(category => {
+								return (
+									<List.Item
+										key={category.id}
+										style={{ marginBottom: -10 }}
+										actions={[
+											<Button onClick={(): void => setCategoryFilter(category.id)} type="primary" key={category.id}>
+												Display
+											</Button>
+										]}
+									>
+										{category.name}
+									</List.Item>
+								)
+							})}
+						</div>
 					</Card>
 					<Card>
 						<Row style={{ marginBottom: 15 }}>

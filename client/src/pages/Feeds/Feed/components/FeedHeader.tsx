@@ -1,55 +1,37 @@
 import React, { useState } from 'react'
-import { Button, Dropdown, Menu, Row, PageHeader, Tag, Rate, Col, Modal, message } from 'antd'
-import { EllipsisOutlined, InfoCircleOutlined, CheckOutlined, LoadingOutlined } from '@ant-design/icons'
-import { getUserRateOfTitle, rateTitle } from '@/services/api'
+import { Button, Row, PageHeader, Tag, Rate, Col, Modal, message, Divider, Typography, Popconfirm } from 'antd'
+import { InfoCircleOutlined, CheckOutlined, LoadingOutlined, DeleteOutlined, DeleteFilled, EditOutlined, WarningOutlined } from '@ant-design/icons'
+import { getUserRateOfTitle, rateTitle, deleteTitle } from '@/services/api'
+import { router } from 'umi'
 
 const FeedHeader: React.FC = (props: any): JSX.Element => {
-	const { titleData, categoryData, accessToken, averageTitleRate, refreshTitleRate } = props
+	const { titleData, openUpdateModal, categoryData, accessToken, averageTitleRate, refreshTitleRate, userRole } = props
 
 	const [rateModalVisibility, setRateModalVisibility] = useState(false)
 	const [initialRatingModalValue, setInitialRatingModalValue] = useState<number | null>(null)
 	const [rateValue, setRateValue] = useState(0)
 
-	const menu = (
-		<Menu>
-			<Menu.Item>
-				<a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">
-					1st menu item
-				</a>
-			</Menu.Item>
-			<Menu.Item>
-				<a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">
-					2nd menu item
-				</a>
-			</Menu.Item>
-			<Menu.Item>
-				<a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">
-					3rd menu item
-				</a>
-			</Menu.Item>
-		</Menu>
-	)
-
-	const Content = ({ children, extraContent }) => {
-		return (
-			<Row>
-				<div className="image">{extraContent}</div>
-			</Row>
-		)
-	}
-
 	const handleOnRatingChange = (value: number): void => setRateValue(value)
 
+	const handleTitleDelete = () => {
+		deleteTitle(accessToken, titleData.attributes.id)
+			.then(_res => {
+				message.success('Title successfully deleted')
+				router.push('/feeds')
+			})
+			.catch(error => message.error(error.response.data.message))
+	}
+
 	const handleTitleVoting = async (): Promise<void> => {
-		await rateTitle(rateValue, titleData.id, accessToken)
-			.then(_res => refreshTitleRate(titleData.id))
+		await rateTitle(rateValue, titleData.attributes.id, accessToken)
+			.then(_res => refreshTitleRate(titleData.attributes.id))
 			.catch(error => message.error(error.response.data.message))
 		setRateModalVisibility(false)
 	}
 
 	const handleRateModalOpening = async (): Promise<void> => {
 		setRateModalVisibility(true)
-		await getUserRateOfTitle(titleData.id, accessToken)
+		await getUserRateOfTitle(titleData.attributes.id, accessToken)
 			.then(res => setInitialRatingModalValue(res.data.attributes.rate))
 			.catch(_error => setInitialRatingModalValue(0))
 	}
@@ -77,42 +59,38 @@ const FeedHeader: React.FC = (props: any): JSX.Element => {
 				className="site-page-header"
 				extra={[
 					<>
+						{userRole >= 5 &&
+							<Popconfirm
+								placement="bottom"
+								style={{ fontSize: 15 }}
+								icon={<WarningOutlined style={{ color: 'red' }} />}
+								title="Are you sure that you want to delete this feed?"
+								onConfirm={handleTitleDelete}
+								okText="Yes"
+								cancelText="No"
+							>
+								<Button
+									shape="circle"
+									danger
+									icon={<DeleteFilled />}
+								/>
+							</Popconfirm>
+						}
+						{userRole >= 4 &&
+							<Button onClick={openUpdateModal} icon={<EditOutlined />}>
+								Edit
+							</Button>
+						}
 						<Button type="dashed" icon={<InfoCircleOutlined />}>
 							Details
 						</Button>
-						<Dropdown trigger={['click']} key="more" overlay={menu}>
-							<Button
-								style={{
-									border: 'none',
-									padding: 0,
-								}}
-							>
-								<EllipsisOutlined
-									style={{
-										fontSize: 20,
-										verticalAlign: 'top',
-									}}
-								/>
-							</Button>
-						</Dropdown>
-					</>,
+					</>
 				]}
-			>
-				<Content
-					extraContent={
-						<img
-							src="https://gw.alipayobjects.com/zos/antfincdn/K%24NnlsB%26hz/pageHeader.svg"
-							alt="content"
-							width="100%"
-						/>
-					}
-				/>
-			</PageHeader>
+			/>
 			<Modal
 				transitionName='fade'
 				style={{ textAlign: 'center'}}
 				visible={rateModalVisibility}
-				onOk={handleTitleVoting}
 				closable={false}
 				width='225px'
 				footer={null}
