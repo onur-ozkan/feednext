@@ -19,7 +19,7 @@ export class EntriesEntity {
     id: ObjectID
 
     @Column({ type: 'string' })
-    title_slug: string
+    title_id: string
 
     @Column({ type: 'string' })
     text: string

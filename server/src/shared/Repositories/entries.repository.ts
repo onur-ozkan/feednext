@@ -38,12 +38,12 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         return { entries, count: total }
     }
 
-    async getEntriesByTitleSlug({ titleSlug, query }: {
-        titleSlug: string, query: { limit: number, skip: number }
+    async getEntriesByTitleId({ titleId, query }: {
+        titleId: string, query: { limit: number, skip: number }
     }): Promise<{ entries: EntriesEntity[], count: number }> {
         const [entries, total] = await this.findAndCount({
             where: {
-                title_slug: titleSlug
+                title_id: titleId
             },
             order: {
                 created_at: 'ASC',
@@ -84,11 +84,11 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         return { entries, count: total }
     }
 
-    async getFeaturedEntryByTitleSlug({ titleSlug }: { titleSlug: string }): Promise<EntriesEntity> {
+    async getFeaturedEntryByTitleId({ titleId }: { titleId: string }): Promise<EntriesEntity> {
         try {
             const entries = await this.findOneOrFail({
                 where: {
-                    title_slug: titleSlug
+                    title_id: titleId
                 },
                 order: {
                     votes: 'DESC',
@@ -98,14 +98,14 @@ export class EntriesRepository extends Repository<EntriesEntity> {
             return entries
 
         } catch (err) {
-            throw new BadRequestException('No entry found for given titleSlug')
+            throw new BadRequestException('No entry found for given TitleId')
         }
     }
 
     async createEntry(writtenBy: string, dto: CreateEntryDto): Promise<EntriesEntity> {
         const newTitle: EntriesEntity = new EntriesEntity({
             text: dto.text,
-            title_slug: dto.titleSlug,
+            title_id: dto.titleId,
             written_by: writtenBy,
         })
 
@@ -153,8 +153,8 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         }
     }
 
-    async deleteEntriesBelongsToTitle(titleSlug: string): Promise<void> {
-        const entries: any = await this.find({ title_slug: titleSlug })
+    async deleteEntriesBelongsToTitle(title_id: ObjectId): Promise<void> {
+        const entries: any = await this.find({ title_id })
         await this.delete(entries)
     }
 }

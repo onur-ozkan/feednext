@@ -14,8 +14,8 @@ export class CreateEntryDto {
 
     @ApiProperty({
         required: true,
-        example: 'exaple-title-slug',
+        example: '5dd44d587d0c680f77d9688e',
     })
     @IsNotEmpty()
-    titleSlug: string
+    titleId: string
 }

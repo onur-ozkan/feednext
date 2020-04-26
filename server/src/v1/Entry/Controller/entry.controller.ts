@@ -31,19 +31,19 @@ export class EntryController {
         return this.entryService.getEntriesByAuthorOfIt({ username, query })
     }
 
-    @Get('by-title/:titleSlug/all')
-    getEntriesByTitleSlug(
-        @Param('titleSlug') titleSlug: string,
+    @Get('by-title/:titleId/all')
+    getEntriesByTitleId(
+        @Param('titleId') titleId: string,
         @Query() query: { limit: number, skip: number },
     ): Promise<ISerializeResponse> {
-        return this.entryService.getEntriesByTitleSlug({ titleSlug, query })
+        return this.entryService.getEntriesByTitleId({ titleId, query })
     }
 
-    @Get('by-title/:titleSlug/featured')
-    getFeaturedEntryByTitleSlug(
-        @Param('titleSlug') titleSlug: string
+    @Get('by-title/:titleId/featured')
+    getFeaturedEntryByTitleId(
+        @Param('titleId') titleId: string
     ): Promise<ISerializeResponse> {
-        return this.entryService.getFeaturedEntryByTitleSlug({ titleSlug })
+        return this.entryService.getFeaturedEntryByTitleId({ titleId })
     }
 
     @ApiBearerAuth()
