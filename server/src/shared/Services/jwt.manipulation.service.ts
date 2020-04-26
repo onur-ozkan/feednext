@@ -6,11 +6,18 @@ import * as jwt from 'jsonwebtoken'
 
 export class JwtManipulationService {
     public decodeJwtToken(token: string, property: string): any {
-        if (!token) throw new UnauthorizedException()
-        const decodedJwtData: any = jwt.decode(token.split(' ')[1])
+        let result
+        try {
+            if (!token) throw new Error()
+            const decodedJwtData: any = jwt.decode(token.split(' ')[1])
 
-        if (property === 'all') return decodedJwtData
-        return decodedJwtData[property]
+            if (property === 'all') result = decodedJwtData
+            result = decodedJwtData[property]
+        } catch {
+            throw new UnauthorizedException()
+        }
+
+        return result
     }
 }
 
