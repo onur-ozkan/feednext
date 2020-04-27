@@ -49,7 +49,6 @@ export class EntryController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Patch(':entryId')
-    @Roles(Role.Admin)
     updateEntry(
         @Headers('authorization') bearer: string, @Param('entryId') entryId: string, @Body('text') text: string,
     ): Promise<ISerializeResponse> {
@@ -97,7 +96,7 @@ export class EntryController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Post('create-entry')
-    @Roles(Role.JuniorAuthor)
+    @Roles(Role.User)
     createEntry(
         @Headers('authorization') bearer: string, @Body() dto: CreateEntryDto,
     ): Promise<HttpException | ISerializeResponse> {

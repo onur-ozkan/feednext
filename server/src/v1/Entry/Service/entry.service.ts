@@ -60,13 +60,11 @@ export class EntryService {
         return serializerService.serializeResponse('featured_entry', result)
     }
 
-    async updateEntry(updatedBy: string, entryId: string, text: string): Promise<ISerializeResponse> {
+    async updateEntry(username: string, entryId: string, text: string): Promise<ISerializeResponse> {
         if (!this.validator.isMongoId(entryId)) throw new BadRequestException('EntryId must be a MongoId.')
 
-        const entry: EntriesEntity = await this.entriesRepository.updateEntry(updatedBy, entryId, text)
-        const id: string = String(entry.id)
-        delete entry.id
-        return serializerService.serializeResponse('entry_detail', entry, id)
+        const entry: EntriesEntity = await this.entriesRepository.updateEntry(username, entryId, text)
+        return serializerService.serializeResponse('entry_detail', entry)
     }
 
     async createEntry(writtenBy: string, dto: CreateEntryDto): Promise<HttpException | ISerializeResponse> {
@@ -77,7 +75,7 @@ export class EntryService {
         }
 
         const newEntry: EntriesEntity = await this.entriesRepository.createEntry(writtenBy, dto)
-        return serializerService.serializeResponse('entry_detail', newEntry)
+        return serializerService.serializeResponse('updated_entry', newEntry)
     }
 
     async undoVoteOfEntry({ entryId, username, isUpVoted }: { entryId: string, username: string, isUpVoted: boolean }): Promise<HttpException> {

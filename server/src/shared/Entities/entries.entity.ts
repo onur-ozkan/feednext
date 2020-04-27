@@ -33,12 +33,6 @@ export class EntriesEntity {
     })
     written_by: string
 
-    @Column({
-        type: 'string',
-        length: 17,
-    })
-    updated_by: string
-
     @CreateDateColumn({ type: 'date' })
     created_at: Date
 

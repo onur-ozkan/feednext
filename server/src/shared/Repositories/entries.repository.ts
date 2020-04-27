@@ -116,7 +116,7 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         }
     }
 
-    async updateEntry(updatedBy: string, entryId: string, text: string): Promise<EntriesEntity> {
+    async updateEntry(username: string, entryId: string, text: string): Promise<EntriesEntity> {
         if (!text) throw new BadRequestException('Entry text can not be null.')
 
         let entry: EntriesEntity
@@ -126,10 +126,11 @@ export class EntriesRepository extends Repository<EntriesEntity> {
             throw new BadRequestException('Entry with that id could not found in the database.')
         }
 
+        if (entry.written_by !== username) throw new BadRequestException('Only author of the entry can update it')
+        if (entry.text === text) throw new BadRequestException('Text must be different to update entry')
+
         try {
             entry.text = text
-            entry.updated_by = updatedBy
-
             await this.save(entry)
             return entry
         } catch (err) {
