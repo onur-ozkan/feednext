@@ -12,7 +12,7 @@ export class JwtManipulationService {
             const decodedJwtData: any = jwt.decode(token.split(' ')[1])
 
             if (property === 'all') result = decodedJwtData
-            result = decodedJwtData[property]
+            else result = decodedJwtData[property]
         } catch {
             throw new UnauthorizedException()
         }

@@ -1,5 +1,5 @@
 // Nest dependencies
-import { BadRequestException, UnprocessableEntityException } from '@nestjs/common'
+import { BadRequestException, UnprocessableEntityException, ForbiddenException } from '@nestjs/common'
 
 // Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
@@ -8,6 +8,7 @@ import { ObjectId } from 'mongodb'
 // Local files
 import { EntriesEntity } from '../Entities/entries.entity'
 import { CreateEntryDto } from 'src/v1/Entry/Dto/create-entry.dto'
+import { Role } from '../Enums/Roles'
 
 @EntityRepository(EntriesEntity)
 export class EntriesRepository extends Repository<EntriesEntity> {
@@ -16,7 +17,7 @@ export class EntriesRepository extends Repository<EntriesEntity> {
             const entry: EntriesEntity = await this.findOneOrFail(entryId)
             return entry
         } catch (err) {
-            throw new BadRequestException('Entry with that id could not found in the database.')
+            throw new BadRequestException('Entry could not found by given id')
         }
     }
 
@@ -123,7 +124,7 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         try {
             entry = await this.findOneOrFail(entryId)
         } catch {
-            throw new BadRequestException('Entry with that id could not found in the database.')
+            throw new BadRequestException('Entry could not found by given id')
         }
 
         if (entry.written_by !== username) throw new BadRequestException('Only author of the entry can update it')
@@ -144,14 +145,20 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         this.save(entry)
     }
 
-    async deleteEntry(entryId: string): Promise<EntriesEntity> {
+    async deleteEntry(username: string, role: number, entryId: string): Promise<EntriesEntity> {
+        let entry: EntriesEntity
         try {
-            const entry: EntriesEntity = await this.findOneOrFail(entryId)
-            await this.delete(entry)
-            return entry
+            entry = await this.findOneOrFail(entryId)
         } catch (err) {
-            throw new BadRequestException('Entry with that id could not found in the database.')
+            throw new BadRequestException('Entry could not found by given id')
         }
+
+        if (role !== Role.SuperAdmin && entry.written_by !== username) {
+            throw new ForbiddenException('You have no permission to do this action')
+        }
+
+        await this.delete(entry)
+        return entry
     }
 
     async deleteEntriesBelongsToTitle(title_id: ObjectId): Promise<void> {

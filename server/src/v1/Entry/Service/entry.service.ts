@@ -98,7 +98,7 @@ export class EntryService {
         try {
             await this.entriesRepository.findOneOrFail(entryId)
         } catch (e) {
-            throw new BadRequestException('Entry with that id could not found in the database.')
+            throw new BadRequestException('Entry could not found by given id')
         }
 
         await this.usersRepository.addVotedEntry({ entryId, username, isUpVoted })
@@ -106,11 +106,12 @@ export class EntryService {
         throw new HttpException('Entry has been voted.', HttpStatus.OK)
     }
 
-    async deleteEntry(entryId: string): Promise<HttpException> {
+    async deleteEntry(username: string, role: number, entryId: string): Promise<HttpException> {
         if (!this.validator.isMongoId(entryId)) throw new BadRequestException('EntryId must be a MongoId.')
+        await this.usersRepository.getUserByUsername(username)
 
-        const entry: EntriesEntity = await this.entriesRepository.deleteEntry(entryId)
-        await this.titlesRepository.updateEntryCount(entry.id, false)
+        const entry: EntriesEntity = await this.entriesRepository.deleteEntry(username, role, entryId)
+        await this.titlesRepository.updateEntryCount(entry.title_id, false)
         throw new HttpException('Entry has been deleted.', HttpStatus.OK)
     }
 }

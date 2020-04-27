@@ -106,9 +106,11 @@ export class EntryController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Delete(':entryId')
-    @Roles(Role.SuperAdmin)
     deleteTitle(
-        @Param('entryId') entryId: string): Promise<HttpException> {
-        return this.entryService.deleteEntry(entryId)
+        @Param('entryId') entryId: string,
+        @Headers('authorization') bearer: string,
+    ): Promise<HttpException> {
+        const { username, role } = jwtManipulationService.decodeJwtToken(bearer, 'all')
+        return this.entryService.deleteEntry(username, role, entryId)
     }
 }
