@@ -3,7 +3,7 @@ import { Tooltip, List, Comment, Card, Avatar, message, Typography, Button, Popc
 import { ArrowUpOutlined, ArrowDownOutlined, DeleteOutlined, InfoCircleOutlined } from '@ant-design/icons'
 import AddEntry from './AddEntry'
 import { useSelector, useDispatch } from 'react-redux'
-import { voteEntry, undoEntryVote, updateEntry } from '@/services/api'
+import { voteEntry, undoEntryVote, updateEntry, deleteEntry } from '@/services/api'
 import { VOTE_ENTRY, UNDO_ENTRY_VOTE } from '@/redux/Actions/User/types'
 import { router } from 'umi'
 import { SuperAdmin } from '@/../config/constants'
@@ -97,8 +97,21 @@ const FeedEntries: React.FC = ({ titleData, entryList, handleEntryFetching, setE
 				message.success('Entry successfully updated')
 			})
 			.catch(error => {
-				if (error.response) message.error(error.response.data.error)
+				if (error.response) message.error(error.response.data.message)
 			})
+	}
+
+	const handleEntryDelete = (entryId: string): void => {
+
+		deleteEntry(entryId, accessToken)
+			.then(_res => {
+				setEntryList({
+					...entryList,
+					entries: [...entryList.entries].filter(item => item.id !== entryId)
+				})
+				message.success('Entry successfully deleted')
+			})
+			.catch(error => message.error(error.response.data.message))
 	}
 
 	const handleEntryActions = (item: number): JSX.Element[] => [
@@ -149,7 +162,7 @@ const FeedEntries: React.FC = ({ titleData, entryList, handleEntryFetching, setE
 												style={{ fontSize: 15 }}
 												icon={<InfoCircleOutlined style={{ color: 'red' }} />}
 												title="Are you sure that you want to delete this entry?"
-												onConfirm={(): void => {return}}
+												onConfirm={(): void => handleEntryDelete(item.id)}
 												okText="Yes"
 												cancelText="No"
 											>
