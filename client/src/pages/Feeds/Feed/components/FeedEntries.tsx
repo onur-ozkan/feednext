@@ -1,13 +1,14 @@
 import React from 'react'
-import { Tooltip, List, Comment, Card, Avatar, message } from 'antd'
-import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons'
+import { Tooltip, List, Comment, Card, Avatar, message, Typography, Button, Popconfirm } from 'antd'
+import { ArrowUpOutlined, ArrowDownOutlined, DeleteOutlined, InfoCircleOutlined } from '@ant-design/icons'
 import AddEntry from './AddEntry'
 import { useSelector, useDispatch } from 'react-redux'
-import { voteEntry, undoEntryVote } from '@/services/api'
+import { voteEntry, undoEntryVote, updateEntry } from '@/services/api'
 import { VOTE_ENTRY, UNDO_ENTRY_VOTE } from '@/redux/Actions/User/types'
 import { router } from 'umi'
+import { SuperAdmin } from '@/../config/constants'
 
-const FeedEntries: React.FC = ({ titleData, entryData, handleEntryFetching, setEntryList, accessToken }): JSX.Element => {
+const FeedEntries: React.FC = ({ titleData, entryList, handleEntryFetching, setEntryList, accessToken }): JSX.Element => {
 	const dispatch = useDispatch()
 	const userState = useSelector((state: any) => state.user?.attributes.user)
 
@@ -23,6 +24,8 @@ const FeedEntries: React.FC = ({ titleData, entryData, handleEntryFetching, setE
 	}
 
 	const isEntryAlreadyVoted = (entryId: string, from: 'up' | 'down'): boolean => {
+		if (!userState) return false
+
 		if (from === 'up') return userState.up_voted_entries.includes(entryId)
 		return userState.down_voted_entries.includes(entryId)
 	}
@@ -30,7 +33,9 @@ const FeedEntries: React.FC = ({ titleData, entryData, handleEntryFetching, setE
 	const handleEntryRouting = (entryId: string): void => router.push(`/entry/${entryId}`)
 
 	const handleVoteEntry = async (entryId: string, voteTo: 'up' | 'down'): Promise<void> => {
-		const entry = entryData.entries.find((entry) => entry.id === entryId)
+		if (!userState) return // TODO pop sign in window
+
+		const entry = entryList.entries.find((entry) => entry.id === entryId)
 		const isAlreadyUpVoted = isEntryAlreadyVoted(entryId, 'up')
 		const isAlreadyDownVoted = isEntryAlreadyVoted(entryId, 'down')
 
@@ -72,7 +77,31 @@ const FeedEntries: React.FC = ({ titleData, entryData, handleEntryFetching, setE
 		})
 	}
 
-	const entryActions = (item: number): JSX.Element[] => [
+	const handleEntryUpdate = (value: string, entry: any): void => {
+		if (value === entry.text) return
+
+		updateEntry(entry.id, value, accessToken)
+			.then(_res => {
+				setEntryList({
+					...entryList,
+					entries: [...entryList.entries].map(item => {
+						if (item.id === entry.id) {
+							return {
+								...item,
+								text: value
+							}
+						}
+						else return item
+					})
+				})
+				message.success('Entry successfully updated')
+			})
+			.catch(error => {
+				if (error.response) message.error(error.response.data.error)
+			})
+	}
+
+	const handleEntryActions = (item: number): JSX.Element[] => [
 		<span style={{ padding: '2px 5px 2px 5px', fontSize: 14, opacity: 1 }} key="comment-basic-like">
 			<Tooltip title="Up Vote">
 				<ArrowUpOutlined onClick={() => handleVoteEntry(item.id, 'up')} style={{ color: (isEntryAlreadyVoted(item.id, 'up')) ? 'red' : 'black' }} />
@@ -91,11 +120,11 @@ const FeedEntries: React.FC = ({ titleData, entryData, handleEntryFetching, setE
 				className="comment-list"
 				header={`${titleData.attributes.entry_count} Entries`}
 				itemLayout="horizontal"
-				dataSource={entryData.entries}
+				dataSource={entryList.entries}
 				renderItem={item => (
-					<li>
+					<>
 						<Comment
-							actions={entryActions(item)}
+							actions={handleEntryActions(item)}
 							author={
 								<span onClick={(): void => router.push(`/user/${item.written_by}`)} style={{ cursor: 'pointer' }}>
 									{item.written_by}
@@ -105,23 +134,50 @@ const FeedEntries: React.FC = ({ titleData, entryData, handleEntryFetching, setE
 							{item.written_by.toUpperCase()[0]}
 						  </Avatar>}
 							content={
-								<p>{item.text}</p>
+								<>
+									<Typography.Paragraph
+										{...item.written_by === userState.username && { editable: {
+											onChange: (value: string): void => handleEntryUpdate(value, item)
+										}}}
+									>
+										{item.text}
+									</Typography.Paragraph>
+									{(item.written_by === userState.username || userState.role === SuperAdmin) &&
+										<span style={{ float: 'right'}}>
+											<Popconfirm
+												placement="leftBottom"
+												style={{ fontSize: 15 }}
+												icon={<InfoCircleOutlined style={{ color: 'red' }} />}
+												title="Are you sure that you want to delete this entry?"
+												onConfirm={(): void => {return}}
+												okText="Yes"
+												cancelText="No"
+											>
+												<Button type="link" danger icon={<DeleteOutlined style={{ fontSize: 14 }} />} />
+											</Popconfirm>
+										</span>
+									}
+								</>
 							}
 							datetime={
-								<Tooltip title={`Updated at ${item.updated_at}`}>
-									<span
-										onClick={(): void => handleEntryRouting(item.id)}
-										style={{ cursor: 'pointer' }}
-									>
-										{item.created_at}
-									</span>
-								</Tooltip>
+								<span
+									onClick={(): void => handleEntryRouting(item.id)}
+									style={{ cursor: 'pointer' }}
+								>
+									{item.created_at}
+								</span>
 							}
 						/>
-					</li>
+					</>
 				)}
 			/>
-			<AddEntry setEntryList={setEntryList} titleId={titleData.id} accessToken={accessToken} />
+			{userState &&
+				<AddEntry
+					setEntryList={setEntryList}
+					titleId={titleData.attributes.id}
+					accessToken={accessToken}
+				/>
+			}
 		</Card>
 	)
 }
