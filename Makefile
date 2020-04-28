@@ -1,6 +1,6 @@
 dev:
 	docker-compose up
 prod:
-	docker-compose up -d node_server
+	docker-compose up -d
 down:
 	docker-compose down

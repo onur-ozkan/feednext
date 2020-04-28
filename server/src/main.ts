@@ -19,7 +19,7 @@ import { configService } from './shared/Services/config.service'
 declare const module: any
 async function bootstrap() {
     const fastifyAdapter = new FastifyAdapter({
-        logger: configService.isProduction() ? false : true,
+        logger: !configService.isProduction() ? true : false,
     })
 
     fastifyAdapter.enableCors({
