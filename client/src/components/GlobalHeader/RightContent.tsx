@@ -4,7 +4,6 @@ import { PlusCircleOutlined, LoginOutlined } from '@ant-design/icons'
 
 import Avatar from './AvatarDropdown'
 import HeaderSearch from '../HeaderSearch'
-import SelectLang from '../SelectLang'
 import styles from './index.less'
 import NoticeIconView from './NoticeIconView'
 import { router } from 'umi'
@@ -47,9 +46,7 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
 					>
 						New Feed
 					</Button>
-					{
-						// <NoticeIconView />
-					}
+					<NoticeIconView />
 					<Avatar />
 				</>
 			)
@@ -66,7 +63,6 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
 		<div className={className}>
 			<HeaderSearch />
 			{handleAuthorizedElements()}
-			<SelectLang className={styles.action} />
 			{REACT_APP_ENV && <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>}
 		</div>
 	)
