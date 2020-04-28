@@ -45,7 +45,7 @@ class GlobalHeaderRight extends Component<GlobalHeaderRightProps> {
 		const { dispatch } = this.props
 		message.success(
 			`${formatMessage({
-				id: 'component.noticeIcon.cleared',
+				id: 'Cleared',
 			})} ${title}`,
 		)
 		if (dispatch) {
@@ -130,10 +130,10 @@ class GlobalHeaderRight extends Component<GlobalHeaderRightProps> {
 				}}
 				loading={fetchingNotices}
 				clearText={formatMessage({
-					id: 'component.noticeIcon.clear',
+					id: 'Clear',
 				})}
 				viewMoreText={formatMessage({
-					id: 'component.noticeIcon.view-more',
+					id: 'View More',
 				})}
 				onClear={this.handleNoticeClear}
 				onPopupVisibleChange={onNoticeVisibleChange}
@@ -145,10 +145,10 @@ class GlobalHeaderRight extends Component<GlobalHeaderRightProps> {
 					count={unreadMsg.notification}
 					list={noticeData.notification}
 					title={formatMessage({
-						id: 'component.globalHeader.notification',
+						id: 'Notifications',
 					})}
 					emptyText={formatMessage({
-						id: 'component.globalHeader.notification.empty',
+						id: 'Empty',
 					})}
 					showViewMore
 				/>
@@ -157,20 +157,20 @@ class GlobalHeaderRight extends Component<GlobalHeaderRightProps> {
 					count={unreadMsg.message}
 					list={noticeData.message}
 					title={formatMessage({
-						id: 'component.globalHeader.message',
+						id: 'Messages',
 					})}
 					emptyText={formatMessage({
-						id: 'component.globalHeader.message.empty',
+						id: 'Empty',
 					})}
 					showViewMore
 				/>
 				<NoticeIcon.Tab
 					tabKey="event"
 					title={formatMessage({
-						id: 'component.globalHeader.event',
+						id: 'Events',
 					})}
 					emptyText={formatMessage({
-						id: 'component.globalHeader.event.empty',
+						id: 'Empty',
 					})}
 					count={unreadMsg.event}
 					list={noticeData.event}

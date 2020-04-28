@@ -2,24 +2,13 @@ import { DefaultFooter, MenuDataItem, getMenuData, getPageTitle } from '@ant-des
 import { Helmet } from 'react-helmet'
 import { Link } from 'umi'
 import React from 'react'
-import { connect } from 'dva'
 import { formatMessage } from 'umi-plugin-react/locale'
 
-import SelectLang from '@/components/SelectLang'
-import { ConnectProps, ConnectState } from '@/models/connect'
 import logo from '../assets/logo.svg'
 import styles from './AuthLayout.less'
 import { GithubFilled } from '@ant-design/icons'
-import { Provider } from 'react-redux'
-import { store } from '@/redux/store'
 
-export declare interface AuthLayoutProps extends ConnectProps {
-	breadcrumbNameMap: {
-		[path: string]: MenuDataItem
-	}
-}
-
-const AuthLayout: React.FC<AuthLayoutProps> = props => {
+const AuthLayout: React.FC = props => {
 	const {
 		route = {
 			routes: [],
@@ -47,9 +36,6 @@ const AuthLayout: React.FC<AuthLayoutProps> = props => {
 			</Helmet>
 
 			<div className={styles.container}>
-				<div className={styles.lang}>
-					<SelectLang />
-				</div>
 				<div className={styles.content}>
 					<div className={styles.top}>
 						<div className={styles.header}>
