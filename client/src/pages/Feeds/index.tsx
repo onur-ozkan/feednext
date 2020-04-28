@@ -22,19 +22,19 @@ const Feeds = (): JSX.Element => {
 	const [trendingCategories, setTrendingCategories] = useState(null)
 	const [categoryFilter, setCategoryFilter] = useState(null)
 	const [feedList, setFeed]: any = useState([])
-	const [sortBy, setSortBy] = useState('top')
+	const [sortBy, setSortBy] = useState(null)
 	const [skipValueForPagination, setSkipValueForPagination] = useState(0)
 
 	useEffect(() => {
 		setFeed([])
 		setSkipValueForPagination(0)
-	}, [categoryFilter])
+	}, [categoryFilter, sortBy])
 
 	const handleDataFetching = (): void => {
 		const forgedCategories = forgeDataTree(categoryList)
 		setCategories(forgedCategories)
 
-		fetchAllFeeds(skipValueForPagination, null, categoryFilter)
+		fetchAllFeeds(skipValueForPagination, null, categoryFilter, sortBy)
 			.then(feedsResponse => {
 				feedsResponse.data.attributes.titles.map((title: any) => {
 					fetchFeaturedEntryByTitleId(title.id)
@@ -78,7 +78,7 @@ const Feeds = (): JSX.Element => {
 
 	useEffect(() => {
 		handleDataFetching()
-	}, [skipValueForPagination, categoryFilter])
+	}, [skipValueForPagination, categoryFilter, sortBy])
 
 
 	const handleFetchMore = (): void => setSkipValueForPagination(skipValueForPagination + 7)
@@ -89,7 +89,7 @@ const Feeds = (): JSX.Element => {
 				return <RiseOutlined />
 			case 'hot':
 				return <FireOutlined />
-			case 'new':
+			default:
 				return <StarOutlined />
 		}
 	}
@@ -177,9 +177,9 @@ const Feeds = (): JSX.Element => {
 								trigger={['click']}
 								overlay={
 									<Menu>
-										<Menu.Item onClick={(): void => setSortBy('hot')}>
+										<Menu.Item onClick={(): void => setSortBy(null)}>
 											<Typography.Text>
-												<FireOutlined /> Hot
+												<StarOutlined /> New
 											</Typography.Text>
 										</Menu.Item>
 										<Menu.Item onClick={(): void => setSortBy('top')}>
@@ -187,9 +187,9 @@ const Feeds = (): JSX.Element => {
 												<RiseOutlined /> Top
 											</Typography.Text>
 										</Menu.Item>
-										<Menu.Item onClick={(): void => setSortBy('new')}>
+										<Menu.Item onClick={(): void => setSortBy('hot')}>
 											<Typography.Text>
-												<StarOutlined /> New
+												<FireOutlined /> Hot
 											</Typography.Text>
 										</Menu.Item>
 									</Menu>

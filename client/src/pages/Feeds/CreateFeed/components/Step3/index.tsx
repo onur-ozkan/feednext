@@ -19,9 +19,6 @@ const Step3: React.FC = ({ titleSlugForRouting, feedCreatedSuccessfully }) => {
 				<Descriptions.Item label="Title">
 					{ createTitleForm.name }
 				</Descriptions.Item>
-				<Descriptions.Item label="Description">
-					{ createTitleForm.description }
-				</Descriptions.Item>
 				<Descriptions.Item label="Entry">
 					{ firstEntryForm.text }
 				</Descriptions.Item>

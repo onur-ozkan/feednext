@@ -55,11 +55,17 @@ export const fetchUserVotes = (
 
 export const refreshToken = (): Promise<AxiosResponse> => axios.get('/v1/auth/refresh-token', { withCredentials: true })
 
-export const fetchAllFeeds = (skip: number, username?: string, categoryIds?: string): Promise<AxiosResponse> => axios.get(
+export const fetchAllFeeds = (
+	skip: number,
+	username?: string,
+	categoryIds?: string,
+	sortBy?: 'hot' | 'top'
+): Promise<AxiosResponse> => axios.get(
 	'/v1/title/all', {
 		params: {
 			...username && { author: username },
 			...categoryIds && { categoryIds },
+			...sortBy && { sortBy },
 			skip
 		}
 	}

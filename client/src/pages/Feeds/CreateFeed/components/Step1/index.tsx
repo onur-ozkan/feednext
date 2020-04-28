@@ -23,7 +23,6 @@ const Step1: React.FC = (props: any) => {
 		setCreateTitleForm({
 			name: form.getFieldValue('title'),
 			categoryId: form.getFieldValue('categoryId'),
-			description: form.getFieldValue('description')
 		})
 		stepMovementTo('create-entry')
 	}
@@ -34,7 +33,7 @@ const Step1: React.FC = (props: any) => {
 
 	return (
 		<>
-			<Form {...formItemLayout} initialValues={{ categoryId: createTitleForm.categoryId, title: createTitleForm.name, description: createTitleForm.description }} form={form} layout="horizontal" className={styles.stepForm}>
+			<Form {...formItemLayout} initialValues={{ categoryId: createTitleForm.categoryId, title: createTitleForm.name }} form={form} layout="horizontal" className={styles.stepForm}>
 				<Form.Item
 					label="Category"
 					name="categoryId"
@@ -53,13 +52,6 @@ const Step1: React.FC = (props: any) => {
 				<Form.Item label="Title" name="title" rules={[{ required: true, message: 'Please fill the title input' }]}>
 					<Input placeholder="Xphone Model 7s Plus" />
 				</Form.Item>
-				<Form.Item label="Description" name="description">
-					<TextArea
-						placeholder="Xphone Model 7s Plus is a phone released at 2014, here is the device you can check better https://example.com/xphone-model-7s-plus"
-						allowClear
-						autoSize={{ minRows: 4 }}
-					/>
-				</Form.Item>
 				<Form.Item
 					wrapperCol={{
 						xs: { span: 24, offset: 0 },
@@ -74,28 +66,6 @@ const Step1: React.FC = (props: any) => {
 					</Button>
 				</Form.Item>
 			</Form>
-			<Divider style={{ margin: '40px 0 24px' }} />
-			<div className={styles.desc}>
-				<h3 style={{ fontWeight: 'bold' }}>FORM GUIDE</h3>
-				<Row style={{ alignItems: 'center' }}>
-					<h3 style={{ marginRight: 10, fontWeight: 'bold' }}>Category</h3>
-					<p>
-						You have to make sure the category of your feed pointed correctly. If the category that you looking for doesnt exist,
-						please select 'Other' and tell us the category name in the description box so we can add it to application.
-					</p>
-				</Row>
-				<Row style={{ alignItems: 'center' }}>
-					<h3 style={{ marginRight: 10, fontWeight: 'bold' }}>Title</h3>
-					<p>You have to make sure the title of your feed represents a visible material.</p>
-				</Row>
-				<Row style={{ alignItems: 'center' }}>
-					<h3 style={{ marginRight: 10, fontWeight: 'bold' }}>Description</h3>
-					<p>
-						This is not a required field for known, popular materials. But for some materials, this field may
-						help to increase approvement of the feed.
-					</p>
-				</Row>
-			</div>
 		</>
 	)
 }
