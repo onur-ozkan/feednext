@@ -15,9 +15,14 @@ export class AwsService {
 
     getPictureBuffer(fileName: string): unknown {
         return new Promise((resolve) => {
-            this.s3Instance().getObject({ Bucket: configService.getEnv('AWS_S3_BUCKET'), Key: `${fileName}.jpg`}, (error, data) => {
+            this.s3Instance().getObject({
+                Bucket: configService.getEnv('AWS_S3_BUCKET'), Key: `${fileName}.jpg`
+            }, (error, data) => {
                 if (error) {
-                    this.s3Instance().getObject({ Bucket: configService.getEnv('AWS_S3_BUCKET'), Key: 'default.jpg' }, (_e, data) => {
+                    this.s3Instance().getObject({
+                        Bucket: configService.getEnv('AWS_S3_BUCKET'),
+                        Key: 'default.jpg'
+                    }, (_e, data) => {
                         resolve(data.Body)
                     })
                     return

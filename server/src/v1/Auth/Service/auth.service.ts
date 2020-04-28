@@ -84,14 +84,14 @@ export class AuthService {
         return serializerService.serializeResponse('user_information', responseData, id)
     }
 
-    async signOut(bearer: string): Promise<ISerializeResponse> {
+    async signOut(bearer: string): Promise<HttpException> {
         const decodedToken: any = jwtManipulationService.decodeJwtToken(bearer, 'all')
         await this.usersRepository.triggerRefreshToken(decodedToken.username)
         const expireDate: number = decodedToken.exp
         const remainingSeconds: number = Math.round(expireDate - Date.now() / 1000)
 
         await this.redisService.setOnlyKey(bearer.split(' ')[1], remainingSeconds)
-        return serializerService.serializeResponse('dead_token', { access_token: bearer })
+        throw new HttpException('Token is killed', HttpStatus.OK)
     }
 
     async refreshToken(refreshToken: string): Promise<ISerializeResponse> {

@@ -57,7 +57,7 @@ export class AuthController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Get('signout')
-    async signOut(@Headers('authorization') bearer: string): Promise<ISerializeResponse> {
+    async signOut(@Headers('authorization') bearer: string): Promise<HttpException> {
         return await this.authService.signOut(bearer)
     }
 
