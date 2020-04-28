@@ -6,6 +6,7 @@ import HeaderDropdown from '../HeaderDropdown'
 import styles from './index.less'
 import { UserOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons'
 import { SIGN_OUT } from '@/redux/Actions/User/types'
+import { SET_ACCESS_TOKEN } from '@/redux/Actions/Global/types'
 import { router } from 'umi'
 import { API_URL } from '../../../config/constants'
 
@@ -14,9 +15,14 @@ const AvatarDropdown = () => {
 		const user = useSelector((state: any) => state.user?.attributes.user)
 		const dispatch = useDispatch()
 
-		const handleSignOut = () => {
+		const handleSignOut = (): void => {
 			dispatch({
 				type: SIGN_OUT
+			})
+
+			dispatch({
+				type: SET_ACCESS_TOKEN,
+				token: null
 			})
 		}
 

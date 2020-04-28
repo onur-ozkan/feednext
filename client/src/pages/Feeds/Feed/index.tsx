@@ -6,7 +6,7 @@ import { fetchEntriesByTitleId, fetchTitle, getAverageTitleRate, updateTitle } f
 import { PageLoading } from '@ant-design/pro-layout'
 import { useSelector } from 'react-redux'
 import { handleArrayFiltering, forgeDataTree } from '@/services/utils'
-import { TreeSelect, Modal, Form, Input, Button, Popconfirm, message } from 'antd'
+import { TreeSelect, Modal, Form, Input, Button, Popconfirm, message, Typography } from 'antd'
 import { InfoCircleOutlined } from '@ant-design/icons'
 
 const Feed: React.FC = ({ computedMatch }): JSX.Element => {
@@ -69,7 +69,7 @@ const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 			/>
 			<FeedEntries
 				accessToken={accessToken}
-				entryData={entryList}
+				entryList={entryList}
 				titleData={title}
 				handleEntryFetching={handleEntryFetching}
 				setEntryList={setEntryList}
@@ -128,9 +128,9 @@ const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 							</Button>
 						</Popconfirm>
 					</div>
-
 				</Form>
 			</Modal>
+			<br/>
 		</>
 	)
 }

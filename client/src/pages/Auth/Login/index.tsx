@@ -1,9 +1,9 @@
 import { Checkbox, message, Form, Input, Tabs, Button } from 'antd'
 import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale'
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import Link from 'umi/link'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import styles from './style.less'
 import { signIn } from '@/services/api'
 import { router } from 'umi'

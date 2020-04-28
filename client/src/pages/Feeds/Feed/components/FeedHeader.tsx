@@ -31,8 +31,6 @@ const FeedHeader: React.FC = (props: any): JSX.Element => {
 		setRateModalVisibility(false)
 	}
 
-	console.log(styles)
-
 	const handleRateModalVisibility = async (): Promise<void> => {
 		if (!accessToken) return // TODO pop sign in window
 
@@ -93,7 +91,12 @@ const FeedHeader: React.FC = (props: any): JSX.Element => {
 			{
 				title: 'Opened At',
 				value: format(parseISO(titleData.attributes.created_at), 'dd LLL yyyy')
-			}
+			},
+			{
+				title: 'Updated by',
+				value: titleData.attributes.updated_by || ' - ',
+				href: titleData.attributes.updated_by ? `/user/${titleData.attributes.opened_by}` : undefined
+			},
 		]
 
 		return (

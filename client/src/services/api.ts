@@ -156,6 +156,16 @@ export const createEntry = (
 	}
 })
 
+export const updateEntry = (
+	entryId: string,
+	text: string,
+	accessToken: string
+): Promise<AxiosResponse> => axios.patch(`/v1/entry/${entryId}`, { text }, {
+	headers: {
+		'Authorization': `Bearer ${accessToken}`,
+	}
+})
+
 export const voteEntry = (
 	entryId: string,
 	voteTo: string,
@@ -171,6 +181,15 @@ export const undoEntryVote = (
 	accessToken: string,
 	isUpVoted: boolean
 ): Promise<AxiosResponse> => axios.patch(`/v1/entry/undo-vote/${entryId}?isUpVoted=${isUpVoted}`, {}, {
+	headers: {
+		'Authorization': `Bearer ${accessToken}`,
+	}
+})
+
+export const deleteEntry = (
+	entryId: string,
+	accessToken: string
+): Promise<AxiosResponse> => axios.delete(`/v1/entry/${entryId}`, {
 	headers: {
 		'Authorization': `Bearer ${accessToken}`,
 	}
