@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux'
 import { handleArrayFiltering, forgeDataTree } from '@/services/utils'
 import { PageLoading } from '@ant-design/pro-layout'
 import { API_URL } from '../../../config/constants'
-import { router } from 'umi'
+import { router, Link } from 'umi'
 
 const Feeds = (): JSX.Element => {
 	const categoryList = useSelector((state: any) => state.global.categoryList)
@@ -202,7 +202,7 @@ const Feeds = (): JSX.Element => {
 						</Row>
 						{handleModalScreen()}
 						<List<any>
-							style={{ margin: 15 }}
+							style={{ margin: 25 }}
 							loading={isLoading}
 							rowKey="id"
 							itemLayout="vertical"
@@ -210,7 +210,6 @@ const Feeds = (): JSX.Element => {
 							dataSource={feedList}
 							renderItem={(item): JSX.Element => (
 								<List.Item
-									style={{ width: '100vh' }}
 									key={item.id}
 									actions={[
 										<>
@@ -224,18 +223,17 @@ const Feeds = (): JSX.Element => {
 											</span>
 										</>
 									]}
-									extra={<div className={styles.listItemExtra} />}
 								>
 									<List.Item.Meta
 										title={
-											<span style={{ cursor: 'pointer' }} onClick={(): void => router.push(item.href)}>
-												<Typography.Text> {item.name} </Typography.Text>
-											</span>
+											<Link
+												to={item.href}
+												style={{ cursor: 'pointer' }}
+											>
+												{item.name}
+											</Link>
 										}
-										description={
-											<span>
-												<Tag>{item.categoryName}</Tag>
-											</span>
+										description={ <Tag> {item.categoryName.toUpperCase()} </Tag>
 										}
 									/>
 									<ArticleListContent data={item.entry} />
