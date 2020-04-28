@@ -36,7 +36,13 @@ export class TitleController {
 
     @Get('all')
     getTitleList(
-        @Query() query: { limit: number, skip: number, categoryIds: any, author: string }
+        @Query() query: {
+            author: string,
+            categoryIds: any,
+            sortBy: 'hot' | 'top',
+            limit: number,
+            skip: number,
+        }
     ): Promise<ISerializeResponse> {
         if (query.categoryIds) query.categoryIds = query.categoryIds.split(',')
         return this.titleService.getTitleList(query)

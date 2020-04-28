@@ -52,7 +52,15 @@ export class TitleService {
         return serializerService.serializeResponse('searched_title_list', result)
     }
 
-    async getTitleList(query: { limit: number, skip: number, categoryIds: any, author: string }): Promise<ISerializeResponse> {
+    async getTitleList(
+        query: {
+            author: string,
+            categoryIds: string[],
+            sortBy: 'hot' | 'top',
+            limit: number,
+            skip: number,
+        }
+    ): Promise<ISerializeResponse> {
         const result: {
             titles: TitlesEntity[],
             count: number
