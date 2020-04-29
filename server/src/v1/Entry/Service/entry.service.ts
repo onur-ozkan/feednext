@@ -41,7 +41,10 @@ export class EntryService {
 
     async getEntriesByTitleId({ titleId, query }: {
          titleId: string,
-         query: { skip: number }
+         query: {
+             skip: number,
+             sortBy: 'newest' | 'top'
+        }
     }): Promise<ISerializeResponse> {
         const result = await this.entriesRepository.getEntriesByTitleId({ titleId, query })
         return serializerService.serializeResponse('entry_list', result)

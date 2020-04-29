@@ -40,14 +40,23 @@ export class EntriesRepository extends Repository<EntriesEntity> {
     }
 
     async getEntriesByTitleId({ titleId, query }: {
-        titleId: string, query: { skip: number }
+        titleId: string,
+        query: {
+            skip: number,
+            sortBy: 'newest' | 'top'
+        }
     }): Promise<{ entries: EntriesEntity[], count: number }> {
         const [entries, total] = await this.findAndCount({
             where: {
                 title_id: titleId
             },
             order: {
-                created_at: 'ASC',
+                ...query.sortBy === 'newest' && {
+                    created_at: 'DESC',
+                },
+                ...query.sortBy === 'top' && {
+                    votes: 'DESC',
+                }
             },
             take: 10,
             skip: Number(query.skip) || 0,

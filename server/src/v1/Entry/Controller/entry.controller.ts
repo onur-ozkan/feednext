@@ -34,7 +34,10 @@ export class EntryController {
     @Get('by-title/:titleId/all')
     getEntriesByTitleId(
         @Param('titleId') titleId: string,
-        @Query() query: { skip: number },
+        @Query() query: {
+            skip: number,
+            sortBy: 'newest' | 'top'
+        },
     ): Promise<ISerializeResponse> {
         return this.entryService.getEntriesByTitleId({ titleId, query })
     }
