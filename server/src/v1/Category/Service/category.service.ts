@@ -40,7 +40,7 @@ export class CategoryService {
         return serializerService.serializeResponse('category_detail', category, id)
     }
 
-    async getCategoryList(query: { limit: number, skip: number }): Promise<ISerializeResponse> {
+    async getCategoryList(query: { skip: number }): Promise<ISerializeResponse> {
         const result: {categories: CategoriesEntity[], count: number} = await this.categoriesRepository.getCategoryList(query)
         return serializerService.serializeResponse('category_list', result)
     }

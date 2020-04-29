@@ -40,7 +40,6 @@ export class TitleController {
             author: string,
             categoryIds: any,
             sortBy: 'hot' | 'top',
-            limit: number,
             skip: number,
         }
     ): Promise<ISerializeResponse> {

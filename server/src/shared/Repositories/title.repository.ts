@@ -60,7 +60,6 @@ export class TitlesRepository extends Repository<TitlesEntity> {
             author: string,
             categoryIds: string[],
             sortBy: 'hot' | 'top',
-            limit: number,
             skip: number,
         }
     ): Promise<{ titles: TitlesEntity[], count: number }> {
@@ -89,7 +88,7 @@ export class TitlesRepository extends Repository<TitlesEntity> {
                     entry_count: 'DESC',
                 }
             },
-            take: Number(query.limit) || 10,
+            take: 10,
             skip: Number(query.skip) || 0,
         })
 

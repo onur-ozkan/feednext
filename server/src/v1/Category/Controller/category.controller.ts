@@ -26,7 +26,7 @@ export class CategoryController {
     }
 
     @Get('all')
-    getCategoryList(@Query() query: { limit: number, skip: number }): Promise<ISerializeResponse> {
+    getCategoryList(@Query() query: { skip: number }): Promise<ISerializeResponse> {
         return this.categoryService.getCategoryList(query)
     }
 

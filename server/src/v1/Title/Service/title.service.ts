@@ -57,7 +57,6 @@ export class TitleService {
             author: string,
             categoryIds: string[],
             sortBy: 'hot' | 'top',
-            limit: number,
             skip: number,
         }
     ): Promise<ISerializeResponse> {

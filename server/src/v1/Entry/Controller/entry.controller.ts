@@ -26,7 +26,7 @@ export class EntryController {
     @Get('by-author/:username/all')
     getEntriesByAuthorOfIt(
         @Param('username') username: string,
-        @Query() query: { limit: number, skip: number },
+        @Query() query: { skip: number },
     ): Promise<any> {
         return this.entryService.getEntriesByAuthorOfIt({ username, query })
     }
@@ -34,7 +34,7 @@ export class EntryController {
     @Get('by-title/:titleId/all')
     getEntriesByTitleId(
         @Param('titleId') titleId: string,
-        @Query() query: { limit: number, skip: number },
+        @Query() query: { skip: number },
     ): Promise<ISerializeResponse> {
         return this.entryService.getEntriesByTitleId({ titleId, query })
     }

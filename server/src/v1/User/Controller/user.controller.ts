@@ -39,7 +39,7 @@ export class UsersController {
     @Get(':username/votes')
     getVotes(
         @Param('username') username,
-        @Query() query: { limit: number, skip: number },
+        @Query() query: { skip: number },
         @Query('voteType') voteType: 'up' | 'down',
     ): Promise<ISerializeResponse> {
         return this.usersService.getVotes({username, query, voteType})

@@ -21,9 +21,9 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
         }
     }
 
-    async getCategoryList(query: { limit: number, skip: number }): Promise<{categories: CategoriesEntity[], count: number}> {
+    async getCategoryList(query: { skip: number }): Promise<{categories: CategoriesEntity[], count: number}> {
         const [categories, total] = await this.findAndCount({
-            take: Number(query.limit) || 10,
+            take: 10,
             skip: Number(query.skip) || 0,
         })
         return { categories, count: total }

@@ -23,7 +23,7 @@ export class EntriesRepository extends Repository<EntriesEntity> {
 
     async getVotedEntriesByIds({ idList, query }: {
         idList: ObjectId[],
-        query: { limit: number, skip: number }
+        query: { skip: number }
     }): Promise<{ entries: EntriesEntity[], count: number }> {
         const [entries, total] = await this.findAndCount({
             where: {
@@ -32,7 +32,7 @@ export class EntriesRepository extends Repository<EntriesEntity> {
             order: {
                 created_at: 'DESC',
             },
-            take: Number(query.limit) || 10,
+            take: 10,
             skip: Number(query.skip) || 0,
         })
 
@@ -40,7 +40,7 @@ export class EntriesRepository extends Repository<EntriesEntity> {
     }
 
     async getEntriesByTitleId({ titleId, query }: {
-        titleId: string, query: { limit: number, skip: number }
+        titleId: string, query: { skip: number }
     }): Promise<{ entries: EntriesEntity[], count: number }> {
         const [entries, total] = await this.findAndCount({
             where: {
@@ -49,7 +49,7 @@ export class EntriesRepository extends Repository<EntriesEntity> {
             order: {
                 created_at: 'ASC',
             },
-            take: Number(query.limit) || 10,
+            take: 10,
             skip: Number(query.skip) || 0,
         })
 
@@ -57,7 +57,7 @@ export class EntriesRepository extends Repository<EntriesEntity> {
     }
 
     async getEntriesByAuthorOfIt({ username, query }: {
-        username: string, query: { limit: number, skip: number }
+        username: string, query: { skip: number }
     }): Promise<{ entries: EntriesEntity[], count: number }> {
         const [entries, total] = await this.findAndCount({
             where: {
@@ -66,7 +66,7 @@ export class EntriesRepository extends Repository<EntriesEntity> {
             order: {
                 created_at: 'DESC',
             },
-            take: Number(query.limit) || 10,
+            take: 10,
             skip: Number(query.skip) || 0,
         })
 
