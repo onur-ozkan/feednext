@@ -134,8 +134,8 @@ export class TitleService {
     async deleteTitle(titleId: string): Promise<HttpException> {
         if (!this.validator.isMongoId(titleId)) throw new BadRequestException('TitleId must be a MongoId.')
 
-        const title = await this.titlesRepository.deleteTitle(titleId)
-        await this.entriesRepository.deleteEntriesBelongsToTitle(title.slug)
+        await this.titlesRepository.deleteTitle(titleId)
+        await this.entriesRepository.deleteEntriesBelongsToTitle(titleId)
         throw new HttpException('Title has been deleted.', HttpStatus.OK)
     }
 }

@@ -161,7 +161,7 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         return entry
     }
 
-    async deleteEntriesBelongsToTitle(title_id: ObjectId): Promise<void> {
+    async deleteEntriesBelongsToTitle(title_id: string): Promise<void> {
         const entries: any = await this.find({ title_id })
         await this.delete(entries)
     }

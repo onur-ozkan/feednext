@@ -198,11 +198,10 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         }
     }
 
-    async deleteTitle(titleId: string): Promise<TitlesEntity> {
+    async deleteTitle(titleId: string): Promise<void> {
         try {
             const title: TitlesEntity = await this.findOneOrFail(titleId)
             await this.delete(title)
-            return title
         } catch (err) {
             throw new BadRequestException('Title with that id could not found in the database.')
         }
