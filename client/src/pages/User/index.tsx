@@ -16,7 +16,6 @@ import {
 import { useSelector } from 'react-redux'
 import { fetchAllEntriesByAuthor, fetchUserByUsername, fetchUserVotes, fetchAllFeeds } from '@/services/api'
 import { router } from 'umi'
-import styles from './style.less'
 import NotFoundPage from '../404'
 import { handleArrayFiltering } from '@/services/utils'
 import { API_URL } from '../../../config/constants'

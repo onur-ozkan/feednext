@@ -20,14 +20,19 @@ const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 	const [averageTitleRate, setAverageTitleRate] = useState(null)
 	const [category, setCategory]: any = useState(null)
 	const [categoryTree, setCategoryTree] = useState([])
+	const [sortEntriesBy, setSortEntriesBy] = useState(null)
 	const [entryList, setEntryList]: any = useState(null)
 	const [updateModalVisibility, setUpdateModalVisibility] = useState(false)
 
 	const handleEntryFetching = (page: number): void => {
-		fetchEntriesByTitleId(title.attributes.id, page).then(res => {
+		fetchEntriesByTitleId(title.attributes.id, page, sortEntriesBy).then(res => {
 			setEntryList(res.data.attributes)
 		})
 	}
+
+	useEffect(() => {
+		if (title) handleEntryFetching(0)
+	}, [title, sortEntriesBy])
 
 	const getTitleRate = async (titleId: string): Promise<void> => {
 		await getAverageTitleRate(titleId).then(res => setAverageTitleRate(res.data.attributes.rate || 0))
@@ -46,9 +51,6 @@ const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 		fetchTitle(computedMatch.params.feedSlug, 'slug').then(async res => {
 			setCategory(handleArrayFiltering(categoryList, res.data.attributes.category_id))
 			getTitleRate(res.data.attributes.id)
-			fetchEntriesByTitleId(res.data.attributes.id, 0).then(res => {
-				setEntryList(res.data.attributes)
-			})
 			await setTitle(res.data)
 		})
 	}, [])
@@ -68,11 +70,13 @@ const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 				refreshTitleRate={getTitleRate}
 			/>
 			<FeedEntries
+				sortEntriesBy={sortEntriesBy}
+				setSortEntriesBy={setSortEntriesBy}
+				setEntryList={setEntryList}
 				accessToken={accessToken}
+				handleEntryFetching={handleEntryFetching}
 				entryList={entryList}
 				titleData={title}
-				handleEntryFetching={handleEntryFetching}
-				setEntryList={setEntryList}
 			/>
 			<Modal
 				transitionName='fade'

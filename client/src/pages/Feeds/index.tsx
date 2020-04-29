@@ -5,6 +5,7 @@ import '@ant-design/compatible/assets/index.css'
 
 import ArticleListContent from './components/ArticleListContent'
 import styles from './style.less'
+import globalStyles from '@/global.less'
 import { fetchAllFeeds, fetchFeaturedEntryByTitleId, fetchTrendingCategories } from '@/services/api'
 import { useSelector } from 'react-redux'
 import { handleArrayFiltering, forgeDataTree } from '@/services/utils'
@@ -81,7 +82,7 @@ const Feeds = (): JSX.Element => {
 	}, [skipValueForPagination, categoryFilter, sortBy])
 
 
-	const handleFetchMore = (): void => setSkipValueForPagination(skipValueForPagination + 7)
+	const handleFetchMore = (): void => setSkipValueForPagination(skipValueForPagination + 10)
 
 	const handleSortByIcon = (): JSX.Element | void => {
 		switch(sortBy){
@@ -166,7 +167,7 @@ const Feeds = (): JSX.Element => {
 						<Col />
 							<Button
 								onClick={(): void => setDisplayFilterModal(true)}
-								className={styles.antBtnLink}
+								className={globalStyles.antBtnLink}
 								type="link"
 								style={{ marginRight: 5 }}
 								icon={<FilterFilled />}
@@ -195,7 +196,7 @@ const Feeds = (): JSX.Element => {
 									</Menu>
 								}
 							>
-								<Button className={styles.antBtnLink} type="link">
+								<Button className={globalStyles.antBtnLink} type="link">
 									SORT BY {handleSortByIcon()}
 								</Button>
 							</Dropdown>

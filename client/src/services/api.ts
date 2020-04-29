@@ -47,7 +47,6 @@ export const fetchUserVotes = (
 	`/v1/user/${username}/votes`, {
 		params: {
 			voteType,
-			limit: 10,
 			skip
 		}
 	}
@@ -91,13 +90,19 @@ export const fetchFeaturedEntryByTitleId = (
 
 export const fetchEntriesByTitleId = (
 	titleId: string,
-	skip: number
-): Promise<AxiosResponse> => axios.get(`/v1/entry/by-title/${titleId}/all?limit=7&skip=${skip}`)
+	skip: number,
+	sortBy?: 'newest' | 'top' | null
+): Promise<AxiosResponse> => axios.get(`/v1/entry/by-title/${titleId}/all`, {
+	params: {
+		skip,
+		...sortBy && { sortBy }
+	}
+})
 
 export const fetchAllEntriesByAuthor = (
 	username: string,
 	skip: number
-): Promise<AxiosResponse> => axios.get(`/v1/entry/by-author/${username}/all?limit=10&skip=${skip}`)
+): Promise<AxiosResponse> => axios.get(`/v1/entry/by-author/${username}/all?skip=${skip}`)
 
 export const createTitle = (
 	createTitlePayload: { name: string; categoryId: string; description?: string },

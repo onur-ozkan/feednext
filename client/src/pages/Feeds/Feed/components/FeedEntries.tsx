@@ -1,14 +1,15 @@
 import React from 'react'
-import { Tooltip, List, Comment, Card, Avatar, message, Typography, Button, Popconfirm } from 'antd'
-import { ArrowUpOutlined, ArrowDownOutlined, DeleteOutlined, InfoCircleOutlined } from '@ant-design/icons'
+import { Tooltip, List, Comment, Card, Avatar, message, Typography, Button, Popconfirm, Row, Col, Dropdown, Menu } from 'antd'
+import { ArrowUpOutlined, ArrowDownOutlined, DeleteOutlined, InfoCircleOutlined, StarOutlined, RiseOutlined, UpSquareOutlined, BackwardOutlined, DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons'
 import AddEntry from './AddEntry'
 import { useSelector, useDispatch } from 'react-redux'
 import { voteEntry, undoEntryVote, updateEntry, deleteEntry } from '@/services/api'
 import { VOTE_ENTRY, UNDO_ENTRY_VOTE } from '@/redux/Actions/User/types'
 import { router } from 'umi'
+import globalStyles from '@/global.less'
 import { SuperAdmin } from '@/../config/constants'
 
-const FeedEntries: React.FC = ({ titleData, entryList, handleEntryFetching, setEntryList, accessToken }): JSX.Element => {
+const FeedEntries: React.FC = ({ titleData, sortEntriesBy, setSortEntriesBy, entryList, handleEntryFetching, setEntryList, accessToken }): JSX.Element => {
 	const dispatch = useDispatch()
 	const userState = useSelector((state: any) => state.user?.attributes.user)
 
@@ -16,10 +17,10 @@ const FeedEntries: React.FC = ({ titleData, entryList, handleEntryFetching, setE
 		size: 'small',
 		showLessItems: true,
 		showQuickJumper: true,
-		pageSize: 7,
+		pageSize: 10,
 		total: titleData.attributes.entry_count,
 		onChange: (page: number): void => {
-			handleEntryFetching(7 * (page - 1))
+			handleEntryFetching(10 * (page - 1))
 		},
 	}
 
@@ -126,12 +127,55 @@ const FeedEntries: React.FC = ({ titleData, entryList, handleEntryFetching, setE
 		</span>
 	]
 
+	const handleSortByIcon = (): JSX.Element | void => {
+		switch(sortEntriesBy){
+			case 'newest':
+				return <DoubleRightOutlined />
+			case 'top':
+				return <ArrowUpOutlined />
+			default:
+				return <DoubleLeftOutlined />
+		}
+	}
+
 	return (
 		<Card bordered={false}>
 			<List
 				pagination={paginationOptions}
 				className="comment-list"
-				header={`${titleData.attributes.entry_count} Entries`}
+				header={
+					<Row>
+						<Col>
+							{titleData.attributes.entry_count} Entries
+						</Col>
+						<Dropdown
+							trigger={['click']}
+							overlay={
+								<Menu>
+									<Menu.Item onClick={(): void => setSortEntriesBy(null)}>
+										<Typography.Text>
+											<DoubleLeftOutlined /> Oldest
+										</Typography.Text>
+									</Menu.Item>
+									<Menu.Item onClick={(): void => setSortEntriesBy('newest')}>
+										<Typography.Text>
+											<DoubleRightOutlined /> Newest
+										</Typography.Text>
+									</Menu.Item>
+									<Menu.Item onClick={(): void => setSortEntriesBy('top')}>
+										<Typography.Text>
+											<ArrowUpOutlined /> Higher Vote
+										</Typography.Text>
+									</Menu.Item>
+								</Menu>
+							}
+						>
+							<Button className={globalStyles.antBtnLink} type="link">
+								SORT BY {handleSortByIcon()}
+							</Button>
+						</Dropdown>
+					</Row>
+				}
 				itemLayout="horizontal"
 				dataSource={entryList.entries}
 				renderItem={item => (
@@ -149,13 +193,13 @@ const FeedEntries: React.FC = ({ titleData, entryList, handleEntryFetching, setE
 							content={
 								<>
 									<Typography.Paragraph
-										{...item.written_by === userState.username && { editable: {
+										{...userState?.username === item.written_by && { editable: {
 											onChange: (value: string): void => handleEntryUpdate(value, item)
 										}}}
 									>
 										{item.text}
 									</Typography.Paragraph>
-									{(item.written_by === userState.username || userState.role === SuperAdmin) &&
+									{(userState?.username === item.written_by || userState?.role === SuperAdmin) &&
 										<span style={{ float: 'right'}}>
 											<Popconfirm
 												placement="leftBottom"
