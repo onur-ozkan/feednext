@@ -14,14 +14,14 @@ export declare interface DefaultSettings {
 	menu: {
 		locale: boolean
 	}
-	title: string
+	title: string | null
 	pwa: boolean
 	iconfontUrl: string
 	colorWeak: boolean
 }
 
 export default {
-	navTheme: 'light',
+	navTheme: 'dark',
 	layout: 'topmenu',
 	contentWidth: 'Fluid',
 	fixedHeader: true,
@@ -31,7 +31,7 @@ export default {
 	menu: {
 		locale: true,
 	},
-	title: 'Feednext',
+	title: null,
 	pwa: false,
 	iconfontUrl: '',
 	...appTheme,
