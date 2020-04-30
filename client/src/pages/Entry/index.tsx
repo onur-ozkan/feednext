@@ -70,7 +70,7 @@ const Entry = ({ computedMatch }): JSX.Element => {
 				<ArrowUpOutlined />
 			</Tooltip>
 			<span style={{ color: '#818181', fontSize: 15 }} className="comment-action">
-				{entryData.attributes.votes}
+				{entryData.attributes.votes.value}
 			</span>
 		</span>
 	]

@@ -55,7 +55,7 @@ const Feeds = (): JSX.Element => {
 									text: featuredEntryResponse.data.attributes.text,
 									createdAt: featuredEntryResponse.data.attributes.created_at,
 									updatedAt: featuredEntryResponse.data.attributes.updated_at,
-									votes: featuredEntryResponse.data.attributes.votes,
+									voteValue: featuredEntryResponse.data.attributes.votes.value,
 									writtenBy: featuredEntryResponse.data.attributes.written_by,
 								},
 							}
@@ -216,7 +216,7 @@ const Feeds = (): JSX.Element => {
 										<>
 											<span style={{ marginRight: 10 }}>
 												<ArrowUpOutlined style={{ marginRight: 3 }} />
-												{item.entry.votes}
+												{item.entry.voteValue}
 											</span>
 											<span>
 												<LinkOutlined style={{ marginRight: 3 }} />

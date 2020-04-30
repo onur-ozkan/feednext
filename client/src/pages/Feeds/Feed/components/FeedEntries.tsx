@@ -1,16 +1,15 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import React from 'react'
 import { Tooltip, List, Comment, Card, Avatar, message, Typography, Button, Popconfirm, Row, Col, Dropdown, Menu } from 'antd'
-import { ArrowUpOutlined, ArrowDownOutlined, DeleteOutlined, InfoCircleOutlined, StarOutlined, RiseOutlined, UpSquareOutlined, BackwardOutlined, DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons'
+import { ArrowUpOutlined, ArrowDownOutlined, DeleteOutlined, InfoCircleOutlined,  DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons'
 import AddEntry from './AddEntry'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { voteEntry, undoEntryVote, updateEntry, deleteEntry } from '@/services/api'
-import { VOTE_ENTRY, UNDO_ENTRY_VOTE } from '@/redux/Actions/User/types'
 import { router } from 'umi'
 import globalStyles from '@/global.less'
 import { SuperAdmin } from '@/../config/constants'
 
 const FeedEntries: React.FC = ({ titleData, sortEntriesBy, setSortEntriesBy, entryList, handleEntryFetching, setEntryList, accessToken }): JSX.Element => {
-	const dispatch = useDispatch()
 	const userState = useSelector((state: any) => state.user?.attributes.user)
 
 	const paginationOptions = {
@@ -24,56 +23,78 @@ const FeedEntries: React.FC = ({ titleData, sortEntriesBy, setSortEntriesBy, ent
 		},
 	}
 
-	const isEntryAlreadyVoted = (entryId: string, from: 'up' | 'down'): boolean => {
-		if (!userState) return false
-
-		if (from === 'up') return userState.up_voted_entries.includes(entryId)
-		return userState.down_voted_entries.includes(entryId)
-	}
-
 	const handleEntryRouting = (entryId: string): void => router.push(`/entry/${entryId}`)
 
-	const handleVoteEntry = async (entryId: string, voteTo: 'up' | 'down'): Promise<void> => {
+	const isEntryAlreadyVoted = (votes: any, from: 'up' | 'down'): boolean => {
+		if (!userState) return false
+
+		if (from === 'up') return votes.up_voted.includes(userState.username)
+		return votes.down_voted.includes(userState.username)
+	}
+
+	const handleVoteEntry = async (entry: any, voteTo: 'up' | 'down'): Promise<void> => {
 		if (!userState) return // TODO pop sign in window
 
-		const entry = entryList.entries.find((entry) => entry.id === entryId)
-		const isAlreadyUpVoted = isEntryAlreadyVoted(entryId, 'up')
-		const isAlreadyDownVoted = isEntryAlreadyVoted(entryId, 'down')
+		const isAlreadyUpVoted = isEntryAlreadyVoted(entry.votes, 'up')
+		const isAlreadyDownVoted = isEntryAlreadyVoted(entry.votes, 'down')
 
 		if (isAlreadyUpVoted) {
-			dispatch({
-				type: UNDO_ENTRY_VOTE,
-				from: 'up',
-				entryId
+			entry.votes.value--
+			entry.votes.up_voted = entry.votes.up_voted.filter((item: any) => item !== userState.username)
+
+			await setEntryList({
+				...entryList,
+				entries: [...entryList.entries].map(item => {
+					if (item.id === entry.id) {
+						return {
+							...entry
+						}
+					}
+					else return item
+				})
 			})
-			entry.votes--
-			await undoEntryVote(entryId, accessToken, true).catch(error => message.error(error.response.data.message))
+			await undoEntryVote(entry.id, accessToken, true).catch(error => message.error(error.response.data.message))
 		} else if (isAlreadyDownVoted) {
-			dispatch({
-				type: UNDO_ENTRY_VOTE,
-				from: 'down',
-				entryId
+			entry.votes.value++
+			entry.votes.down_voted = entry.votes.down_voted.filter((item: any) => item !== userState.username)
+
+			await setEntryList({
+				...entryList,
+				entries: [...entryList.entries].map(item => {
+					if (item.id === entry.id) {
+						return {
+							...entry
+						}
+					}
+					else return item
+				})
 			})
-			entry.votes++
-			await undoEntryVote(entryId, accessToken, false).catch(error => message.error(error.response.data.message))
+			await undoEntryVote(entry.id, accessToken, false).catch(error => message.error(error.response.data.message))
 		}
 
 		if ((isAlreadyUpVoted && voteTo === 'up') || (isAlreadyDownVoted && voteTo === 'down')) return
 
-		(voteTo === 'up') ? entry.votes++ : entry.votes--
-
-		dispatch({
-			type: VOTE_ENTRY,
-			entryId: entryId,
-			voteTo: voteTo
+		setEntryList({
+			...entryList,
+			entries: [...entryList.entries].map(item => {
+				if (item.id === entry.id) {
+					return {
+						...item,
+						votes: {
+							...item.votes,
+							value: (voteTo === 'up') ? (item.votes.value + 1) : (item.votes.value - 1),
+							...voteTo === 'up' ?
+								{ up_voted: [...item.votes.up_voted, userState.username] }
+									:
+								{ down_voted: [...item.votes.down_voted, userState.username] }
+						}
+					}
+				}
+				else return item
+			})
 		})
 
-		await voteEntry(entryId, voteTo, accessToken).catch(error => {
-			dispatch({
-				type: UNDO_ENTRY_VOTE,
-				from: voteTo,
-				entryId
-			})
+		await voteEntry(entry.id, voteTo, accessToken).catch(error => {
 			message.error(error.response.data.message)
 		})
 	}
@@ -115,14 +136,14 @@ const FeedEntries: React.FC = ({ titleData, sortEntriesBy, setSortEntriesBy, ent
 			.catch(error => message.error(error.response.data.message))
 	}
 
-	const handleEntryActions = (item: number): JSX.Element[] => [
+	const handleEntryActions = (item: any): JSX.Element[] => [
 		<span style={{ padding: '2px 5px 2px 5px', fontSize: 14, opacity: 1 }} key="comment-basic-like">
 			<Tooltip title="Up Vote">
-				<ArrowUpOutlined onClick={() => handleVoteEntry(item.id, 'up')} style={{ color: (isEntryAlreadyVoted(item.id, 'up')) ? 'red' : 'black' }} />
+				<ArrowUpOutlined onClick={() => handleVoteEntry(item, 'up')} style={{ color: (isEntryAlreadyVoted(item.votes, 'up')) ? 'red' : 'black' }} />
 			</Tooltip>
-			<span style={{ color: '#818181', fontSize: 15 }} className="comment-action"> {item.votes} </span>
+			<span style={{ color: '#818181', fontSize: 15 }} className="comment-action"> {item.votes.value} </span>
 			<Tooltip title="Down Vote">
-				<ArrowDownOutlined onClick={() => handleVoteEntry(item.id, 'down')} style={{ color: (isEntryAlreadyVoted(item.id, 'down')) ? 'red' : 'black' }} />
+				<ArrowDownOutlined onClick={() => handleVoteEntry(item, 'down')} style={{ color: (isEntryAlreadyVoted(item.votes, 'down')) ? 'red' : 'black' }} />
 			</Tooltip>
 		</span>
 	]
@@ -178,7 +199,7 @@ const FeedEntries: React.FC = ({ titleData, sortEntriesBy, setSortEntriesBy, ent
 				}
 				itemLayout="horizontal"
 				dataSource={entryList.entries}
-				renderItem={item => (
+				renderItem={(item: any): JSX.Element => (
 					<>
 						<Comment
 							actions={handleEntryActions(item)}
