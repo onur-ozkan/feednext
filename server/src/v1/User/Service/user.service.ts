@@ -5,7 +5,6 @@ import { JwtModule } from '@nestjs/jwt'
 
 // Other dependencies
 import * as jwt from 'jsonwebtoken'
-import { ObjectId } from 'mongodb'
 
 // Local files
 import { UsersEntity } from 'src/shared/Entities/users.entity'
@@ -50,24 +49,20 @@ export class UserService {
         this.awsService.uploadPicture(username, file)
     }
 
-    async getVotes({ username, query, voteType }: {
+    async getVotes({ username, query }: {
         username: string,
         query: {
-            skip: number
-        },
-        voteType: 'up' | 'down'
+            skip: number,
+            voteType: 'up' | 'down'
+        }
    }): Promise<any> {
-       const user = await this.usersRepository.getUserByUsername(username)
+       await this.usersRepository.getUserByUsername(username)
 
-       // Convert string types to Mongo ObjectId
-       const idList = user[(voteType === 'down') ? 'down_voted_entries' : 'up_voted_entries']
-           .map(item => ObjectId(item))
-
-       const result = await this.entriesRepository.getVotedEntriesByIds({
-           idList,
+       const result = await this.entriesRepository.getVotedEntriesByUsername({
+           username,
            query
        })
-       return serializerService.serializeResponse(`user_${voteType}_vote_list`, result)
+       return serializerService.serializeResponse(`user_${query.voteType}_vote_list`, result)
    }
 
     async updateUser(usernameParam: string, dto: UpdateUserDto): Promise<ISerializeResponse> {

@@ -63,12 +63,6 @@ export class UsersEntity {
     @Column({ type: 'tinyint' })
     role: number
 
-    @Column({ type: 'array' })
-    up_voted_entries: string[]
-
-    @Column({ type: 'array' })
-    down_voted_entries: string[]
-
     @Column({ type: 'boolean' })
     is_verified: boolean
 
@@ -92,8 +86,6 @@ export class UsersEntity {
         this.biography = ''
         this.link = ''
         this.is_active = true
-        this.is_verified = false,
-        this.up_voted_entries = []
-        this.down_voted_entries = []
+        this.is_verified = false
     }
 }

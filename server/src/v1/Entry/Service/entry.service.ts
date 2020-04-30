@@ -90,8 +90,7 @@ export class EntryService {
             throw new BadRequestException('Entry with that id could not found in the database')
         }
 
-        await this.usersRepository.undoVotedEntry({ entryId, username, isUpVoted })
-        await this.entriesRepository.voteEntry({ entryId, isUpVoted: !isUpVoted })
+        await this.entriesRepository.undoVoteOfEntry({ entryId, isUpVoted, username })
         throw new HttpException('Entry has been un voted.', HttpStatus.OK)
     }
 
@@ -104,8 +103,7 @@ export class EntryService {
             throw new BadRequestException('Entry could not found by given id')
         }
 
-        await this.usersRepository.addVotedEntry({ entryId, username, isUpVoted })
-        await this.entriesRepository.voteEntry({ entryId, isUpVoted })
+        await this.entriesRepository.voteEntry({ entryId, isUpVoted, username })
         throw new HttpException('Entry has been voted.', HttpStatus.OK)
     }
 

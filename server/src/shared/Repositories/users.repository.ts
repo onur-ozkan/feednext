@@ -1,5 +1,5 @@
 // Nest dependencies
-import { BadRequestException, UnprocessableEntityException, ConflictException } from '@nestjs/common'
+import { BadRequestException, UnprocessableEntityException } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
 
 // Other dependencies
@@ -164,54 +164,6 @@ export class UsersRepository extends Repository<UsersEntity> {
         } catch (err) {
             throw new BadRequestException('User could not found')
         }
-    }
-
-    async undoVotedEntry({ entryId, username, isUpVoted }: {entryId: string, username: string, isUpVoted: boolean}): Promise<void>  {
-        try {
-            const profile = await this.findOneOrFail({
-                username,
-            })
-            // If the entry was down voted, undo the vote
-            if (isUpVoted) {
-                if (!profile.up_voted_entries.includes(entryId)) throw new Error()
-                profile.up_voted_entries = profile.up_voted_entries.filter(item => item !== entryId)
-            } else { // If the entry was up voted, undo the vote
-                if (!profile.down_voted_entries.includes(entryId)) throw new Error()
-                profile.down_voted_entries = profile.down_voted_entries.filter(item => item !== entryId)
-            }
-            await this.save(profile)
-        } catch (e) {
-            throw new BadRequestException('Username could not found or entry have not vote yet.')
-        }
-    }
-
-    async addVotedEntry({ entryId, username, isUpVoted }: {entryId: string, username: string, isUpVoted: boolean}): Promise<void> {
-        let profile: UsersEntity
-        try {
-            profile = await this.findOneOrFail({
-                username,
-            })
-        } catch (e) {
-            throw new BadRequestException('User could not found')
-        }
-
-        if (isUpVoted) {
-            if (profile.up_voted_entries.includes(entryId)) throw new ConflictException('The entry is already up voted')
-            // If the entry was down voted, undo the vote
-            if (profile.down_voted_entries.includes(entryId)) {
-                profile.down_voted_entries = profile.down_voted_entries.filter(item => item !== entryId)
-            }
-            profile.up_voted_entries.push(entryId)
-        } else {
-            if (profile.down_voted_entries.includes(entryId)) throw new ConflictException('The entry is already down voted')
-            // If the entry was up voted, undo the vote
-            if (profile.up_voted_entries.includes(entryId)) {
-                profile.up_voted_entries = profile.up_voted_entries.filter(item => item !== entryId)
-            }
-            profile.down_voted_entries.push(entryId)
-        }
-
-        await this.save(profile)
     }
 
     async activateUser(decodedToken: { email: string, username: string }): Promise<void>  {

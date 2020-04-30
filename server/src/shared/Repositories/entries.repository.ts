@@ -1,9 +1,8 @@
 // Nest dependencies
-import { BadRequestException, UnprocessableEntityException, ForbiddenException } from '@nestjs/common'
+import { BadRequestException, UnprocessableEntityException, ForbiddenException, ConflictException } from '@nestjs/common'
 
 // Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
-import { ObjectId } from 'mongodb'
 
 // Local files
 import { EntriesEntity } from '../Entities/entries.entity'
@@ -21,13 +20,21 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         }
     }
 
-    async getVotedEntriesByIds({ idList, query }: {
-        idList: ObjectId[],
-        query: { skip: number }
+    async getVotedEntriesByUsername({ username, query }: {
+        username: string,
+        query: {
+            skip: number,
+            voteType: 'up' | 'down'
+        }
     }): Promise<{ entries: EntriesEntity[], count: number }> {
         const [entries, total] = await this.findAndCount({
             where: {
-                '_id': { $in: idList }
+                ...query.voteType !== 'down' && {
+                    'votes.up_voted': { $in: [username] }
+                },
+                ...query.voteType === 'down' && {
+                    'votes.down_voted': { $in: [username] }
+                },
             },
             order: {
                 created_at: 'DESC',
@@ -148,9 +155,42 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         }
     }
 
-    async voteEntry({ entryId, isUpVoted }: { entryId: string, isUpVoted: boolean }): Promise<void> {
+    async voteEntry({ entryId, isUpVoted, username }: { entryId: string, isUpVoted: boolean, username: string }): Promise<void> {
         const entry: EntriesEntity = await this.findOneOrFail(entryId)
-        isUpVoted ? entry.votes++ : entry.votes--
+
+        if (isUpVoted) {
+            if (entry.votes.up_voted.includes(username)) throw new ConflictException('The entry is already up voted')
+            if (entry.votes.down_voted.includes(username)) {
+                entry.votes.value++
+                entry.votes.down_voted = entry.votes.down_voted.filter(item => item !== username)
+            }
+            entry.votes.value++
+            entry.votes.up_voted.push(username)
+        } else {
+            if (entry.votes.down_voted.includes(username)) throw new ConflictException('The entry is already down voted')
+            if (entry.votes.up_voted.includes(username)) {
+                entry.votes.value--
+                entry.votes.up_voted = entry.votes.up_voted.filter(item => item !== username)
+            }
+            entry.votes.value--
+            entry.votes.down_voted.push(username)
+        }
+
+        this.save(entry)
+    }
+
+    async undoVoteOfEntry({ entryId, isUpVoted, username }: { entryId: string, isUpVoted: boolean, username: string }): Promise<void> {
+        const entry: EntriesEntity = await this.findOneOrFail(entryId)
+        if (isUpVoted) {
+            if (!entry.votes.up_voted.includes(username)) throw new BadRequestException('Entry has not up voted yet')
+            entry.votes.value--
+            entry.votes.up_voted = entry.votes.up_voted.filter(item => item !== username)
+        } else {
+            if (!entry.votes.down_voted.includes(username)) throw new BadRequestException('Entry has not down voted yet')
+            entry.votes.value++
+            entry.votes.down_voted = entry.votes.down_voted.filter(item => item !== username)
+        }
+
         this.save(entry)
     }
 
