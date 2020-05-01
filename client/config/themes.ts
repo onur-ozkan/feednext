@@ -16,7 +16,7 @@ export declare interface IAppTheme {
 
 export const appTheme: IAppTheme = {
 	// primary color for all components
-	'@primary-color': '#ff2d20',
+	'@primary-color': '#188fce',
 	// link color
 	'@link-color': '#1890ff',
 	// success state color
