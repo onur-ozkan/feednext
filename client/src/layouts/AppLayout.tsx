@@ -6,9 +6,9 @@ import { Row, Col } from 'antd'
 import { formatMessage } from 'umi-plugin-react/locale'
 
 import RightContent from '@/components/GlobalHeader/RightContent'
-import logo from '../assets/logo.svg'
-import { Route } from 'antd/lib/breadcrumb/Breadcrumb'
-import { GithubFilled } from '@ant-design/icons'
+import logoWide from '../assets/logo-wide.png'
+import logoSquare from '../assets/logo-square.png'
+
 import { useSelector } from 'react-redux'
 
 export declare interface AppLayoutProps {
@@ -33,11 +33,16 @@ const AppLayout: React.FC<AppLayoutProps> = props => {
 	return (
 		<ProLayout
 			collapsedButtonRender={false}
-			logo={logo}
-			menuHeaderRender={(logoDom, titleDom): JSX.Element => (
-				<Link to="/">
+			logo={
+				<picture>
+					<source media="(max-width: 768px)" srcSet={logoSquare}/>
+					<source media="(min-width: 767px)" srcSet={logoWide} />
+					<img src={logoWide} />
+				</picture>
+			}
+			menuHeaderRender={(logoDom): JSX.Element => (
+				<Link to="/feeds">
 					{logoDom}
-					{titleDom}
 				</Link>
 			)}
 			menuItemRender={(menuItemProps, defaultDom): React.ReactNode => {
@@ -46,16 +51,7 @@ const AppLayout: React.FC<AppLayoutProps> = props => {
 				}
 				return <Link to={menuItemProps.path}>{defaultDom}</Link>
 			}}
-			breadcrumbRender={(routers = []): Route[] => [
-				{
-					path: '/',
-					breadcrumbName: formatMessage({
-						id: 'menu.home',
-						defaultMessage: 'Home',
-					}),
-				},
-				...routers,
-			]}
+
 			itemRender={(route, params, routes, paths): JSX.Element => {
 				const first = routes.indexOf(route) === 0
 				return first ? (
