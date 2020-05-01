@@ -20,7 +20,10 @@ const HeaderSearch: React.FC = (): JSX.Element => {
 		inputEl.current.focus()
 	}
 
-	const leaveSearchMode = (): void => setSearchMode(false)
+	const leaveSearchMode = (): void => {
+		setValue('')
+		setSearchMode(false)
+	}
 
 	const handleTitleRouting = (route: string): void => {
 		setAutoCompleteView(null)
@@ -61,13 +64,11 @@ const HeaderSearch: React.FC = (): JSX.Element => {
 
 	return (
 		<span className={inputClass} onClick={enterSearchMode}>
-			<SearchOutlined
-				key="Icon"
-			/>
 			<AutoComplete
 				className={inputClass}
 				value={value}
 				onChange={(value: string): void => setValue(value)}
+				onBlur={leaveSearchMode}
 				options={autoCompleteView}
 			>
 				<Input
@@ -75,6 +76,9 @@ const HeaderSearch: React.FC = (): JSX.Element => {
 					onBlur={leaveSearchMode}
 				/>
 			</AutoComplete>
+			<SearchOutlined
+				key="Icon"
+			/>
 		</span>
 	)
 }
