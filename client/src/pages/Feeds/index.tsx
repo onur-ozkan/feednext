@@ -37,8 +37,8 @@ const Feeds = (): JSX.Element => {
 
 		fetchAllFeeds(skipValueForPagination, null, categoryFilter, sortBy)
 			.then(feedsResponse => {
-				feedsResponse.data.attributes.titles.map((title: any) => {
-					fetchFeaturedEntryByTitleId(title.id)
+				feedsResponse.data.attributes.titles.map(async (title: any) => {
+					await fetchFeaturedEntryByTitleId(title.id)
 						.then(featuredEntryResponse => {
 							const feed = {
 								id: title.id,
@@ -61,7 +61,19 @@ const Feeds = (): JSX.Element => {
 							}
 							setFeed((feedList: any) => [...feedList, feed])
 						})
-						.catch(error => message.error(error.response.data.message, 3))
+						.catch(_error => {
+							const feed = {
+								id: title.id,
+								slug: title.slug,
+								name: title.name,
+								href: `/feeds/${title.slug}`,
+								categoryName: handleArrayFiltering(categoryList, title.category_id).name,
+								createdAt: title.created_at,
+								updatedAt: title.updated_at,
+								entryCount: title.entry_count,
+							}
+							setFeed((feedList: any) => [...feedList, feed])
+						})
 				})
 			})
 			.catch(error => {
@@ -214,10 +226,12 @@ const Feeds = (): JSX.Element => {
 									key={item.id}
 									actions={[
 										<>
-											<span style={{ marginRight: 10 }}>
-												<ArrowUpOutlined style={{ marginRight: 3 }} />
-												{item.entry.voteValue}
-											</span>
+											{item.entry && (
+												<span style={{ marginRight: 10 }}>
+													<ArrowUpOutlined style={{ marginRight: 3 }} />
+													{item.entry.voteValue}
+												</span>
+											)}
 											<span>
 												<LinkOutlined style={{ marginRight: 3 }} />
 												Share
@@ -237,7 +251,11 @@ const Feeds = (): JSX.Element => {
 										description={ <Tag> {item.categoryName.toUpperCase()} </Tag>
 										}
 									/>
-									<ArticleListContent data={item.entry} />
+									{item.entry ?
+											<ArticleListContent data={item.entry} />
+										:
+											<Typography.Text strong> No Entry Found </Typography.Text>
+									}
 								</List.Item>
 							)}
 						/>
@@ -253,11 +271,18 @@ const Feeds = (): JSX.Element => {
 										style={{ marginBottom: -10 }}
 										actions={[
 											<Button onClick={(): void => setCategoryFilter(category.id)} type="primary" key={category.id}>
-												Display
+												<Typography.Text
+													style={{ color: 'white' }}
+													strong
+												>
+													Display
+												</Typography.Text>
 											</Button>
 										]}
 									>
-										{category.name}
+										<Typography.Text strong>
+											{category.name.toUpperCase()}
+										</Typography.Text>
 									</List.Item>
 								)
 							})}
