@@ -14,9 +14,6 @@ const plugins: IPlugin[] = [
 		'umi-plugin-react',
 		{
 			antd: true,
-			dva: {
-				hmr: true,
-			},
 			locale: {
 				// default false
 				enable: true,
