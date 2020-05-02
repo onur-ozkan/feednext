@@ -15,7 +15,7 @@ services:
     ports:
       - ${BACKEND_PORT}:80
     volumes:
-      - ./.docker/nginx/conf.d/:/etc/nginx/conf.d
+      - ./.docker/nginx/conf.d/:/etc/nginx/conf.d:z
     depends_on:
       - node_server
     networks:
@@ -33,7 +33,7 @@ services:
     hostname: node_server
     working_dir: /home/node/app
     volumes:
-      - ./server:/home/node/app
+      - ./server:/home/node/app:z
     ports:
       - ${BACKEND_EXPOSE_PORT}:${BACKEND_APP_PORT}
     command: >
@@ -55,7 +55,6 @@ services:
     command: redis-server ${REDIS_ARGS:- }
     environment:
       - REDIS_ARGS=${REDIS_ARGS:- }
-
     ports:
       - ${LOCAL_LISTEN_ADDR}${HOST_PORT_REDIS}:6379
     networks:
@@ -71,9 +70,8 @@ services:
     ports:
       # [local-machine:]local-port:docker-port
       - ${LOCAL_LISTEN_ADDR}${HOST_PORT_MONGO}:27017
-
     volumes:
       # Mount MongoDB Data directory
-      - ./.docker/data/mongo:/data/db
+      - ./.docker/data/mongo:/data/db:z
     networks:
       - app-network
