@@ -73,7 +73,7 @@
     "typescript": "^3.8.3"
   },
   "engines": {
-    "node": "12",
+    "node": "13",
     "npm": "6"
   },
   "jest": {
