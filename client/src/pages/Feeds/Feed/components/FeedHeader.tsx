@@ -154,7 +154,9 @@ const FeedHeader: React.FC = (props: any): JSX.Element => {
 							<Col>
 								<Rate disabled value={averageTitleRate} />
 								<Button onClick={handleRateModalVisibility} style={{ marginLeft: 5 }} type="primary" size="small">
-									Rate
+									<Typography.Text style={{ color: 'white' }} strong>
+										Rate
+									</Typography.Text>
 								</Button>
 							</Col>
 						</Row>

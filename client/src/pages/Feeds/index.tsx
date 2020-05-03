@@ -233,6 +233,7 @@ const Feeds = (): JSX.Element => {
 					<TreeSelect
 						onChange={(id: string[]): void => setSelectedCategoryFromTree(String(id))}
 						multiple
+						showSearch={false}
 						treeData={globalState.categoryTree}
 						style={{ width: '100%' }}
 						placeholder="All Categories"

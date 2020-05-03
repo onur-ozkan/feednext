@@ -5,7 +5,7 @@ import styles from './index.less'
 import { API_URL } from '../../../config/constants'
 import { useSelector, useDispatch } from 'react-redux'
 import { updateUser, uploadProfilePicture } from '@/services/api'
-import { UPDATE_USER } from '@/redux/Actions/User/types'
+import { UPDATE_USER } from '@/redux/Actions/User'
 
 interface UpdatePayload {
 	fullName?: string

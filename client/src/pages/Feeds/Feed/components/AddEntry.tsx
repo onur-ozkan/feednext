@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Input, Form, Card, message } from 'antd'
+import { Button, Input, Form, Card, message, Typography } from 'antd'
 import { createEntry } from '@/services/api'
 
 const AddEntry: React.FC = ({ titleId, accessToken, setEntryList }) => {
@@ -35,7 +35,9 @@ const AddEntry: React.FC = ({ titleId, accessToken, setEntryList }) => {
 				</Form.Item>
 				<Form.Item>
 					<Button htmlType="submit" loading={submitting} type="primary">
-						Add Entry
+						<Typography.Text style={{ color: 'white' }} strong>
+							Add Entry
+						</Typography.Text>
 					</Button>
 				</Form.Item>
 			</Form>

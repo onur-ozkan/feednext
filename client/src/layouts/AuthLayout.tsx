@@ -4,7 +4,7 @@ import { Link } from 'umi'
 import React from 'react'
 import { formatMessage } from 'umi-plugin-react/locale'
 
-import logo from '../assets/logo.svg'
+import logo from '../assets/logo-square.png'
 import styles from './AuthLayout.less'
 import { GithubFilled } from '@ant-design/icons'
 

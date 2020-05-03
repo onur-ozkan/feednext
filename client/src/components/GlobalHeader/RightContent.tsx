@@ -40,7 +40,7 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
 				<>
 					<Button
 						onClick={(): void => routeTo('/feeds/create-feed')}
-						type="dashed"
+						type="primary"
 						shape="round"
 						icon={<PlusCircleOutlined />}
 					>

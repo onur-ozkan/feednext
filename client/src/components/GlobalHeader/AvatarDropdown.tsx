@@ -5,8 +5,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import HeaderDropdown from '../HeaderDropdown'
 import styles from './index.less'
 import { UserOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons'
-import { SIGN_OUT } from '@/redux/Actions/User/types'
-import { SET_ACCESS_TOKEN } from '@/redux/Actions/Global/types'
+import { SIGN_OUT } from '@/redux/Actions/User'
+import { SET_ACCESS_TOKEN } from '@/redux/Actions/Global'
 import { router } from 'umi'
 import { API_URL } from '../../../config/constants'
 
@@ -30,17 +30,17 @@ const AvatarDropdown = () => {
 			<Menu className={styles.menu} selectedKeys={[]}>
 				<Menu.Item onClick={(): void => router.push(`/user/${user.username}`)} key="/">
 					<UserOutlined />
-					<FormattedMessage id="menu.account" defaultMessage="account center" />
+					Profile
 				</Menu.Item>
 
 				<Menu.Item onClick={(): void => router.push('/settings')} key="/settings">
 					<SettingOutlined />
-					<FormattedMessage id="menu.account.settings" defaultMessage="account settings" />
+					Settings
 				</Menu.Item>
 
 				<Menu.Item onClick={handleSignOut} key="/logout">
 					<LogoutOutlined />
-					<FormattedMessage id="menu.account.logout" defaultMessage="logout" />
+					Sign Out
 				</Menu.Item>
 			</Menu>
 		)

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Card, Row, Col, Avatar, Typography, Tag, Tabs, Button, Pagination, Divider, Empty, Tooltip } from 'antd'
-import { GridContent, PageLoading } from '@ant-design/pro-layout'
+import { GridContent } from '@ant-design/pro-layout'
 import {
 	EditOutlined,
 	DownOutlined,
@@ -19,6 +19,7 @@ import { router } from 'umi'
 import NotFoundPage from '../404'
 import { handleArrayFiltering } from '@/services/utils'
 import { API_URL } from '../../../config/constants'
+import PageLoading from '@/components/PageLoading'
 
 const User: React.FC = ({ computedMatch }): JSX.Element => {
 	const userState = useSelector((state: any) => state.user?.attributes.user)

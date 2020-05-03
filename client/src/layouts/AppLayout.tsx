@@ -36,7 +36,7 @@ const AppLayout: React.FC<AppLayoutProps> = props => {
 			logo={
 				<picture>
 					<source media="(max-width: 768px)" srcSet={logoSquare}/>
-					<source media="(min-width: 767px)" srcSet={logoWide} />
+					<source style={{ marginLeft: 15 }} media="(min-width: 767px)" srcSet={logoWide} />
 					<img src={logoWide} />
 				</picture>
 			}

@@ -7,8 +7,8 @@ import { useDispatch } from 'react-redux'
 import styles from './style.less'
 import { signIn } from '@/services/api'
 import { router } from 'umi'
-import { SIGN_IN } from '@/redux/Actions/User/types'
-import { SET_ACCESS_TOKEN } from '@/redux/Actions/Global/types'
+import { SIGN_IN } from '@/redux/Actions/User'
+import { SET_ACCESS_TOKEN } from '@/redux/Actions/Global'
 
 export declare interface FormDataType {
 	usernameOrEmail: string

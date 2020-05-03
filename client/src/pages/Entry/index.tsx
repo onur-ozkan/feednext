@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Comment, Tag, Avatar, Tooltip, PageHeader, Row, Col, Rate, Divider } from 'antd'
-import { PageLoading } from '@ant-design/pro-layout'
 import { fetchEntryByEntryId, fetchTitle, getAverageTitleRate } from '@/services/api'
 import NotFoundPage from '../404'
 import { ArrowUpOutlined } from '@ant-design/icons'
 import { handleArrayFiltering } from '@/services/utils'
 import { useSelector } from 'react-redux'
 import { router } from 'umi'
+import PageLoading from '@/components/PageLoading'
 
 const Entry = ({ computedMatch }): JSX.Element => {
 	const categoryList = useSelector((state: any) => state.global.categoryList)
@@ -31,7 +31,7 @@ const Entry = ({ computedMatch }): JSX.Element => {
 					.then(sRes => {
 						setTitleData(sRes.data)
 						// Get category
-						const category = handleArrayFiltering(categoryList,sRes.data.attributes.category_id)
+						const category = handleArrayFiltering(categoryList, sRes.data.attributes.category_id)
 						setCategoryName(category.name)
 						// Fetch average rate of title
 						getAverageTitleRate(sRes.data.attributes.id)
