@@ -15,6 +15,7 @@ import { UpdateTitleDto } from '../Dto/update-title.dto'
 import { serializerService, ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { EntriesRepository } from 'src/shared/Repositories/entries.repository'
 import { UsersRepository } from 'src/shared/Repositories/users.repository'
+import { CategoriesEntity } from 'src/shared/Entities/categories.entity'
 
 
 @Injectable()
@@ -68,13 +69,14 @@ export class TitleService {
     }
 
     async createTitle(openedBy: string, dto: CreateTitleDto): Promise<HttpException | ISerializeResponse> {
+        let category: CategoriesEntity
         try {
-          await this.categoriesRepository.findOneOrFail(dto.categoryId)
+          category = await this.categoriesRepository.findOneOrFail(dto.categoryId)
         } catch (err) {
           throw new BadRequestException(`Category with id:${dto.categoryId} does not match in database.`)
         }
 
-        const newTitle: TitlesEntity = await this.titlesRepository.createTitle(openedBy, dto)
+        const newTitle: TitlesEntity = await this.titlesRepository.createTitle(openedBy, dto, category.ancestors)
         return serializerService.serializeResponse('title_detail', newTitle)
     }
 

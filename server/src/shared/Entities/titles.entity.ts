@@ -21,6 +21,9 @@ export class TitlesEntity {
     @Column({ type: 'string' })
     category_id: string
 
+    @Column({ type: 'array' })
+    category_ancestors: string[]
+
     @Column({
         unique: true,
         type: 'string',

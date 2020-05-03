@@ -69,9 +69,18 @@ export class TitlesRepository extends Repository<TitlesEntity> {
                     opened_by: query.author
                 },
                 ...query.categoryIds && {
-                    category_id: {
-                        $in: query.categoryIds
-                    }
+                    $or: [
+                        {
+                            category_id: {
+                                $in: query.categoryIds
+                            }
+                        },
+                        {
+                            category_ancestors: {
+                                $in: query.categoryIds
+                            }
+                        },
+                    ]
                 },
                 ...query.sortBy === 'hot' && {
                     created_at: {
@@ -112,11 +121,12 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         return { titles, count: total }
     }
 
-    async createTitle(openedBy: string, dto: CreateTitleDto): Promise<TitlesEntity> {
+    async createTitle(openedBy: string, dto: CreateTitleDto, categoryAncestors: string[]): Promise<TitlesEntity> {
         const newTitle: TitlesEntity = new TitlesEntity({
             name: dto.name,
             slug: slugify(dto.name, { lower: true }),
             category_id: dto.categoryId,
+            category_ancestors: categoryAncestors,
             opened_by: openedBy,
         })
 
