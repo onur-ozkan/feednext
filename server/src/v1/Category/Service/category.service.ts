@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Injectable, BadRequestException } from '@nestjs/common'
+import { Injectable, BadRequestException, HttpException, HttpStatus } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 
 // Other dependencies
@@ -88,9 +88,7 @@ export class CategoryService {
     async deleteCategory(categoryId: string): Promise<ISerializeResponse> {
         if (!this.validator.isMongoId(categoryId)) throw new BadRequestException('CategoryId must be a MongoId.')
 
-        const category: CategoriesEntity = await this.categoriesRepository.deleteCategory(categoryId)
-        const id: string = String(category.id)
-        delete category.id
-        return serializerService.serializeResponse('category_detail', category, id)
+        await this.categoriesRepository.deleteCategory(categoryId)
+        throw new HttpException('Category has been deleted.', HttpStatus.OK)
     }
 }
