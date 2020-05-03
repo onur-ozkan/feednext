@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { SIGN_IN, SIGN_OUT, UserActions, UPDATE_USER } from '../../Actions/User/types'
+import { SIGN_IN, SIGN_OUT, UserActions, UPDATE_USER } from '../../Actions/User'
 
 const userReducerDefaultState: any = null
 

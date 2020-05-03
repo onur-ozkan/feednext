@@ -3,7 +3,7 @@ import thunk, { ThunkMiddleware } from 'redux-thunk'
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import { userReducer, settingsReducer, globalReducer } from './Reducers'
-import { AppActions } from './Actions/types'
+import { AppActions } from './Actions'
 
 const persistConfig = {
 	key: 'root',
