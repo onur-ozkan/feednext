@@ -5,8 +5,6 @@ import Step2 from './components/Step2'
 import Step3 from './components/Step3'
 import styles from './style.less'
 import { createTitle, createEntry } from '@/services/api'
-import { forgeDataTree } from '@/services/utils'
-import { PageLoading } from '@ant-design/pro-layout'
 import { StepProvider } from './StepContext'
 import { useSelector } from 'react-redux'
 
@@ -14,12 +12,11 @@ const { Step } = Steps
 
 const CreateFeed: React.FC = () => {
 	const accessToken = useSelector((state: any) => state.global.accessToken)
-	const categoryList = useSelector((state: any) => state.global.categoryList)
+	const categoryTree = useSelector((state: any) => state.global.categoryTree)
 
 	const [currentStep, setCurrentStep] = useState<number>(0)
 	const [stepComponent, setStepComponent] = useState<React.ReactNode>(null)
 	const [isRequestReady, setIsRequestReady] = useState(false)
-	const [categories, setCategories] = useState<any[] | null>(null)
 	const [readableCategoryValue, setReadableCategoryValue] = useState(null)
 	const [firstEntryForm, setFirstEntryForm]: any = useState({
 		text: undefined
@@ -32,11 +29,6 @@ const CreateFeed: React.FC = () => {
 
 	const [feedCreatedSuccessfully, setFeedCreatedSuccessfully] = useState<boolean | null>(null)
 	const [titleSlugForRouting, setTitleSlugForRouting] = useState(null)
-
-	useEffect(() => {
-		const forgedCategories = forgeDataTree(categoryList)
-		setCategories(forgedCategories)
-	}, [])
 
 	useEffect(() => {
 		if (isRequestReady) {
@@ -97,15 +89,13 @@ const CreateFeed: React.FC = () => {
 					component:
 						<Step1
 							stepMovementTo={handleStepMovement}
-							categories={categories}
+							categories={categoryTree}
 							setCreateTitleForm={setCreateTitleForm}
 							setReadableCategoryValue={setReadableCategoryValue}
 						/>
 				}
 		}
 	}
-
-	if (!categories) return <PageLoading/>
 
 	if (!stepComponent) handleStepMovement()
 

@@ -3,15 +3,14 @@ import FeedHeader from './components/FeedHeader'
 import FeedEntries from './components/FeedEntries'
 import styles from './style.less'
 import { fetchEntriesByTitleId, fetchTitle, getAverageTitleRate, updateTitle } from '@/services/api'
-import { PageLoading } from '@ant-design/pro-layout'
 import { useSelector } from 'react-redux'
-import { handleArrayFiltering, forgeDataTree } from '@/services/utils'
+import { handleArrayFiltering, forgeTreeSelectData } from '@/services/utils'
 import { TreeSelect, Modal, Form, Input, Button, Popconfirm, message, Typography } from 'antd'
 import { InfoCircleOutlined } from '@ant-design/icons'
+import PageLoading from '@/components/PageLoading'
 
 const Feed: React.FC = ({ computedMatch }): JSX.Element => {
-	const categoryList = useSelector((state: any) => state.global.categoryList)
-	const accessToken = useSelector((state: any) => state.global.accessToken)
+	const globalState = useSelector((state: any) => state.global)
 	const userRole = useSelector((state: any) => state.user?.attributes.user.role)
 
 	const [form] = Form.useForm()
@@ -19,7 +18,6 @@ const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 	const [title, setTitle]: any = useState(null)
 	const [averageTitleRate, setAverageTitleRate] = useState(null)
 	const [category, setCategory]: any = useState(null)
-	const [categoryTree, setCategoryTree] = useState([])
 	const [sortEntriesBy, setSortEntriesBy] = useState(null)
 	const [entryList, setEntryList]: any = useState(null)
 	const [updateModalVisibility, setUpdateModalVisibility] = useState(false)
@@ -39,7 +37,7 @@ const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 	}
 
 	const handleTitleUpdate = async (values: { categoryId: string, name: string }): Promise<void> => {
-		await updateTitle(accessToken, title.attributes.id, values)
+		await updateTitle(globalState.accessToken, title.attributes.id, values)
 			.then(_res => {
 				location.href = `/feeds/${_res.data.attributes.slug}`
 			})
@@ -47,9 +45,8 @@ const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 	}
 
 	useEffect(() => {
-		setCategoryTree(forgeDataTree(categoryList))
 		fetchTitle(computedMatch.params.feedSlug, 'slug').then(async res => {
-			setCategory(handleArrayFiltering(categoryList, res.data.attributes.category_id))
+			setCategory(handleArrayFiltering(globalState.categoryList, res.data.attributes.category_id))
 			getTitleRate(res.data.attributes.id)
 			await setTitle(res.data)
 		})
@@ -60,7 +57,7 @@ const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 	return (
 		<>
 			<FeedHeader
-				accessToken={accessToken}
+				accessToken={globalState.accessToken}
 				styles={styles}
 				openUpdateModal={(): void => setUpdateModalVisibility(true)}
 				userRole={userRole}
@@ -73,7 +70,7 @@ const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 				sortEntriesBy={sortEntriesBy}
 				setSortEntriesBy={setSortEntriesBy}
 				setEntryList={setEntryList}
-				accessToken={accessToken}
+				accessToken={globalState.accessToken}
 				handleEntryFetching={handleEntryFetching}
 				entryList={entryList}
 				titleData={title}
@@ -100,15 +97,7 @@ const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 						style={{ marginBottom: 10 }}
 						rules={[{ required: true, message: 'Please select category' }]}
 					>
-						<TreeSelect style={{ width: '100%' }} placeholder="Electronic" allowClear>
-							{categoryTree.map((data: any) => (
-								<TreeSelect.TreeNode key={data.id} value={data.id} title={data.name}>
-									{data.childNodes.map((child: any) => (
-										<TreeSelect.TreeNode key={child.id} value={child.id} title={child.name} />
-									))}
-								</TreeSelect.TreeNode>
-							))}
-						</TreeSelect>
+						<TreeSelect treeData={globalState.categoryTree} style={{ width: '100%' }} placeholder="Electronic" allowClear />
 					</Form.Item>
 					<Form.Item
 						name="name"

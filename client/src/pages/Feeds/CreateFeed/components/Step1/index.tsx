@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
-import { Form, Button, Divider, Input, Row, TreeSelect } from 'antd'
+import { Form, Button, Input, TreeSelect } from 'antd'
 import styles from './index.less'
-import TextArea from 'antd/lib/input/TextArea'
 import StepContext from '../../StepContext'
 
 const formItemLayout = {
@@ -39,15 +38,12 @@ const Step1: React.FC = (props: any) => {
 					name="categoryId"
 					rules={[{ required: true, message: 'Please select category' }]}
 				>
-					<TreeSelect placeholder="Electronic" onChange={handleReadableCategoryValue} allowClear>
-						{categories.map((data: any) => (
-							<TreeSelect.TreeNode key={data.id} value={data.id} title={data.name}>
-								{data.childNodes.map((child: any) => (
-									<TreeSelect.TreeNode key={child.id} value={child.id} title={child.name} />
-								))}
-							</TreeSelect.TreeNode>
-						))}
-					</TreeSelect>
+				<TreeSelect
+					placeholder="Electronic"
+					treeData={categories}
+					onChange={handleReadableCategoryValue}
+					allowClear
+				/>
 				</Form.Item>
 				<Form.Item label="Title" name="title" rules={[{ required: true, message: 'Please fill the title input' }]}>
 					<Input placeholder="Xphone Model 7s Plus" />

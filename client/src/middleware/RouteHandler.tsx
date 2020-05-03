@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { PageLoading } from '@ant-design/pro-layout'
 import { Redirect, router } from 'umi'
 import { stringify } from 'querystring'
-import { getAuthorityFromRouter, handleSessionExpiration } from '@/services/utils'
+import { getAuthorityFromRouter, handleSessionExpiration, forgeTreeSelectData } from '@/services/utils'
 import { User } from '@/../config/constants'
 import { Result, Button } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
-import { SET_ACCESS_TOKEN, SET_CATEGORY_LIST } from '@/redux/Actions/Global/types'
+import { SET_ACCESS_TOKEN, SET_CATEGORY_LIST, SET_CATEGORY_TREE } from '@/redux/Actions/Global'
 import { checkAccessToken, refreshToken, fetchAllCategories } from '@/services/api'
+import PageLoading from '@/components/PageLoading'
 
 const RouteHandler = ({ children, route }) => {
 	const [isLoading, setIsLoading] = useState(true)
@@ -32,6 +32,11 @@ const RouteHandler = ({ children, route }) => {
 			dispatch({
 				type: SET_CATEGORY_LIST,
 				list: res.data.attributes.categories
+			})
+
+			dispatch({
+				type: SET_CATEGORY_TREE,
+				data: forgeTreeSelectData(res.data.attributes.categories)
 			})
 		})
 		setIsLoading(false)

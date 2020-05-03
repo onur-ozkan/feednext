@@ -1,23 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Card, List, Tag, message, BackTop, TreeSelect, Row, Col, Typography, Dropdown, Menu, Modal } from 'antd'
-import { LoadingOutlined, ArrowUpOutlined, LinkOutlined, RiseOutlined, FireOutlined, StarOutlined, FilterFilled, CheckOutlined } from '@ant-design/icons'
+import { LoadingOutlined, ArrowUpOutlined, LinkOutlined, RiseOutlined, FilterFilled, CheckOutlined, StarFilled, FireFilled } from '@ant-design/icons'
 import '@ant-design/compatible/assets/index.css'
 
 import ArticleListContent from './components/ArticleListContent'
-import styles from './style.less'
 import globalStyles from '@/global.less'
 import { fetchAllFeeds, fetchFeaturedEntryByTitleId, fetchTrendingCategories } from '@/services/api'
 import { useSelector } from 'react-redux'
-import { handleArrayFiltering, forgeDataTree } from '@/services/utils'
-import { PageLoading } from '@ant-design/pro-layout'
+import { handleArrayFiltering } from '@/services/utils'
 import { API_URL } from '../../../config/constants'
-import { router, Link } from 'umi'
+import { Link } from 'umi'
 
 const Feeds = (): JSX.Element => {
-	const categoryList = useSelector((state: any) => state.global.categoryList)
+	const globalState = useSelector((state: any) => state.global)
 
-	const [categories, setCategories] = useState<any[] | null>(null)
-	const [isLoading, setIsLoading] = useState(true)
 	const [displayFilterModal, setDisplayFilterModal] = useState(false)
 	const [selectedCategoryFromTree, setSelectedCategoryFromTree] = useState(null)
 	const [trendingCategories, setTrendingCategories] = useState(null)
@@ -32,9 +28,6 @@ const Feeds = (): JSX.Element => {
 	}, [categoryFilter, sortBy])
 
 	const handleDataFetching = (): void => {
-		const forgedCategories = forgeDataTree(categoryList)
-		setCategories(forgedCategories)
-
 		fetchAllFeeds(skipValueForPagination, null, categoryFilter, sortBy)
 			.then(feedsResponse => {
 				feedsResponse.data.attributes.titles.map(async (title: any) => {
@@ -45,7 +38,7 @@ const Feeds = (): JSX.Element => {
 								slug: title.slug,
 								name: title.name,
 								href: `/feeds/${title.slug}`,
-								categoryName: handleArrayFiltering(categoryList, title.category_id).name,
+								categoryName: handleArrayFiltering(globalState.categoryList, title.category_id).name,
 								createdAt: title.created_at,
 								updatedAt: title.updated_at,
 								entryCount: title.entry_count,
@@ -67,7 +60,7 @@ const Feeds = (): JSX.Element => {
 								slug: title.slug,
 								name: title.name,
 								href: `/feeds/${title.slug}`,
-								categoryName: handleArrayFiltering(categoryList, title.category_id).name,
+								categoryName: handleArrayFiltering(globalState.categoryList, title.category_id).name,
 								createdAt: title.created_at,
 								updatedAt: title.updated_at,
 								entryCount: title.entry_count,
@@ -80,13 +73,107 @@ const Feeds = (): JSX.Element => {
 				message.error(error.response.data.message, 3)
 			})
 
-		if (isLoading) {
-			fetchTrendingCategories().then(res => {
-				setTrendingCategories(res.data.attributes.categories)
-				setIsLoading(false)
-			})
+		if (!trendingCategories) {
+			fetchTrendingCategories()
+				.then(res => setTrendingCategories(res.data.attributes.categories))
 		}
 
+	}
+
+	const handleEntryListRender = (): JSX.Element => {
+		if (feedList.length === 0) {
+			return (
+				<div style={{ textAlign: 'center', marginTop: 61 }}>
+					<LoadingOutlined spin style={{ fontSize: 25 }} />
+				</div>
+			)
+		}
+
+		return (
+			<List<any>
+				style={{ margin: 25 }}
+				loading={feedList.length === 0}
+				rowKey="id"
+				itemLayout="vertical"
+				loadMore={loadMore}
+				dataSource={feedList}
+				renderItem={(item): JSX.Element => (
+					<List.Item
+						key={item.id}
+						actions={[
+							<>
+								{item.entry && (
+									<span style={{ marginRight: 10 }}>
+										<ArrowUpOutlined style={{ marginRight: 3 }} />
+										{item.entry.voteValue}
+									</span>
+								)}
+								<span>
+									<LinkOutlined style={{ marginRight: 3 }} />
+									Share
+								</span>
+							</>
+						]}
+					>
+						<List.Item.Meta
+							title={
+								<Link
+									to={item.href}
+									style={{ cursor: 'pointer' }}
+								>
+									{item.name}
+								</Link>
+							}
+							description={ <Tag> {item.categoryName.toUpperCase()} </Tag>
+							}
+						/>
+						{item.entry ?
+								<ArticleListContent data={item.entry} />
+							:
+								<Typography.Text strong> No Entry Found </Typography.Text>
+						}
+					</List.Item>
+				)}
+			/>
+		)
+	}
+
+	const handleTrendingCategoriesRender = (): JSX.Element => {
+
+		if (!trendingCategories) {
+			return (
+				<div style={{ textAlign: 'center' }}>
+					<LoadingOutlined spin style={{ fontSize: 25 }} />
+				</div>
+			)
+		}
+
+		return (
+			<div style={{ marginTop: -20 }}>
+				{trendingCategories.map(category => {
+					return (
+						<List.Item
+							key={category.id}
+							style={{ marginBottom: -10 }}
+							actions={[
+								<Button onClick={(): void => setCategoryFilter(category.id)} type="primary" key={category.id}>
+									<Typography.Text
+										style={{ color: 'white' }}
+										strong
+									>
+										Display
+									</Typography.Text>
+								</Button>
+							]}
+						>
+							<Typography.Text strong>
+								{category.name.toUpperCase()}
+							</Typography.Text>
+						</List.Item>
+					)
+				})}
+			</div>
+		)
 	}
 
 	useEffect(() => {
@@ -99,11 +186,11 @@ const Feeds = (): JSX.Element => {
 	const handleSortByIcon = (): JSX.Element | void => {
 		switch(sortBy){
 			case 'top':
-				return <RiseOutlined />
+				return <RiseOutlined style={{ color: '#188fce' }} />
 			case 'hot':
-				return <FireOutlined />
+				return <FireFilled style={{ color: 'red' }} />
 			default:
-				return <StarOutlined />
+				return <StarFilled style={{ color: '#00c853' }} />
 		}
 	}
 
@@ -116,11 +203,7 @@ const Feeds = (): JSX.Element => {
 					paddingRight: 48,
 				}}
 			>
-				{isLoading ? (
-					<LoadingOutlined />
-				) : (
-					'More'
-				)}
+				More
 			</Button>
 		</div>
 	)
@@ -147,27 +230,24 @@ const Feeds = (): JSX.Element => {
 		>
 			<Row>
 				<Col style={{ marginRight: 10 }}>
-					<TreeSelect onChange={(id: string[]): void => setSelectedCategoryFromTree(String(id))}  multiple style={{ width: '100%' }} placeholder="All Categories" allowClear>
-						{categories.map((data: any) => (
-							<TreeSelect.TreeNode key={data.id} value={data.id} title={data.name}>
-								{data.childNodes.map((child: any) => (
-									<TreeSelect.TreeNode key={child.id} value={child.id} title={child.name} />
-								))}
-							</TreeSelect.TreeNode>
-						))}
-					</TreeSelect>
+					<TreeSelect
+						onChange={(id: string[]): void => setSelectedCategoryFromTree(String(id))}
+						multiple
+						treeData={globalState.categoryTree}
+						style={{ width: '100%' }}
+						placeholder="All Categories"
+						allowClear
+					/>
 				</Col>
 				<Button shape="circle" icon={<CheckOutlined />} onClick={handleCategoryFilter} />
 			</Row>
 		</Modal>
 	)
 
-	if (isLoading) return <PageLoading />
-
 	return (
 		<>
 			<BackTop />
-			<Row style={{ marginTop: 15 }}>
+			<Row>
 				<Col lg={15} md={24} style={{ padding: 7 }}>
 					<Card
 						bordered={false}
@@ -184,7 +264,7 @@ const Feeds = (): JSX.Element => {
 								style={{ marginRight: 5 }}
 								icon={<FilterFilled />}
 							>
-								Filter
+								FILTER
 							</Button>
 							<Dropdown
 								trigger={['click']}
@@ -192,17 +272,17 @@ const Feeds = (): JSX.Element => {
 									<Menu>
 										<Menu.Item onClick={(): void => setSortBy(null)}>
 											<Typography.Text>
-												<StarOutlined /> New
+												<StarFilled style={{ color: '#00c853' }} /> New
 											</Typography.Text>
 										</Menu.Item>
 										<Menu.Item onClick={(): void => setSortBy('top')}>
 											<Typography.Text>
-												<RiseOutlined /> Top
+												<RiseOutlined style={{ color: '#188fce' }} /> Top
 											</Typography.Text>
 										</Menu.Item>
 										<Menu.Item onClick={(): void => setSortBy('hot')}>
 											<Typography.Text>
-												<FireOutlined /> Hot
+												<FireFilled style={{ color: 'red' }} /> Hot
 											</Typography.Text>
 										</Menu.Item>
 									</Menu>
@@ -214,110 +294,40 @@ const Feeds = (): JSX.Element => {
 							</Dropdown>
 						</Row>
 						{handleModalScreen()}
-						<List<any>
-							style={{ margin: 25 }}
-							loading={isLoading}
-							rowKey="id"
-							itemLayout="vertical"
-							loadMore={loadMore}
-							dataSource={feedList}
-							renderItem={(item): JSX.Element => (
-								<List.Item
-									key={item.id}
-									actions={[
-										<>
-											{item.entry && (
-												<span style={{ marginRight: 10 }}>
-													<ArrowUpOutlined style={{ marginRight: 3 }} />
-													{item.entry.voteValue}
-												</span>
-											)}
-											<span>
-												<LinkOutlined style={{ marginRight: 3 }} />
-												Share
-											</span>
-										</>
-									]}
-								>
-									<List.Item.Meta
-										title={
-											<Link
-												to={item.href}
-												style={{ cursor: 'pointer' }}
-											>
-												{item.name}
-											</Link>
-										}
-										description={ <Tag> {item.categoryName.toUpperCase()} </Tag>
-										}
-									/>
-									{item.entry ?
-											<ArticleListContent data={item.entry} />
-										:
-											<Typography.Text strong> No Entry Found </Typography.Text>
-									}
-								</List.Item>
-							)}
-						/>
+						{handleEntryListRender()}
 					</Card>
 				</Col>
 				<Col lg={9} md={24} style={{ padding: 7 }}>
 					<Card style={{ marginBottom: 14 }} bordered={false} title="Trending Categories">
-						<div style={{ marginTop: -20 }}>
-							{trendingCategories.map(category => {
-								return (
-									<List.Item
-										key={category.id}
-										style={{ marginBottom: -10 }}
-										actions={[
-											<Button onClick={(): void => setCategoryFilter(category.id)} type="primary" key={category.id}>
-												<Typography.Text
-													style={{ color: 'white' }}
-													strong
-												>
-													Display
-												</Typography.Text>
-											</Button>
-										]}
-									>
-										<Typography.Text strong>
-											{category.name.toUpperCase()}
-										</Typography.Text>
-									</List.Item>
-								)
-							})}
-						</div>
+						{handleTrendingCategoriesRender()}
 					</Card>
 					<Card>
 						<Row style={{ marginBottom: 15 }}>
 							<Col span={12}>
-								<Row>
+								<Link to="/about">
 									<Typography.Text strong>
 										About
 									</Typography.Text>
-								</Row>
-								<Row>
-									<Typography.Text strong>
-										Github
-									</Typography.Text>
-								</Row>
-								<Row>
-									<Typography.Text strong>
-										Policy
-									</Typography.Text>
-								</Row>
+								</Link>
 							</Col>
 							<Col span={12}>
-								<Row>
-									<Typography.Text strong>
-										Support
-									</Typography.Text>
-								</Row>
-								<Row>
+								<a href="https://github.com/ozkanonur/feednext#readme" target="_api">
 									<Typography.Text strong>
 										API
 									</Typography.Text>
-								</Row>
+								</a>
+							</Col>
+							<Col span={12}>
+								<Typography.Text strong>
+									Support
+								</Typography.Text>
+							</Col>
+							<Col span={12}>
+								<a href="https://github.com/ozkanonur/feednext/blob/master/COPYING" target="_license">
+									<Typography.Text strong>
+										License
+									</Typography.Text>
+								</a>
 							</Col>
 						</Row>
 						<Row>
