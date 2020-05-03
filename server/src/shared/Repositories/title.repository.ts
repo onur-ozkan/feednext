@@ -184,7 +184,7 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         return Math.round(averageRate)
     }
 
-    async updateTitle(updatedBy: string, titleId: string, dto: UpdateTitleDto): Promise<TitlesEntity> {
+    async updateTitle(updatedBy: string, titleId: string, dto: UpdateTitleDto, categoryAncestors: string[]): Promise<TitlesEntity> {
         let title: TitlesEntity
         try {
             title = await this.findOneOrFail(titleId)
@@ -197,7 +197,12 @@ export class TitlesRepository extends Repository<TitlesEntity> {
                 title.name = dto.name
                 title.slug = slugify(dto.name, { lower: true })
             }
-            if (dto.categoryId) title.category_id = dto.categoryId
+
+            if (dto.categoryId) {
+                title.category_id = dto.categoryId
+                title.category_ancestors = categoryAncestors
+            }
+
             title.updated_by = updatedBy
 
             await this.save(title)

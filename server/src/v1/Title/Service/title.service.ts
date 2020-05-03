@@ -118,15 +118,16 @@ export class TitleService {
             throw new BadRequestException('CategoryId must be a MongoId.')
         }
 
+        let category
         if (dto.categoryId) {
             try {
-                await this.categoriesRepository.findOneOrFail(dto.categoryId)
+                category = await this.categoriesRepository.findOneOrFail(dto.categoryId)
             } catch (err) {
                 throw new BadRequestException('Title could not found that belongs to given category id.')
             }
         }
 
-        const title: TitlesEntity = await this.titlesRepository.updateTitle(updatedBy, titleId, dto)
+        const title: TitlesEntity = await this.titlesRepository.updateTitle(updatedBy, titleId, dto, category?.ancestors)
         const id: string = String(title.id)
         delete title.id
         return serializerService.serializeResponse('title_detail', title, id)
