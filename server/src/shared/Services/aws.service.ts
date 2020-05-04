@@ -16,12 +16,12 @@ export class AwsService {
     getPictureBuffer(fileName: string): unknown {
         return new Promise((resolve) => {
             this.s3Instance().getObject({
-                Bucket: configService.getEnv('AWS_S3_BUCKET'), Key: `${fileName}.jpg`
+                Bucket: configService.getEnv('AWS_S3_BUCKET'), Key: `users/${fileName}.jpg`
             }, (error, data) => {
                 if (error) {
                     this.s3Instance().getObject({
                         Bucket: configService.getEnv('AWS_S3_BUCKET'),
-                        Key: 'default.jpg'
+                        Key: 'users/default.jpg'
                     }, (_e, data) => {
                         resolve(data.Body)
                     })
@@ -35,7 +35,7 @@ export class AwsService {
     uploadPicture(fileName: string, file: Buffer): void {
         this.s3Instance().upload({
             Bucket: configService.getEnv('AWS_S3_BUCKET'),
-            Key: `${fileName}.jpg`,
+            Key: `users/${fileName}.jpg`,
             Body: file
         }, (error, _data) => {
             if (error) throw error

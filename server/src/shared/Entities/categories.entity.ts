@@ -20,7 +20,7 @@ export class CategoriesEntity {
     @Column({ type: 'string', nullable: true })
     parent_category: string
 
-    @Column({ type: 'string', length: 50, unique: true})
+    @Column({ type: 'string', length: 50 })
     name: string
 
     @Column({ type: 'array' })
