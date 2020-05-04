@@ -6,8 +6,8 @@ import { Row, Col } from 'antd'
 import { formatMessage } from 'umi-plugin-react/locale'
 
 import RightContent from '@/components/GlobalHeader/RightContent'
-import logoWide from '../assets/logo-wide.png'
-import logoSquare from '../assets/logo-square.png'
+import logoWide from '../assets/logo-wide.svg'
+import logoSquare from '../assets/logo-square.svg'
 
 import { useSelector } from 'react-redux'
 

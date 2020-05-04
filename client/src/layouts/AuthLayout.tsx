@@ -1,10 +1,10 @@
-import { DefaultFooter, MenuDataItem, getMenuData, getPageTitle } from '@ant-design/pro-layout'
+import { DefaultFooter, getMenuData, getPageTitle } from '@ant-design/pro-layout'
 import { Helmet } from 'react-helmet'
 import { Link } from 'umi'
 import React from 'react'
 import { formatMessage } from 'umi-plugin-react/locale'
 
-import logo from '../assets/logo-square.png'
+import logo from '../assets/logo-square.svg'
 import styles from './AuthLayout.less'
 import { GithubFilled } from '@ant-design/icons'
 
