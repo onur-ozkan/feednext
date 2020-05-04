@@ -3,7 +3,6 @@ import * as s3 from 'aws-sdk/clients/s3'
 
 // Local files
 import { configService } from './config.service'
-
 export class AwsService {
     private s3Instance() {
         return new s3({
@@ -13,15 +12,15 @@ export class AwsService {
         })
     }
 
-    getPictureBuffer(fileName: string): unknown {
+    getPictureBuffer(fileName: string, directory: 'users' | 'titles'): unknown {
         return new Promise((resolve) => {
             this.s3Instance().getObject({
-                Bucket: configService.getEnv('AWS_S3_BUCKET'), Key: `users/${fileName}.jpg`
+                Bucket: configService.getEnv('AWS_S3_BUCKET'), Key: `${directory}/${fileName}.jpg`
             }, (error, data) => {
                 if (error) {
                     this.s3Instance().getObject({
                         Bucket: configService.getEnv('AWS_S3_BUCKET'),
-                        Key: 'users/default.jpg'
+                        Key: `${directory}/default.jpg`
                     }, (_e, data) => {
                         resolve(data.Body)
                     })
@@ -32,13 +31,30 @@ export class AwsService {
         })
     }
 
-    uploadPicture(fileName: string, file: Buffer): void {
+    uploadPicture(fileName: string, directory: 'users' | 'titles', file: Buffer): void {
         this.s3Instance().upload({
             Bucket: configService.getEnv('AWS_S3_BUCKET'),
-            Key: `users/${fileName}.jpg`,
+            Key: `${directory}/${fileName}.jpg`,
             Body: file
         }, (error, _data) => {
-            if (error) throw error
+            if (error) return error
+        })
+    }
+
+    async renamePicture(newName: string, directory: 'users' | 'titles', oldName: string): Promise<void> {
+        await this.s3Instance().copyObject({
+            Bucket: configService.getEnv('AWS_S3_BUCKET'),
+            CopySource: `feednext/${directory}/${oldName}.jpg`,
+            Key: `${directory}/${newName}.jpg`,
+        }, (error, _data) => {
+            if (error) return error
+        }).promise().then(async () => {
+            this.s3Instance().deleteObject({
+                Bucket: configService.getEnv('AWS_S3_BUCKET'),
+                Key: `${directory}/${oldName}.jpg`,
+            }, (error, _data) => {
+                if (error) return error
+            })
         })
     }
 }
