@@ -63,7 +63,6 @@ export class AuthService {
         else if (!userEntity.is_active) throw new BadRequestException('Account is not active')
 
         const token: string = this.jwtService.sign({
-            id: userEntity.id,
             role: userEntity.role,
             username: userEntity.username,
             email: userEntity.email,

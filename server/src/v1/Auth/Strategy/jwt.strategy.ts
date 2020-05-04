@@ -24,7 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         })
     }
 
-    async validate({ iat, exp, id }): Promise<any> {
+    async validate({ iat, exp, username }): Promise<any> {
         const timeDiff = exp - iat
         if (timeDiff <= 0) {
             throw new UnauthorizedException()
@@ -32,7 +32,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
         let user: UsersEntity
         try {
-            user = await this.usersRepository.findOneOrFail(id)
+            user = await this.usersRepository.findOneOrFail({ username })
         } catch (error) {
             throw new UnauthorizedException()
         }
