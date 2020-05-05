@@ -3,9 +3,7 @@ import { Injectable, HttpException, BadRequestException, HttpStatus } from '@nes
 import { InjectRepository } from '@nestjs/typeorm'
 
 // Other dependencies
-import { Validator } from 'class-validator'
-import { ObjectId } from 'mongodb'
-import * as jwt from 'jsonwebtoken'
+import { Validator, validate } from 'class-validator'
 
 // Local files
 import { TitlesRepository } from 'src/shared/Repositories/title.repository'
@@ -18,11 +16,10 @@ import { EntriesRepository } from 'src/shared/Repositories/entries.repository'
 import { UsersRepository } from 'src/shared/Repositories/users.repository'
 import { CategoriesEntity } from 'src/shared/Entities/categories.entity'
 import { AwsService } from 'src/shared/Services/aws.service'
-import { configService } from 'src/shared/Services/config.service'
 
 @Injectable()
 export class TitleService {
-    private validator: ObjectId
+    private validator
 
     constructor(
         @InjectRepository(TitlesRepository)
@@ -71,24 +68,28 @@ export class TitleService {
         return serializerService.serializeResponse('title_list', result)
     }
 
-    async createTitle(openedBy: string, dto: CreateTitleDto): Promise<HttpException | ISerializeResponse> {
-        let category: CategoriesEntity
-        try {
-          category = await this.categoriesRepository.findOneOrFail(dto.categoryId)
-        } catch (err) {
-          throw new BadRequestException(`Category with id:${dto.categoryId} does not match in database.`)
-        }
+    async createTitle(openedBy: string, payload: CreateTitleDto, titleImage): Promise<HttpException | ISerializeResponse> {
+        const dto = new CreateTitleDto()
+        dto.name = payload.name
+        dto.categoryId = payload.categoryId
 
-        const newTitle: any = await this.titlesRepository.createTitle(openedBy, dto, category.ancestors)
+        return await validate(dto, { validationError: { target: false } }).then(async errors => {
+            if (errors.length > 0) {
+                throw new BadRequestException(errors)
+            }
 
-        newTitle.image_upload_token = jwt.sign({
-            titleSlug: newTitle.slug,
-            name: newTitle.name,
-            username: openedBy,
-            exp: Math.floor(Date.now() / 1000) + 30, // Token expires 30 seconds
-        }, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
+            let category: CategoriesEntity
+            try {
+                category = await this.categoriesRepository.findOneOrFail(dto.categoryId)
+            } catch (err) {
+                throw new BadRequestException(`Category with id:${dto.categoryId} does not match in database.`)
+            }
 
-        return serializerService.serializeResponse('title_detail', newTitle)
+            const newTitle: TitlesEntity = await this.titlesRepository.createTitle(openedBy, dto, category.ancestors)
+            if (titleImage) this.awsService.uploadPicture(newTitle.slug, 'titles', titleImage)
+
+            return serializerService.serializeResponse('title_detail', newTitle)
+        })
     }
 
     async getTitlePicture(titleSlug: string): Promise<unknown> {
@@ -96,7 +97,7 @@ export class TitleService {
         return this.awsService.getPictureBuffer(titleSlug, 'titles')
     }
 
-    async uploadTitlePicture(titleSlug: string, file): Promise<void> {
+    async updateTitleImage(titleSlug: string, file): Promise<void> {
         await this.titlesRepository.getTitleBySlug(titleSlug)
         this.awsService.uploadPicture(titleSlug, 'titles', file)
     }
