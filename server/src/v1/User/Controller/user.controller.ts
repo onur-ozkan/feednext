@@ -14,7 +14,8 @@ import {
     Query,
     Res,
     Req,
-    HttpStatus
+    HttpStatus,
+    Delete
 } from '@nestjs/common'
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthGuard } from '@nestjs/passport'
@@ -28,6 +29,8 @@ import { UserService } from '../Service/user.service'
 import { UpdateUserDto } from '../Dto/update-user.dto'
 import { ActivateUserDto } from '../Dto/activate-user.dto'
 import { ISerializeResponse } from 'src/shared/Services/serializer.service'
+import { Roles } from 'src/shared/Decorators/roles.decorator'
+import { Role } from 'src/shared/Enums/Roles'
 
 @ApiTags('v1/user')
 @Controller()
@@ -59,6 +62,7 @@ export class UsersController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Put('pp')
+    @Roles(Role.User)
     uploadProfilePicture(@Headers('authorization') bearer: string, @Req() req): Promise<HttpException> {
         const username = jwtManipulationService.decodeJwtToken(bearer, 'username')
 
@@ -80,7 +84,17 @@ export class UsersController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
+    @Delete('/pp')
+    @Roles(Role.User)
+    deleteProfilePicture(@Headers('authorization') bearer: string): HttpException {
+        this.usersService.deleteProfilePicture(jwtManipulationService.decodeJwtToken(bearer, 'username'))
+        throw new HttpException('Picture successfully deleted', HttpStatus.OK)
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
     @Patch(':username')
+    @Roles(Role.User)
     updateUser(
         @Param('username') username: string,
         @Body() dto: UpdateUserDto,
@@ -99,6 +113,7 @@ export class UsersController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Patch('disable/:username')
+    @Roles(Role.User)
     disableUser(
         @Param('username') username: string,
         @Headers('authorization') bearer: string,

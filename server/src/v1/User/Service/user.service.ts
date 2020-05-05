@@ -48,6 +48,11 @@ export class UserService {
         this.awsService.uploadPicture(String(user.id), 'users', buffer)
     }
 
+    async deleteProfilePicture(username): Promise<void> {
+        const user = await this.usersRepository.getUserByUsername(username)
+        this.awsService.deletePicture(String(user.id), 'users')
+    }
+
     async getVotes({ username, query }: {
         username: string,
         query: {
