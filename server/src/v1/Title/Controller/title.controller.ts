@@ -20,6 +20,9 @@ import {
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthGuard } from '@nestjs/passport/dist/auth.guard'
 
+// Other dependencies
+import * as concat from 'concat-stream'
+
 // Local dependencies
 import { RolesGuard } from 'src/shared/Guards/roles.guard'
 import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.service'
@@ -63,9 +66,9 @@ export class TitleController {
         return this.titleService.getTitleList(query)
     }
 
-    @Get(':titleSlug/image')
-    async getTitlePicture(@Param('titleSlug') titleSlug,  @Res() res: any): Promise<void> {
-        const buffer = await this.titleService.getTitlePicture(titleSlug)
+    @Get(':titleId/image')
+    async getTitlePicture(@Param('titleId') titleId,  @Res() res: any): Promise<void> {
+        const buffer = await this.titleService.getTitlePicture(titleId)
         res.type('image/jpeg').send(buffer)
     }
 
@@ -75,24 +78,23 @@ export class TitleController {
     async createTitle(@Headers('authorization') bearer: string, @Req() req) {
         return new Promise((resolve, reject) => {
             const payload: any = {}
-            let image
+            let image: Buffer
 
-            const fileHandler = (_field, file, _filename, _encoding, mimetype) => {
+            const fileHandler = async (_field, file, _filename, _encoding, mimetype) => {
                 if (mimetype !== 'image/jpeg' && mimetype !== 'image/png') {
                     reject(new BadRequestException('File must be image'))
                     return
                 }
-                image = file
-                file.resume()
+                file.pipe(concat(buffer => image = buffer))
             }
 
-            const mpForm = req.multipart(fileHandler, (error) => {
+            const mpForm = req.multipart(fileHandler, async (error) => {
                 if (error) {
                     reject(new BadRequestException('Not valid multipart request'))
                     return
                 }
                 try {
-                    const result = this.titleService.createTitle(jwtManipulationService.decodeJwtToken(bearer, 'username'), payload, image)
+                    const result = await this.titleService.createTitle(jwtManipulationService.decodeJwtToken(bearer, 'username'), payload, image)
                         .catch(e => {
                             // if titleService.createTitle fails, throw the error to catch block
                             throw e
@@ -113,12 +115,14 @@ export class TitleController {
     @UseGuards(AuthGuard('jwt'))
     @Put('/image/update')
     @Roles(Role.Admin)
-    updateTitleImage(@Query('titleSlug') titleSlug, @Req() req): Promise<HttpException> {
+    updateTitleImage(@Query('titleId') titleId, @Req() req): Promise<HttpException> {
         return new Promise((resolve, reject) => {
             const handler = (_field, file, _filename, _encoding, mimetype) => {
                 if (mimetype !== 'image/jpeg' && mimetype !== 'image/png') reject(new BadRequestException('File must be image'))
-                this.titleService.updateTitleImage(titleSlug, file)
-                    .catch(error => reject(error))
+                file.pipe(concat(buffer => {
+                    this.titleService.updateTitleImage(titleId, buffer)
+                        .catch(error => reject(error))
+                }))
             }
 
             req.multipart(handler, (error) => {

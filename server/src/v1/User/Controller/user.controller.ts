@@ -19,6 +19,9 @@ import {
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthGuard } from '@nestjs/passport'
 
+// Other dependencies
+import * as concat from 'concat-stream'
+
 // Local files
 import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.service'
 import { UserService } from '../Service/user.service'
@@ -47,9 +50,9 @@ export class UsersController {
         return this.usersService.getVotes({username, query})
     }
 
-    @Get(':username/pp')
-    async getProfilePicture(@Param('username') username,  @Res() res: any): Promise<void> {
-        const buffer = await this.usersService.getProfilePictureBuffer(username)
+    @Get(':userId/pp')
+    async getProfilePicture(@Param('userId') userId,  @Res() res: any): Promise<void> {
+        const buffer = await this.usersService.getProfilePictureBuffer(userId)
         res.type('image/jpeg').send(buffer)
     }
 
@@ -62,8 +65,10 @@ export class UsersController {
         return new Promise((resolve, reject) => {
             const handler = (_field, file, _filename, _encoding, mimetype) => {
                 if (mimetype !== 'image/jpeg' && mimetype !== 'image/png') reject(new BadRequestException('File must be image'))
-                this.usersService.uploadProfilePicture(username, file)
-                    .catch(error => reject(error))
+                file.pipe(concat(buffer => {
+                    this.usersService.uploadProfilePicture(username, buffer)
+                        .catch(error => reject(error))
+                }))
             }
 
             req.multipart(handler, (error) => {

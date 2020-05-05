@@ -39,13 +39,13 @@ export class UserService {
     }
 
     async getProfilePictureBuffer(username: string): Promise<unknown> {
-        await this.usersRepository.getUserByUsername(username)
-        return this.awsService.getPictureBuffer(username, 'users')
+        const user = await this.usersRepository.getUserByUsername(username)
+        return this.awsService.getPictureBuffer(String(user.id), 'users')
     }
 
-    async uploadProfilePicture(username, file): Promise<void> {
-        await this.usersRepository.getUserByUsername(username)
-        this.awsService.uploadPicture(username, 'users', file)
+    async uploadProfilePicture(username, buffer: Buffer): Promise<void> {
+        const user = await this.usersRepository.getUserByUsername(username)
+        this.awsService.uploadPicture(String(user.id), 'users', buffer)
     }
 
     async getVotes({ username, query }: {

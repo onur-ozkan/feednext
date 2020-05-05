@@ -68,7 +68,7 @@ export class TitleService {
         return serializerService.serializeResponse('title_list', result)
     }
 
-    async createTitle(openedBy: string, payload: CreateTitleDto, titleImage): Promise<HttpException | ISerializeResponse> {
+    async createTitle(openedBy: string, payload: CreateTitleDto, buffer: Buffer): Promise<HttpException | ISerializeResponse> {
         const dto = new CreateTitleDto()
         dto.name = payload.name
         dto.categoryId = payload.categoryId
@@ -86,20 +86,20 @@ export class TitleService {
             }
 
             const newTitle: TitlesEntity = await this.titlesRepository.createTitle(openedBy, dto, category.ancestors)
-            if (titleImage) this.awsService.uploadPicture(newTitle.slug, 'titles', titleImage)
+            if (buffer) this.awsService.uploadPicture(String(newTitle.id), 'titles', buffer)
 
             return serializerService.serializeResponse('title_detail', newTitle)
         })
     }
 
-    async getTitlePicture(titleSlug: string): Promise<unknown> {
-        await this.titlesRepository.getTitleBySlug(titleSlug)
-        return this.awsService.getPictureBuffer(titleSlug, 'titles')
+    async getTitlePicture(titleId: string): Promise<unknown> {
+        await this.titlesRepository.getTitleById(titleId)
+        return this.awsService.getPictureBuffer(titleId, 'titles')
     }
 
-    async updateTitleImage(titleSlug: string, file): Promise<void> {
-        await this.titlesRepository.getTitleBySlug(titleSlug)
-        this.awsService.uploadPicture(titleSlug, 'titles', file)
+    async updateTitleImage(titleId: string, buffer: Buffer): Promise<void> {
+        await this.titlesRepository.getTitleById(titleId)
+        this.awsService.uploadPicture(titleId, 'titles', buffer)
     }
 
     async rateTitle(ratedBy: string, titleId: string, rateValue: number): Promise<HttpException> {
@@ -157,10 +157,7 @@ export class TitleService {
             }
         }
 
-        const oldSlug = title.slug
         const updatedTitle: TitlesEntity = await this.titlesRepository.updateTitle(updatedBy, title, dto, category?.ancestors)
-        await this.awsService.renamePicture(updatedTitle.slug, 'titles', oldSlug)
-            .catch(_error => {return})
         return serializerService.serializeResponse('title_detail', updatedTitle)
     }
 
@@ -169,6 +166,7 @@ export class TitleService {
 
         await this.titlesRepository.deleteTitle(titleId)
         await this.entriesRepository.deleteEntriesBelongsToTitle(titleId)
+        this.awsService.deletePicture(titleId, 'titles')
         throw new HttpException('Title has been deleted.', HttpStatus.OK)
     }
 }
