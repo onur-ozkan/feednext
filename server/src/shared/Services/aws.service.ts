@@ -31,30 +31,22 @@ export class AwsService {
         })
     }
 
-    uploadPicture(fileName: string, directory: 'users' | 'titles', file: Buffer): void {
+    uploadPicture(fileName: string, directory: 'users' | 'titles', buffer: Buffer): void {
         this.s3Instance().upload({
             Bucket: configService.getEnv('AWS_S3_BUCKET'),
             Key: `${directory}/${fileName}.jpg`,
-            Body: file
+            Body: buffer
         }, (error, _data) => {
             if (error) return error
         })
     }
 
-    async renamePicture(newName: string, directory: 'users' | 'titles', oldName: string): Promise<void> {
-        await this.s3Instance().copyObject({
+    deletePicture(fileName: string, directory: 'users' | 'titles'): void {
+        this.s3Instance().deleteObject({
             Bucket: configService.getEnv('AWS_S3_BUCKET'),
-            CopySource: `feednext/${directory}/${oldName}.jpg`,
-            Key: `${directory}/${newName}.jpg`,
+            Key: `${directory}/${fileName}.jpg`,
         }, (error, _data) => {
             if (error) return error
-        }).promise().then(async () => {
-            this.s3Instance().deleteObject({
-                Bucket: configService.getEnv('AWS_S3_BUCKET'),
-                Key: `${directory}/${oldName}.jpg`,
-            }, (error, _data) => {
-                if (error) return error
-            })
         })
     }
 }
