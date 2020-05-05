@@ -1,7 +1,6 @@
 // Nest dependencies
 import { Injectable, BadRequestException, HttpException, HttpStatus } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { JwtModule } from '@nestjs/jwt'
 
 // Other dependencies
 import * as jwt from 'jsonwebtoken'
@@ -41,12 +40,12 @@ export class UserService {
 
     async getProfilePictureBuffer(username: string): Promise<unknown> {
         await this.usersRepository.getUserByUsername(username)
-        return this.awsService.getPictureBuffer(username)
+        return this.awsService.getPictureBuffer(username, 'users')
     }
 
     async uploadProfilePicture(username, file): Promise<void> {
         await this.usersRepository.getUserByUsername(username)
-        this.awsService.uploadPicture(username, file)
+        this.awsService.uploadPicture(username, 'users', file)
     }
 
     async getVotes({ username, query }: {
@@ -116,7 +115,7 @@ export class UserService {
         const user: UsersEntity = await this.usersRepository.getUserByEmail(dto.email)
         if (user.is_active) throw new BadRequestException('This account is already active.')
 
-        const activateToken: JwtModule = jwt.sign({
+        const activateToken: string = jwt.sign({
             email: user.email,
             username: user.username,
             activationToken: true,

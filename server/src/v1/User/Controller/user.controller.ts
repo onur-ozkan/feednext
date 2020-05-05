@@ -63,10 +63,11 @@ export class UsersController {
             const handler = (_field, file, _filename, _encoding, mimetype) => {
                 if (mimetype !== 'image/jpeg' && mimetype !== 'image/png') reject(new BadRequestException('File must be image'))
                 this.usersService.uploadProfilePicture(username, file)
+                    .catch(error => reject(error))
             }
 
             req.multipart(handler, (error) => {
-                if (error) reject(error)
+                if (error) reject(new BadRequestException('Not valid multipart request'))
                 resolve(new HttpException('Upload successfully ended', HttpStatus.OK))
             })
         })

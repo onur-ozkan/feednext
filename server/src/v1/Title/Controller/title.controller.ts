@@ -1,5 +1,22 @@
 // Nest dependencies
-import { Controller, UseGuards, Headers, Post, Body, HttpException, Get, Param, Query, Delete, Patch } from '@nestjs/common'
+import {
+    Controller,
+    UseGuards,
+    Headers,
+    Post,
+    Body,
+    HttpException,
+    Get,
+    Param,
+    Query,
+    Delete,
+    Patch,
+    Put,
+    Req,
+    BadRequestException,
+    HttpStatus,
+    Res
+} from '@nestjs/common'
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthGuard } from '@nestjs/passport/dist/auth.guard'
 
@@ -50,9 +67,59 @@ export class TitleController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Post('create-title')
-    @Roles(Role.JuniorAuthor)
-    createTitle(@Headers('authorization') bearer: string, @Body() dto: CreateTitleDto): Promise<HttpException | ISerializeResponse> {
+    createTitle(@Headers('authorization') bearer: string, @Body() dto: CreateTitleDto) {
         return this.titleService.createTitle(jwtManipulationService.decodeJwtToken(bearer, 'username'), dto)
+    }
+
+    @Get(':titleSlug/image')
+    async getTitlePicture(@Param('titleSlug') titleSlug,  @Res() res: any): Promise<void> {
+        const buffer = await this.titleService.getTitlePicture(titleSlug)
+        res.type('image/jpeg').send(buffer)
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
+    @Put('/image')
+    uploadTitleImage(
+        @Headers('authorization') bearer,
+        @Req() req
+    ): Promise<HttpException> {
+        const titleSlug = jwtManipulationService.decodeJwtToken(bearer, 'titleSlug')
+        if (!titleSlug) {
+            throw new BadRequestException('Token is not valid to upload title image')
+        }
+
+        return new Promise((resolve, reject) => {
+            const handler = (_field, file, _filename, _encoding, mimetype) => {
+                if (mimetype !== 'image/jpeg' && mimetype !== 'image/png') reject(new BadRequestException('File must be image'))
+                this.titleService.uploadTitlePicture(titleSlug, file)
+                    .catch(error => reject(error))
+            }
+
+            req.multipart(handler, (error) => {
+                if (error) reject(new BadRequestException('Not valid multipart request'))
+                resolve(new HttpException('Upload successfully ended', HttpStatus.OK))
+            })
+        })
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
+    @Put('/image/update')
+    @Roles(Role.Admin)
+    updateTitleImage(@Query('titleSlug') titleSlug, @Req() req): Promise<HttpException> {
+        return new Promise((resolve, reject) => {
+            const handler = (_field, file, _filename, _encoding, mimetype) => {
+                if (mimetype !== 'image/jpeg' && mimetype !== 'image/png') reject(new BadRequestException('File must be image'))
+                this.titleService.uploadTitlePicture(titleSlug, file)
+                    .catch(error => reject(error))
+            }
+
+            req.multipart(handler, (error) => {
+                if (error) reject(new BadRequestException('Not valid multipart request'))
+                resolve(new HttpException('Upload successfully ended', HttpStatus.OK))
+            })
+        })
     }
 
     @ApiBearerAuth()

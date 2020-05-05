@@ -184,14 +184,7 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         return Math.round(averageRate)
     }
 
-    async updateTitle(updatedBy: string, titleId: string, dto: UpdateTitleDto, categoryAncestors: string[]): Promise<TitlesEntity> {
-        let title: TitlesEntity
-        try {
-            title = await this.findOneOrFail(titleId)
-        } catch {
-            throw new BadRequestException('Title related to that id could not found in the database.')
-        }
-
+    async updateTitle(updatedBy: string, title: TitlesEntity, dto: UpdateTitleDto, categoryAncestors: string[]): Promise<TitlesEntity> {
         try {
             if (dto.name) {
                 title.name = dto.name

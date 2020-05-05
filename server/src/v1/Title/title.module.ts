@@ -10,12 +10,13 @@ import { CategoriesRepository } from 'src/shared/Repositories/categories.reposit
 import { TitleController } from './Controller/title.controller'
 import { EntriesRepository } from 'src/shared/Repositories/entries.repository'
 import { UsersRepository } from 'src/shared/Repositories/users.repository'
+import { AwsService } from 'src/shared/Services/aws.service'
 
 @Module({
     imports: [TypeOrmModule.forFeature([
         TitlesEntity, TitlesRepository, CategoriesRepository, UsersRepository, EntriesRepository
     ])],
-    providers: [TitleService],
+    providers: [TitleService, AwsService],
     exports: [TitleService],
     controllers: [TitleController],
 })
