@@ -48,7 +48,7 @@ const AvatarDropdown = () => {
 		return (
 			<HeaderDropdown overlay={menuHeaderDropdown}>
 				<span className={`${styles.action} ${styles.account}`}>
-					<Avatar size="small" className={styles.avatar} src={`${API_URL}/v1/user/${user.username}/pp`} />
+					<Avatar size="small" className={styles.avatar} src={`${API_URL}/v1/user/pp?username=${user.username}`} />
 					<span className={styles.name}>{user.full_name.split(' ')[0]}</span>
 				</span>
 			</HeaderDropdown>

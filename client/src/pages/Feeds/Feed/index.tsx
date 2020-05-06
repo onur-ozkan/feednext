@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react'
 import FeedHeader from './components/FeedHeader'
 import FeedEntries from './components/FeedEntries'
 import styles from './style.less'
-import { fetchEntriesByTitleId, fetchTitle, getAverageTitleRate, updateTitle } from '@/services/api'
+import { fetchEntriesByTitleId, fetchTitle, getAverageTitleRate, updateTitle, deleteTitleImage, updateTitleImage } from '@/services/api'
 import { useSelector } from 'react-redux'
-import { handleArrayFiltering, forgeTreeSelectData } from '@/services/utils'
-import { TreeSelect, Modal, Form, Input, Button, Popconfirm, message, Typography } from 'antd'
+import { handleArrayFiltering } from '@/services/utils'
+import { TreeSelect, Modal, Form, Input, Button, Popconfirm, message } from 'antd'
 import { InfoCircleOutlined } from '@ant-design/icons'
 import PageLoading from '@/components/PageLoading'
+import ImageUpload from '@/components/ImageUpload'
+import { API_URL } from '@/../config/constants'
 
 const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 	const globalState = useSelector((state: any) => state.global)
@@ -21,6 +23,8 @@ const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 	const [sortEntriesBy, setSortEntriesBy] = useState(null)
 	const [entryList, setEntryList]: any = useState(null)
 	const [updateModalVisibility, setUpdateModalVisibility] = useState(false)
+
+	const [titleImageBlob, setTitleImageBlob] = useState(null)
 
 	const handleEntryFetching = (page: number): void => {
 		fetchEntriesByTitleId(title.attributes.id, page, sortEntriesBy).then(res => {
@@ -37,6 +41,19 @@ const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 	}
 
 	const handleTitleUpdate = async (values: { categoryId: string, name: string }): Promise<void> => {
+		if (titleImageBlob === false) {
+			deleteTitleImage(globalState.accessToken, title.attributes.id)
+				.catch(error => message.error(error.response.data.message))
+		}
+
+		else if (titleImageBlob) {
+			const formData = new FormData()
+			formData.append('image', titleImageBlob)
+
+			updateTitleImage(globalState.accessToken, title.attributes.id, formData)
+				.catch(error => message.error(error.response.data.message))
+		}
+
 		await updateTitle(globalState.accessToken, title.attributes.id, values)
 			.then(_res => {
 				location.href = `/feeds/${_res.data.attributes.slug}`
@@ -92,6 +109,22 @@ const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 						categoryId: category.id
 					}}
 				>
+					<div
+						style={{
+							marginBottom: 10,
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center'
+						}}
+					>
+						<div>
+							<ImageUpload
+								defaultUrl={`${API_URL}/v1/title/${title.attributes.id}/image`}
+								onImageTake={(_base64, blob): void => setTitleImageBlob(blob)}
+								onRemoveImage={(): void => setTitleImageBlob(false)}
+							/>
+						</div>
+					</div>
 					<Form.Item
 						name="categoryId"
 						style={{ marginBottom: 10 }}
@@ -104,7 +137,7 @@ const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 						style={{ marginBottom: 10 }}
 						rules={[{ required: true, message: 'Please fill the input above' }]}
 					>
-						<Input placeholder="Title Name" />
+						<Input maxLength={60} placeholder="Title Name" />
 					</Form.Item>
 					<div style={{ textAlign: 'center' }}>
 						<Popconfirm

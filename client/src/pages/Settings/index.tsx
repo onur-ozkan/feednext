@@ -197,12 +197,12 @@ const Settings = (): JSX.Element => {
 						style={{ marginBottom: 12 }}
 						shape="square"
 						size={200}
-						src={`${API_URL}/v1/user/${user.username}/pp`}
+						src={`${API_URL}/v1/user/pp?username=${user.username}`}
 					/>
 					<br/>
 					<Upload onChange={handleChangePicture} accept=".jpg, .jpeg, .png">
-						<Button type="link">
-							<UploadOutlined /> Change Picture
+						<Button shape="round" icon={<UploadOutlined />}>
+							 Change Picture
 						</Button>
 					</Upload>
 				</Col>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Card, List, Tag, message, BackTop, TreeSelect, Row, Col, Typography, Dropdown, Menu, Modal } from 'antd'
+import { Button, Card, List, Tag, message, BackTop, TreeSelect, Row, Col, Typography, Dropdown, Menu, Modal, Avatar } from 'antd'
 import { LoadingOutlined, ArrowUpOutlined, LinkOutlined, RiseOutlined, FilterFilled, CheckOutlined, StarFilled, FireFilled } from '@ant-design/icons'
 import '@ant-design/compatible/assets/index.css'
 
@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux'
 import { handleArrayFiltering } from '@/services/utils'
 import { API_URL } from '../../../config/constants'
 import { Link } from 'umi'
+import styles from './style.less'
 
 const Feeds = (): JSX.Element => {
 	const globalState = useSelector((state: any) => state.global)
@@ -23,6 +24,7 @@ const Feeds = (): JSX.Element => {
 	const [skipValueForPagination, setSkipValueForPagination] = useState(0)
 
 	useEffect(() => {
+		console.log(globalState)
 		setFeed([])
 		setSkipValueForPagination(0)
 	}, [categoryFilter, sortBy])
@@ -44,7 +46,7 @@ const Feeds = (): JSX.Element => {
 								entryCount: title.entry_count,
 								entry: {
 									id: featuredEntryResponse.data.attributes.id,
-									avatar: `${API_URL}/v1/user/${featuredEntryResponse.data.attributes.written_by}/pp`,
+									avatar: `${API_URL}/v1/user/pp?username=${featuredEntryResponse.data.attributes.written_by}`,
 									text: featuredEntryResponse.data.attributes.text,
 									createdAt: featuredEntryResponse.data.attributes.created_at,
 									updatedAt: featuredEntryResponse.data.attributes.updated_at,
@@ -91,9 +93,10 @@ const Feeds = (): JSX.Element => {
 
 		return (
 			<List<any>
-				style={{ margin: 25 }}
+				style={{ marginTop: 25 }}
 				loading={feedList.length === 0}
 				rowKey="id"
+				size="large"
 				itemLayout="vertical"
 				loadMore={loadMore}
 				dataSource={feedList}
@@ -101,28 +104,45 @@ const Feeds = (): JSX.Element => {
 					<List.Item
 						key={item.id}
 						actions={[
-							<>
+							<div key="_" style={{ cursor: 'default' }}>
 								{item.entry && (
 									<span style={{ marginRight: 10 }}>
 										<ArrowUpOutlined style={{ marginRight: 3 }} />
 										{item.entry.voteValue}
 									</span>
 								)}
-								<span>
+								<span style={{ cursor: 'pointer' }}>
 									<LinkOutlined style={{ marginRight: 3 }} />
 									Share
 								</span>
-							</>
+							</div>
 						]}
 					>
 						<List.Item.Meta
 							title={
-								<Link
-									to={item.href}
-									style={{ cursor: 'pointer' }}
-								>
-									{item.name}
-								</Link>
+								<Row>
+									<Col>
+										<Link
+											to={item.href}
+											style={{ cursor: 'pointer' }}
+										>
+											<Typography.Text style={{ fontSize: 17 }}>
+												{item.name}
+											</Typography.Text>
+										</Link>
+
+									</Col>
+									<Col style={{ position: 'absolute', right: 0 }}>
+										<img
+											width={100}
+											style={{
+												maxHeight: 100
+											}}
+											src={`${API_URL}/v1/title/${item.id}/image`}
+											alt="Title Image"
+										/>
+									</Col>
+								</Row>
 							}
 							description={ <Tag> {item.categoryName.toUpperCase()} </Tag>
 							}
@@ -312,7 +332,7 @@ const Feeds = (): JSX.Element => {
 								</Link>
 							</Col>
 							<Col span={12}>
-								<a href="https://github.com/ozkanonur/feednext#readme" target="_api">
+								<a href="https://github.com/feednext/feednext#readme" target="_api">
 									<Typography.Text strong>
 										API
 									</Typography.Text>
@@ -324,7 +344,7 @@ const Feeds = (): JSX.Element => {
 								</Typography.Text>
 							</Col>
 							<Col span={12}>
-								<a href="https://github.com/ozkanonur/feednext/blob/master/COPYING" target="_license">
+								<a href="https://github.com/feednext/feednext/blob/master/COPYING" target="_license">
 									<Typography.Text strong>
 										License
 									</Typography.Text>

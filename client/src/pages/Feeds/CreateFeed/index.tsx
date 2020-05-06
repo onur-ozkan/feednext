@@ -7,6 +7,7 @@ import styles from './style.less'
 import { createTitle, createEntry } from '@/services/api'
 import { StepProvider } from './StepContext'
 import { useSelector } from 'react-redux'
+import { string } from 'prop-types'
 
 const { Step } = Steps
 
@@ -21,10 +22,11 @@ const CreateFeed: React.FC = () => {
 	const [firstEntryForm, setFirstEntryForm]: any = useState({
 		text: undefined
 	})
-	const [createTitleForm, setCreateTitleForm]: any = useState({
+	const [createTitleFormData, setCreateTitleFormData]: any = useState({
 		name: undefined,
+		imageBase64: undefined,
+		imageFile: undefined,
 		categoryId: undefined,
-		description: undefined
 	})
 
 	const [feedCreatedSuccessfully, setFeedCreatedSuccessfully] = useState<boolean | null>(null)
@@ -32,7 +34,14 @@ const CreateFeed: React.FC = () => {
 
 	useEffect(() => {
 		if (isRequestReady) {
-			createTitle(createTitleForm, accessToken).then((res) => {
+			console.log(createTitleFormData)
+			const titleFormData = new FormData()
+
+			titleFormData.append('name', createTitleFormData.name)
+			titleFormData.append('categoryId', createTitleFormData.categoryId)
+			if (createTitleFormData.imageFile) titleFormData.append('image', createTitleFormData.imageFile)
+
+			createTitle(titleFormData, accessToken).then((res) => {
 				createEntry({
 					titleId: res.data.attributes.id,
 					text: firstEntryForm.text,
@@ -90,7 +99,7 @@ const CreateFeed: React.FC = () => {
 						<Step1
 							stepMovementTo={handleStepMovement}
 							categories={categoryTree}
-							setCreateTitleForm={setCreateTitleForm}
+							setCreateTitleFormData={setCreateTitleFormData}
 							setReadableCategoryValue={setReadableCategoryValue}
 						/>
 				}
@@ -100,7 +109,7 @@ const CreateFeed: React.FC = () => {
 	if (!stepComponent) handleStepMovement()
 
 	return (
-		<StepProvider value={{ createTitleForm, readableCategoryValue, firstEntryForm }}>
+		<StepProvider value={{ createTitleFormData, readableCategoryValue, firstEntryForm }}>
 			<Card bordered={false}>
 				<Steps current={currentStep} className={styles.steps}>
 					<Step title="Create Title" />
@@ -109,6 +118,7 @@ const CreateFeed: React.FC = () => {
 				</Steps>
 				{stepComponent}
 			</Card>
+			<br/>
 		</StepProvider>
 	)
 }

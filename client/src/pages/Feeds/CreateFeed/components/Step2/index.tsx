@@ -16,7 +16,7 @@ const formItemLayout = {
 
 const Step2: React.FC = (props: any) => {
 	const [form] = Form.useForm()
-	const { createTitleForm, readableCategoryValue, firstEntryForm } = useContext(StepContext)
+	const { createTitleFormData, readableCategoryValue, firstEntryForm } = useContext(StepContext)
 
 	const { stepMovementTo, setFirstEntryForm, setIsRequestReady } = props
 
@@ -55,10 +55,7 @@ const Step2: React.FC = (props: any) => {
 					{ readableCategoryValue }
 				</Descriptions.Item>
 				<Descriptions.Item label="Title">
-					{ createTitleForm.name }
-				</Descriptions.Item>
-				<Descriptions.Item label="Description">
-					{ createTitleForm.description }
+					{ createTitleFormData.name }
 				</Descriptions.Item>
 			</Descriptions>
 			<Divider style={{ margin: '24px 0' }} />

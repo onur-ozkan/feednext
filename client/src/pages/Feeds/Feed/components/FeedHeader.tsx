@@ -4,6 +4,7 @@ import { InfoCircleOutlined, CheckOutlined, LoadingOutlined, DeleteFilled, EditO
 import { getUserRateOfTitle, rateTitle, deleteTitle } from '@/services/api'
 import { format, parseISO } from 'date-fns'
 import { router } from 'umi'
+import { API_URL } from '@/../config/constants'
 
 const FeedHeader: React.FC = (props: any): JSX.Element => {
 	const {
@@ -149,7 +150,9 @@ const FeedHeader: React.FC = (props: any): JSX.Element => {
 						<Tag color="blue">{categoryData.name}</Tag>
 						<Row>
 							<Col style={{ margin: '0px 5px -15px 0px' }}>
-								<h1>{titleData.attributes.name}</h1>
+								<Typography.Paragraph ellipsis={{ rows: 4 }}>
+									{titleData.attributes.name}
+								</Typography.Paragraph>
 							</Col>
 							<Col>
 								<Rate disabled value={averageTitleRate} />
@@ -196,7 +199,13 @@ const FeedHeader: React.FC = (props: any): JSX.Element => {
 						</Button>
 					</>
 				]}
-			/>
+			>
+				<img
+					src={`${API_URL}/v1/title/${titleData.attributes.id}/image`}
+					width={150}
+					alt="Title Image"
+				/>
+			</PageHeader>
 			{handleDetailsModalRender()}
 			{handleRateModalRender()}
 		</>

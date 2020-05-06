@@ -5,7 +5,7 @@ import StepContext from '../../StepContext'
 import { router } from 'umi'
 
 const Step3: React.FC = ({ titleSlugForRouting, feedCreatedSuccessfully }) => {
-	const { createTitleForm, readableCategoryValue, firstEntryForm } = useContext(StepContext)
+	const { createTitleFormData, readableCategoryValue, firstEntryForm } = useContext(StepContext)
 
 	const onFinish = (): void => router.push('/feeds')
 	const handleOnPostRoute = (): void => router.push(`/feeds/${titleSlugForRouting}`)
@@ -17,7 +17,7 @@ const Step3: React.FC = ({ titleSlugForRouting, feedCreatedSuccessfully }) => {
 					{ readableCategoryValue }
 				</Descriptions.Item>
 				<Descriptions.Item label="Title">
-					{ createTitleForm.name }
+					{ createTitleFormData.name }
 				</Descriptions.Item>
 				<Descriptions.Item label="Entry">
 					{ firstEntryForm.text }

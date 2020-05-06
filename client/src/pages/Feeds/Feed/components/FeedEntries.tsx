@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux'
 import { voteEntry, undoEntryVote, updateEntry, deleteEntry } from '@/services/api'
 import { router } from 'umi'
 import globalStyles from '@/global.less'
-import { SuperAdmin } from '@/../config/constants'
+import { SuperAdmin, API_URL } from '@/../config/constants'
 
 const FeedEntries: React.FC = ({ titleData, sortEntriesBy, setSortEntriesBy, entryList, handleEntryFetching, setEntryList, accessToken }): JSX.Element => {
 	const userState = useSelector((state: any) => state.user?.attributes.user)
@@ -208,9 +208,7 @@ const FeedEntries: React.FC = ({ titleData, sortEntriesBy, setSortEntriesBy, ent
 									{item.written_by}
 								</span>
 							}
-							avatar={ <Avatar style={{ verticalAlign: 'middle' }} size="large">
-							{item.written_by.toUpperCase()[0]}
-						  </Avatar>}
+							avatar={ <Avatar src={`${API_URL}/v1/user/pp?username=${item.written_by}`} /> }
 							content={
 								<>
 									<Typography.Paragraph

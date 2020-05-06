@@ -259,7 +259,7 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 							<Avatar
 								style={{ marginBottom: 10 }}
 								size={115}
-								src={`${API_URL}/v1/user/${computedMatch.params.username}/pp`}
+								src={`${API_URL}/v1/user/pp?username=${computedMatch.params.username}`}
 							/>
 							<Typography.Title level={3}> {user.full_name} </Typography.Title>
 						</div>
@@ -283,7 +283,15 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 								<Tooltip placement="bottom" title="Link">
 									<LinkOutlined style={{ marginRight: 3, color: '#ff2d20' }} />
 									{user.link ?
-										( <a href={user.link} target="_"> {user.link} </a> )
+										(
+											<a
+												href={
+													new RegExp('^(https?|ftp)://').test(user.link) ? user.link : `https://${user.link}`
+												}
+												target={`_${user.username}`}
+											>
+												{user.link}
+											</a> )
 										:
 										( <Typography.Text> - </Typography.Text> )
 									}

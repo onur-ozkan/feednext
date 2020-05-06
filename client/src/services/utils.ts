@@ -61,7 +61,11 @@ export const forgeTreeSelectData = (rawList: any[]): any[] => {
 			id: value
 		} = {...item}
 
-		dataset.push(Object.assign({}, {title, value, ...parent_category && { parent_category } }))
+		dataset.push(Object.assign({}, {
+			title,
+			value,
+			...parent_category && { parent_category }
+		}))
 	})
 
 	const hashTable = Object.create(null)
