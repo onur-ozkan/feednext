@@ -9,6 +9,8 @@ import { UsersEntity } from '../Entities/users.entity'
 import { CategoriesEntity } from '../Entities/categories.entity'
 import { EntriesEntity } from '../Entities/entries.entity'
 import { TitlesEntity } from '../Entities/titles.entity'
+import { ConversationsEntity } from '../Entities/conversations.entity'
+import { MessagesEntity } from '../Entities/messages.entity'
 
 env.config()
 
@@ -32,7 +34,9 @@ export class ConfigService {
             database: this.getEnv('DB_NAME'),
             synchronize: true,
             useUnifiedTopology: true,
-            entities: [UsersEntity, CategoriesEntity, EntriesEntity, TitlesEntity],
+            entities: [
+                UsersEntity, CategoriesEntity, EntriesEntity, TitlesEntity, ConversationsEntity, MessagesEntity
+            ],
 
             ssl: this.isProduction(),
         }
