@@ -113,7 +113,7 @@ export class TitleController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
-    @Put('/image/update')
+    @Put('/image')
     @Roles(Role.Admin)
     updateTitleImage(@Query('titleId') titleId, @Req() req): Promise<HttpException> {
         return new Promise((resolve, reject) => {
@@ -130,6 +130,15 @@ export class TitleController {
                 resolve(new HttpException('Upload successfully ended', HttpStatus.OK))
             })
         })
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
+    @Delete('/image')
+    @Roles(Role.Admin)
+    deleteTitleImage(@Query('titleId') titleId): HttpException {
+        this.titleService.deleteTitleImage(titleId)
+        throw new HttpException('Picture successfully deleted', HttpStatus.OK)
     }
 
     @ApiBearerAuth()

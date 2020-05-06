@@ -102,6 +102,11 @@ export class TitleService {
         this.awsService.uploadPicture(titleId, 'titles', buffer)
     }
 
+    async deleteTitleImage(titleId: string): Promise<void> {
+        await this.titlesRepository.getTitleById(titleId)
+        this.awsService.deletePicture(titleId, 'titles')
+    }
+
     async rateTitle(ratedBy: string, titleId: string, rateValue: number): Promise<HttpException> {
         if (!this.validator.isMongoId(titleId)) throw new BadRequestException('TitleId must be a MongoId')
 
