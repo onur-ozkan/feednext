@@ -1,6 +1,5 @@
 import { parse, ParsedUrlQuery } from 'querystring'
 import pathRegexp from 'path-to-regexp'
-import { Route } from '@/models/connect'
 import { persistor } from '@/redux/store'
 import { message } from 'antd'
 import { router } from 'umi'
@@ -11,12 +10,7 @@ export const isUrl = (path: string): boolean => reg.test(path)
 
 export const getPageQuery = (): ParsedUrlQuery => parse(window.location.href.split('?')[1])
 
-/**
- * props.route.routes
- * @param router [{}]
- * @param pathname string
- */
-export const getAuthorityFromRouter = <T extends Route>(router: T[] = [], pathname: string): T | undefined => {
+export const getAuthorityFromRouter = <T>(router: T[] = [], pathname: string): T | undefined => {
 	const authority = router.find(
 		({ routes, path = '/' }) =>
 			(path && pathRegexp(path).exec(pathname)) || (routes && getAuthorityFromRouter(routes, pathname)),
@@ -25,7 +19,7 @@ export const getAuthorityFromRouter = <T extends Route>(router: T[] = [], pathna
 	return undefined
 }
 
-export const getRouteAuthority = (path: string, routeData: Route[]): string | string[] | undefined => {
+export const getRouteAuthority = (path: string, routeData): string | string[] | undefined => {
 	let authorities: string[] | string | undefined
 	routeData.forEach(route => {
 		// match prefix

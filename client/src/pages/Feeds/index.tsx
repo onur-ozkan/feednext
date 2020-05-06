@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Card, List, Tag, message, BackTop, TreeSelect, Row, Col, Typography, Dropdown, Menu, Modal, Avatar } from 'antd'
+import { Button, Card, List, Tag, message, BackTop, TreeSelect, Row, Col, Typography, Dropdown, Menu, Modal } from 'antd'
 import { LoadingOutlined, ArrowUpOutlined, LinkOutlined, RiseOutlined, FilterFilled, CheckOutlined, StarFilled, FireFilled } from '@ant-design/icons'
 import '@ant-design/compatible/assets/index.css'
 
@@ -19,7 +19,7 @@ const Feeds = (): JSX.Element => {
 	const [selectedCategoryFromTree, setSelectedCategoryFromTree] = useState(null)
 	const [trendingCategories, setTrendingCategories] = useState(null)
 	const [categoryFilter, setCategoryFilter] = useState(null)
-	const [feedList, setFeed]: any = useState([])
+	const [feedList, setFeed]: any = useState(null)
 	const [sortBy, setSortBy] = useState(null)
 	const [skipValueForPagination, setSkipValueForPagination] = useState(0)
 
@@ -83,7 +83,7 @@ const Feeds = (): JSX.Element => {
 	}
 
 	const handleEntryListRender = (): JSX.Element => {
-		if (feedList.length === 0) {
+		if (!feedList) {
 			return (
 				<div style={{ textAlign: 'center', marginTop: 61 }}>
 					<LoadingOutlined spin style={{ fontSize: 25 }} />
@@ -94,7 +94,6 @@ const Feeds = (): JSX.Element => {
 		return (
 			<List<any>
 				style={{ marginTop: 25 }}
-				loading={feedList.length === 0}
 				rowKey="id"
 				size="large"
 				itemLayout="vertical"
@@ -214,7 +213,7 @@ const Feeds = (): JSX.Element => {
 		}
 	}
 
-	const loadMore = feedList.length > 0 && (
+	const loadMore = feedList?.length > 0 && (
 		<div style={{ textAlign: 'center', marginTop: 16 }}>
 			<Button
 				onClick={handleFetchMore}

@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Form, Button, Descriptions, Divider, Modal } from 'antd'
+import { Form, Button, Descriptions, Divider, Modal, Avatar } from 'antd'
 import styles from './index.less'
 import TextArea from 'antd/lib/input/TextArea'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
@@ -51,6 +51,13 @@ const Step2: React.FC = (props: any) => {
 	return (
 		<Form {...formItemLayout} form={form} initialValues={{ entry: firstEntryForm.text }} layout="horizontal" className={styles.stepForm}>
 			<Descriptions column={1}>
+				<Descriptions.Item label="Title Image">
+					<Avatar
+						src={createTitleFormData.imageBase64}
+						size="large"
+						shape="square"
+					/>
+				</Descriptions.Item>
 				<Descriptions.Item label="Category">
 					{ readableCategoryValue }
 				</Descriptions.Item>

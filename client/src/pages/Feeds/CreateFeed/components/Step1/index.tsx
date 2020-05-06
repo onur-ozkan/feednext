@@ -58,6 +58,7 @@ const Step1: React.FC = (props: any) => {
 		>
 			<Form.Item label="Title Image" rules={[{ required: false }]}>
 				<ImageUpload
+					defaultUrl={createTitleFormData.imageBase64}
 					onImageTake={handleOnUpload}
 					onRemoveImage={handleOnPictureDelete}
 				/>
