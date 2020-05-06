@@ -105,7 +105,7 @@ export const fetchAllEntriesByAuthor = (
 ): Promise<AxiosResponse> => axios.get(`/v1/entry/by-author/${username}/all?skip=${skip}`)
 
 export const createTitle = (
-	createTitlePayload: { name: string; categoryId: string; description?: string },
+	createTitlePayload: FormData,
 	accessToken: string
 ): Promise<AxiosResponse> => axios.post('/v1/title/create-title', createTitlePayload, {
 	headers: {
@@ -123,10 +123,31 @@ export const rateTitle = (
 	}
 })
 
+export const updateTitleImage = (
+	accessToken: string,
+	titleId: string,
+	formData: FormData
+): Promise<AxiosResponse> => axios.put(`/v1/title/image`, formData, {
+	headers: {
+		'Authorization': `Bearer ${accessToken}`,
+	},
+	params: { titleId }
+})
+
+export const deleteTitleImage = (
+	accessToken: string,
+	titleId: string
+): Promise<AxiosResponse> => axios.delete(`/v1/title/image`, {
+	headers: {
+		'Authorization': `Bearer ${accessToken}`,
+	},
+	params: { titleId }
+})
+
 export const deleteTitle = (
 	accessToken: string,
-	categoryId: string
-): Promise<AxiosResponse> => axios.delete(`/v1/title/${categoryId}`, {
+	titleId: string
+): Promise<AxiosResponse> => axios.delete(`/v1/title/${titleId}`, {
 	headers: {
 		'Authorization': `Bearer ${accessToken}`,
 	}
