@@ -38,19 +38,19 @@ export class UserService {
         return serializerService.serializeResponse('user_profile', profile)
     }
 
-    async getProfilePictureBuffer(username: string): Promise<unknown> {
+    async getProfileImageBuffer(username: string): Promise<unknown> {
         const user = await this.usersRepository.getUserByUsername(username)
-        return this.awsService.getPictureBuffer(String(user.id), 'users')
+        return this.awsService.getImageBuffer(String(user.id), 'users')
     }
 
-    async uploadProfilePicture(username, buffer: Buffer): Promise<void> {
+    async uploadProfileImage(username, buffer: Buffer): Promise<void> {
         const user = await this.usersRepository.getUserByUsername(username)
-        this.awsService.uploadPicture(String(user.id), 'users', buffer)
+        this.awsService.uploadImage(String(user.id), 'users', buffer)
     }
 
-    async deleteProfilePicture(username): Promise<void> {
+    async deleteProfileImage(username): Promise<void> {
         const user = await this.usersRepository.getUserByUsername(username)
-        this.awsService.deletePicture(String(user.id), 'users')
+        this.awsService.deleteImage(String(user.id), 'users')
     }
 
     async getVotes({ username, query }: {

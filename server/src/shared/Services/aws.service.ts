@@ -12,7 +12,7 @@ export class AwsService {
         })
     }
 
-    getPictureBuffer(fileName: string, directory: 'users' | 'titles'): unknown {
+    getImageBuffer(fileName: string, directory: 'users' | 'titles'): unknown {
         return new Promise((resolve) => {
             this.s3Instance().getObject({
                 Bucket: configService.getEnv('AWS_S3_BUCKET'), Key: `${directory}/${fileName}.jpg`
@@ -31,7 +31,7 @@ export class AwsService {
         })
     }
 
-    uploadPicture(fileName: string, directory: 'users' | 'titles', buffer: Buffer): void {
+    uploadImage(fileName: string, directory: 'users' | 'titles', buffer: Buffer): void {
         this.s3Instance().upload({
             Bucket: configService.getEnv('AWS_S3_BUCKET'),
             Key: `${directory}/${fileName}.jpg`,
@@ -41,7 +41,7 @@ export class AwsService {
         })
     }
 
-    deletePicture(fileName: string, directory: 'users' | 'titles'): void {
+    deleteImage(fileName: string, directory: 'users' | 'titles'): void {
         this.s3Instance().deleteObject({
             Bucket: configService.getEnv('AWS_S3_BUCKET'),
             Key: `${directory}/${fileName}.jpg`,

@@ -53,9 +53,9 @@ export class UsersController {
         return this.usersService.getVotes({username, query})
     }
 
-    @Get(':userId/pp')
-    async getProfilePicture(@Param('userId') userId,  @Res() res: any): Promise<void> {
-        const buffer = await this.usersService.getProfilePictureBuffer(userId)
+    @Get('pp')
+    async getProfileImage(@Query('username') username,  @Res() res: any): Promise<void> {
+        const buffer = await this.usersService.getProfileImageBuffer(username)
         res.type('image/jpeg').send(buffer)
     }
 
@@ -63,14 +63,14 @@ export class UsersController {
     @UseGuards(AuthGuard('jwt'))
     @Put('pp')
     @Roles(Role.User)
-    uploadProfilePicture(@Headers('authorization') bearer: string, @Req() req): Promise<HttpException> {
+    uploadProfileImage(@Headers('authorization') bearer: string, @Req() req): Promise<HttpException> {
         const username = jwtManipulationService.decodeJwtToken(bearer, 'username')
 
         return new Promise((resolve, reject) => {
             const handler = (_field, file, _filename, _encoding, mimetype) => {
                 if (mimetype !== 'image/jpeg' && mimetype !== 'image/png') reject(new BadRequestException('File must be image'))
                 file.pipe(concat(buffer => {
-                    this.usersService.uploadProfilePicture(username, buffer)
+                    this.usersService.uploadProfileImage(username, buffer)
                         .catch(error => reject(error))
                 }))
             }
@@ -84,11 +84,11 @@ export class UsersController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
-    @Delete('/pp')
+    @Delete('pp')
     @Roles(Role.User)
-    deleteProfilePicture(@Headers('authorization') bearer: string): HttpException {
-        this.usersService.deleteProfilePicture(jwtManipulationService.decodeJwtToken(bearer, 'username'))
-        throw new HttpException('Picture successfully deleted', HttpStatus.OK)
+    deleteProfileImage(@Headers('authorization') bearer: string): HttpException {
+        this.usersService.deleteProfileImage(jwtManipulationService.decodeJwtToken(bearer, 'username'))
+        throw new HttpException('Image successfully deleted', HttpStatus.OK)
     }
 
     @ApiBearerAuth()

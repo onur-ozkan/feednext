@@ -67,8 +67,8 @@ export class TitleController {
     }
 
     @Get(':titleId/image')
-    async getTitlePicture(@Param('titleId') titleId,  @Res() res: any): Promise<void> {
-        const buffer = await this.titleService.getTitlePicture(titleId)
+    async getTitleImage(@Param('titleId') titleId,  @Res() res: any): Promise<void> {
+        const buffer = await this.titleService.getTitleImage(titleId)
         res.type('image/jpeg').send(buffer)
     }
 
@@ -138,7 +138,7 @@ export class TitleController {
     @Roles(Role.Admin)
     deleteTitleImage(@Query('titleId') titleId): HttpException {
         this.titleService.deleteTitleImage(titleId)
-        throw new HttpException('Picture successfully deleted', HttpStatus.OK)
+        throw new HttpException('Image successfully deleted', HttpStatus.OK)
     }
 
     @ApiBearerAuth()

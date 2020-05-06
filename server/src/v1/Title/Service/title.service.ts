@@ -86,25 +86,25 @@ export class TitleService {
             }
 
             const newTitle: TitlesEntity = await this.titlesRepository.createTitle(openedBy, dto, category.ancestors)
-            if (buffer) this.awsService.uploadPicture(String(newTitle.id), 'titles', buffer)
+            if (buffer) this.awsService.uploadImage(String(newTitle.id), 'titles', buffer)
 
             return serializerService.serializeResponse('title_detail', newTitle)
         })
     }
 
-    async getTitlePicture(titleId: string): Promise<unknown> {
+    async getTitleImage(titleId: string): Promise<unknown> {
         await this.titlesRepository.getTitleById(titleId)
-        return this.awsService.getPictureBuffer(titleId, 'titles')
+        return this.awsService.getImageBuffer(titleId, 'titles')
     }
 
     async updateTitleImage(titleId: string, buffer: Buffer): Promise<void> {
         await this.titlesRepository.getTitleById(titleId)
-        this.awsService.uploadPicture(titleId, 'titles', buffer)
+        this.awsService.uploadImage(titleId, 'titles', buffer)
     }
 
     async deleteTitleImage(titleId: string): Promise<void> {
         await this.titlesRepository.getTitleById(titleId)
-        this.awsService.deletePicture(titleId, 'titles')
+        this.awsService.deleteImage(titleId, 'titles')
     }
 
     async rateTitle(ratedBy: string, titleId: string, rateValue: number): Promise<HttpException> {
@@ -171,7 +171,7 @@ export class TitleService {
 
         await this.titlesRepository.deleteTitle(titleId)
         await this.entriesRepository.deleteEntriesBelongsToTitle(titleId)
-        this.awsService.deletePicture(titleId, 'titles')
+        this.awsService.deleteImage(titleId, 'titles')
         throw new HttpException('Title has been deleted.', HttpStatus.OK)
     }
 }
