@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { SIGN_IN, SIGN_OUT, UserActions, UPDATE_USER } from '../../Actions/User'
+import { SIGN_IN, UserActions, UPDATE_USER } from '../../Actions/User'
 
 const userReducerDefaultState: any = null
 
@@ -7,8 +7,6 @@ export const userReducer = (state = userReducerDefaultState, action: UserActions
 	switch (action.type) {
 		case SIGN_IN:
 			return (state = action.user)
-		case SIGN_OUT:
-			return (state = null)
 		case UPDATE_USER:
 			return {
 				...state,

@@ -1,5 +1,4 @@
 export const SIGN_IN = 'SIGN_IN'
-export const SIGN_OUT = 'SIGN_OUT'
 export const UPDATE_USER = 'UPDATE_USER'
 
 export interface UserPayload {
@@ -26,13 +25,9 @@ export interface SignInAction {
 	user: UserPayload
 }
 
-export interface SignOutAction {
-	type: typeof SIGN_OUT
-}
-
 export interface UpdateUserAction {
 	type: typeof UPDATE_USER
 	payload: UpdateUserPayload
 }
 
-export type UserActions = SignInAction | SignOutAction | UpdateUserAction
+export type UserActions = SignInAction | UpdateUserAction

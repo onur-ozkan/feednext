@@ -1,6 +1,4 @@
-import { SET_ACCESS_TOKEN, GlobalActions, SET_CATEGORY_LIST, SET_CATEGORY_TREE } from '../../Actions/Global'
-import { SOCKET_URL } from '@/../config/constants'
-import io from 'socket.io-client'
+import { SET_ACCESS_TOKEN, GlobalActions, SET_CATEGORY_LIST, SET_CATEGORY_TREE, SET_WS_SOCKET } from '../../Actions/Global'
 
 const globalReducerDefaultState: {
 	accessToken: string | null,
@@ -20,11 +18,11 @@ export const globalReducer = (state = globalReducerDefaultState, action: GlobalA
 			return {
 				...state,
 				accessToken: action.token,
-				socketConnection: io(SOCKET_URL, {
-					query: {
-						Athorization: `Bearer ${action.token}`
-					}
-				})
+			}
+		case SET_WS_SOCKET:
+			return {
+				...state,
+				socketConnection: action.socket
 			}
 		case SET_CATEGORY_LIST:
 			return {
