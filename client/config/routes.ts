@@ -45,6 +45,20 @@ const appRoutes = {
 			],
 		},
 		{
+			path: '/messages',
+			component: '../layouts/AppLayout',
+			authority: User,
+			routes: [
+				{
+					path: '/messages',
+					component: './Messages',
+				},
+				{
+					component: '404',
+				},
+			],
+		},
+		{
 			path: '/settings',
 			component: '../layouts/AppLayout',
 			authority: User,
