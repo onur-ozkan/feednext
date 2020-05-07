@@ -5,9 +5,9 @@ import { PlusCircleOutlined, LoginOutlined } from '@ant-design/icons'
 import Avatar from './AvatarDropdown'
 import HeaderSearch from '../HeaderSearch'
 import styles from './index.less'
-import NoticeIconView from './NoticeIconView'
 import { router } from 'umi'
 import { useSelector } from 'react-redux'
+import MessageBox from '../MessageBox'
 
 export type SiderTheme = 'light' | 'dark'
 export declare interface GlobalHeaderRightProps {
@@ -46,7 +46,7 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
 					>
 						New Feed
 					</Button>
-					<NoticeIconView />
+					<MessageBox count={0} />
 					<Avatar />
 				</>
 			)
