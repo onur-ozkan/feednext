@@ -94,7 +94,7 @@ export class AuthService {
     }
 
     async refreshToken(refreshToken: string): Promise<ISerializeResponse> {
-        const decodedToken: any = jwt.decode(refreshToken)
+        const decodedToken: any = jwt.verify(refreshToken, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
         let user: UsersEntity
 
         try {
@@ -135,7 +135,7 @@ export class AuthService {
     }
 
     async accountVerification(incToken: string): Promise<HttpException> {
-        const decodedToken: any = jwt.decode(incToken)
+        const decodedToken: any = jwt.verify(incToken, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
 
         if (decodedToken.verificationToken) {
             const remainingTime: number = await decodedToken.exp - Math.floor(Date.now() / 1000)

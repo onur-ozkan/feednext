@@ -80,7 +80,10 @@ export class UserService {
     }
 
     async verifyUpdateEmail(incToken: string): Promise<HttpException> {
-        const decodedToken: {verifyUpdateEmailToken: boolean, exp: number} | any = jwt.decode(incToken)
+        const decodedToken: {
+            verifyUpdateEmailToken: boolean,
+            exp: number
+        } | any = jwt.verify(incToken, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
 
         if (decodedToken.verifyUpdateEmailToken) {
             const remainingTime: number = await decodedToken.exp - Math.floor(Date.now() / 1000)
@@ -101,7 +104,10 @@ export class UserService {
     }
 
     async activateUser(incToken: string): Promise<HttpException> {
-        const decodedToken: { activationToken: boolean, exp: number } | any = jwt.decode(incToken)
+        const decodedToken: {
+            activationToken: boolean,
+            exp: number
+        } | any = jwt.verify(incToken, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
 
         if (decodedToken.activationToken) {
             const remainingTime: number = await decodedToken.exp - Math.floor(Date.now() / 1000)
