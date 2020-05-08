@@ -44,6 +44,20 @@ export class UsersRepository extends Repository<UsersEntity> {
         }
     }
 
+    async searchUserByUsername({ searchValue } : { searchValue: string }): Promise<{ users: UsersEntity[] }> {
+        const [users] = await this.findAndCount({
+            where: {
+                username: new RegExp(searchValue, 'i')
+            },
+            take: 5,
+            order: {
+                full_name: 'ASC'
+            }
+        })
+
+        return { users }
+    }
+
     async validateUser(dto: LoginDto): Promise<UsersEntity> {
         const passwordHash: string = crypto.createHmac('sha256', dto.password).digest('hex')
         try {

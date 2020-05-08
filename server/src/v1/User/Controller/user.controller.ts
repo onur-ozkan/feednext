@@ -42,6 +42,11 @@ export class UsersController {
         return this.usersService.getUser(username)
     }
 
+    @Get('search')
+    searchUserByUsername(@Query('searchValue') searchValue: string): Promise<ISerializeResponse> {
+        return this.usersService.searchUserByUsername({ searchValue })
+    }
+
     @Get(':username/votes')
     getVotes(
         @Param('username') username,

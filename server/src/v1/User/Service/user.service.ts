@@ -38,6 +38,11 @@ export class UserService {
         return serializerService.serializeResponse('user_profile', profile)
     }
 
+    async searchUserByUsername({ searchValue } : { searchValue: string }): Promise<ISerializeResponse> {
+        const result = await this.usersRepository.searchUserByUsername({ searchValue })
+        return serializerService.serializeResponse('searched_user_list', result)
+    }
+
     async getProfileImageBuffer(username: string): Promise<unknown> {
         const user = await this.usersRepository.getUserByUsername(username)
         return this.awsService.getImageBuffer(String(user.id), 'users')
@@ -80,10 +85,13 @@ export class UserService {
     }
 
     async verifyUpdateEmail(incToken: string): Promise<HttpException> {
-        const decodedToken: {
-            verifyUpdateEmailToken: boolean,
-            exp: number
-        } | any = jwt.verify(incToken, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
+        let decodedToken
+
+        try {
+            decodedToken = jwt.verify(incToken, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
+        } catch (error) {
+            throw new BadRequestException('Invalid token signature')
+        }
 
         if (decodedToken.verifyUpdateEmailToken) {
             const remainingTime: number = await decodedToken.exp - Math.floor(Date.now() / 1000)
@@ -104,10 +112,13 @@ export class UserService {
     }
 
     async activateUser(incToken: string): Promise<HttpException> {
-        const decodedToken: {
-            activationToken: boolean,
-            exp: number
-        } | any = jwt.verify(incToken, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
+        let decodedToken
+
+        try {
+            decodedToken = jwt.verify(incToken, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
+        } catch (error) {
+            throw new BadRequestException('Invalid token signature')
+        }
 
         if (decodedToken.activationToken) {
             const remainingTime: number = await decodedToken.exp - Math.floor(Date.now() / 1000)
