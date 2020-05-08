@@ -1,5 +1,5 @@
 // Nest dependencies
-import { UnauthorizedException } from '@nestjs/common'
+import { UnauthorizedException, BadRequestException } from '@nestjs/common'
 
 // Other dependencies
 import * as jwt from 'jsonwebtoken'
@@ -10,7 +10,12 @@ export class JwtManipulationService {
         let result
         try {
             if (!token) throw new Error()
-            const decodedJwtData: any = jwt.verify(token.split(' ')[1], configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
+            let decodedJwtData
+            try {
+                decodedJwtData = jwt.verify(token.split(' ')[1], configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
+            } catch (error) {
+                throw new BadRequestException('Invalid token signature')
+            }
 
             if (property === 'all') result = decodedJwtData
             else result = decodedJwtData[property]

@@ -94,7 +94,14 @@ export class AuthService {
     }
 
     async refreshToken(refreshToken: string): Promise<ISerializeResponse> {
-        const decodedToken: any = jwt.verify(refreshToken, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
+        let decodedToken
+
+        try {
+            decodedToken = jwt.verify(refreshToken, configService.getEnv('SECRET_FOR_REFRESH_TOKEN'))
+        } catch (error) {
+            throw new BadRequestException('Invalid token signature')
+        }
+
         let user: UsersEntity
 
         try {
@@ -135,7 +142,12 @@ export class AuthService {
     }
 
     async accountVerification(incToken: string): Promise<HttpException> {
-        const decodedToken: any = jwt.verify(incToken, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
+        let decodedToken
+        try {
+            decodedToken = jwt.verify(incToken, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
+        } catch (error) {
+            throw new BadRequestException('Invalid token signature')
+        }
 
         if (decodedToken.verificationToken) {
             const remainingTime: number = await decodedToken.exp - Math.floor(Date.now() / 1000)

@@ -12,6 +12,7 @@ import {
     Request,
     Res,
     HttpStatus,
+    BadRequestException,
 } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
@@ -80,6 +81,7 @@ export class AuthController {
 
     @Get('refresh-token')
     async refreshJwtToken(@Request() { cookies }): Promise<ISerializeResponse> {
+        if (!cookies.rt) throw new BadRequestException('Server could not give access tokken without refresh token')
         return await this.authService.refreshToken(cookies.rt)
     }
 }
