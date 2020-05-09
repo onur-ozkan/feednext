@@ -1,6 +1,9 @@
 // Nest dependencies
-import { Injectable } from '@nestjs/common'
+import { Injectable, BadRequestException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+
+// Other dependencies
+import { Validator } from 'class-validator'
 
 // Local files
 import { UsersRepository } from 'src/shared/Repositories/users.repository'
@@ -10,6 +13,9 @@ import { serializerService, ISerializeResponse } from 'src/shared/Services/seria
 
 @Injectable()
 export class MessageService {
+
+    private validator: Validator
+
     constructor(
         @InjectRepository(UsersRepository)
         private readonly usersRepository: UsersRepository,
@@ -17,7 +23,9 @@ export class MessageService {
         private readonly conversationsRepository: ConversationsRepository,
         @InjectRepository(MessagesRepository)
         private readonly messagesRepository: MessagesRepository,
-    ) {}
+    ) {
+        this.validator = new Validator()
+    }
 
     async sendMessage({ recipient, body, from } : { recipient: string, body: string, from: string }) {
         await this.usersRepository.findOneOrFail({ username: recipient })
@@ -25,17 +33,32 @@ export class MessageService {
             // tslint:disable-next-line:no-empty
             .catch(_error => {})
         if (conversation) {
-            await this.messagesRepository.createMessage({ conversationId: String(conversation._id), text: body })
+            await this.messagesRepository.createMessage({
+                conversationId: String(conversation._id),
+                sendBy: from,
+                text: body
+            })
             // updates updated_at value to sort conversations by time
             await this.conversationsRepository.save(conversation)
         } else {
             const newConversation = await this.conversationsRepository.createConversation([from, recipient])
-            await this.messagesRepository.createMessage({ conversationId: String(newConversation._id), text: body })
+            await this.messagesRepository.createMessage({
+                conversationId: String(newConversation._id),
+                sendBy: from,
+                text: body
+            })
         }
     }
 
     async getConversationListByUsername (username: string, skip: string): Promise<ISerializeResponse>  {
         const result = await this.conversationsRepository.getConversationListByUsername(username, skip)
         return serializerService.serializeResponse('user_conversation_list', result)
+    }
+
+    async getMessageListByConversationId (conversationId: string, skip: string): Promise<ISerializeResponse>  {
+        if (!this.validator.isMongoId(conversationId)) throw new BadRequestException('Conversation id must be a MongoId')
+
+        const result = await this.messagesRepository.getMessageListByConversationId(conversationId, skip)
+        return serializerService.serializeResponse('conversation_message_list', result)
     }
 }

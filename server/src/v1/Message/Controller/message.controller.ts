@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Controller, UseGuards, Get, Headers, Query } from '@nestjs/common'
+import { Controller, UseGuards, Get, Headers, Query, Param } from '@nestjs/common'
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthGuard } from '@nestjs/passport'
 
@@ -25,5 +25,15 @@ export class MessageController {
         @Query('skip') skip: string
     ): Promise<ISerializeResponse> {
         return this.messageService.getConversationListByUsername(jwtManipulationService.decodeJwtToken(bearer, 'username'), skip)
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
+    @Get(':conversationId/messages')
+    getMessageList(
+        @Param('conversationId') conversationId,
+        @Query('skip') skip: string
+    ): Promise<ISerializeResponse> {
+        return this.messageService.getMessageListByConversationId(conversationId, skip)
     }
 }

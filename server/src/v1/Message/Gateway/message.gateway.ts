@@ -42,7 +42,7 @@ export class MessageGateway {
                     ...messageForm,
                     from: client.username
                 })
-                this.wss.to(messageForm.recipient).emit('pingMessage', {
+                socket.to(messageForm.recipient).emit('pingMessage', {
                     from: client.username,
                     body: messageForm.body
                 })

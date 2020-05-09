@@ -5,11 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 // Local files
 import { MessageService } from './Service/message.service'
 import { MessageController } from './Controller/message.controller'
-import { MessagesEntity } from 'src/shared/Entities/messages.entity'
+import { MessageGateway } from './Gateway/message.gateway'
+import { MessagesRepository } from 'src/shared/Repositories/messages.repository'
+import { UsersRepository } from 'src/shared/Repositories/users.repository'
+import { ConversationsRepository } from 'src/shared/Repositories/conversations.repository'
 
 @Module({
-    imports: [TypeOrmModule.forFeature([MessagesEntity])],
-    providers: [MessageService],
+    imports: [TypeOrmModule.forFeature([MessagesRepository, ConversationsRepository, UsersRepository])],
+    providers: [MessageService, MessageGateway],
     exports: [MessageService],
     controllers: [MessageController],
 })
