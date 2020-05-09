@@ -28,4 +28,19 @@ export class ConversationsRepository extends Repository<ConversationsEntity> {
         await this.save(newConversation)
         return newConversation
     }
+
+    async getConversationListByUsername(username: string, skip: string): Promise<ConversationsEntity[]> {
+        const [conversations] = await this.findAndCount({
+            where: {
+                participants: { $in: [username] }
+            },
+            order: {
+                updated_at: 'DESC',
+            },
+            take: 10,
+            skip: Number(skip) || 0,
+        })
+
+        return conversations
+    }
 }
