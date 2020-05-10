@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { Card, Form, Input, Button, AutoComplete, Typography, Avatar, message } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import { router } from 'umi'
-import { searchUser } from '@/services/api'
+import { searchUser, fetchUserByUsername } from '@/services/api'
 import { API_URL } from '@/../config/constants'
 
 export declare interface FormDataType {
@@ -23,12 +23,10 @@ const Compose = (): JSX.Element => {
 
 	const handleMessageSending = async (formValues: FormDataType): Promise<void> => {
 		await form.validateFields()
-		globalState.socketConnection?.emit('sendMessage', formValues)
+		await fetchUserByUsername(formValues.recipient)
+			.then(_res => globalState.socketConnection.emit('sendMessage', formValues))
+			.catch(_error => message.error('User not found'))
 	}
-
-	useEffect(() => {
-		globalState.socketConnection?.on('onMessageError', (error: string) => console.log(error))
-	}, [])
 
 	useEffect(() => {
 		if (userFilterInput === '') {

@@ -14,6 +14,19 @@ const ChatScreen = (params) => {
 	useEffect(() => {
 		fetchMessagesByConversationId(params.globalState.accessToken, params.conversationId, 0)
 			.then(({ data }) => setMessageList(data.attributes.messages.reverse()))
+
+		params.globalState.socketConnection.on('pingMessage', (incMessage: {
+			from: string,
+			body: string
+		}) => {
+			if (params.recipientUsername === incMessage.from) {
+				setMessageList((messageList: any) => [...messageList, {
+					send_by: incMessage.from,
+					text: incMessage.body,
+					created_at: formatISO(new Date)
+				}])
+			}
+		})
 	}, [])
 
 	if (!messageList) return <PageLoading />

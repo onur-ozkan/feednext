@@ -24,7 +24,7 @@ const MessageTabs: React.FC = (params) => {
 	if (!conversationList) return <PageLoading />
 
 	const handleMessageTabs = (): JSX.Element => {
-		const tabs = conversationList.map((conversation: any) => {
+		const tabPanes = conversationList.map((conversation: any) => {
 			const recipientUsername = conversation.participants[0] === user.username ?
 				conversation.participants[1]
 				:
@@ -57,7 +57,7 @@ const MessageTabs: React.FC = (params) => {
 				onChange={(tabKey: string): void => setActiveKey(tabKey)}
 				animated={false}
 			>
-				{tabs}
+				{tabPanes}
 				{!activeKey && (
 					<div
 						style={{
@@ -71,7 +71,7 @@ const MessageTabs: React.FC = (params) => {
 						<img src={conversationImg} width="150" alt="Conversation Png" />
 						<Typography.Paragraph style={{ textAlign: 'center', width: 275 }} strong>
 							Direct Messages are private conversations
-							between you and other people on Feednext.
+							between you and other people on Feednext
 						</Typography.Paragraph>
 						<Button
 							shape="round"
