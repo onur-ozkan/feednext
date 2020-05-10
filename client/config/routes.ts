@@ -54,6 +54,10 @@ const appRoutes = {
 					component: './Messages',
 				},
 				{
+					path: '/messages/compose',
+					component: './Messages/Compose',
+				},
+				{
 					component: '404',
 				},
 			],
