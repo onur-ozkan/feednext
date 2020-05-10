@@ -2,7 +2,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 
 // Other dependencies
-import { IsEmail, IsNotEmpty, NotContains, Length, MaxLength } from 'class-validator'
+import { IsEmail, IsNotEmpty, NotContains, Length, MaxLength, Matches } from 'class-validator'
 
 export class CreateAccountDto {
     @ApiProperty({
@@ -25,8 +25,8 @@ export class CreateAccountDto {
         example: 'demo_user',
     })
     @IsNotEmpty()
+    @Matches(/^[a-z0-9_.-]{3,17}$/)
     @NotContains(' ')
-    @Length(6, 15)
     username: string
 
     @ApiProperty({
