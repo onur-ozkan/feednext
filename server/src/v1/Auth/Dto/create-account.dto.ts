@@ -2,7 +2,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 
 // Other dependencies
-import { IsEmail, IsNotEmpty, NotContains, Length, MaxLength, Matches } from 'class-validator'
+import { IsNotEmpty, NotContains, Length, MaxLength, Matches } from 'class-validator'
 
 export class CreateAccountDto {
     @ApiProperty({
@@ -17,7 +17,9 @@ export class CreateAccountDto {
         required: true,
         example: 'demo@demo.com',
     })
-    @IsEmail()
+    @Matches(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, {
+        message: 'Email must be a type of email'
+    })
     email: string
 
     @ApiProperty({
@@ -25,8 +27,10 @@ export class CreateAccountDto {
         example: 'demo_user',
     })
     @IsNotEmpty()
-    @Matches(/^[a-z0-9_.-]{3,17}$/)
-    @NotContains(' ')
+    @Matches(/^[a-z0-9_.-]{3,17}$/, {
+        // tslint:disable-next-line:quotemark
+        message: "Your username can only contain letters, numbers, '_', '-' and '.' "
+    })
     username: string
 
     @ApiProperty({
@@ -35,6 +39,6 @@ export class CreateAccountDto {
     })
     @IsNotEmpty()
     @NotContains(' ')
-    @Length(6, 15)
+    @Length(6, 20)
     password: string
 }
