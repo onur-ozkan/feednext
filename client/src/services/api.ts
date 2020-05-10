@@ -18,6 +18,37 @@ export const checkAccessToken = (accessToken: string): Promise<AxiosResponse>  =
 	}
 })
 
+export const searchUser = (searchValue: string): Promise<AxiosResponse> => axios.get(`/v1/user/search?searchValue=${searchValue}`)
+
+export const fetchUsersConversations = (
+	accessToken: string,
+	skip: number
+): Promise<AxiosResponse> => axios.get(
+	'/v1/message/conversations', {
+		headers: {
+			'Authorization': `Bearer ${accessToken}`,
+		},
+		params: {
+			skip
+		}
+	}
+)
+
+export const fetchMessagesByConversationId = (
+	accessToken: string,
+	conversationId: string,
+	skip: number
+): Promise<AxiosResponse> => axios.get(
+	`/v1/message/${conversationId}/messages`, {
+		headers: {
+			'Authorization': `Bearer ${accessToken}`,
+		},
+		params: {
+			skip
+		}
+	}
+)
+
 export const updateUser = (username: string, accessToken: string, payload: {
 	fullName?: string,
 	email?: string,
