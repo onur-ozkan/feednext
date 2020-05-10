@@ -45,15 +45,16 @@ async function bootstrap() {
 
     app.useGlobalPipes(new ValidationPipe()) // Initialize global validation
 
-    // Configure the Swagger API Doc
-    const options = new DocumentBuilder()
-        .setTitle('Feednext API Documentation')
-        .setVersion('1.0')
-        .setBasePath('api')
-        .addBearerAuth()
-        .build()
-    const document = SwaggerModule.createDocument(app, options)
-    SwaggerModule.setup('/api', app, document)
+    if (!configService.isProduction()) {
+        const options = new DocumentBuilder()
+            .setTitle('Feednext API Documentation')
+            .setVersion('1.0')
+            .setBasePath('api')
+            .addBearerAuth()
+            .build()
+        const document = SwaggerModule.createDocument(app, options)
+        SwaggerModule.setup('/api', app, document)
+    }
 
     if (configService.isProduction()) sentry.init({ dsn: configService.getEnv('SENTRY_DSN') })
 

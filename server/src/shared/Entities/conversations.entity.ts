@@ -17,7 +17,7 @@ export class ConversationsEntity {
     @ObjectIdColumn()
     _id: ObjectID
 
-    @Column({ unique: true, type: 'array', length: 2 })
+    @Column({ type: 'array', length: 2 })
     participants: string[]
 
     @CreateDateColumn({ type: 'date' })

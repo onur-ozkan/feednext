@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm'
 
 // Other dependencies
 import { Validator } from 'class-validator'
-import { ObjectId } from 'mongodb'
 
 // Local files
 import { EntriesRepository } from 'src/shared/Repositories/entries.repository'
@@ -17,7 +16,7 @@ import { UsersRepository } from 'src/shared/Repositories/users.repository'
 @Injectable()
 export class EntryService {
 
-    private validator: ObjectId
+    private validator: Validator
 
     constructor(
         @InjectRepository(EntriesRepository)
