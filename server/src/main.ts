@@ -58,7 +58,7 @@ async function bootstrap() {
 
     if (configService.isProduction()) sentry.init({ dsn: configService.getEnv('SENTRY_DSN') })
 
-    app.listen(configService.getEnv('APP_PORT'), '0.0.0.0')
+    app.listen(Number(configService.getEnv('APP_PORT')) + Number(configService.getEnv('INSTANCE_ID') || 0), '0.0.0.0')
 
     if (module.hot) {
         module.hot.accept()
