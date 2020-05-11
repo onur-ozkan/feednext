@@ -69,6 +69,9 @@ export class TitleService {
     }
 
     async createTitle(openedBy: string, payload: CreateTitleDto, buffer: Buffer): Promise<HttpException | ISerializeResponse> {
+        payload.name = payload.name.replace(/^\s+|\s+$/g, '')
+        if (payload.name.length === 0) throw new BadRequestException('Title name can not be whitespace')
+
         const dto = new CreateTitleDto()
         dto.name = payload.name
         dto.categoryId = payload.categoryId
@@ -140,6 +143,9 @@ export class TitleService {
     }
 
     async updateTitle(updatedBy: string, titleId: string, dto: UpdateTitleDto): Promise<ISerializeResponse> {
+        dto.name = dto.name.replace(/^\s+|\s+$/g, '')
+        if (dto.name.length === 0) throw new BadRequestException('Title name can not be whitespace')
+
         if (!this.validator.isMongoId(titleId)) throw new BadRequestException('TitleId must be a MongoId.')
 
         let title: TitlesEntity

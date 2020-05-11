@@ -70,6 +70,9 @@ export class EntryService {
     }
 
     async createEntry(writtenBy: string, dto: CreateEntryDto): Promise<HttpException | ISerializeResponse> {
+        dto.text = dto.text.replace(/^\s+|\s+$/g, '')
+        if (dto.text.length === 0) throw new BadRequestException('Entry text can not be whitespace')
+
         try {
             await this.titlesRepository.updateEntryCount(dto.titleId, true)
         } catch (err) {
