@@ -49,7 +49,6 @@ async function bootstrap() {
         const options = new DocumentBuilder()
             .setTitle('Feednext API Documentation')
             .setVersion('1.0')
-            .setBasePath('api')
             .addBearerAuth()
             .build()
         const document = SwaggerModule.createDocument(app, options)

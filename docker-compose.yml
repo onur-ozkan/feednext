@@ -36,8 +36,10 @@ services:
       - ./server:/home/node/app:z
     ports:
       - ${BACKEND_EXPOSE_PORT}:${BACKEND_APP_PORT}
-    command: >
-      sh -c "npm ci && npm run start:${START_BACKEND_AS}"
+    command:
+      - sh
+      - -c
+      - npm ci && npm run start:${START_BACKEND_AS}
     depends_on:
       - redis
       - mongo

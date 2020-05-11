@@ -3,47 +3,48 @@ import { Logger } from '@nestjs/common'
 import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets'
 
 // Other dependencies
-import * as jwt from 'jsonwebtoken'
 import { Server } from 'socket.io'
 
 // Local files
-import { configService } from 'src/shared/Services/config.service'
 import { MessageService } from '../Service/message.service'
+import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.service'
 
 @WebSocketGateway({
     transport: ['websocket'],
     // origins: configService.getEnv('APP_DOMAIN'),
 })
 export class MessageGateway {
+    @WebSocketServer() wss: Server
+    private logger = new Logger('MessageGateway')
+
     constructor(
         private readonly messageService: MessageService,
     ) {}
 
-    @WebSocketServer() wss: Server
-    private logger = new Logger('MessageGateway')
-
     async handleConnection(socket: SocketIO.Socket) {
         const { Authorization } = socket.handshake.query
-        let client
+        let clientUsername
 
         try {
-            client = jwt.verify(Authorization.split(' ')[1], configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
+            clientUsername = jwtManipulationService.decodeJwtToken(Authorization, 'username')
         } catch (error) {
-            socket.disconnect(true)
             this.logger.error('Client disconnected')
         }
 
-        if (!client) return
+        if (!clientUsername) return
 
-        socket.join(client.username)
+        socket.join(clientUsername)
         socket.on('sendMessage', async (messageForm: { recipient: string; body: string }) => {
+            messageForm.body = messageForm.body.replace(/^\s+|\s+$/g, '')
+            if (messageForm.body.length === 0) return
+
             try {
                 await this.messageService.sendMessage({
                     ...messageForm,
-                    from: client.username
+                    from: clientUsername
                 })
                 socket.to(messageForm.recipient).emit('pingMessage', {
-                    from: client.username,
+                    from: clientUsername,
                     body: messageForm.body
                 })
             } catch (error) {
