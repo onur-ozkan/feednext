@@ -1,30 +1,38 @@
 import React, { useState, useEffect } from 'react'
-import { Tabs, Card, Avatar, Button, Typography } from 'antd'
+import { Tabs, Card, Avatar, Button, Typography, Pagination } from 'antd'
 import ChatScreen from './ChatScreen'
 import conversationImg from '../../../assets/conversation.png'
 import { router } from 'umi'
-import { fetchUsersConversations } from '@/services/api'
+import { fetchUsersConversations, deleteConversation } from '@/services/api'
 import { useSelector } from 'react-redux'
 import PageLoading from '@/components/PageLoading'
 import { API_URL } from '@/../config/constants'
 
-const MessageTabs: React.FC = (params) => {
-	const [activeKey, setActiveKey] = useState<string | undefined>(params.activeKey || undefined)
-	const [conversationList, setConversationList] = useState<[] | null>(null)
+const MessageTabs = ({ tabKey }: { tabKey: string | undefined }): JSX.Element => {
+	const [activeKey, setActiveKey] = useState<string | undefined>(tabKey)
+	const [conversationsData, setConversationsData] = useState<[] | null>(null)
+	const [paginationValue, setPaginationValue] = useState(0)
 	const globalState = useSelector((state: any) => state.global)
 	const user = useSelector((state: any) => state.user.attributes.user)
 
 	useEffect(() => {
-		fetchUsersConversations(globalState.accessToken, 0)
-			.then(({ data }) => {
-				setConversationList(data.attributes)
-			})
-	}, [])
+		fetchUsersConversations(globalState.accessToken, paginationValue)
+			.then(({ data }) => setConversationsData(data.attributes))
+	}, [paginationValue])
 
-	if (!conversationList) return <PageLoading />
+	if (!conversationsData) return <PageLoading />
+
+	const handleConversationDelete = (conversationId: string): void => {
+		setActiveKey(undefined)
+		deleteConversation(globalState.accessToken, conversationId)
+		setConversationsData({
+			...conversationsData,
+			conversations: [...conversationsData.conversations].filter(item => item._id !== conversationId)
+		})
+	}
 
 	const handleMessageTabs = (): JSX.Element => {
-		const tabPanes = conversationList.map((conversation: any) => {
+		const tabPanes = conversationsData.conversations.map((conversation: any) => {
 			const recipientUsername = conversation.participants[0] === user.username ?
 				conversation.participants[1]
 				:
@@ -36,52 +44,69 @@ const MessageTabs: React.FC = (params) => {
 							src={`${API_URL}/v1/user/pp?username=${recipientUsername}`}
 						/>
 					}
-					key={conversation._id}
+					key={recipientUsername}
 				>
 					<ChatScreen
 						globalState={globalState}
 						username={user.username}
 						conversationId={conversation._id}
 						recipientUsername={recipientUsername}
+						deleteConversationFromState={(): void => handleConversationDelete(conversation._id)}
 					/>
 				</Tabs.TabPane>
 			)
 		})
 
 		return (
-			<Tabs
-				style={{ marginLeft: -25 }}
-				activeKey={activeKey}
-				tabPosition="left"
-				size="small"
-				onChange={(tabKey: string): void => setActiveKey(tabKey)}
-				animated={false}
-			>
-				{tabPanes}
-				{!activeKey && (
-					<div
-						style={{
-							display: 'flex',
-							flexDirection: 'column',
-							justifyContent: 'center',
-							alignItems: 'center',
-							minHeight: 500,
-						}}
-					>
-						<img src={conversationImg} width="150" alt="Conversation Png" />
-						<Typography.Paragraph style={{ textAlign: 'center', width: 275 }} strong>
-							Direct Messages are private conversations
-							between you and other people on Feednext
-						</Typography.Paragraph>
-						<Button
-							shape="round"
-							onClick={(): void => router.push('/messages/compose')}
+			<>
+				<Pagination
+					style={{
+						position: 'relative',
+						top: -10,
+						left: -30,
+						fontSize: 15,
+						padding: '0px 0px 0px 10px'
+					}}
+					onChange={(page: number): void => setPaginationValue(10 * (page - 1))}
+					simple
+					hideOnSinglePage
+					defaultCurrent={1}
+					total={conversationsData.count}
+				/>
+				<Tabs
+					style={{ marginLeft: -25 }}
+					activeKey={activeKey}
+					tabPosition="left"
+					size="small"
+					onChange={(tabKey: string): void => setActiveKey(tabKey)}
+					animated={false}
+				>
+					{tabPanes}
+					{!activeKey && (
+						<div
+							style={{
+								display: 'flex',
+								flexDirection: 'column',
+								justifyContent: 'center',
+								alignItems: 'center',
+								height: 500
+							}}
 						>
-							Start a Conversation
-						</Button>
-					</div>
-				)}
-			</Tabs>
+							<img style={{ opacity: 0.65 }} src={conversationImg} width="150" alt="Conversation Png" />
+							<Typography.Paragraph style={{ textAlign: 'center', width: 275 }} strong>
+								Direct Messages are private conversations
+								between you and other people on Feednext
+							</Typography.Paragraph>
+							<Button
+								shape="round"
+								onClick={(): void => router.push('/messages/compose')}
+							>
+								Start a Conversation
+							</Button>
+						</div>
+					)}
+				</Tabs>
+			</>
 		)
 	}
 

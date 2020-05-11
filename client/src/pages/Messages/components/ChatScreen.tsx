@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import React, { useState, useEffect } from 'react'
-import { Avatar, List, Input, Button, Form, Divider } from 'antd'
+import { Avatar, List, Input, Button, Form, Divider, Row, Col, Typography, Popconfirm } from 'antd'
 import { fetchMessagesByConversationId } from '@/services/api'
 import { API_URL } from '@/../config/constants'
 import PageLoading from '@/components/PageLoading'
 import { Link } from 'umi'
 import { format, parseISO, formatISO } from 'date-fns'
+import { DeleteFilled, WarningOutlined } from '@ant-design/icons'
 
 const ChatScreen = (params) => {
 	const [messageList, setMessageList] = useState<any[] | null>(null)
@@ -78,8 +79,30 @@ const ChatScreen = (params) => {
 	}
 
 	return (
-		<div style={{ padding: 20 }}>
+		<div style={{ padding: '10px 0px 0px 10px' }}>
+			<Row style={{ display: 'flex', alignItems: 'center', marginBottom: 5 }}>
+				<Col>
+					<Typography.Text style={{ fontSize: 25 }}> Onur OZKAN </Typography.Text>
+				</Col>
+				<Popconfirm
+					placement="bottomLeft"
+					style={{ fontSize: 15 }}
+					icon={<WarningOutlined style={{ color: 'red' }} />}
+					title="Are you sure to delete this conversation?"
+					onConfirm={params.deleteConversationFromState}
+					okText="Yes"
+					cancelText="No"
+				>
+				<Button
+					type="link"
+					danger
+					icon={<DeleteFilled />}
+				/>
+				</Popconfirm>
+			</Row>
+			<Divider style={{ margin: 0, padding: 0 }} />
 			<List
+				style={{ marginTop: 10 }}
 				itemLayout="horizontal"
 				dataSource={messageList}
 				renderItem={(item, index) => (
@@ -90,7 +113,17 @@ const ChatScreen = (params) => {
 			<Form form={form} onFinish={handleMessageSend}>
 				<Form.Item
 					name="messageText"
-					rules={[{ required: true, message: 'Write a message to send it' }]}
+					rules={[
+						{ required: true, message: 'Write a message to send it' },
+						() => ({
+							validator(rule, value) {
+								if (value && value.trim().length === 0) {
+									return Promise.reject('Blank messages can not send')
+								}
+								return Promise.resolve()
+							},
+						})
+					]}
 					style={{ margin: 0 }}
 				>
 					<Input.TextArea rows={4} />

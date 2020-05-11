@@ -1,13 +1,13 @@
 import React from 'react'
 import MessageTabs from './components/MessageTabs'
+import styles from './style.less'
 
-
-const Messages = (): JSX.Element => {
+const Messages = (params: any): JSX.Element => {
 	return (
-		<>
-			<MessageTabs />
+		<div className={styles.globalClass}>
+			<MessageTabs tabKey={params.location.state?.key}/>
 			<br/>
-		</>
+		</div>
 	)
 }
 
