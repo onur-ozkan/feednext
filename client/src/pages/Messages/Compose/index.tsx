@@ -24,7 +24,15 @@ const Compose = (): JSX.Element => {
 	const handleMessageSending = async (formValues: FormDataType): Promise<void> => {
 		await form.validateFields()
 		await fetchUserByUsername(formValues.recipient)
-			.then(_res => globalState.socketConnection.emit('sendMessage', formValues))
+			.then(_res => {
+				globalState.socketConnection.emit('sendMessage', formValues)
+				router.push({
+					pathname: '/messages',
+					state: {
+						key: formValues.recipient
+					}
+				})
+			})
 			.catch(_error => message.error('User not found'))
 	}
 
@@ -101,7 +109,17 @@ const Compose = (): JSX.Element => {
 					<Form.Item
 						style={{ margin: 0 }}
 						name="body"
-						rules={[{ required: true, message: 'Write a message to send it' }]}
+						rules={[
+							{ required: true, message: 'Write a message to send it' },
+							() => ({
+								validator(rule, value) {
+									if (value && value.trim().length === 0) {
+										return Promise.reject('Blank messages can not send')
+									}
+									return Promise.resolve()
+								},
+							})
+						]}
 					>
 						<Input.TextArea placeholder="Write a messageForm..." rows={4} />
 					</Form.Item>
