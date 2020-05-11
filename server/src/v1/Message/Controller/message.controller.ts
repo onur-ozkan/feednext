@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Controller, UseGuards, Get, Headers, Query, Param } from '@nestjs/common'
+import { Controller, UseGuards, Get, Headers, Query, Param, Delete, HttpException } from '@nestjs/common'
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthGuard } from '@nestjs/passport'
 
@@ -35,5 +35,15 @@ export class MessageController {
         @Query('skip') skip: string
     ): Promise<ISerializeResponse> {
         return this.messageService.getMessageListByConversationId(conversationId, skip)
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
+    @Delete(':conversationId')
+    deleteMessages(
+        @Param('conversationId') conversationId,
+        @Headers('authorization') bearer: string,
+    ): Promise<HttpException> {
+        return this.messageService.deleteMessages(conversationId, jwtManipulationService.decodeJwtToken(bearer, 'username'))
     }
 }

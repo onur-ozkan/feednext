@@ -3,6 +3,8 @@ import { Repository, EntityRepository } from 'typeorm'
 
 // Local files
 import { ConversationsEntity } from '../Entities/conversations.entity'
+import { ObjectId } from 'mongodb'
+import { BadRequestException } from '@nestjs/common'
 
 @EntityRepository(ConversationsEntity)
 export class ConversationsRepository extends Repository<ConversationsEntity> {
@@ -29,8 +31,8 @@ export class ConversationsRepository extends Repository<ConversationsEntity> {
         return newConversation
     }
 
-    async getConversationListByUsername(username: string, skip: string): Promise<ConversationsEntity[]> {
-        const [conversations] = await this.findAndCount({
+    async getConversationListByUsername(username: string, skip: string): Promise<{ conversations: ConversationsEntity[], count: number }> {
+        const [conversations, total] = await this.findAndCount({
             where: {
                 participants: { $in: [username] }
             },
@@ -41,6 +43,20 @@ export class ConversationsRepository extends Repository<ConversationsEntity> {
             skip: Number(skip) || 0,
         })
 
-        return conversations
+        return { conversations, count: total }
+    }
+
+    async deleteConversation(conversationId: string, username: string): Promise<void> {
+        try {
+            const conversation: ConversationsEntity = await this.findOneOrFail({
+                where: {
+                    _id: ObjectId(conversationId),
+                    participants: { $in: [username] }
+                }
+            })
+            await this.delete(conversation)
+        } catch (err) {
+            throw new BadRequestException('Conversation could not found by giving id and username')
+        }
     }
 }

@@ -36,4 +36,9 @@ export class MessagesRepository extends Repository<MessagesEntity> {
         return { messages }
     }
 
+    async deleteMessagesBelongsToConversation(conversationId: string): Promise<void> {
+        const messages: any = await this.find({ conversation_id: conversationId })
+        await this.delete(messages)
+    }
+
 }
