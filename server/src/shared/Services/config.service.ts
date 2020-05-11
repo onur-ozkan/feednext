@@ -17,9 +17,7 @@ env.config()
 export class ConfigService {
 
     public getEnv(key: string): any {
-        const value = process.env[key]
-        if (!value) throw new Error(`Config error. Missing ${key} variable in .env file.`)
-        return value
+        return process.env[key]
     }
 
     public isProduction(): boolean {
