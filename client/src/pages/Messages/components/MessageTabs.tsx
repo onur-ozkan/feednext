@@ -7,6 +7,7 @@ import { fetchUsersConversations, deleteConversation } from '@/services/api'
 import { useSelector } from 'react-redux'
 import PageLoading from '@/components/PageLoading'
 import { API_URL } from '@/../config/constants'
+import styles from '../style.less'
 
 const MessageTabs = ({ tabKey }: { tabKey: string | undefined }): JSX.Element => {
 	const [activeKey, setActiveKey] = useState<string | undefined>(tabKey)
@@ -75,6 +76,7 @@ const MessageTabs = ({ tabKey }: { tabKey: string | undefined }): JSX.Element =>
 				/>
 				<Tabs
 					style={{ marginLeft: -25 }}
+					className={conversationsData.conversations.length === 0 ? styles.hideMessageBar : undefined}
 					activeKey={activeKey}
 					tabPosition="left"
 					size="small"

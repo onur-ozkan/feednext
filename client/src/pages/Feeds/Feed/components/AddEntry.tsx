@@ -30,7 +30,20 @@ const AddEntry: React.FC = ({ titleId, accessToken, setEntryList }) => {
 	return (
 		<Card bordered={false}>
 			<Form form={form} onFinish={handleEntryPost}>
-				<Form.Item name="entry">
+				<Form.Item
+					name="entry"
+					rules={[
+						{ required: true, message: 'Write your thoughts to feed people around the world' },
+						() => ({
+							validator(rule, value) {
+								if (value && value.trim().length === 0) {
+									return Promise.reject('Blank text can not be entry')
+								}
+								return Promise.resolve()
+							},
+						})
+					]}
+				>
 					<Input.TextArea placeholder="Start feeding!" rows={4} />
 				</Form.Item>
 				<Form.Item>
