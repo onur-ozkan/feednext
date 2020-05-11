@@ -7,9 +7,9 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "start": "node dist/server",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
+    "start:pm2:dev": "pm2-runtime start pm2.config.js --watch",
     "start:prod": "pm2 start pm2.config.js && tail -f /dev/null",
     "lint": "tslint -p tsconfig.json -c tslint.json",
     "test": "jest",
