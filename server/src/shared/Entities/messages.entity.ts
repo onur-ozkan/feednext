@@ -9,10 +9,10 @@ import {
     AfterLoad,
     BeforeInsert
 } from 'typeorm'
-import { createCipher, createDecipher } from 'crypto'
+import { createCipheriv, createDecipheriv } from 'crypto'
 
 // Local files
-import { configService } from '../Services/config.service'
+import { configService, } from '../Services/config.service'
 
 @Entity('Messages')
 export class MessagesEntity {
@@ -26,7 +26,7 @@ export class MessagesEntity {
     @Column({ type: 'string' })
     conversation_id: string
 
-    @Column({ type: 'string', length: 255 })
+    @Column({ type: 'string', length: 500 })
     text: string
 
     @Column({ type: 'string', length: 17 })
@@ -40,15 +40,23 @@ export class MessagesEntity {
 
     @AfterLoad()
     decryptMessage() {
-        const key = createDecipher(configService.getEnv('ENCRYPTION_ALGORITHM'), configService.getEnv('ENCRYPTION_PASSWORD'))
-        this.text = key.update(this.text, 'hex', 'utf8')
-        this.text += key.final('utf8')
+        const decipher = createDecipheriv(
+            configService.getEnv('ENCRYPTION_ALGORITHM'),
+            Buffer.from(configService.getEnv('ENCRYPTION_KEY')),
+            configService.getEnv('ENCRYPTION_IV')
+        )
+
+        this.text = decipher.update(this.text, 'hex', 'utf8') + decipher.final('utf8')
     }
 
     @BeforeInsert()
     encryptMessage() {
-        const key = createCipher(configService.getEnv('ENCRYPTION_ALGORITHM'), configService.getEnv('ENCRYPTION_PASSWORD'))
-        this.text = key.update(this.text, 'utf8', 'hex')
-        this.text += key.final('hex')
+        const cipher = createCipheriv(
+            configService.getEnv('ENCRYPTION_ALGORITHM'),
+            Buffer.from(configService.getEnv('ENCRYPTION_KEY')),
+            configService.getEnv('ENCRYPTION_IV')
+        )
+
+        this.text = cipher.update(this.text, 'utf8', 'hex') + cipher.final('hex')
     }
 }
