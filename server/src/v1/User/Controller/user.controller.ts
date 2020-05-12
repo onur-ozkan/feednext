@@ -98,16 +98,13 @@ export class UsersController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
-    @Patch(':username')
+    @Patch('update')
     @Roles(Role.User)
     updateUser(
-        @Param('username') username: string,
         @Body() dto: UpdateUserDto,
         @Headers('authorization') bearer: string,
     ): Promise<ISerializeResponse> {
-        if (username !== jwtManipulationService.decodeJwtToken(bearer, 'username')) throw new BadRequestException()
-
-        return this.usersService.updateUser(username, dto)
+        return this.usersService.updateUser(jwtManipulationService.decodeJwtToken(bearer, 'username'), dto)
     }
 
     @Get('verfiy-update-email')
@@ -117,17 +114,12 @@ export class UsersController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
-    @Patch('disable/:username')
+    @Patch('disable')
     @Roles(Role.User)
     disableUser(
-        @Param('username') username: string,
         @Headers('authorization') bearer: string,
     ): Promise<HttpException> {
-        if (username !== jwtManipulationService.decodeJwtToken(bearer, 'username')) {
-            throw new BadRequestException()
-        }
-
-        return this.usersService.disableUser(username)
+        return this.usersService.disableUser(jwtManipulationService.decodeJwtToken(bearer, 'username'))
     }
 
     @Post('send-activation-mail')

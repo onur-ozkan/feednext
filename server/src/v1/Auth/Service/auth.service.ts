@@ -32,7 +32,7 @@ export class AuthService {
     async signUp(dto: CreateAccountDto): Promise<ISerializeResponse> {
         const result: UsersEntity = await this.usersRepository.createUser(dto)
 
-        if (configService.isProduction()) {
+        if (true) {
             const verifyToken = jwt.sign({
                 username: dto.username,
                 email: dto.email,

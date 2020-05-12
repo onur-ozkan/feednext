@@ -1,6 +1,5 @@
 // Nest dependencies
 import { BadRequestException, UnprocessableEntityException } from '@nestjs/common'
-import { JwtModule } from '@nestjs/jwt'
 
 // Other dependencies
 import { createHmac } from 'crypto'
@@ -10,9 +9,7 @@ import * as kmachine from 'keymachine'
 
 // Local files
 import { UsersEntity } from '../Entities/users.entity'
-import { MailService } from '../Services/mail.service'
 import { UpdateUserDto } from 'src/v1/User/Dto/update-user.dto'
-import { MailSenderBody } from '../Services/Interfaces/mail.sender.interface'
 import { CreateAccountDto } from 'src/v1/Auth/Dto/create-account.dto'
 import { LoginDto } from 'src/v1/Auth/Dto/login.dto'
 import { AccountRecoveryDto } from 'src/v1/Auth/Dto/account-recovery.dto'
@@ -21,9 +18,7 @@ import { configService } from '../Services/config.service'
 @EntityRepository(UsersEntity)
 export class UsersRepository extends Repository<UsersEntity> {
 
-    constructor(
-      private readonly mailService: MailService,
-    ) {
+    constructor() {
       super()
     }
 
@@ -95,9 +90,15 @@ export class UsersRepository extends Repository<UsersEntity> {
     }
 
     async updateUser(username: string, dto: UpdateUserDto): Promise<UsersEntity> {
-        const profile: UsersEntity = await this.findOneOrFail({
-            username,
-        })
+        let profile: UsersEntity
+
+        try {
+            profile = await this.findOneOrFail({
+                username
+            })
+        } catch (error) {
+            throw new BadRequestException('Account does not exist')
+        }
 
         if (dto.fullName) profile.full_name = dto.fullName
         if (dto.link) profile.link = dto.link
@@ -108,24 +109,6 @@ export class UsersRepository extends Repository<UsersEntity> {
                 throw new BadRequestException('Old password does not match')
             }
             profile.password = hashedPassword
-        }
-        if (dto.email) {
-            const activateToken: JwtModule = jwt.sign({
-                email: profile.email,
-                username: profile.username,
-                newEmail: dto.email,
-                verifyUpdateEmailToken: true,
-                exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
-            }, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
-
-            const activationUrl: string = `${configService.getEnv('APP_URL')}/api/v1/user/verfiy-update-email?token=${activateToken}`
-            const mailBody: MailSenderBody = {
-                receiver: dto.email,
-                subject: `Verify Your New Email [${profile.username}]`,
-                text: activationUrl,
-            }
-
-            await this.mailService.send(mailBody)
         }
 
         return await this.save(profile)
@@ -168,16 +151,18 @@ export class UsersRepository extends Repository<UsersEntity> {
     }
 
     async disableUser(username: string): Promise<void>  {
+        let profile: UsersEntity
+
         try {
-            const profile = await this.findOneOrFail({
+             profile = await this.findOneOrFail({
                 username,
             })
-
-            profile.is_active = false
-            await this.save(profile)
         } catch (err) {
             throw new BadRequestException('User could not found')
         }
+
+        profile.is_active = false
+        await this.save(profile)
     }
 
     async activateUser(decodedToken: { email: string, username: string }): Promise<void>  {

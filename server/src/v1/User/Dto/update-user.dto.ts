@@ -2,7 +2,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 
 // Other dependencies
-import { IsEmail, IsOptional, Length, MaxLength, NotContains, IsNotEmpty, ValidateIf } from 'class-validator'
+import { IsEmail, IsOptional, Length, MaxLength, NotContains, IsNotEmpty, ValidateIf, Matches } from 'class-validator'
 
 export class UpdateUserDto {
     @ApiProperty({
@@ -10,7 +10,10 @@ export class UpdateUserDto {
         example: 'Updated Name',
     })
     @IsOptional()
-    @MaxLength(50)
+    @Matches(/^(?!\s*$).+/, {
+        message: 'Name can not be empty or whitespace'
+    })
+    @Length(3, 50)
     fullName: string
 
     @ApiProperty({

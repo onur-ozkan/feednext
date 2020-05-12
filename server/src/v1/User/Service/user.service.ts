@@ -76,6 +76,26 @@ export class UserService {
 
     async updateUser(usernameParam: string, dto: UpdateUserDto): Promise<ISerializeResponse> {
         const profile = await this.usersRepository.updateUser(usernameParam, dto)
+
+        if (dto.email) {
+            const activateToken: string = jwt.sign({
+                email: profile.email,
+                username: profile.username,
+                newEmail: dto.email,
+                verifyUpdateEmailToken: true,
+                exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
+            }, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
+
+            const activationUrl: string = `${configService.getEnv('APP_URL')}/api/v1/user/verfiy-update-email?token=${activateToken}`
+            const mailBody: MailSenderBody = {
+                receiver: dto.email,
+                subject: `Verify Your New Email [${profile.username}]`,
+                text: activationUrl,
+            }
+
+            await this.mailService.send(mailBody)
+        }
+
         const id = String(profile.id)
 
         const properties: string[] = ['id', 'password', 'is_active', 'is_verified', 'refresh_token']
