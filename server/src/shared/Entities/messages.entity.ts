@@ -10,6 +10,8 @@ import {
     BeforeInsert
 } from 'typeorm'
 import { createCipher, createDecipher } from 'crypto'
+
+// Local files
 import { configService } from '../Services/config.service'
 
 @Entity('Messages')

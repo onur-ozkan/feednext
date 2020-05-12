@@ -55,8 +55,9 @@ export class MessageService {
         return serializerService.serializeResponse('user_conversation_list', result)
     }
 
-    async getMessageListByConversationId (conversationId: string, skip: string): Promise<ISerializeResponse>  {
+    async getMessageListByConversationId (username: string, conversationId: string, skip: string): Promise<ISerializeResponse>  {
         if (!this.validator.isMongoId(conversationId)) throw new BadRequestException('Conversation id must be a MongoId')
+        await this.conversationsRepository.verifyUserAccessToConversation(username, conversationId)
 
         const result = await this.messagesRepository.getMessageListByConversationId(conversationId, skip)
         return serializerService.serializeResponse('conversation_message_list', result)

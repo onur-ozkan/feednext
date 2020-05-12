@@ -31,6 +31,19 @@ export class ConversationsRepository extends Repository<ConversationsEntity> {
         return newConversation
     }
 
+    async verifyUserAccessToConversation(username: string, conversationId: string): Promise<void> {
+        try {
+            await this.findOneOrFail({
+                where: {
+                    _id: ObjectId(conversationId),
+                    participants: { $in: [username] }
+                }
+            })
+        } catch (error) {
+            throw new BadRequestException('User does not have access to the conversation or conversation does not exist')
+        }
+    }
+
     async getConversationListByUsername(username: string, skip: string): Promise<{ conversations: ConversationsEntity[], count: number }> {
         const [conversations, total] = await this.findAndCount({
             where: {

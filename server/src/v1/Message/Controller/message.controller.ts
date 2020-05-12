@@ -32,9 +32,10 @@ export class MessageController {
     @Get(':conversationId/messages')
     getMessageList(
         @Param('conversationId') conversationId,
+        @Headers('authorization') bearer: string,
         @Query('skip') skip: string
     ): Promise<ISerializeResponse> {
-        return this.messageService.getMessageListByConversationId(conversationId, skip)
+        return this.messageService.getMessageListByConversationId(jwtManipulationService.decodeJwtToken(bearer, 'username'), conversationId, skip)
     }
 
     @ApiBearerAuth()
