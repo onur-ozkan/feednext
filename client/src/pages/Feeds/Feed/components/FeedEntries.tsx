@@ -15,6 +15,7 @@ const FeedEntries: React.FC = ({ titleData, sortEntriesBy, setSortEntriesBy, ent
 	const paginationOptions = {
 		size: 'small',
 		showLessItems: true,
+		hideOnSinglePage: true,
 		showQuickJumper: true,
 		pageSize: 10,
 		total: titleData.attributes.entry_count,

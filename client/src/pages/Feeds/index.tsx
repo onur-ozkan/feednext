@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Card, List, Tag, message, BackTop, TreeSelect, Row, Col, Typography, Dropdown, Menu, Modal } from 'antd'
-import { LoadingOutlined, ArrowUpOutlined, LinkOutlined, RiseOutlined, FilterFilled, CheckOutlined, StarFilled, FireFilled } from '@ant-design/icons'
+import { Button, Card, List, Tag, message, BackTop, TreeSelect, Row, Col, Typography, Dropdown, Menu, Modal, notification } from 'antd'
+import { LoadingOutlined, ArrowUpOutlined, LinkOutlined, RiseOutlined, FilterFilled, CheckOutlined, StarFilled, FireFilled, MessageOutlined } from '@ant-design/icons'
 import '@ant-design/compatible/assets/index.css'
 
 import ArticleListContent from './components/ArticleListContent'
@@ -10,7 +10,6 @@ import { useSelector } from 'react-redux'
 import { handleArrayFiltering } from '@/services/utils'
 import { API_URL } from '../../../config/constants'
 import { Link } from 'umi'
-import styles from './style.less'
 
 const Feeds = (): JSX.Element => {
 	const globalState = useSelector((state: any) => state.global)
@@ -24,7 +23,6 @@ const Feeds = (): JSX.Element => {
 	const [skipValueForPagination, setSkipValueForPagination] = useState(0)
 
 	useEffect(() => {
-		console.log(globalState)
 		setFeed([])
 		setSkipValueForPagination(0)
 	}, [categoryFilter, sortBy])
@@ -171,24 +169,21 @@ const Feeds = (): JSX.Element => {
 			<div style={{ marginTop: -20 }}>
 				{trendingCategories.map(category => {
 					return (
-						<List.Item
-							key={category.id}
-							style={{ marginBottom: -10 }}
-							actions={[
-								<Button onClick={(): void => setCategoryFilter(category.id)} type="primary" key={category.id}>
-									<Typography.Text
-										style={{ color: 'white' }}
-										strong
-									>
-										Display
-									</Typography.Text>
-								</Button>
-							]}
-						>
-							<Typography.Text strong>
-								{category.name.toUpperCase()}
-							</Typography.Text>
-						</List.Item>
+						<Row key={category.id} style={{ marginBottom: 10, marginTop: 10  }}>
+							<Col>
+								<Typography.Text strong>
+									{category.name.toUpperCase()}
+								</Typography.Text>
+							</Col>
+							<Button onClick={(): void => setCategoryFilter(category.id)} type="primary" key={category.id}>
+								<Typography.Text
+									style={{ color: 'white' }}
+									strong
+								>
+									Display
+								</Typography.Text>
+							</Button>
+						</Row>
 					)
 				})}
 			</div>

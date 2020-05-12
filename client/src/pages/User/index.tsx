@@ -78,17 +78,12 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 
 			const feedList = await res.data.attributes.titles.map((title) =>
 				<Row key={title.id} style={{ padding: 5 }}>
-					<Col span={4}>
-						<Tag> {handleArrayFiltering(categoryList, title.category_id).name} </Tag>
-					</Col>
-					<Col span={16}>
+					<Col>
 						{title.name}
 					</Col>
-					<Col span={4}>
-						<Button onClick={(): void => router.push(`/feeds/${title.slug}`)} size="small" type="primary">
-							Open
-						</Button>
-					</Col>
+					<Button onClick={(): void => router.push(`/feeds/${title.slug}`)} size="small" type="primary">
+						Open
+					</Button>
 				</Row>
 			)
 			setTabView(
@@ -119,17 +114,14 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 
 			const entryList = await res.data.attributes.entries.map((entry) =>
 				<Row key={entry.id} style={{ padding: 5 }}>
-					<Col span={20}>
+					<Col>
 						<Typography.Paragraph ellipsis>
 							{entry.text}
 						</Typography.Paragraph>
 					</Col>
-					<Col span={1} />
-					<Col span={3}>
-						<Button onClick={(): void => router.push(`/entry/${entry.id}`)} size="small" type="primary">
-							Open
-						</Button>
-					</Col>
+					<Button onClick={(): void => router.push(`/entry/${entry.id}`)} size="small" type="primary">
+						Open
+					</Button>
 				</Row>
 			)
 			setTabView(
@@ -163,17 +155,14 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 
 			const entryList = await res.data.attributes.entries.map((entry) =>
 				<Row key={entry.id} style={{ padding: 5 }}>
-					<Col span={20}>
+					<Col>
 						<Typography.Paragraph ellipsis>
 							{entry.text}
 						</Typography.Paragraph>
 					</Col>
-					<Col span={1} />
-					<Col span={3}>
-						<Button onClick={(): void => router.push(`/entry/${entry.id}`)} size="small" type="primary">
-							Open
-						</Button>
-					</Col>
+					<Button onClick={(): void => router.push(`/entry/${entry.id}`)} size="small" type="primary">
+						Open
+					</Button>
 				</Row>
 			)
 			setTabView(
@@ -202,6 +191,7 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 			showQuickJumper={true}
 			defaultCurrent={1}
 			pageSize={10}
+			hideOnSinglePage
 			total={totalItems}
 			onChange={
 				voteType ?

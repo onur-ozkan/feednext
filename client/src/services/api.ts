@@ -49,6 +49,15 @@ export const fetchMessagesByConversationId = (
 	}
 )
 
+export const deleteConversation = (
+	accessToken: string,
+	conversationId: string
+): Promise<AxiosResponse> => axios.delete(`/v1/message/${conversationId}`, {
+	headers: {
+		'Authorization': `Bearer ${accessToken}`,
+	}
+})
+
 export const updateUser = (username: string, accessToken: string, payload: {
 	fullName?: string,
 	email?: string,

@@ -12,10 +12,10 @@ const HeaderSearch: React.FC = (): JSX.Element => {
 
 	const [value, setValue] = useState('')
 	const [searchMode, setSearchMode] = useState(false)
-	const [autoCompleteView, setAutoCompleteView] = useState(null)
+	const [autoCompleteData, setAutoCompleteData] = useState(null)
 
 	const enterSearchMode = (): void => {
-		if (autoCompleteView) return
+		if (autoCompleteData) return
 		setSearchMode(true)
 		inputEl.current.focus()
 	}
@@ -26,14 +26,14 @@ const HeaderSearch: React.FC = (): JSX.Element => {
 	}
 
 	const handleTitleRouting = (route: string): void => {
-		setAutoCompleteView(null)
+		setAutoCompleteData(null)
 		setSearchMode(false)
 		setValue('')
 		router.push(route)
 	}
 
 	useEffect(() => {
-		if (value === '') setAutoCompleteView(null)
+		if (value === '') setAutoCompleteData(null)
 
 		if (value.length >= 3) {
 			searchTitle(value).then(res => {
@@ -49,8 +49,8 @@ const HeaderSearch: React.FC = (): JSX.Element => {
 						options: []
 					}
 				})
-				if (foundTitles.length === 0) setAutoCompleteView(null)
-				else setAutoCompleteView(foundTitles)
+				if (foundTitles.length === 0) setAutoCompleteData(null)
+				else setAutoCompleteData(foundTitles)
 			})
 		}
 	}, [value])
@@ -69,7 +69,7 @@ const HeaderSearch: React.FC = (): JSX.Element => {
 				value={value}
 				onChange={(value: string): void => setValue(value)}
 				onBlur={leaveSearchMode}
-				options={autoCompleteView}
+				options={autoCompleteData}
 			>
 				<Input
 					ref={inputEl} placeholder="Search Feeds.."

@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { Redirect, router } from 'umi'
 import { stringify } from 'querystring'
 import { getAuthorityFromRouter, handleSessionExpiration, forgeTreeSelectData } from '@/services/utils'
-import { User } from '@/../config/constants'
+import { User, SOCKET_URL } from '@/../config/constants'
 import { Result, Button } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
-import { SET_ACCESS_TOKEN, SET_CATEGORY_LIST, SET_CATEGORY_TREE } from '@/redux/Actions/Global'
+import { SET_ACCESS_TOKEN, SET_CATEGORY_LIST, SET_CATEGORY_TREE, SET_WS_SOCKET } from '@/redux/Actions/Global'
 import { checkAccessToken, refreshToken, fetchAllCategories } from '@/services/api'
+import io from 'socket.io-client'
 import PageLoading from '@/components/PageLoading'
 
 const RouteHandler = ({ children, route }) => {
@@ -16,18 +17,30 @@ const RouteHandler = ({ children, route }) => {
 	const dispatch = useDispatch()
 
 	const checkSessionSituation = async (): Promise<void> => {
-		await checkAccessToken(accessToken).catch(_error => {
-			refreshToken().then(res => {
-				dispatch({
-					type: SET_ACCESS_TOKEN,
-					token: res.data.attributes.access_token
-				})
-			}).catch(_e => handleSessionExpiration())
+		await checkAccessToken(accessToken)
+			.catch(_error => {
+				refreshToken().then(res => {
+					dispatch({
+						type: SET_ACCESS_TOKEN,
+						token: res.data.attributes.access_token
+					})
+				}).catch(_e => handleSessionExpiration())
+			})
+		dispatch({
+			type: SET_WS_SOCKET,
+			socket: io.connect(SOCKET_URL, {
+				query: {
+					Authorization: `Bearer ${accessToken}`,
+					transports: ['websocket'],
+					secure: true
+				}
+			})
 		})
 	}
 
 	const handleInitialProcessesOnRoute = async (): Promise<void> => {
 		if (accessToken) await checkSessionSituation()
+
 		await fetchAllCategories().then(res => {
 			dispatch({
 				type: SET_CATEGORY_LIST,

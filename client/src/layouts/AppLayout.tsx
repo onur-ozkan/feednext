@@ -1,4 +1,4 @@
-import ProLayout, { MenuDataItem, Settings, DefaultFooter } from '@ant-design/pro-layout'
+import ProLayout, { MenuDataItem, Settings } from '@ant-design/pro-layout'
 import React from 'react'
 import { Link } from 'umi'
 import { Dispatch } from 'redux'
@@ -21,7 +21,7 @@ export declare interface AppLayoutProps {
 	settings: Settings
 	dispatch: Dispatch
 }
-export type AppLayoutContext = { [K in 'location']: AppLayoutProps[K] } & {
+export type AppLayoutContext = { [K in 'location']: AppLayoutProps } & {
 	breadcrumbNameMap: {
 		[path: string]: MenuDataItem
 	}
@@ -66,7 +66,7 @@ const AppLayout: React.FC<AppLayoutProps> = props => {
 			{...settings}
 		>
 			<Row style={{ backgroundColor: 'transparent', justifyContent: 'center' }}>
-				<Col xxl={12} xl={16} lg={18} md={22} sm={24}>
+				<Col xxl={16} xl={16} lg={18} md={22} sm={24}>
 					{props.children}
 				</Col>
 			</Row>

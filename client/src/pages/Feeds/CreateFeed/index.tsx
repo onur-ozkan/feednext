@@ -34,7 +34,6 @@ const CreateFeed: React.FC = () => {
 
 	useEffect(() => {
 		if (isRequestReady) {
-			console.log(createTitleFormData)
 			const titleFormData = new FormData()
 
 			titleFormData.append('name', createTitleFormData.name)

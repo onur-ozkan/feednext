@@ -157,10 +157,10 @@ const Settings = (): JSX.Element => {
 								}),
 								({ getFieldValue }) => ({
 									validator(rule, value) {
-										if (!value || getFieldValue('password') === value) {
-											return Promise.resolve()
+										if (value || getFieldValue('password') === value) {
+											return Promise.reject('The two passwords that you entered do not match!')
 										}
-										return Promise.reject('The two passwords that you entered do not match!')
+										return Promise.resolve()
 									},
 								}),
 							]}

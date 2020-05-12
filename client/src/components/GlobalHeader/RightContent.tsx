@@ -30,16 +30,12 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
 		className = `${styles.right}  ${styles.dark}`
 	}
 
-	const routeTo = (path: string): void => {
-		router.push(path)
-	}
-
 	const handleAuthorizedElements = (): JSX.Element => {
 		if (user) {
 			return (
 				<>
 					<Button
-						onClick={(): void => routeTo('/feeds/create-feed')}
+						onClick={(): void => router.push('/feeds/create-feed')}
 						type="primary"
 						shape="round"
 						icon={<PlusCircleOutlined />}
@@ -53,7 +49,7 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
 		}
 
 		return (
-			<Button onClick={(): void => routeTo('/auth/sign-in')} type="primary" shape="round" icon={<LoginOutlined />}>
+			<Button onClick={(): void => router.push('/auth/sign-in')} type="primary" shape="round" icon={<LoginOutlined />}>
 				Sign In
 			</Button>
 		)
