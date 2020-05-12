@@ -8,7 +8,7 @@ import {
     UpdateDateColumn,
     BeforeInsert,
 } from 'typeorm'
-import * as crypto from 'crypto'
+import { createHmac } from 'crypto'
 
 @Entity('Users')
 export class UsersEntity {
@@ -77,7 +77,7 @@ export class UsersEntity {
 
     @BeforeInsert()
     hashPassword() {
-        this.password = crypto.createHmac('sha256', this.password).digest('hex')
+        this.password = createHmac('sha256', this.password).digest('hex')
     }
 
     @BeforeInsert()

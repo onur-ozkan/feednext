@@ -6,7 +6,11 @@ import {
     ObjectIdColumn,
     CreateDateColumn,
     UpdateDateColumn,
+    AfterLoad,
+    BeforeInsert
 } from 'typeorm'
+import { createCipher, createDecipher } from 'crypto'
+import { configService } from '../Services/config.service'
 
 @Entity('Messages')
 export class MessagesEntity {
@@ -31,4 +35,18 @@ export class MessagesEntity {
 
     @UpdateDateColumn({ type: 'date' })
     updated_at: Date
+
+    @AfterLoad()
+    decryptMessage() {
+        const key = createDecipher(configService.getEnv('ENCRYPTION_ALGORITHM'), configService.getEnv('ENCRYPTION_PASSWORD'))
+        this.text = key.update(this.text, 'hex', 'utf8')
+        this.text += key.final('utf8')
+    }
+
+    @BeforeInsert()
+    encryptMessage() {
+        const key = createCipher(configService.getEnv('ENCRYPTION_ALGORITHM'), configService.getEnv('ENCRYPTION_PASSWORD'))
+        this.text = key.update(this.text, 'utf8', 'hex')
+        this.text += key.final('hex')
+    }
 }

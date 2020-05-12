@@ -3,10 +3,10 @@ import { BadRequestException, UnprocessableEntityException } from '@nestjs/commo
 import { JwtModule } from '@nestjs/jwt'
 
 // Other dependencies
-import * as crypto from 'crypto'
+import { createHmac } from 'crypto'
+import { Repository, EntityRepository } from 'typeorm'
 import * as jwt from 'jsonwebtoken'
 import * as kmachine from 'keymachine'
-import { Repository, EntityRepository } from 'typeorm'
 
 // Local files
 import { UsersEntity } from '../Entities/users.entity'
@@ -59,7 +59,7 @@ export class UsersRepository extends Repository<UsersEntity> {
     }
 
     async validateUser(dto: LoginDto): Promise<UsersEntity> {
-        const passwordHash: string = crypto.createHmac('sha256', dto.password).digest('hex')
+        const passwordHash: string = createHmac('sha256', dto.password).digest('hex')
         try {
             return await this.findOneOrFail({
                 where: {
@@ -103,8 +103,8 @@ export class UsersRepository extends Repository<UsersEntity> {
         if (dto.link) profile.link = dto.link
         if (dto.biography) profile.biography = dto.biography
         if (dto.password) {
-            const hashedPassword = crypto.createHmac('sha256', dto.password).digest('hex')
-            if (profile.password !== crypto.createHmac('sha256', dto.oldPassword).digest('hex')) {
+            const hashedPassword = createHmac('sha256', dto.password).digest('hex')
+            if (profile.password !== createHmac('sha256', dto.oldPassword).digest('hex')) {
                 throw new BadRequestException('Old password does not match')
             }
             profile.password = hashedPassword
@@ -207,7 +207,7 @@ export class UsersRepository extends Repository<UsersEntity> {
         else if (!account.is_active) throw new BadRequestException('Account is not active')
 
         const generatePassword: string = await kmachine.keymachine()
-        account.password = crypto.createHmac('sha256', generatePassword).digest('hex')
+        account.password = createHmac('sha256', generatePassword).digest('hex')
         return {
             account: await this.save(account),
             password: generatePassword,
