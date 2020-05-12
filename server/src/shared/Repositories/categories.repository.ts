@@ -116,7 +116,7 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
                 }
             },
         })
-        await this.delete(childCategories)
+        await this.remove(childCategories)
     }
 
 }
