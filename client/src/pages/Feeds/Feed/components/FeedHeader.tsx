@@ -1,9 +1,34 @@
+// Antd dependencies
+import {
+	Button,
+	Row,
+	PageHeader,
+	Tag,
+	Rate,
+	Col,
+	Modal,
+	message,
+	Popconfirm,
+	Statistic,
+	Typography,
+	Card
+} from 'antd'
+import {
+	InfoCircleOutlined,
+	CheckOutlined,
+	LoadingOutlined,
+	DeleteFilled,
+	EditOutlined,
+	WarningOutlined
+} from '@ant-design/icons'
+
+// Other dependencies
 import React, { useState } from 'react'
-import { Button, Row, PageHeader, Tag, Rate, Col, Modal, message, Popconfirm, Statistic, Typography, Card } from 'antd'
-import { InfoCircleOutlined, CheckOutlined, LoadingOutlined, DeleteFilled, EditOutlined, WarningOutlined, LikeOutlined } from '@ant-design/icons'
-import { getUserRateOfTitle, rateTitle, deleteTitle } from '@/services/api'
 import { format, parseISO } from 'date-fns'
 import { router } from 'umi'
+
+// Local files
+import { getUserRateOfTitle, rateTitle, deleteTitle } from '@/services/api'
 import { API_URL } from '@/../config/constants'
 
 const FeedHeader: React.FC = (props: any): JSX.Element => {

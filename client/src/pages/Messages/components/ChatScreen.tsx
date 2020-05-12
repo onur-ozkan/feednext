@@ -1,14 +1,19 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import React, { useState, useEffect } from 'react'
+// Antd dependencies
 import { Avatar, List, Input, Button, Form, Divider, Row, Col, Typography, Popconfirm } from 'antd'
+import { DeleteFilled, WarningOutlined } from '@ant-design/icons'
+
+// Other dependencies
+import React, { useState, useEffect } from 'react'
+import { format, parseISO, formatISO } from 'date-fns'
+import { Link } from 'umi'
+
+// Local files
 import { fetchMessagesByConversationId } from '@/services/api'
 import { API_URL } from '@/../config/constants'
 import PageLoading from '@/components/PageLoading'
-import { Link } from 'umi'
-import { format, parseISO, formatISO } from 'date-fns'
-import { DeleteFilled, WarningOutlined } from '@ant-design/icons'
 
-const ChatScreen = (params) => {
+const ChatScreen = (params: any) => {
 	const [messageList, setMessageList] = useState<any[] | null>(null)
 	const [form] = Form.useForm()
 

@@ -1,8 +1,13 @@
-import React, { useContext } from 'react'
+// Antd dependencies
 import { Form, Button, Descriptions, Divider, Modal, Avatar } from 'antd'
-import styles from './index.less'
-import TextArea from 'antd/lib/input/TextArea'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
+import TextArea from 'antd/lib/input/TextArea'
+
+// Other dependencies
+import React, { useContext } from 'react'
+
+// Local files
+import styles from './index.less'
 import StepContext from '../../StepContext'
 
 const formItemLayout = {

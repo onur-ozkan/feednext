@@ -1,6 +1,9 @@
-import React, { useState } from 'react'
-import { message, Upload, Button } from 'antd'
+// Antd dependencies
+import { Button, Upload, message } from 'antd'
 import { LoadingOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons'
+
+// Other dependencies
+import React, { useState } from 'react'
 
 const ImageUpload: React.FC = ({ onImageTake, onRemoveImage, defaultUrl }): JSX.Element => {
 	const [isImageLoading, setIsImageLoading] = useState(false)

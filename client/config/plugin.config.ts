@@ -1,6 +1,6 @@
-import path from 'path'
-
+// Other dependencies
 import * as IWebpackChainConfig from 'webpack-chain'
+import path from 'path'
 
 function getModulePackageName(module: { context: string }) {
 	if (!module.context) return null

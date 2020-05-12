@@ -1,13 +1,17 @@
-import { Form } from '@ant-design/compatible'
-import '@ant-design/compatible/assets/index.css'
+// Antd dependencies
 import { Button, Col, Input, Row } from 'antd'
-import React, { Component } from 'react'
-
+import { Form } from '@ant-design/compatible'
 import { FormComponentProps } from '@ant-design/compatible/es/form'
+
+// Other dependencies
+import React, { Component } from 'react'
 import omit from 'omit.js'
-import ItemMap from './map'
+
+// Local files
 import LoginContext, { LoginContextProps } from './LoginContext'
+import ItemMap from './map'
 import styles from './index.less'
+import '@ant-design/compatible/assets/index.css'
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 

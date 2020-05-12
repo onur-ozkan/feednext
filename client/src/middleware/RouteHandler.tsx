@@ -1,14 +1,21 @@
+// Antd dependencies
+import { Button, Result  } from 'antd'
+
+// Other dependencies
 import React, { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { Redirect, router } from 'umi'
 import { stringify } from 'querystring'
-import { getAuthorityFromRouter, handleSessionExpiration, forgeTreeSelectData } from '@/services/utils'
-import { User, SOCKET_URL } from '@/../config/constants'
-import { Result, Button } from 'antd'
-import { useSelector, useDispatch } from 'react-redux'
-import { SET_ACCESS_TOKEN, SET_CATEGORY_LIST, SET_CATEGORY_TREE, SET_WS_SOCKET } from '@/redux/Actions/Global'
-import { checkAccessToken, refreshToken, fetchAllCategories } from '@/services/api'
 import io from 'socket.io-client'
+
+// Local files
+import { User, SOCKET_URL } from '@/../config/constants'
+import { checkAccessToken, refreshToken, fetchAllCategories } from '@/services/api'
 import PageLoading from '@/components/PageLoading'
+import { getAuthorityFromRouter, handleSessionExpiration, forgeTreeSelectData } from '@/services/utils'
+import { SET_ACCESS_TOKEN, SET_CATEGORY_LIST, SET_CATEGORY_TREE, SET_WS_SOCKET } from '@/redux/Actions/Global'
+
+
 
 const RouteHandler = ({ children, route }) => {
 	const [isLoading, setIsLoading] = useState(true)

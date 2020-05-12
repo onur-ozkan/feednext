@@ -1,12 +1,17 @@
-import React, { useEffect, useState } from 'react'
+// Antd dependencies
 import { Comment, Tag, Avatar, Tooltip, PageHeader, Row, Col, Rate, Divider } from 'antd'
-import { fetchEntryByEntryId, fetchTitle, getAverageTitleRate } from '@/services/api'
-import NotFoundPage from '../404'
 import { ArrowUpOutlined } from '@ant-design/icons'
-import { handleArrayFiltering } from '@/services/utils'
+
+// Other dependencies
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { router } from 'umi'
+
+// Local files
+import { fetchEntryByEntryId, fetchTitle, getAverageTitleRate } from '@/services/api'
+import { handleArrayFiltering } from '@/services/utils'
 import PageLoading from '@/components/PageLoading'
+import NotFoundPage from '../404'
 
 const Entry = ({ computedMatch }): JSX.Element => {
 	const categoryList = useSelector((state: any) => state.global.categoryList)

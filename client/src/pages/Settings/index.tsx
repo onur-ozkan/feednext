@@ -1,11 +1,16 @@
-import React, { useEffect, useState } from 'react'
+// Antd dependencies
 import { Card, Tabs, Typography, Row, Col, Avatar, Input, Button, Divider, Form, Upload, message } from 'antd'
 import { UserOutlined, LoadingOutlined, SettingOutlined, UploadOutlined } from '@ant-design/icons'
-import styles from './index.less'
-import { API_URL } from '../../../config/constants'
+
+// Other dependencies
+import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { updateUser, uploadProfilePicture } from '@/services/api'
+
+// Local files
 import { UPDATE_USER } from '@/redux/Actions/User'
+import { updateUser, uploadProfilePicture } from '@/services/api'
+import { API_URL } from '../../../config/constants'
+import styles from './index.less'
 
 interface UpdatePayload {
 	fullName?: string

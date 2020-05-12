@@ -1,13 +1,39 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import React from 'react'
-import { Tooltip, List, Comment, Card, Avatar, message, Typography, Button, Popconfirm, Row, Col, Dropdown, Menu } from 'antd'
-import { ArrowUpOutlined, ArrowDownOutlined, DeleteOutlined, InfoCircleOutlined,  DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons'
-import AddEntry from './AddEntry'
+// Antd dependencies
+import {
+	Tooltip,
+	List,
+	Comment,
+	Card,
+	Avatar,
+	message,
+	Typography,
+	Button,
+	Popconfirm,
+	Row,
+	Col,
+	Dropdown,
+	Menu
+} from 'antd'
+import {
+	ArrowUpOutlined,
+	ArrowDownOutlined,
+	DeleteOutlined,
+	InfoCircleOutlined,
+	 DoubleLeftOutlined,
+	 DoubleRightOutlined
+} from '@ant-design/icons'
+
+// Other dependencies
 import { useSelector } from 'react-redux'
-import { voteEntry, undoEntryVote, updateEntry, deleteEntry } from '@/services/api'
+
+// Local files
+import React from 'react'
 import { router } from 'umi'
-import globalStyles from '@/global.less'
+import { voteEntry, undoEntryVote, updateEntry, deleteEntry } from '@/services/api'
 import { SuperAdmin, API_URL } from '@/../config/constants'
+import AddEntry from './AddEntry'
+import globalStyles from '@/global.less'
 
 const FeedEntries: React.FC = ({ titleData, sortEntriesBy, setSortEntriesBy, entryList, handleEntryFetching, setEntryList, accessToken }): JSX.Element => {
 	const userState = useSelector((state: any) => state.user?.attributes.user)

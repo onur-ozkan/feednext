@@ -1,14 +1,17 @@
+// Antd dependencies
 import { Checkbox, message, Form, Input, Tabs, Button } from 'antd'
-import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale'
-import React from 'react'
 
-import Link from 'umi/link'
+// Other dependencies
+import React from 'react'
 import { useDispatch } from 'react-redux'
-import styles from './style.less'
-import { signIn } from '@/services/api'
 import { router } from 'umi'
+import Link from 'umi/link'
+
+// Local files
 import { SIGN_IN } from '@/redux/Actions/User'
 import { SET_ACCESS_TOKEN } from '@/redux/Actions/Global'
+import { signIn } from '@/services/api'
+import styles from './style.less'
 
 export declare interface FormDataType {
 	usernameOrEmail: string
@@ -52,9 +55,7 @@ const Login: React.FunctionComponent = () => {
 				<Tabs>
 					<Tabs.TabPane
 						key="sign-in"
-						tab={formatMessage({
-							id: 'userandlogin.login.tab-login-signin',
-						})}
+						tab="Sign In"
 					>
 						<Form.Item
 							name="usernameOrEmail"
@@ -73,10 +74,10 @@ const Login: React.FunctionComponent = () => {
 
 						<Form.Item>
 							<Button className={styles.submit} size="large" type="primary" htmlType="submit">
-								Submit
+								Login
 							</Button>
 							<Link className={styles.register} to="/auth/sign-up">
-								<FormattedMessage id="userandlogin.login.signup" />
+								Create an Account
 							</Link>
 						</Form.Item>
 					</Tabs.TabPane>

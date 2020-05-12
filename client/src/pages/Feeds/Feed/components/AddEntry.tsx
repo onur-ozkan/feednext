@@ -1,5 +1,10 @@
-import React, { useState } from 'react'
+// Antd dependencies
 import { Button, Input, Form, Card, message, Typography } from 'antd'
+
+// Other files
+import React, { useState } from 'react'
+
+// Local files
 import { createEntry } from '@/services/api'
 
 const AddEntry: React.FC = ({ titleId, accessToken, setEntryList }) => {

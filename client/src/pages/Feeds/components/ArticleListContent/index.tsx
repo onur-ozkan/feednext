@@ -1,8 +1,13 @@
+// Antd dependencies
 import { Avatar } from 'antd'
+
+// Other dependencies
 import React from 'react'
-import styles from './index.less'
 import { router } from 'umi'
 import { format, parseISO } from 'date-fns'
+
+// Local files
+import styles from './index.less'
 
 declare interface ArticleListContentProps {
 	data: any

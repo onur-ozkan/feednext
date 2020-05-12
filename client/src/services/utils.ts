@@ -1,8 +1,13 @@
-import { parse, ParsedUrlQuery } from 'querystring'
-import pathRegexp from 'path-to-regexp'
-import { persistor } from '@/redux/store'
+// Antd dependencies
 import { message } from 'antd'
+
+// Other dependencies
+import { parse, ParsedUrlQuery } from 'querystring'
 import { router } from 'umi'
+import pathRegexp from 'path-to-regexp'
+
+// Local files
+import { persistor } from '@/redux/store'
 
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/
 

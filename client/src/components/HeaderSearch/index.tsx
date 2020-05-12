@@ -1,11 +1,16 @@
+// Antd dependencies
 import { AutoComplete, Input, Typography } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
-import React, { useRef, useState, useEffect } from 'react'
 
-import classNames from 'classnames'
-import styles from './index.less'
-import { searchTitle } from '@/services/api'
+// Other dependencies
+import React, { useRef, useState, useEffect } from 'react'
 import { router } from 'umi'
+import classNames from 'classnames'
+
+// Local files
+import { searchTitle } from '@/services/api'
+import styles from './index.less'
+
 
 const HeaderSearch: React.FC = (): JSX.Element => {
 	const inputEl = useRef(null)

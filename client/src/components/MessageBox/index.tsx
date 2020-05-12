@@ -1,9 +1,13 @@
+// Antd dependencies
+import { Badge } from 'antd'
 import { InboxOutlined } from '@ant-design/icons'
 
-import { Badge } from 'antd'
+// Other dependencies
 import React from 'react'
-import styles from './index.less'
 import { router } from 'umi'
+
+// Local files
+import styles from './index.less'
 
 const MessageBox = ({ count }: { count: number }): JSX.Element => {
 	const handleOnClick = (): void => router.push('/messages')

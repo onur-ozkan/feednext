@@ -1,9 +1,13 @@
-import React, { useContext, useState } from 'react'
-import { Form, Button, Input, TreeSelect, Upload, message } from 'antd'
-import styles from './index.less'
-import StepContext from '../../StepContext'
-import { LoadingOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons'
+// Antd dependencies
+import { Form, Button, Input, TreeSelect } from 'antd'
+
+// Other dependencies
+import React, { useContext } from 'react'
+
+// Local files
 import ImageUpload from '@/components/ImageUpload'
+import StepContext from '../../StepContext'
+import styles from './index.less'
 
 const formItemLayout = {
 	labelCol: {

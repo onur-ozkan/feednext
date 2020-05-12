@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { Card, Row, Col, Avatar, Typography, Tag, Tabs, Button, Pagination, Divider, Empty, Tooltip } from 'antd'
-import { GridContent } from '@ant-design/pro-layout'
+// Antd dependencies
+import { Card, Row, Col, Avatar, Typography, Tabs, Button, Pagination, Divider, Empty, Tooltip } from 'antd'
 import {
 	EditOutlined,
 	DownOutlined,
@@ -13,17 +12,21 @@ import {
 	LinkOutlined,
 	SolutionOutlined,
 } from '@ant-design/icons'
+import { GridContent } from '@ant-design/pro-layout'
+
+// Other dependencies
+import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { fetchAllEntriesByAuthor, fetchUserByUsername, fetchUserVotes, fetchAllFeeds } from '@/services/api'
 import { router } from 'umi'
-import NotFoundPage from '../404'
-import { handleArrayFiltering } from '@/services/utils'
-import { API_URL } from '../../../config/constants'
+
+// Local files
+import { fetchAllEntriesByAuthor, fetchUserByUsername, fetchUserVotes, fetchAllFeeds } from '@/services/api'
 import PageLoading from '@/components/PageLoading'
+import NotFoundPage from '../404'
+import { API_URL } from '../../../config/constants'
 
 const User: React.FC = ({ computedMatch }): JSX.Element => {
 	const userState = useSelector((state: any) => state.user?.attributes.user)
-	const categoryList = useSelector((state: any) => state.global.categoryList)
 
 	const [user, setUser] = useState(userState || null)
 	const [isUserFound, setIsUserFound] = useState<boolean | null>(null)

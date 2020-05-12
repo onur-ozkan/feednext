@@ -1,13 +1,18 @@
+// Antd dependencies
 import { Avatar, Menu } from 'antd'
-import { FormattedMessage } from 'umi-plugin-react/locale'
+import { UserOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons'
+
+// Other dependencies
 import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
+import { router } from 'umi'
+
+// Local files
+import { persistor } from '@/redux/store'
+import { API_URL } from '@/../config/constants'
 import HeaderDropdown from '../HeaderDropdown'
 import styles from './index.less'
-import { UserOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons'
-import { router } from 'umi'
-import { API_URL } from '../../../config/constants'
-import { persistor } from '@/redux/store'
+
 
 const AvatarDropdown = () => {
 	const user = useSelector((state: any) => state.user?.attributes.user)

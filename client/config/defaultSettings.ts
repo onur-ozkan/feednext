@@ -1,4 +1,7 @@
+// Antd dependencies
 import { MenuTheme } from 'antd/es/menu/MenuContext'
+
+// Local files
 import { IAppTheme, appTheme } from './themes'
 
 export type ContentWidth = 'Fluid' | 'Fixed'

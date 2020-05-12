@@ -1,8 +1,13 @@
+// Antd dependencies
 import { Button, Result, Descriptions } from 'antd'
+
+// Other dependencies
 import React, { useContext } from 'react'
-import styles from './index.less'
-import StepContext from '../../StepContext'
 import { router } from 'umi'
+
+// Local files
+import StepContext from '../../StepContext'
+import styles from './index.less'
 
 const Step3: React.FC = ({ titleSlugForRouting, feedCreatedSuccessfully }) => {
 	const { createTitleFormData, readableCategoryValue, firstEntryForm } = useContext(StepContext)

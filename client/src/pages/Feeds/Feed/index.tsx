@@ -1,15 +1,27 @@
-import React, { useEffect, useState } from 'react'
-import FeedHeader from './components/FeedHeader'
-import FeedEntries from './components/FeedEntries'
-import styles from './style.less'
-import { fetchEntriesByTitleId, fetchTitle, getAverageTitleRate, updateTitle, deleteTitleImage, updateTitleImage } from '@/services/api'
-import { useSelector } from 'react-redux'
-import { handleArrayFiltering } from '@/services/utils'
+// Antd dependencies
 import { TreeSelect, Modal, Form, Input, Button, Popconfirm, message } from 'antd'
 import { InfoCircleOutlined } from '@ant-design/icons'
+
+// Other dependencies
+import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+
+// Local files
+import {
+	fetchEntriesByTitleId,
+	fetchTitle,
+	getAverageTitleRate,
+	updateTitle,
+	deleteTitleImage,
+	updateTitleImage
+} from '@/services/api'
+import { handleArrayFiltering } from '@/services/utils'
+import { API_URL } from '@/../config/constants'
+import FeedHeader from './components/FeedHeader'
+import FeedEntries from './components/FeedEntries'
 import PageLoading from '@/components/PageLoading'
 import ImageUpload from '@/components/ImageUpload'
-import { API_URL } from '@/../config/constants'
+import styles from './style.less'
 
 const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 	const globalState = useSelector((state: any) => state.global)

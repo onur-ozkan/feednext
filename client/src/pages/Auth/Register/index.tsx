@@ -1,10 +1,14 @@
-import React, { useState } from 'react'
+// Antd dependencies
 import { Form, Input, Checkbox, Button, Tabs, message } from 'antd'
-import styles from './style.less'
-import { formatMessage, FormattedMessage } from 'umi-plugin-react/locale'
+
+// Other dependencies
+import React, { useState } from 'react'
 import { Link } from 'umi'
+
+// Local files
 import { signUp } from '@/services/api'
 import RegisterResult from './Result'
+import styles from './style.less'
 
 export declare interface FormDataType {
 	fullName: string
@@ -42,9 +46,7 @@ const Register = () => {
 				<Tabs>
 					<Tabs.TabPane
 						key="sign-up"
-						tab={formatMessage({
-							id: 'userandlogin.login.tab-login-signup',
-						})}
+						tab="Sign Up"
 					>
 						<Form.Item
 							name="fullName"
@@ -125,10 +127,10 @@ const Register = () => {
 						</Form.Item>
 						<Form.Item>
 							<Button size="large" loading={false} className={styles.submit} type="primary" htmlType="submit">
-								<FormattedMessage id="userandregister.register.register" />
+								Register
 							</Button>
 							<Link className={styles.login} to="/auth/sign-in">
-								<FormattedMessage id="userandregister.register.sign-in" />
+								Already have an Account?
 							</Link>
 						</Form.Item>
 					</Tabs.TabPane>

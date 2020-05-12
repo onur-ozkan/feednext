@@ -1,12 +1,15 @@
+// Antd dependencies
 import { DefaultFooter, getMenuData, getPageTitle } from '@ant-design/pro-layout'
+import { GithubFilled } from '@ant-design/icons'
+
+// Other dependencies
+import React from 'react'
 import { Helmet } from 'react-helmet'
 import { Link } from 'umi'
-import React from 'react'
-import { formatMessage } from 'umi-plugin-react/locale'
 
+// Local files
 import logo from '../assets/logo-square.svg'
 import styles from './AuthLayout.less'
-import { GithubFilled } from '@ant-design/icons'
 
 const AuthLayout: React.FC = props => {
 	const {
@@ -25,7 +28,6 @@ const AuthLayout: React.FC = props => {
 	const title = getPageTitle({
 		pathname: location.pathname,
 		breadcrumb,
-		formatMessage,
 		...props,
 	})
 	return (

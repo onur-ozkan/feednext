@@ -1,7 +1,10 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux'
+// Other dependencies
 import thunk, { ThunkMiddleware } from 'redux-thunk'
 import { persistStore, persistReducer } from 'redux-persist'
+import { createStore, combineReducers, applyMiddleware } from 'redux'
 import storage from 'redux-persist/lib/storage'
+
+// Local files
 import { userReducer, settingsReducer, globalReducer } from './Reducers'
 import { AppActions } from './Actions'
 

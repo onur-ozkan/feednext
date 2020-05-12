@@ -1,9 +1,9 @@
+// Antd dependencies
 import { Button, Result } from 'antd'
+
+// Other dependencies
 import React from 'react'
 import { router } from 'umi'
-
-// The 404 result component of antd should be used here,
-// But it hasn't been released yet, let's start with a simple one.
 
 const NotFoundPage: React.FC<{}> = () => (
 	<Result

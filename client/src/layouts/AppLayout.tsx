@@ -1,10 +1,13 @@
-import ProLayout, { MenuDataItem, Settings } from '@ant-design/pro-layout'
-import React from 'react'
-import { Link } from 'umi'
-import { Dispatch } from 'redux'
+// Antd dependencies
 import { Row, Col } from 'antd'
-import { formatMessage } from 'umi-plugin-react/locale'
+import ProLayout, { MenuDataItem, Settings } from '@ant-design/pro-layout'
 
+// Other dependencies
+import React from 'react'
+import { Dispatch } from 'redux'
+import { Link } from 'umi'
+
+// Local files
 import RightContent from '@/components/GlobalHeader/RightContent'
 import logoWide from '../assets/logo-wide.svg'
 import logoSquare from '../assets/logo-square.svg'
@@ -60,7 +63,6 @@ const AppLayout: React.FC<AppLayoutProps> = props => {
 					<span>{route.breadcrumbName}</span>
 				)
 			}}
-			formatMessage={formatMessage}
 			rightContentRender={(): JSX.Element => <RightContent />}
 			{...props}
 			{...settings}

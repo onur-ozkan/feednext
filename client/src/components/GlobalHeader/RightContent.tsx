@@ -1,13 +1,17 @@
+// Antd dependencies
 import { Tag, Button } from 'antd'
-import React from 'react'
 import { PlusCircleOutlined, LoginOutlined } from '@ant-design/icons'
 
+// Other dependencies
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { router } from 'umi'
+
+// Local files
 import Avatar from './AvatarDropdown'
 import HeaderSearch from '../HeaderSearch'
-import styles from './index.less'
-import { router } from 'umi'
-import { useSelector } from 'react-redux'
 import MessageBox from '../MessageBox'
+import styles from './index.less'
 
 export type SiderTheme = 'light' | 'dark'
 export declare interface GlobalHeaderRightProps {

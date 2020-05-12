@@ -1,4 +1,11 @@
-import { SET_ACCESS_TOKEN, GlobalActions, SET_CATEGORY_LIST, SET_CATEGORY_TREE, SET_WS_SOCKET } from '../../Actions/Global'
+// Local files
+import {
+	SET_ACCESS_TOKEN,
+	SET_CATEGORY_LIST,
+	SET_CATEGORY_TREE,
+	SET_WS_SOCKET,
+	GlobalActions,
+} from '../../Actions/Global'
 
 const globalReducerDefaultState: {
 	accessToken: string | null,

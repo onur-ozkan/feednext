@@ -1,11 +1,15 @@
-import { Form } from '@ant-design/compatible'
-import '@ant-design/compatible/assets/index.css'
+// Antd dependencies
 import { Button } from 'antd'
-
+import { Form } from '@ant-design/compatible'
 import { ButtonProps } from 'antd/es/button'
+
+// Other dependencies
 import React from 'react'
 import classNames from 'classnames'
+
+// Local files
 import styles from './index.less'
+import '@ant-design/compatible/assets/index.css'
 
 const FormItem = Form.Item
 

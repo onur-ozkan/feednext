@@ -1,10 +1,12 @@
+// Other dependencies
 import { IConfig, IPlugin } from 'umi-types'
-import defaultSettings from './defaultSettings' // https://umijs.org/config/
-
 import slash from 'slash2'
-import { themePlugin } from './themes'
-import proxy from './proxy'
+
+// Local files
 import { routes } from './routes'
+import { themePlugin } from './themes'
+import defaultSettings from './defaultSettings' // https://umijs.org/config/
+import proxy from './proxy'
 
 const { ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION, REACT_APP_ENV } = process.env
 const isAntDesignProPreview = ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION === 'site'

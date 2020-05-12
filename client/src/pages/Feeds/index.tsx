@@ -1,15 +1,43 @@
-import React, { useEffect, useState } from 'react'
-import { Button, Card, List, Tag, message, BackTop, TreeSelect, Row, Col, Typography, Dropdown, Menu, Modal, notification } from 'antd'
-import { LoadingOutlined, ArrowUpOutlined, LinkOutlined, RiseOutlined, FilterFilled, CheckOutlined, StarFilled, FireFilled, MessageOutlined } from '@ant-design/icons'
-import '@ant-design/compatible/assets/index.css'
+// Antd dependencies
+import {
+	Button,
+	Card,
+	List,
+	Tag,
+	message,
+	BackTop,
+	TreeSelect,
+	Row,
+	Col,
+	Typography,
+	Dropdown,
+	Menu,
+	Modal
+} from 'antd'
+import {
+	LoadingOutlined,
+	ArrowUpOutlined,
+	LinkOutlined,
+	RiseOutlined,
+	FilterFilled,
+	CheckOutlined,
+	StarFilled,
+	FireFilled
+} from '@ant-design/icons'
 
-import ArticleListContent from './components/ArticleListContent'
-import globalStyles from '@/global.less'
-import { fetchAllFeeds, fetchFeaturedEntryByTitleId, fetchTrendingCategories } from '@/services/api'
+// Other dependencies
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { Link } from 'umi'
+
+// Local files
+import { fetchAllFeeds, fetchFeaturedEntryByTitleId, fetchTrendingCategories } from '@/services/api'
 import { handleArrayFiltering } from '@/services/utils'
 import { API_URL } from '../../../config/constants'
-import { Link } from 'umi'
+import ArticleListContent from './components/ArticleListContent'
+import globalStyles from '@/global.less'
+import '@ant-design/compatible/assets/index.css'
+
 
 const Feeds = (): JSX.Element => {
 	const globalState = useSelector((state: any) => state.global)

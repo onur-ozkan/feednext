@@ -1,8 +1,9 @@
+// Antd dependencies
 import { Button, Result, Typography } from 'antd'
-import Link from 'umi/link'
-import React from 'react'
 
-const { Paragraph, Text } = Typography
+// Other dependencies
+import React from 'react'
+import Link from 'umi/link'
 
 const actions = (
 	<>
@@ -21,8 +22,8 @@ const RegisterResult = props => {
 			status="success"
 			title={<h2>Hey {signedAccount.full_name},</h2>}
 			subTitle={
-				<Paragraph>
-					<Text
+				<Typography.Paragraph>
+					<Typography.Text
 						strong
 						style={{
 							fontSize: 20,
@@ -31,8 +32,8 @@ const RegisterResult = props => {
 						Your account verification mail has been sent to{' '}
 						<span style={{ color: '#5199FF' }}>{signedAccount.email}</span>, please check your mails and do the
 						verification to sign in.
-					</Text>
-				</Paragraph>
+					</Typography.Text>
+				</Typography.Paragraph>
 			}
 			extra={actions}
 		></Result>

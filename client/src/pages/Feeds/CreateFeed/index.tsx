@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react'
+// Antd dependencies
 import { Card, Steps, message } from 'antd'
+
+// Other dependencies
+import React, { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
+
+// Local files
+import { createTitle, createEntry } from '@/services/api'
+import { StepProvider } from './StepContext'
 import Step1 from './components/Step1'
 import Step2 from './components/Step2'
 import Step3 from './components/Step3'
 import styles from './style.less'
-import { createTitle, createEntry } from '@/services/api'
-import { StepProvider } from './StepContext'
-import { useSelector } from 'react-redux'
-import { string } from 'prop-types'
-
-const { Step } = Steps
 
 const CreateFeed: React.FC = () => {
 	const accessToken = useSelector((state: any) => state.global.accessToken)
@@ -111,9 +113,9 @@ const CreateFeed: React.FC = () => {
 		<StepProvider value={{ createTitleFormData, readableCategoryValue, firstEntryForm }}>
 			<Card bordered={false}>
 				<Steps current={currentStep} className={styles.steps}>
-					<Step title="Create Title" />
-					<Step title="Enter First Entry" />
-					<Step title="Feed Status" />
+					<Steps.Step title="Create Title" />
+					<Steps.Step title="Enter First Entry" />
+					<Steps.Step title="Feed Status" />
 				</Steps>
 				{stepComponent}
 			</Card>

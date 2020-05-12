@@ -1,8 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+// Antd dependencies
 import { Card, Form, Input, Button, AutoComplete, Typography, Avatar, message } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
+
+// Other dependencies
+import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { router } from 'umi'
+
+// Local files
 import { searchUser, fetchUserByUsername } from '@/services/api'
 import { API_URL } from '@/../config/constants'
 

@@ -1,4 +1,7 @@
+// Other dependencies
 import axios, { AxiosResponse } from 'axios'
+
+// Local files
 import { API_URL } from '../../config/constants'
 
 axios.defaults.baseURL = API_URL
