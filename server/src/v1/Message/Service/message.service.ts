@@ -10,6 +10,7 @@ import { UsersRepository } from 'src/shared/Repositories/users.repository'
 import { ConversationsRepository } from 'src/shared/Repositories/conversations.repository'
 import { MessagesRepository } from 'src/shared/Repositories/messages.repository'
 import { serializerService, ISerializeResponse } from 'src/shared/Services/serializer.service'
+import { ConversationsEntity } from 'src/shared/Entities/conversations.entity'
 
 @Injectable()
 export class MessageService {
@@ -27,7 +28,7 @@ export class MessageService {
         this.validator = new Validator()
     }
 
-    async sendMessage({ recipient, body, from } : { recipient: string, body: string, from: string }): Promise<void> {
+    async sendMessage({ recipient, body, from } : { recipient: string, body: string, from: string }): Promise<ConversationsEntity> {
         await this.usersRepository.findOneOrFail({ username: recipient })
         const conversation = await this.conversationsRepository.getConversationByParticipants(from, recipient)
             // tslint:disable-next-line:no-empty
@@ -39,9 +40,11 @@ export class MessageService {
                 text: body
             })
             // updates updated_at value to sort conversations by time
-            conversation.unread_messages[recipient]++
+            conversation.unread_messages[0].username === recipient ? conversation.unread_messages[0].value++
+                : conversation.unread_messages[1].value++
             conversation.last_message_send_at = new Date()
             await this.conversationsRepository.save(conversation)
+            return conversation
         } else {
             const newConversation = await this.conversationsRepository.createConversation([from, recipient])
             await this.messagesRepository.createMessage({
@@ -50,6 +53,7 @@ export class MessageService {
                 text: body
             })
             await this.conversationsRepository.increaseUnreadMessageCount(from, recipient)
+            return newConversation
         }
     }
 
@@ -67,14 +71,19 @@ export class MessageService {
 
         const [conversations] = await this.conversationsRepository.findAndCount({
             where: {
-                participants: { $in: [username] }
+                participants: { $in: [username] },
+                $or: [
+                    { 'unread_messages.0.username': username },
+                    { 'unread_messages.1.username': username }
+                ]
             }
         })
 
         const unReadValueWithConvId: { id: string, value: number }[] = conversations.map(conv => {
+            const unReadMessageValue = conv.unread_messages[0].username === username ? conv.unread_messages[0].value : conv.unread_messages[1].value
             return {
                 id: String(conv._id),
-                value: conv.unread_messages[username],
+                value: unReadMessageValue
             }
         })
 

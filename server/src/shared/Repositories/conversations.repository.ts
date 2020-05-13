@@ -34,21 +34,22 @@ export class ConversationsRepository extends Repository<ConversationsEntity> {
             }
         })
 
-        conversation.unread_messages[recipient]++
+        conversation.unread_messages[0].username === recipient ? conversation.unread_messages[0].value++
+            : conversation.unread_messages[1].value++
         await this.save(conversation)
     }
 
     async resetUnreadMessageCount(username: string, conversationId: string): Promise<void> {
         const conversation = await this.findOneOrFail(conversationId)
 
-        conversation.unread_messages[username] = 0
+        conversation.unread_messages[0].username === username ? conversation.unread_messages[0].value = 0
+            : conversation.unread_messages[1].value = 0
         await this.save(conversation)
     }
 
     async createConversation(participants: string[]): Promise<ConversationsEntity> {
         const newConversation: ConversationsEntity = new ConversationsEntity({
-            participants,
-            last_message_send_at: new Date()
+            participants
         })
 
         await this.save(newConversation)

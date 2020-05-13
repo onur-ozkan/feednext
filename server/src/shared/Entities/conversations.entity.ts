@@ -21,10 +21,11 @@ export class ConversationsEntity {
     @Column('array')
     participants: string[]
 
-    @Column('json')
-    unread_messages: {
-        [participantName: string]: number
-    }
+    @Column('array')
+    unread_messages:[
+        { username: string, value: number },
+        { username: string, value: number }
+    ]
 
     @CreateDateColumn('date')
     created_at: Date
@@ -37,10 +38,10 @@ export class ConversationsEntity {
 
     @BeforeInsert()
     fillDefaults() {
-        this.unread_messages = {
-            [this.participants[0]]: 0,
-            [this.participants[1]]: 0,
-        }
+        this.unread_messages = [
+            { username: this.participants[0], value: 0 },
+            { username: this.participants[1], value: 0 }
+        ]
         this.last_message_send_at = new Date()
     }
 }

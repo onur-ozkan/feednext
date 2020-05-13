@@ -39,11 +39,12 @@ export class MessageGateway {
             if (messageForm.body.length === 0) return
 
             try {
-                await this.messageService.sendMessage({
+                const { _id } = await this.messageService.sendMessage({
                     ...messageForm,
                     from: clientUsername
                 })
                 socket.to(messageForm.recipient).emit('pingMessage', {
+                    conversation_id: _id,
                     from: clientUsername,
                     body: messageForm.body
                 })
