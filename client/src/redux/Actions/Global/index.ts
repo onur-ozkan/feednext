@@ -1,5 +1,7 @@
 export const SET_ACCESS_TOKEN = 'SET_ACCESS_TOKEN'
-export const SET_WS_SOCKET = 'SET_WS_SOCKET'
+export const SET_UNREAD_MESSAGES_INFO = 'SET_UNREAD_MESSAGES_INFO'
+export const INCREASE_UNREAD_MESSAGE_VALUE = 'INCREASE_UNREAD_MESSAGE_VALUE'
+export const DECREASE_UNREAD_MESSAGE_VALUE = 'DECREASE_UNREAD_MESSAGE_VALUE'
 export const SET_CATEGORY_LIST = 'SET_CATEGORY_LIST'
 export const SET_CATEGORY_TREE = 'SET_CATEGORY_TREE'
 
@@ -8,9 +10,24 @@ export interface SetAccessTokenAction {
 	token: string
 }
 
-export interface SetWsSocketnAction {
-	type: typeof SET_WS_SOCKET
-	socket: SocketIOClient.Socket
+export interface SetUnreadMessagesInfoAction {
+	type: typeof SET_UNREAD_MESSAGES_INFO
+	data: {
+		values_by_conversations: { id: string, value: number }[],
+		total_unread_value: number
+	}
+}
+
+export interface IncreaseUnreadMessageValueAction {
+	type: typeof INCREASE_UNREAD_MESSAGE_VALUE,
+	id: string,
+	value: number
+}
+
+export interface DecreaseUnreadMessageValueAction {
+	type: typeof DECREASE_UNREAD_MESSAGE_VALUE,
+	id: string,
+	value: number
 }
 
 export interface SetCategoryListAction {
@@ -23,4 +40,10 @@ export interface SetCategoryTreeAction {
 	data: []
 }
 
-export type GlobalActions = SetAccessTokenAction | SetWsSocketnAction | SetCategoryListAction | SetCategoryTreeAction
+export type GlobalActions =
+	SetAccessTokenAction
+	| SetUnreadMessagesInfoAction
+	| IncreaseUnreadMessageValueAction
+	| DecreaseUnreadMessageValueAction
+	| SetCategoryListAction
+	| SetCategoryTreeAction
