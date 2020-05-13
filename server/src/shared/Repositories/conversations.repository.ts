@@ -1,10 +1,12 @@
+// Nest Dependencies
+import { BadRequestException } from '@nestjs/common'
+
 // Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
+import { ObjectId } from 'mongodb'
 
 // Local files
 import { ConversationsEntity } from '../Entities/conversations.entity'
-import { ObjectId } from 'mongodb'
-import { BadRequestException } from '@nestjs/common'
 
 @EntityRepository(ConversationsEntity)
 export class ConversationsRepository extends Repository<ConversationsEntity> {
@@ -22,9 +24,31 @@ export class ConversationsRepository extends Repository<ConversationsEntity> {
         return conversation
     }
 
+    async increaseUnreadMessageCount(sender: string, recipient: string): Promise<void> {
+        const conversation = await this.findOneOrFail({
+            where: {
+                $or: [
+                    { participants: [sender, recipient] },
+                    { participants: [recipient, sender] }
+                ]
+            }
+        })
+
+        conversation.unread_messages[recipient]++
+        await this.save(conversation)
+    }
+
+    async resetUnreadMessageCount(username: string, conversationId: string): Promise<void> {
+        const conversation = await this.findOneOrFail(conversationId)
+
+        conversation.unread_messages[username] = 0
+        await this.save(conversation)
+    }
+
     async createConversation(participants: string[]): Promise<ConversationsEntity> {
         const newConversation: ConversationsEntity = new ConversationsEntity({
-            participants
+            participants,
+            last_message_send_at: new Date()
         })
 
         await this.save(newConversation)
@@ -50,7 +74,7 @@ export class ConversationsRepository extends Repository<ConversationsEntity> {
                 participants: { $in: [username] }
             },
             order: {
-                updated_at: 'DESC',
+                last_message_send_at: 'DESC',
             },
             take: 10,
             skip: Number(skip) || 0,

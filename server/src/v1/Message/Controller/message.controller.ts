@@ -20,11 +20,20 @@ export class MessageController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Get('conversations')
-    getTitleList(
+    getConversationListByUsername(
         @Headers('authorization') bearer: string,
         @Query('skip') skip: string
     ): Promise<ISerializeResponse> {
         return this.messageService.getConversationListByUsername(jwtManipulationService.decodeJwtToken(bearer, 'username'), skip)
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
+    @Get('unread-message-info')
+    getUnreadMessageInfo(
+        @Headers('authorization') bearer: string
+    ): Promise<ISerializeResponse> {
+        return this.messageService.getUnreadMessageInfo(jwtManipulationService.decodeJwtToken(bearer, 'username'))
     }
 
     @ApiBearerAuth()

@@ -27,7 +27,7 @@ export class MessageService {
         this.validator = new Validator()
     }
 
-    async sendMessage({ recipient, body, from } : { recipient: string, body: string, from: string }) {
+    async sendMessage({ recipient, body, from } : { recipient: string, body: string, from: string }): Promise<void> {
         await this.usersRepository.findOneOrFail({ username: recipient })
         const conversation = await this.conversationsRepository.getConversationByParticipants(from, recipient)
             // tslint:disable-next-line:no-empty
@@ -39,6 +39,8 @@ export class MessageService {
                 text: body
             })
             // updates updated_at value to sort conversations by time
+            conversation.unread_messages[recipient]++
+            conversation.last_message_send_at = new Date()
             await this.conversationsRepository.save(conversation)
         } else {
             const newConversation = await this.conversationsRepository.createConversation([from, recipient])
@@ -47,6 +49,7 @@ export class MessageService {
                 sendBy: from,
                 text: body
             })
+            await this.conversationsRepository.increaseUnreadMessageCount(from, recipient)
         }
     }
 
@@ -55,9 +58,38 @@ export class MessageService {
         return serializerService.serializeResponse('user_conversation_list', result)
     }
 
+    async getUnreadMessageInfo (username: string): Promise<ISerializeResponse> {
+        try {
+            await this.usersRepository.findOneOrFail({ username })
+        } catch (error) {
+            throw new BadRequestException('User does not exist')
+        }
+
+        const [conversations] = await this.conversationsRepository.findAndCount({
+            where: {
+                participants: { $in: [username] }
+            }
+        })
+
+        const unReadValueWithConvId: { id: string, value: number }[] = conversations.map(conv => {
+            return {
+                id: String(conv._id),
+                value: conv.unread_messages[username],
+            }
+        })
+
+        const result = {
+            values_by_conversations: unReadValueWithConvId,
+            total_unread_value: unReadValueWithConvId.reduce((previous, current) => previous + current.value, 0)
+        }
+
+        return serializerService.serializeResponse('user_unread_message_info', result)
+    }
+
     async getMessageListByConversationId (username: string, conversationId: string, skip: string): Promise<ISerializeResponse>  {
         if (!this.validator.isMongoId(conversationId)) throw new BadRequestException('Conversation id must be a MongoId')
         await this.conversationsRepository.verifyUserAccessToConversation(username, conversationId)
+        await this.conversationsRepository.resetUnreadMessageCount(username, conversationId)
 
         const result = await this.messagesRepository.getMessageListByConversationId(conversationId, skip)
         return serializerService.serializeResponse('conversation_message_list', result)
