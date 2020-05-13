@@ -52,6 +52,14 @@ export const fetchMessagesByConversationId = (
 	}
 )
 
+export const fetchUnreadMessageInfo = (accessToken: string): Promise<AxiosResponse> => axios.get(
+	'/v1/message/unread-message-info', {
+		headers: {
+			'Authorization': `Bearer ${accessToken}`,
+		}
+	}
+)
+
 export const deleteConversation = (
 	accessToken: string,
 	conversationId: string
@@ -61,13 +69,13 @@ export const deleteConversation = (
 	}
 })
 
-export const updateUser = (username: string, accessToken: string, payload: {
+export const updateUser = (accessToken: string, payload: {
 	fullName?: string,
 	email?: string,
 	biography?: string,
 	oldPassword?: string,
 	password?: string
-}): Promise<AxiosResponse> => axios.patch(`v1/user/${username}`, payload, {
+}): Promise<AxiosResponse> => axios.patch('v1/user/update', payload, {
 	headers: {
 		'Authorization': `Bearer ${accessToken}`,
 	}
