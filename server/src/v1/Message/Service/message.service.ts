@@ -34,6 +34,9 @@ export class MessageService {
             // tslint:disable-next-line:no-empty
             .catch(_error => {})
         if (conversation) {
+            if (conversation.deleted_from.includes(recipient)) {
+                conversation.deleted_from = conversation.deleted_from.filter(item => item !== recipient)
+            }
             await this.messagesRepository.createMessage({
                 conversationId: String(conversation._id),
                 sendBy: from,
@@ -107,8 +110,8 @@ export class MessageService {
     async deleteMessages(conversationId: string, username: string): Promise<HttpException> {
         if (!this.validator.isMongoId(conversationId)) throw new BadRequestException('Conversation id must be a MongoId')
 
-        await this.conversationsRepository.deleteConversation(conversationId, username)
-        await this.messagesRepository.deleteMessagesBelongsToConversation(conversationId)
+        const isDeleted = await this.conversationsRepository.deleteConversation(conversationId, username)
+        if (isDeleted) await this.messagesRepository.deleteMessagesBelongsToConversation(conversationId)
 
         throw new HttpException('Messages successfully deleted', HttpStatus.OK)
     }

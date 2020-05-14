@@ -61,7 +61,8 @@ export class ConversationsRepository extends Repository<ConversationsEntity> {
             await this.findOneOrFail({
                 where: {
                     _id: ObjectId(conversationId),
-                    participants: { $in: [username] }
+                    participants: { $in: [username] },
+                    deleted_from: { $nin: [username] }
                 }
             })
         } catch (error) {
@@ -72,7 +73,8 @@ export class ConversationsRepository extends Repository<ConversationsEntity> {
     async getConversationListByUsername(username: string, skip: string): Promise<{ conversations: ConversationsEntity[], count: number }> {
         const [conversations, total] = await this.findAndCount({
             where: {
-                participants: { $in: [username] }
+                participants: { $in: [username] },
+                deleted_from: { $nin: [username] }
             },
             order: {
                 last_message_send_at: 'DESC',
@@ -84,17 +86,28 @@ export class ConversationsRepository extends Repository<ConversationsEntity> {
         return { conversations, count: total }
     }
 
-    async deleteConversation(conversationId: string, username: string): Promise<void> {
+    async deleteConversation(conversationId: string, username: string): Promise<boolean> {
+        let conversation: ConversationsEntity
+        let isDeleted = false
         try {
-            const conversation: ConversationsEntity = await this.findOneOrFail({
+            conversation = await this.findOneOrFail({
                 where: {
                     _id: ObjectId(conversationId),
                     participants: { $in: [username] }
                 }
             })
-            await this.delete(conversation)
         } catch (err) {
             throw new BadRequestException('Conversation could not found by giving id and username')
         }
+
+        if (conversation.deleted_from.length < (conversation.participants.length - 1)) {
+            conversation.deleted_from.push(username)
+            await this.save(conversation)
+        } else {
+            isDeleted = true
+            await this.delete(conversation)
+        }
+
+        return isDeleted
     }
 }
