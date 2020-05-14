@@ -21,6 +21,7 @@ import styles from './style.less'
 const Messages = (params: any): JSX.Element => {
 	const [activeKey, setActiveKey] = useState<string | undefined>(params.location.state?.key)
 	const [conversationsData, setConversationsData] = useState<ConversationResponseType | null>(null)
+	const [isLoading, setIsLoading] = useState(true)
 	const [activeConversationId, setActiveConversationId] = useState<string | null>(null)
 	const [lastMessageFromSocket, setLastMessageFromSocket] = useState<{
 		conversation_id: string,
@@ -36,11 +37,14 @@ const Messages = (params: any): JSX.Element => {
 
 	useEffect(() => {
 		fetchUsersConversations(globalState.accessToken, paginationValue)
-			.then(({ data }) => setConversationsData(data.attributes))
+			.then(({ data }) => {
+				setConversationsData(data.attributes)
+				if (isLoading) setIsLoading(false)
+			})
 	}, [paginationValue])
 
 	useEffect(() => {
-		if (conversationsData) {
+		if (!isLoading) {
 			wss.on('pingMessage', (incMessage: {
 				conversation_id: string,
 				from: string,
@@ -49,7 +53,7 @@ const Messages = (params: any): JSX.Element => {
 				setLastMessageFromSocket(incMessage)
 			})
 		}
-	}, [conversationsData])
+	}, [isLoading])
 
 	useEffect(() => {
 		if (lastMessageFromSocket) {
@@ -68,9 +72,8 @@ const Messages = (params: any): JSX.Element => {
 	}, [activeConversationId, lastMessageFromSocket])
 
 	useEffect(() => {
-		if (lastMessageFromSocket &&
+		if (lastMessageFromSocket && paginationValue === 0 &&
 			!conversationsData?.conversations.find(item => item._id === lastMessageFromSocket.conversation_id)?._id) {
-			console.log(activeConversationId)
 			setConversationsData({
 				...conversationsData,
 				conversations: [
@@ -109,7 +112,7 @@ const Messages = (params: any): JSX.Element => {
 		}
 	}, [activeKey])
 
-	if (!conversationsData) return <PageLoading />
+	if (isLoading) return <PageLoading />
 
 	const handleConversationDelete = (conversationId: string): void => {
 		setActiveKey(undefined)
@@ -168,13 +171,17 @@ const Messages = (params: any): JSX.Element => {
 						fontSize: 15,
 						padding: '0px 0px 0px 10px'
 					}}
-					onChange={(page: number): void => setPaginationValue(10 * (page - 1))}
+					onChange={(page: number): void => {
+						setActiveKey(undefined)
+						setPaginationValue(10 * (page - 1))
+					}}
 					simple
 					hideOnSinglePage
 					defaultCurrent={1}
 					total={conversationsData.count}
 				/>
 				<Tabs
+					destroyInactiveTabPane
 					style={{ marginLeft: -25 }}
 					className={conversationsData.conversations.length === 0 ? styles.hideMessageBar : undefined}
 					activeKey={activeKey}
@@ -191,7 +198,7 @@ const Messages = (params: any): JSX.Element => {
 								flexDirection: 'column',
 								justifyContent: 'center',
 								alignItems: 'center',
-								height: 500
+								height: 600
 							}}
 						>
 							<img style={{ opacity: 0.65 }} src={conversationImg} width="150" alt="Conversation Png" />
@@ -214,7 +221,7 @@ const Messages = (params: any): JSX.Element => {
 
 	return (
 		<>
-			<Card className={styles.globalClass}>
+			<Card style={{ overflow: 'scroll', height: 750, overflowX: 'hidden' }} className={styles.globalClass}>
 				{handleMessageTabs()}
 			</Card>
 			<br/>

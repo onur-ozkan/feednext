@@ -34,10 +34,10 @@ const Compose = (): JSX.Element => {
 
 	const handleMessageSending = async (formValues: FormDataType): Promise<void> => {
 		await form.validateFields()
-		await fetchUserByUsername(formValues.recipient).then(async () => {
+		await fetchUserByUsername(formValues.recipient).then(() => {
 			wss.emit('sendMessage', formValues)
 			// Refresh unread message state with new conversation before routing there
-			await fetchUnreadMessageInfo(globalState.accessToken).then(({ data }) => {
+			fetchUnreadMessageInfo(globalState.accessToken).then(({ data }) => {
 				dispatch({
 					type: SET_UNREAD_MESSAGES_INFO,
 					data: data.attributes

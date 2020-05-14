@@ -9,17 +9,27 @@ import { format, parseISO, formatISO } from 'date-fns'
 import { Link } from 'umi'
 
 // Local files
-import { fetchMessagesByConversationId } from '@/services/api'
+import { fetchMessagesByConversationId, fetchUserByUsername } from '@/services/api'
 import { API_URL } from '@/../config/constants'
 import PageLoading from '@/components/PageLoading'
 
 const ChatScreen = (params: any) => {
-	const [messageList, setMessageList] = useState<any[] | null>(null)
+	const [messageList, setMessageList] = useState<any[]>([])
+	const [paginationValue, setPaginationValue] = useState(0)
+	const [recipientProfile, setRecipientProfile] = useState(null)
 	const [form] = Form.useForm()
 
 	useEffect(() => {
-		fetchMessagesByConversationId(params.globalState.accessToken, params.conversationId, 0)
-			.then(({ data }) => setMessageList(data.attributes.messages.reverse()))
+		fetchMessagesByConversationId(params.globalState.accessToken, params.conversationId, paginationValue)
+			.then(({ data }) => {
+				data.attributes.messages.map(item => {
+					setMessageList((currentState: any) => [item, ...currentState])
+				})
+			})
+	}, [paginationValue])
+
+	useEffect(() => {
+		fetchUserByUsername(params.recipientUsername).then(({ data }) => setRecipientProfile(data))
 	}, [params.onOpen])
 
 	useEffect(() => {
@@ -38,7 +48,7 @@ const ChatScreen = (params: any) => {
 		})
 	}, [])
 
-	if (!messageList) return <PageLoading />
+	if (!messageList.length > 0 || !recipientProfile) return <PageLoading />
 
 	const renderMessages = (item, index) => {
 		if (index !== 0	&&
@@ -86,11 +96,29 @@ const ChatScreen = (params: any) => {
 		form.resetFields()
 	}
 
+	const handleFetchingPreviousMessages = (): void => setPaginationValue(paginationValue + 10)
+
+	const loadMore = (messageList.length % 10) === 0  && (
+		<div style={{ textAlign: 'center', marginTop: 10 }}>
+			<Button
+				onClick={handleFetchingPreviousMessages}
+				type="link"
+				style={{
+					paddingLeft: 48,
+					paddingRight: 48,
+					fontSize: 12
+				}}
+			>
+				Load More Messages
+			</Button>
+		</div>
+	)
+
 	return (
 		<div style={{ padding: '10px 0px 0px 10px' }}>
 			<Row style={{ display: 'flex', alignItems: 'center', marginBottom: 5 }}>
 				<Col>
-					<Typography.Text style={{ fontSize: 25 }}> Onur OZKAN </Typography.Text>
+					<Typography.Text style={{ fontSize: 25 }}> {recipientProfile.attributes.full_name} </Typography.Text>
 				</Col>
 				<Popconfirm
 					placement="bottomLeft"
@@ -109,6 +137,7 @@ const ChatScreen = (params: any) => {
 				</Popconfirm>
 			</Row>
 			<Divider style={{ margin: 0, padding: 0 }} />
+			{loadMore}
 			<List
 				style={{ marginTop: 10 }}
 				itemLayout="horizontal"
