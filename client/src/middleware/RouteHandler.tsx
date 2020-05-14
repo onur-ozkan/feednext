@@ -1,19 +1,20 @@
 // Antd dependencies
-import { Button, Result  } from 'antd'
+import { Button, Result, notification  } from 'antd'
+import { MessageOutlined } from '@ant-design/icons'
 
 // Other dependencies
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Redirect, router } from 'umi'
 import { stringify } from 'querystring'
-import io from 'socket.io-client'
 
 // Local files
-import { User, SOCKET_URL } from '@/../config/constants'
-import { checkAccessToken, refreshToken, fetchAllCategories } from '@/services/api'
-import PageLoading from '@/components/PageLoading'
+import { SET_ACCESS_TOKEN, SET_CATEGORY_LIST, SET_CATEGORY_TREE, SET_UNREAD_MESSAGES_INFO, INCREASE_UNREAD_MESSAGE_VALUE } from '@/redux/Actions/Global'
+import { checkAccessToken, refreshToken, fetchAllCategories, fetchUnreadMessageInfo } from '@/services/api'
 import { getAuthorityFromRouter, handleSessionExpiration, forgeTreeSelectData } from '@/services/utils'
-import { SET_ACCESS_TOKEN, SET_CATEGORY_LIST, SET_CATEGORY_TREE, SET_WS_SOCKET } from '@/redux/Actions/Global'
+import { socketConnection } from '@/services/socket'
+import { User } from '@/../config/constants'
+import PageLoading from '@/components/PageLoading'
 
 
 
@@ -21,9 +22,10 @@ const RouteHandler = ({ children, route }) => {
 	const [isLoading, setIsLoading] = useState(true)
 	const user = useSelector((state: any) => state.user)
 	const accessToken = useSelector((state: any) => state.global.accessToken)
+	const wss = socketConnection(accessToken)
 	const dispatch = useDispatch()
 
-	const checkSessionSituation = async (): Promise<void> => {
+	const checkIsSessionValid = async (): Promise<void> => {
 		await checkAccessToken(accessToken)
 			.catch(_error => {
 				refreshToken().then(res => {
@@ -33,20 +35,22 @@ const RouteHandler = ({ children, route }) => {
 					})
 				}).catch(_e => handleSessionExpiration())
 			})
-		dispatch({
-			type: SET_WS_SOCKET,
-			socket: io.connect(SOCKET_URL, {
-				query: {
-					Authorization: `Bearer ${accessToken}`,
-					transports: ['websocket'],
-					secure: true
-				}
+	}
+
+	const handleUnreadMessages = async (): Promise<void> => {
+		fetchUnreadMessageInfo(accessToken).then(({ data }) => {
+			dispatch({
+				type: SET_UNREAD_MESSAGES_INFO,
+				data: data.attributes
 			})
 		})
 	}
 
 	const handleInitialProcessesOnRoute = async (): Promise<void> => {
-		if (accessToken) await checkSessionSituation()
+		if (accessToken) {
+			await checkIsSessionValid()
+			await handleUnreadMessages()
+		}
 
 		await fetchAllCategories().then(res => {
 			dispatch({
@@ -62,8 +66,31 @@ const RouteHandler = ({ children, route }) => {
 		setIsLoading(false)
 	}
 
-	useEffect(() => {
+	useEffect((): void => {
 		handleInitialProcessesOnRoute()
+		// Handle message notifications
+		if (accessToken) {
+			wss.on('pingMessage', (incMessage: { conversation_id: string, from: string, body: string }) => {
+				if (location.pathname !== '/messages') {
+					notification.info({
+						closeIcon: null,
+						message: incMessage.from,
+						description: incMessage.body,
+						duration: 2,
+						icon: <MessageOutlined style={{ color: '#188fce' }}/>,
+					})
+					dispatch({
+						type: INCREASE_UNREAD_MESSAGE_VALUE,
+						id: incMessage.conversation_id,
+						value: 1
+					})
+				}
+			})
+
+			return () => {
+				wss.close()
+			}
+		}
 	}, [])
 
 	const queryString = stringify({

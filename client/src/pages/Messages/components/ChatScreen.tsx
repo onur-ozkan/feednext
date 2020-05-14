@@ -20,12 +20,15 @@ const ChatScreen = (params: any) => {
 	useEffect(() => {
 		fetchMessagesByConversationId(params.globalState.accessToken, params.conversationId, 0)
 			.then(({ data }) => setMessageList(data.attributes.messages.reverse()))
+	}, [params.onOpen])
 
-		params.globalState.socketConnection.on('pingMessage', (incMessage: {
+	useEffect(() => {
+		params.wss.on('pingMessage', (incMessage: {
+			conversation_id: string,
 			from: string,
 			body: string
 		}) => {
-			if (params.recipientUsername === incMessage.from) {
+			if (params.conversationId === incMessage.conversation_id) {
 				setMessageList((messageList: any) => [...messageList, {
 					send_by: incMessage.from,
 					text: incMessage.body,
@@ -70,7 +73,7 @@ const ChatScreen = (params: any) => {
 	const handleMessageSend = async (values: { messageText: string }): Promise<void> => {
 		await form.validateFields()
 
-		params.globalState.socketConnection?.emit('sendMessage', {
+		params.wss.emit('sendMessage', {
 			recipient: params.recipientUsername,
 			body: values.messageText
 		})

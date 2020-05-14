@@ -1,14 +1,18 @@
+/* eslint-disable @typescript-eslint/camelcase */
 // Antd dependencies
-import { Tabs, Card, Avatar, Button, Typography, Pagination } from 'antd'
+import { Tabs, Card, Avatar, Button, Typography, Pagination, Badge } from 'antd'
 
 // Other dependencies
 import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { router } from 'umi'
 
 // Local files
-import { fetchUsersConversations, deleteConversation } from '@/services/api'
+import { fetchUsersConversations, deleteConversation, fetchMessagesByConversationId } from '@/services/api'
 import { API_URL } from '@/../config/constants'
+import { ConversationResponseType } from './types'
+import { DECREASE_UNREAD_MESSAGE_VALUE, INCREASE_UNREAD_MESSAGE_VALUE, SET_UNREAD_MESSAGES_INFO } from '@/redux/Actions/Global'
+import { socketConnection } from '@/services/socket'
 import PageLoading from '@/components/PageLoading'
 import ChatScreen from './components/ChatScreen'
 import conversationImg from '../../assets/conversation.png'
@@ -16,20 +20,100 @@ import styles from './style.less'
 
 const Messages = (params: any): JSX.Element => {
 	const [activeKey, setActiveKey] = useState<string | undefined>(params.location.state?.key)
-	const [conversationsData, setConversationsData] = useState<[] | null>(null)
+	const [conversationsData, setConversationsData] = useState<ConversationResponseType | null>(null)
+	const [activeConversationId, setActiveConversationId] = useState<string | null>(null)
+	const [lastMessageFromSocket, setLastMessageFromSocket] = useState<{
+		conversation_id: string,
+		from: string,
+		body: string
+	} | null>(null)
 	const [paginationValue, setPaginationValue] = useState(0)
+
 	const globalState = useSelector((state: any) => state.global)
+	const wss = socketConnection(globalState.accessToken)
 	const user = useSelector((state: any) => state.user.attributes.user)
+	const dispatch = useDispatch()
 
 	useEffect(() => {
 		fetchUsersConversations(globalState.accessToken, paginationValue)
 			.then(({ data }) => setConversationsData(data.attributes))
 	}, [paginationValue])
 
+	useEffect(() => {
+		if (conversationsData) {
+			wss.on('pingMessage', (incMessage: {
+				conversation_id: string,
+				from: string,
+				body: string
+			}) => {
+				setLastMessageFromSocket(incMessage)
+			})
+		}
+	}, [conversationsData])
+
+	useEffect(() => {
+		if (lastMessageFromSocket) {
+			if (activeConversationId !== lastMessageFromSocket.conversation_id) {
+				dispatch({
+					type: INCREASE_UNREAD_MESSAGE_VALUE,
+					id: lastMessageFromSocket.conversation_id,
+					value: 1
+				})
+			}
+			else {
+				fetchMessagesByConversationId(globalState.accessToken, lastMessageFromSocket.conversation_id, 0)
+				setLastMessageFromSocket(null)
+			}
+		}
+	}, [activeConversationId, lastMessageFromSocket])
+
+	useEffect(() => {
+		if (lastMessageFromSocket &&
+			!conversationsData?.conversations.find(item => item._id === lastMessageFromSocket.conversation_id)?._id) {
+			console.log(activeConversationId)
+			setConversationsData({
+				...conversationsData,
+				conversations: [
+					...conversationsData.conversations,
+					{
+						_id: lastMessageFromSocket.conversation_id,
+						participants: [user.username, lastMessageFromSocket.from]
+					}
+				]
+			})
+			// It gets the unread values from dispatch of INCREASE_UNREAD_MESSAGE_VALUE already
+			// Following dispatch is only for saving new conversation to the state
+			dispatch({
+				type: SET_UNREAD_MESSAGES_INFO,
+				data: {
+					values_by_conversations: [
+						...globalState.unreadMessageInfo.values_by_conversations,
+						{
+							id: lastMessageFromSocket.conversation_id,
+							value: 0
+						}
+					],
+					total_unread_value: globalState.unreadMessageInfo.total_unread_value
+				}
+			})
+		}
+	}, [lastMessageFromSocket])
+
+	useEffect(() => {
+		if (activeConversationId && activeKey) {
+			dispatch({
+				type: DECREASE_UNREAD_MESSAGE_VALUE,
+				id: activeConversationId,
+				value: globalState.unreadMessageInfo.values_by_conversations.find((item: any) => item.id && item.id === activeConversationId).value
+			})
+		}
+	}, [activeKey])
+
 	if (!conversationsData) return <PageLoading />
 
 	const handleConversationDelete = (conversationId: string): void => {
 		setActiveKey(undefined)
+		setActiveConversationId(null)
 		deleteConversation(globalState.accessToken, conversationId)
 		setConversationsData({
 			...conversationsData,
@@ -46,13 +130,19 @@ const Messages = (params: any): JSX.Element => {
 			return (
 				<Tabs.TabPane
 					tab={
-						<Avatar
-							src={`${API_URL}/v1/user/pp?username=${recipientUsername}`}
-						/>
+						<Badge
+							count={globalState.unreadMessageInfo?.values_by_conversations.find((item: any) => item.id == conversation._id).value}
+						>
+							<Avatar
+								src={`${API_URL}/v1/user/pp?username=${recipientUsername}`}
+							/>
+						</Badge>
 					}
 					key={recipientUsername}
 				>
 					<ChatScreen
+						wss={wss}
+						onOpen={activeKey}
 						globalState={globalState}
 						username={user.username}
 						conversationId={conversation._id}
@@ -62,6 +152,11 @@ const Messages = (params: any): JSX.Element => {
 				</Tabs.TabPane>
 			)
 		})
+
+		const handleTabChange = (tabKey: string): void => {
+			setActiveConversationId(conversationsData.conversations.find(item => item.participants.includes(tabKey))?._id)
+			setActiveKey(tabKey)
+		}
 
 		return (
 			<>
@@ -85,7 +180,7 @@ const Messages = (params: any): JSX.Element => {
 					activeKey={activeKey}
 					tabPosition="left"
 					size="small"
-					onChange={(tabKey: string): void => setActiveKey(tabKey)}
+					onChange={handleTabChange}
 					animated={false}
 				>
 					{tabPanes}

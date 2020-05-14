@@ -4,12 +4,14 @@ import { ArrowLeftOutlined } from '@ant-design/icons'
 
 // Other dependencies
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { router } from 'umi'
 
 // Local files
-import { searchUser, fetchUserByUsername } from '@/services/api'
+import { searchUser, fetchUserByUsername, fetchUnreadMessageInfo } from '@/services/api'
 import { API_URL } from '@/../config/constants'
+import { socketConnection } from '@/services/socket'
+import { SET_UNREAD_MESSAGES_INFO } from '@/redux/Actions/Global'
 
 export declare interface FormDataType {
 	recipient: string
@@ -24,13 +26,22 @@ const Compose = (): JSX.Element => {
 		body: null,
 	})
 	const globalState = useSelector((state: any) => state.global)
+
+	const wss = socketConnection(globalState.accessToken)
 	const [form] = Form.useForm()
+	const dispatch = useDispatch()
+
 
 	const handleMessageSending = async (formValues: FormDataType): Promise<void> => {
 		await form.validateFields()
-		await fetchUserByUsername(formValues.recipient)
-			.then(_res => {
-				globalState.socketConnection.emit('sendMessage', formValues)
+		await fetchUserByUsername(formValues.recipient).then(async () => {
+			wss.emit('sendMessage', formValues)
+			// Refresh unread message state with new conversation before routing there
+			await fetchUnreadMessageInfo(globalState.accessToken).then(({ data }) => {
+				dispatch({
+					type: SET_UNREAD_MESSAGES_INFO,
+					data: data.attributes
+				})
 				router.push({
 					pathname: '/messages',
 					state: {
@@ -38,7 +49,8 @@ const Compose = (): JSX.Element => {
 					}
 				})
 			})
-			.catch(_error => message.error('User not found'))
+		})
+		.catch(_error => message.error('User not found'))
 	}
 
 	useEffect(() => {
