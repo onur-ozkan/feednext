@@ -129,12 +129,12 @@ export class AuthService {
     }
 
     async accountRecovery(dto: AccountRecoveryDto): Promise<HttpException> {
-        const result: { account: UsersEntity, password: string }  = await this.usersRepository.accountRecovery(dto)
+        const { account, password }  = await this.usersRepository.accountRecovery(dto)
 
         const mailBody: MailSenderBody = {
             receiver: dto.email,
-            subject: `Account Recovery [${result.account.username}]`,
-            text: `By your request we have set your password as '${result.password}' please sign in and update your Account Password.`,
+            subject: `Account Recovery [${account.username}]`,
+            text: `By your request we have set your password as '${password}' please sign in and update your Account Password.`,
         }
 
         await this.mailService.send(mailBody)

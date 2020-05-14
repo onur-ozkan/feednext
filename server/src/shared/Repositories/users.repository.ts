@@ -35,7 +35,7 @@ export class UsersRepository extends Repository<UsersEntity> {
         try {
             return await this.findOneOrFail({ email: emailParam })
         } catch (err) {
-            throw new BadRequestException('This email does not exist in the database.')
+            throw new BadRequestException('User could not found by given email.')
         }
     }
 
@@ -185,7 +185,7 @@ export class UsersRepository extends Repository<UsersEntity> {
         try {
             account = await this.findOneOrFail({ email: dto.email })
         } catch (err) {
-            throw new BadRequestException('This email does not exist in the database')
+            throw new BadRequestException('User could not found by given email')
         }
 
         if (!account.is_verified) throw new BadRequestException('Account is not verified, please verify your accunt')

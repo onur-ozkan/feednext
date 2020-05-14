@@ -49,11 +49,10 @@ export class CategoryService {
         const latestEntries = await this.entriesRepository.getLatestEntries()
 
         // Parse most belonged titles
-        const topTitlesOfLatestEntries = [...latestEntries.entries.reduce((r, e) => {
-            const k = e.title_id
-            if(!r.has(k)) r.set(k, {id: e.title_id, entryCount: 1})
-            else r.get(k).entryCount++
-            return r
+        const topTitlesOfLatestEntries = [...latestEntries.entries.reduce((previous, current) => {
+            if(!previous.has(current.title_id)) previous.set(current.title_id, {id: current.title_id, entryCount: 1})
+            else previous.get(current.title_id).entryCount++
+            return previous
         // tslint:disable-next-line:new-parens
         }, new Map).values()]
 

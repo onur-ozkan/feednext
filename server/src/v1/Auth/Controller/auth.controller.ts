@@ -62,7 +62,7 @@ export class AuthController {
         return await this.authService.signOut(bearer)
     }
 
-    @Patch('signin/account-recovery')
+    @Patch('account-recovery')
     accountRecovery(@Body() dto: AccountRecoveryDto): Promise<HttpException> {
         return this.authService.accountRecovery(dto)
     }
