@@ -13,28 +13,11 @@ export class RedisService {
         })
     }
 
-    async setData(key: any, value: any, expireTime?: number) {
-        if (expireTime) {
-            await this.redisConnection().set(key, value, 'EX', expireTime)
-        } else {
-            await this.redisConnection().set(key, value)
-        }
-    }
-
     async setOnlyKey(key: any, expireTime?: number) {
         if (expireTime) {
             await this.redisConnection().set(key, null, 'EX', expireTime)
         } else {
             await this.redisConnection().set(key, null)
-        }
-    }
-
-    async pushList(key: any, value: any, expireTime?: number) {
-        if (expireTime) {
-            await this.redisConnection().rpush(key, value)
-            await this.redisConnection().expire(key, expireTime)
-        } else {
-            await this.redisConnection().rpush(key, value)
         }
     }
 

@@ -190,10 +190,10 @@ const Feeds = (): JSX.Element => {
 			<div style={{ marginTop: -20 }}>
 				{trendingCategories.map(category => {
 					return (
-						<Row key={category.id} style={{ marginBottom: 10, marginTop: 10  }}>
+						<Row key={category.id} style={{ marginBottom: 10, marginTop: 10,  alignItems: 'center'  }}>
 							<Col>
 								<Typography.Text strong>
-									{category.name.toUpperCase()}
+									{category.name.length > 17 ? `${category.name.substring(0, 15).toUpperCase()}..` : category.name.toUpperCase()}
 								</Typography.Text>
 							</Col>
 							<Button onClick={(): void => setCategoryFilter(category.id)} type="primary" key={category.id}>

@@ -32,12 +32,10 @@ export class CategoryService {
     }
 
     async getCategory(categoryId: string): Promise<ISerializeResponse> {
-        if (!this.validator.isMongoId(categoryId)) throw new BadRequestException('CategoryId must be a MongoId.')
+        if (!this.validator.isMongoId(categoryId)) throw new BadRequestException('CategoryId must be a MongoId')
 
         const category: CategoriesEntity = await this.categoriesRepository.getCategory(categoryId)
-        const id: string = String(category.id)
-        delete category.id
-        return serializerService.serializeResponse('category_detail', category, id)
+        return serializerService.serializeResponse('category_detail', category)
     }
 
     async getMainCategories(): Promise<ISerializeResponse> {

@@ -85,8 +85,10 @@ export class TitleService {
             try {
                 category = await this.categoriesRepository.findOneOrFail(dto.categoryId)
             } catch (err) {
-                throw new BadRequestException(`Category with id:${dto.categoryId} does not match in database.`)
+                throw new BadRequestException('Category could not found by given id')
             }
+
+            if (!category.is_leaf) throw new BadRequestException('Category that is not leaf can not have titles')
 
             const newTitle: TitlesEntity = await this.titlesRepository.createTitle(openedBy, dto, category.ancestors)
             if (buffer) this.awsService.uploadImage(String(newTitle.id), 'titles', buffer)

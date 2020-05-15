@@ -18,9 +18,9 @@ export const CategorySelect = (props: ComponentProps): JSX.Element => {
 				return {
 					id: category.id,
 					pId: 0,
-					disabled: !category.is_leaf,
 					title: category.name.toUpperCase(),
-					value: category.name,
+					value: category.id,
+					disabled: (!category.is_leaf && !props.multiple),
 					isLeaf: category.is_leaf
 				}
 			})
@@ -41,7 +41,7 @@ export const CategorySelect = (props: ComponentProps): JSX.Element => {
 						pId: treeNode.id,
 						title: item.is_leaf ? item.name : item.name.toUpperCase(),
 						value: item.id,
-						disabled: !item.is_leaf,
+						disabled: (!item.is_leaf && !props.multiple),
 						isLeaf: item.is_leaf
 					}])
 				})

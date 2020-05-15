@@ -34,7 +34,7 @@ const Step1: React.FC = (props: any) => {
 		stepMovementTo('create-entry')
 	}
 
-	const handleReadableCategoryValue = (_id: string, title: React.ReactNode[]): void => {
+	const handleReadableCategoryValue = (_id: string | string[], title: React.ReactNode[]): void => {
 		setReadableCategoryValue(title[0])
 	}
 

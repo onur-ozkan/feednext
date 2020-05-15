@@ -8,7 +8,7 @@ export interface CategoryData {
 }
 
 export interface ComponentProps {
-	style: { [key: string]: string | number }
+	style?: { [key: string]: string | number }
 	placeHolder?: string
 	multiple?: boolean
 	allowClear?: boolean
