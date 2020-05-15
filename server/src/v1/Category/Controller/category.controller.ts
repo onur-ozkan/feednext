@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Controller, Post, Body, UseGuards, Param, Get, Delete, Query, Patch } from '@nestjs/common'
+import { Controller, Post, Body, UseGuards, Param, Get, Delete, Patch } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 
@@ -25,9 +25,14 @@ export class CategoryController {
         return this.categoryService.getCategory(categoryId)
     }
 
-    @Get('all')
-    getCategoryList(@Query() query: { skip: number }): Promise<ISerializeResponse> {
-        return this.categoryService.getCategoryList(query)
+    @Get('main-categories')
+    getMainCategories(): Promise<ISerializeResponse> {
+        return this.categoryService.getMainCategories()
+    }
+
+    @Get(':categoryId/child-categories')
+    getChildCategories(@Param('categoryId') categoryId: string): Promise<ISerializeResponse> {
+        return this.categoryService.getChildCategories(categoryId)
     }
 
     @Get('trending-categories')
@@ -37,7 +42,7 @@ export class CategoryController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
-    @Post('create-category')
+    @Post()
     @Roles(Role.SuperAdmin)
     createCategory(@Body() dto: CreateCategoryDto): Promise<ISerializeResponse> {
         return this.categoryService.createCategory(dto)

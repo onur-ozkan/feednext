@@ -36,7 +36,10 @@ export class MessageService {
         if (conversation) {
             if (conversation.deleted_from.includes(recipient)) {
                 conversation.deleted_from = conversation.deleted_from.filter(item => item !== recipient)
+            } else if (conversation.deleted_from.includes(from)) {
+                conversation.deleted_from = conversation.deleted_from.filter(item => item !== from)
             }
+
             await this.messagesRepository.createMessage({
                 conversationId: String(conversation._id),
                 sendBy: from,
@@ -75,6 +78,7 @@ export class MessageService {
         const [conversations] = await this.conversationsRepository.findAndCount({
             where: {
                 participants: { $in: [username] },
+                deleted_from: { $nin: [username] },
                 $or: [
                     { 'unread_messages.0.username': username },
                     { 'unread_messages.1.username': username }

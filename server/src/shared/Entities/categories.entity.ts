@@ -23,12 +23,15 @@ export class CategoriesEntity {
     @Column({ type: 'string', length: 50 })
     name: string
 
-    @Column({ type: 'array' })
+    @Column('boolean')
+    is_leaf: boolean
+
+    @Column('array')
     ancestors: string[]
 
-    @CreateDateColumn({ type: 'date' })
+    @CreateDateColumn('date')
     created_at: Date
 
-    @UpdateDateColumn({ type: 'date' })
+    @UpdateDateColumn('date')
     updated_at: Date
 }

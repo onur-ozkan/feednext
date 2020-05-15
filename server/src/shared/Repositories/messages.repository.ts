@@ -21,8 +21,8 @@ export class MessagesRepository extends Repository<MessagesEntity> {
         await this.save(newMessage)
     }
 
-    async getMessageListByConversationId(conversationId: string, skip: string): Promise<{ messages: MessagesEntity[] }> {
-        const [messages] = await this.findAndCount({
+    async getMessageListByConversationId(conversationId: string, skip: string): Promise<{ messages: MessagesEntity[], count: number }> {
+        const [messages, total] = await this.findAndCount({
             where: {
                 conversation_id: conversationId
             },
@@ -33,7 +33,7 @@ export class MessagesRepository extends Repository<MessagesEntity> {
             skip: Number(skip) || 0
         })
 
-        return { messages }
+        return { messages, count: total }
     }
 
     async deleteMessagesBelongsToConversation(conversationId: string): Promise<void> {

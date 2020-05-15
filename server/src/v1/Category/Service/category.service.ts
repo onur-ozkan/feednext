@@ -40,8 +40,13 @@ export class CategoryService {
         return serializerService.serializeResponse('category_detail', category, id)
     }
 
-    async getCategoryList(query: { skip: number }): Promise<ISerializeResponse> {
-        const result: {categories: CategoriesEntity[], count: number} = await this.categoriesRepository.getCategoryList(query)
+    async getMainCategories(): Promise<ISerializeResponse> {
+        const result: {categories: CategoriesEntity[], count: number} = await this.categoriesRepository.getMainCategories()
+        return serializerService.serializeResponse('category_list', result)
+    }
+
+    async getChildCategories(categoryId: string): Promise<ISerializeResponse> {
+        const result: {categories: CategoriesEntity[], count: number} = await this.categoriesRepository.getChildCategories(categoryId)
         return serializerService.serializeResponse('category_list', result)
     }
 
@@ -79,9 +84,7 @@ export class CategoryService {
         if (!this.validator.isMongoId(categoryId)) throw new BadRequestException('CategoryId must be a MongoId.')
 
         const category: CategoriesEntity = await this.categoriesRepository.updateCategory(categoryId, dto)
-        const id: string = String(category.id)
-        delete category.id
-        return serializerService.serializeResponse('category_detail', category, id)
+        return serializerService.serializeResponse('category_detail', category)
     }
 
     async deleteCategory(categoryId: string): Promise<ISerializeResponse> {

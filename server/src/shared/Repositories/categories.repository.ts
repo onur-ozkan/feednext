@@ -20,9 +20,20 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
         }
     }
 
-    async getCategoryList(query: { skip: number }): Promise<{categories: CategoriesEntity[], count: number}> {
+    async getMainCategories(): Promise<{categories: CategoriesEntity[], count: number}> {
         const [categories, total] = await this.findAndCount({
-            skip: Number(query.skip) || 0,
+            where: {
+                parent_category: null
+            }
+        })
+        return { categories, count: total }
+    }
+
+    async getChildCategories(categoryId: string): Promise<{categories: CategoriesEntity[], count: number}> {
+        const [categories, total] = await this.findAndCount({
+            where: {
+                parent_category: categoryId
+            }
         })
         return { categories, count: total }
     }
@@ -43,9 +54,11 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
         const categoryPayload: {
             name: string,
             parent_category?: string,
+            is_leaf: boolean,
             ancestors: string[]
         } = {
             name: dto.categoryName,
+            is_leaf: dto.isLeaf,
             ancestors: []
         }
 
@@ -87,6 +100,7 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
 
         try {
             if (dto.categoryName) category.name = dto.categoryName
+            if (dto.isLeaf !== undefined) category.is_leaf = dto.isLeaf
             if (parentCategory) {
                 category.parent_category = dto.parentCategoryId
                 category.ancestors = [...parentCategory.ancestors, String(parentCategory.id)]
