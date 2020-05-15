@@ -50,35 +50,3 @@ export const handleSessionExpiration = async (): Promise<void> => {
 	router.push('/auth/sign-in')
 	message.info('User session has been expired, please Sign in again.', 4)
 }
-
-export const forgeTreeSelectData = (rawList: any[]): any[] => {
-	const dataset: any[] = []
-	rawList.map(item => {
-		const {
-			name: title,
-			parent_category: parent_category,
-			id: value
-		} = {...item}
-
-		dataset.push(Object.assign({}, {
-			title,
-			value,
-			...parent_category && { parent_category }
-		}))
-	})
-
-	const hashTable = Object.create(null)
-	dataset.forEach((item: { value: string | number }) => (hashTable[item.value] = { ...item, children: [] }))
-
-	const dataTree: any[] = []
-	dataset.forEach((item: { parent_category: string | number; value: string | number }) => {
-		if (item.parent_category) hashTable[item['parent_category']].children.push(hashTable[item.value])
-		else dataTree.push(hashTable[item.value])
-	})
-
-	return dataTree
-}
-
-export const handleArrayFiltering = (list: any[], filterKey: any) => {
-	return list.find(item => item.id === filterKey)
-}

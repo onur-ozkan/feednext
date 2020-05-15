@@ -12,15 +12,15 @@ import {
 	Row,
 	Col,
 	Dropdown,
-	Menu
+	Menu,
 } from 'antd'
 import {
 	ArrowUpOutlined,
 	ArrowDownOutlined,
 	DeleteOutlined,
 	InfoCircleOutlined,
-	 DoubleLeftOutlined,
-	 DoubleRightOutlined
+	DoubleLeftOutlined,
+	DoubleRightOutlined,
 } from '@ant-design/icons'
 
 // Other dependencies
@@ -34,7 +34,15 @@ import { SuperAdmin, API_URL } from '@/../config/constants'
 import AddEntry from './AddEntry'
 import globalStyles from '@/global.less'
 
-const FeedEntries: React.FC = ({ titleData, sortEntriesBy, setSortEntriesBy, entryList, handleEntryFetching, setEntryList, accessToken }): JSX.Element => {
+const FeedEntries: React.FC = ({
+	titleData,
+	sortEntriesBy,
+	setSortEntriesBy,
+	entryList,
+	handleEntryFetching,
+	setEntryList,
+	accessToken,
+}): JSX.Element => {
 	const userState = useSelector((state: any) => state.user?.attributes.user)
 
 	const paginationOptions = {
@@ -73,11 +81,10 @@ const FeedEntries: React.FC = ({ titleData, sortEntriesBy, setSortEntriesBy, ent
 				entries: [...entryList.entries].map(item => {
 					if (item.id === entry.id) {
 						return {
-							...entry
+							...entry,
 						}
-					}
-					else return item
-				})
+					} else return item
+				}),
 			})
 			await undoEntryVote(entry.id, accessToken, true).catch(error => message.error(error.response.data.message))
 		} else if (isAlreadyDownVoted) {
@@ -89,11 +96,10 @@ const FeedEntries: React.FC = ({ titleData, sortEntriesBy, setSortEntriesBy, ent
 				entries: [...entryList.entries].map(item => {
 					if (item.id === entry.id) {
 						return {
-							...entry
+							...entry,
 						}
-					}
-					else return item
-				})
+					} else return item
+				}),
 			})
 			await undoEntryVote(entry.id, accessToken, false).catch(error => message.error(error.response.data.message))
 		}
@@ -108,16 +114,14 @@ const FeedEntries: React.FC = ({ titleData, sortEntriesBy, setSortEntriesBy, ent
 						...item,
 						votes: {
 							...item.votes,
-							value: (voteTo === 'up') ? (item.votes.value + 1) : (item.votes.value - 1),
-							...voteTo === 'up' ?
-								{ up_voted: [...item.votes.up_voted, userState.username] }
-									:
-								{ down_voted: [...item.votes.down_voted, userState.username] }
-						}
+							value: voteTo === 'up' ? item.votes.value + 1 : item.votes.value - 1,
+							...(voteTo === 'up'
+								? { up_voted: [...item.votes.up_voted, userState.username] }
+								: { down_voted: [...item.votes.down_voted, userState.username] }),
+						},
 					}
-				}
-				else return item
-			})
+				} else return item
+			}),
 		})
 
 		await voteEntry(entry.id, voteTo, accessToken).catch(error => {
@@ -136,11 +140,10 @@ const FeedEntries: React.FC = ({ titleData, sortEntriesBy, setSortEntriesBy, ent
 						if (item.id === entry.id) {
 							return {
 								...item,
-								text: value
+								text: value,
 							}
-						}
-						else return item
-					})
+						} else return item
+					}),
 				})
 				message.success('Entry successfully updated')
 			})
@@ -150,12 +153,11 @@ const FeedEntries: React.FC = ({ titleData, sortEntriesBy, setSortEntriesBy, ent
 	}
 
 	const handleEntryDelete = (entryId: string): void => {
-
 		deleteEntry(entryId, accessToken)
 			.then(_res => {
 				setEntryList({
 					...entryList,
-					entries: [...entryList.entries].filter(item => item.id !== entryId)
+					entries: [...entryList.entries].filter(item => item.id !== entryId),
 				})
 				message.success('Entry successfully deleted')
 			})
@@ -165,17 +167,25 @@ const FeedEntries: React.FC = ({ titleData, sortEntriesBy, setSortEntriesBy, ent
 	const handleEntryActions = (item: any): JSX.Element[] => [
 		<span style={{ padding: '2px 5px 2px 5px', fontSize: 14, opacity: 1 }} key="comment-basic-like">
 			<Tooltip title="Up Vote">
-				<ArrowUpOutlined onClick={() => handleVoteEntry(item, 'up')} style={{ color: (isEntryAlreadyVoted(item.votes, 'up')) ? 'red' : 'black' }} />
+				<ArrowUpOutlined
+					onClick={() => handleVoteEntry(item, 'up')}
+					style={{ color: isEntryAlreadyVoted(item.votes, 'up') ? 'red' : 'black' }}
+				/>
 			</Tooltip>
-			<span style={{ color: '#818181', fontSize: 15 }} className="comment-action"> {item.votes.value} </span>
+			<span style={{ color: '#818181', fontSize: 15, marginLeft: 2, marginRight: 2 }} className="comment-action">
+				{item.votes.value}
+			</span>
 			<Tooltip title="Down Vote">
-				<ArrowDownOutlined onClick={() => handleVoteEntry(item, 'down')} style={{ color: (isEntryAlreadyVoted(item.votes, 'down')) ? 'red' : 'black' }} />
+				<ArrowDownOutlined
+					onClick={() => handleVoteEntry(item, 'down')}
+					style={{ color: isEntryAlreadyVoted(item.votes, 'down') ? 'red' : 'black' }}
+				/>
 			</Tooltip>
-		</span>
+		</span>,
 	]
 
 	const handleSortByIcon = (): JSX.Element | void => {
-		switch(sortEntriesBy){
+		switch (sortEntriesBy) {
 			case 'newest':
 				return <DoubleRightOutlined />
 			case 'top':
@@ -192,9 +202,7 @@ const FeedEntries: React.FC = ({ titleData, sortEntriesBy, setSortEntriesBy, ent
 				className="comment-list"
 				header={
 					<Row>
-						<Col>
-							{titleData.attributes.entry_count} Entries
-						</Col>
+						<Col>{titleData.attributes.entry_count} Entries</Col>
 						<Dropdown
 							trigger={['click']}
 							overlay={
@@ -230,22 +238,32 @@ const FeedEntries: React.FC = ({ titleData, sortEntriesBy, setSortEntriesBy, ent
 						<Comment
 							actions={handleEntryActions(item)}
 							author={
-								<span onClick={(): void => router.push(`/user/${item.written_by}`)} style={{ cursor: 'pointer' }}>
+								<Typography.Text
+									onClick={(): void => router.push(`/user/${item.written_by}`)}
+									style={{ cursor: 'pointer', fontSize: 15, color: '#414141' }}
+								>
 									{item.written_by}
-								</span>
+								</Typography.Text>
 							}
-							avatar={ <Avatar src={`${API_URL}/v1/user/pp?username=${item.written_by}`} /> }
+							avatar={
+								<Avatar
+									onClick={(): void => router.push(`/user/${item.written_by}`)}
+									src={`${API_URL}/v1/user/pp?username=${item.written_by}`}
+								/>
+							}
 							content={
 								<>
 									<Typography.Paragraph
-										{...userState?.username === item.written_by && { editable: {
-											onChange: (value: string): void => handleEntryUpdate(value, item)
-										}}}
+										{...(userState?.username === item.written_by && {
+											editable: {
+												onChange: (value: string): void => handleEntryUpdate(value, item),
+											},
+										})}
 									>
 										{item.text}
 									</Typography.Paragraph>
-									{(userState?.username === item.written_by || userState?.role === SuperAdmin) &&
-										<span style={{ float: 'right'}}>
+									{(userState?.username === item.written_by || userState?.role === SuperAdmin) && (
+										<span style={{ float: 'right' }}>
 											<Popconfirm
 												placement="leftBottom"
 												style={{ fontSize: 15 }}
@@ -255,17 +273,18 @@ const FeedEntries: React.FC = ({ titleData, sortEntriesBy, setSortEntriesBy, ent
 												okText="Yes"
 												cancelText="No"
 											>
-												<Button type="link" danger icon={<DeleteOutlined style={{ fontSize: 14 }} />} />
+												<Button
+													type="link"
+													danger
+													icon={<DeleteOutlined style={{ fontSize: 14 }} />}
+												/>
 											</Popconfirm>
 										</span>
-									}
+									)}
 								</>
 							}
 							datetime={
-								<span
-									onClick={(): void => handleEntryRouting(item.id)}
-									style={{ cursor: 'pointer' }}
-								>
+								<span onClick={(): void => handleEntryRouting(item.id)} style={{ cursor: 'pointer' }}>
 									{item.created_at}
 								</span>
 							}
@@ -273,13 +292,9 @@ const FeedEntries: React.FC = ({ titleData, sortEntriesBy, setSortEntriesBy, ent
 					</>
 				)}
 			/>
-			{userState &&
-				<AddEntry
-					setEntryList={setEntryList}
-					titleId={titleData.attributes.id}
-					accessToken={accessToken}
-				/>
-			}
+			{userState && (
+				<AddEntry setEntryList={setEntryList} titleId={titleData.attributes.id} accessToken={accessToken} />
+			)}
 		</Card>
 	)
 }

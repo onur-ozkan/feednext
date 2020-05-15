@@ -6,7 +6,6 @@ import {
 	Tag,
 	message,
 	BackTop,
-	TreeSelect,
 	Row,
 	Col,
 	Typography,
@@ -20,32 +19,25 @@ import {
 	LinkOutlined,
 	RiseOutlined,
 	FilterFilled,
-	CheckOutlined,
 	StarFilled,
-	FireFilled
+	FireFilled,
 } from '@ant-design/icons'
 
 // Other dependencies
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
 import { Link } from 'umi'
 
 // Local files
-import { fetchAllFeeds, fetchFeaturedEntryByTitleId, fetchTrendingCategories } from '@/services/api'
-import { handleArrayFiltering } from '@/services/utils'
-import { API_URL } from '../../../config/constants'
+import { fetchAllFeeds, fetchFeaturedEntryByTitleId, fetchTrendingCategories, fetchOneCategory } from '@/services/api'
+import { CategorySelect } from '@/components/CategorySelect'
+import { API_URL } from '@/../config/constants'
 import ArticleListContent from './components/ArticleListContent'
 import globalStyles from '@/global.less'
-import '@ant-design/compatible/assets/index.css'
-
 
 const Feeds = (): JSX.Element => {
-	const globalState = useSelector((state: any) => state.global)
-
 	const [displayFilterModal, setDisplayFilterModal] = useState(false)
-	const [selectedCategoryFromTree, setSelectedCategoryFromTree] = useState(null)
 	const [trendingCategories, setTrendingCategories] = useState(null)
-	const [categoryFilter, setCategoryFilter] = useState(null)
+	const [categoryFilter, setCategoryFilter] = useState<string | null>(null)
 	const [feedList, setFeed]: any = useState(null)
 	const [sortBy, setSortBy] = useState(null)
 	const [skipValueForPagination, setSkipValueForPagination] = useState(0)
@@ -59,14 +51,15 @@ const Feeds = (): JSX.Element => {
 		fetchAllFeeds(skipValueForPagination, null, categoryFilter, sortBy)
 			.then(feedsResponse => {
 				feedsResponse.data.attributes.titles.map(async (title: any) => {
+					const categoryName = await fetchOneCategory(title.category_id).then(({ data }) => data.attributes.name)
 					await fetchFeaturedEntryByTitleId(title.id)
-						.then(featuredEntryResponse => {
+						.then(async featuredEntryResponse => {
 							const feed = {
 								id: title.id,
 								slug: title.slug,
 								name: title.name,
 								href: `/feeds/${title.slug}`,
-								categoryName: handleArrayFiltering(globalState.categoryList, title.category_id).name,
+								categoryName: categoryName,
 								createdAt: title.created_at,
 								updatedAt: title.updated_at,
 								entryCount: title.entry_count,
@@ -88,7 +81,7 @@ const Feeds = (): JSX.Element => {
 								slug: title.slug,
 								name: title.name,
 								href: `/feeds/${title.slug}`,
-								categoryName: handleArrayFiltering(globalState.categoryList, title.category_id).name,
+								categoryName: categoryName,
 								createdAt: title.created_at,
 								updatedAt: title.updated_at,
 								entryCount: title.entry_count,
@@ -250,17 +243,6 @@ const Feeds = (): JSX.Element => {
 		</div>
 	)
 
-	const handleCategoryFilter = (): void => {
-		setCategoryFilter(selectedCategoryFromTree)
-		setDisplayFilterModal(false)
-	}
-
-	const onModalCancel = (): void => {
-		setSelectedCategoryFromTree(null)
-		setDisplayFilterModal(false)
-	}
-
-
 	const handleModalScreen = (): JSX.Element => (
 		<Modal
 			transitionName='fade'
@@ -268,22 +250,15 @@ const Feeds = (): JSX.Element => {
 			visible={displayFilterModal}
 			closable={false}
 			footer={null}
-			onCancel={onModalCancel}
+			onCancel={(): void => setDisplayFilterModal(false)}
 		>
-			<Row>
-				<Col style={{ marginRight: 10 }}>
-					<TreeSelect
-						onChange={(id: string[]): void => setSelectedCategoryFromTree(String(id))}
-						multiple
-						showSearch={false}
-						treeData={globalState.categoryTree}
-						style={{ width: '100%' }}
-						placeholder="All Categories"
-						allowClear
-					/>
-				</Col>
-				<Button shape="circle" icon={<CheckOutlined />} onClick={handleCategoryFilter} />
-			</Row>
+			<CategorySelect
+				multiple
+				onSelect={(id): void => setCategoryFilter(String(id))}
+				style={{ width: '100%' }}
+				placeHolder="All Categories"
+				allowClear
+			/>
 		</Modal>
 	)
 

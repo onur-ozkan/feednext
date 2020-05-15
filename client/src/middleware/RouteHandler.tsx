@@ -9,14 +9,12 @@ import { Redirect, router } from 'umi'
 import { stringify } from 'querystring'
 
 // Local files
-import { SET_ACCESS_TOKEN, SET_CATEGORY_LIST, SET_CATEGORY_TREE, SET_UNREAD_MESSAGES_INFO, INCREASE_UNREAD_MESSAGE_VALUE } from '@/redux/Actions/Global'
-import { checkAccessToken, refreshToken, fetchAllCategories, fetchUnreadMessageInfo } from '@/services/api'
-import { getAuthorityFromRouter, handleSessionExpiration, forgeTreeSelectData } from '@/services/utils'
+import { SET_ACCESS_TOKEN, SET_UNREAD_MESSAGES_INFO, INCREASE_UNREAD_MESSAGE_VALUE } from '@/redux/Actions/Global'
+import { checkAccessToken, refreshToken, fetchUnreadMessageInfo } from '@/services/api'
+import { getAuthorityFromRouter, handleSessionExpiration } from '@/services/utils'
 import { socketConnection } from '@/services/socket'
 import { User } from '@/../config/constants'
 import PageLoading from '@/components/PageLoading'
-
-
 
 const RouteHandler = ({ children, route }) => {
 	const [isLoading, setIsLoading] = useState(true)
@@ -38,7 +36,7 @@ const RouteHandler = ({ children, route }) => {
 	}
 
 	const handleUnreadMessages = async (): Promise<void> => {
-		fetchUnreadMessageInfo(accessToken).then(({ data }) => {
+		await fetchUnreadMessageInfo(accessToken).then(({ data }) => {
 			dispatch({
 				type: SET_UNREAD_MESSAGES_INFO,
 				data: data.attributes
@@ -52,17 +50,6 @@ const RouteHandler = ({ children, route }) => {
 			await handleUnreadMessages()
 		}
 
-		await fetchAllCategories().then(res => {
-			dispatch({
-				type: SET_CATEGORY_LIST,
-				list: res.data.attributes.categories
-			})
-
-			dispatch({
-				type: SET_CATEGORY_TREE,
-				data: forgeTreeSelectData(res.data.attributes.categories)
-			})
-		})
 		setIsLoading(false)
 	}
 
@@ -87,8 +74,8 @@ const RouteHandler = ({ children, route }) => {
 				}
 			})
 
-			return () => {
-				wss.close()
+			return (): void => {
+				wss.disconnect()
 			}
 		}
 	}, [])

@@ -1,12 +1,10 @@
 // Local files
 import {
 	SET_ACCESS_TOKEN,
-	SET_CATEGORY_LIST,
-	SET_CATEGORY_TREE,
 	SET_UNREAD_MESSAGES_INFO,
 	GlobalActions,
 	INCREASE_UNREAD_MESSAGE_VALUE,
-	DECREASE_UNREAD_MESSAGE_VALUE,
+	DECREASE_UNREAD_MESSAGE_VALUE
 } from '../../Actions/Global'
 
 const globalReducerDefaultState: {
@@ -14,14 +12,10 @@ const globalReducerDefaultState: {
 	unreadMessageInfo: {
 		values_by_conversations: { id: string, value: number }[],
 		total_unread_value: number
-	} | null,
-	categoryList: [] | null,
-	categoryTree: [] | null
+	} | null
 } = {
 	accessToken: null,
 	unreadMessageInfo: null,
-	categoryList: null,
-	categoryTree: null
 }
 
 export const globalReducer = (state = globalReducerDefaultState, action: GlobalActions): any => {
@@ -69,16 +63,6 @@ export const globalReducer = (state = globalReducerDefaultState, action: GlobalA
 					}),
 					total_unread_value: state.unreadMessageInfo?.total_unread_value > 0 ? (state.unreadMessageInfo?.total_unread_value - action.value) : 0
 				}
-			}
-		case SET_CATEGORY_LIST:
-			return {
-				...state,
-				categoryList: action.list
-			}
-		case SET_CATEGORY_TREE:
-			return {
-				...state,
-				categoryTree: action.data
 			}
 		default:
 			return state

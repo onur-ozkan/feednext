@@ -1,5 +1,5 @@
 // Antd dependencies
-import { Form, Button, Input, TreeSelect } from 'antd'
+import { Form, Button, Input } from 'antd'
 
 // Other dependencies
 import React, { useContext } from 'react'
@@ -8,6 +8,7 @@ import React, { useContext } from 'react'
 import ImageUpload from '@/components/ImageUpload'
 import StepContext from '../../StepContext'
 import styles from './index.less'
+import { CategorySelect } from '@/components/CategorySelect'
 
 const formItemLayout = {
 	labelCol: {
@@ -20,8 +21,8 @@ const formItemLayout = {
 
 const Step1: React.FC = (props: any) => {
 	const [form] = Form.useForm()
-	const { createTitleFormData } = useContext(StepContext)
-	const { categories, setCreateTitleFormData, stepMovementTo, setReadableCategoryValue } = props
+	const { createTitleFormData, readableCategoryValue } = useContext(StepContext)
+	const { setCreateTitleFormData, stepMovementTo, setReadableCategoryValue } = props
 
 	const onValidateForm = (): void => {
 		if (!form.getFieldValue('categoryId') && !form.getFieldValue('title')) return
@@ -33,7 +34,9 @@ const Step1: React.FC = (props: any) => {
 		stepMovementTo('create-entry')
 	}
 
-	const handleReadableCategoryValue = (id, title): void => setReadableCategoryValue(title[0])
+	const handleReadableCategoryValue = (_id: string, title: React.ReactNode[]): void => {
+		setReadableCategoryValue(title[0])
+	}
 
 
 	const handleOnUpload = (base64Link: string, fileBlob: File): void => {
@@ -51,6 +54,7 @@ const Step1: React.FC = (props: any) => {
 			imageFile: null
 		})
 	}
+
 
 	return (
 		<Form
@@ -72,11 +76,10 @@ const Step1: React.FC = (props: any) => {
 				name="categoryId"
 				rules={[{ required: true, message: 'Please select category' }]}
 			>
-				<TreeSelect
-					placeholder="Electronic"
-					treeData={categories}
-					onChange={handleReadableCategoryValue}
-					allowClear
+				<CategorySelect
+					defaultValue={readableCategoryValue}
+					placeHolder="Electronic"
+					onSelect={handleReadableCategoryValue}
 				/>
 			</Form.Item>
 			<Form.Item label="Title" name="title" rules={[{ required: true, message: 'Please fill the title input' }]}>

@@ -72,7 +72,7 @@ const Step2: React.FC = (props: any) => {
 			</Descriptions>
 			<Divider style={{ margin: '24px 0' }} />
 			<Form.Item rules={[{ required: true, message: 'Please fill the input above' }]} label="Entry" name="entry">
-				<TextArea allowClear autoSize={{ minRows: 4 }} />
+				<TextArea placeholder="Share us your thoughts about the title that you are creating" allowClear autoSize={{ minRows: 4 }} />
 			</Form.Item>
 			<Form.Item
 				style={{ marginBottom: 8 }}

@@ -1,22 +1,19 @@
 // Antd dependencies
-import { Comment, Tag, Avatar, Tooltip, PageHeader, Row, Col, Rate, Divider } from 'antd'
+import { Comment, Tag, Avatar, Tooltip, PageHeader, Row, Col, Rate, Divider, Typography } from 'antd'
 import { ArrowUpOutlined } from '@ant-design/icons'
 
 // Other dependencies
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
 import { router } from 'umi'
 
 // Local files
-import { fetchEntryByEntryId, fetchTitle, getAverageTitleRate } from '@/services/api'
-import { handleArrayFiltering } from '@/services/utils'
+import { fetchEntryByEntryId, fetchTitle, getAverageTitleRate, fetchOneCategory } from '@/services/api'
+import { API_URL } from '@/../config/constants'
 import PageLoading from '@/components/PageLoading'
 import NotFoundPage from '../404'
 
 const Entry = ({ computedMatch }): JSX.Element => {
-	const categoryList = useSelector((state: any) => state.global.categoryList)
-
-	const [isFetchingSuccess, setIsFetchingSuccess] = useState(null)
+	const [isFetchingSuccess, setIsFetchingSuccess] = useState<boolean | null>(null)
 	const [averageTitleRate, setAverageTitleRate] = useState(null)
 	const [titleData, setTitleData] = useState(null)
 	const [entryData, setEntryData] = useState(null)
@@ -36,8 +33,9 @@ const Entry = ({ computedMatch }): JSX.Element => {
 					.then(sRes => {
 						setTitleData(sRes.data)
 						// Get category
-						const category = handleArrayFiltering(categoryList, sRes.data.attributes.category_id)
-						setCategoryName(category.name)
+						fetchOneCategory(sRes.data.attributes.category_id).then(({ data }) => {
+							setCategoryName(data.attributes.name)
+						})
 						// Fetch average rate of title
 						getAverageTitleRate(sRes.data.attributes.id)
 							.then(trRes => setAverageTitleRate(trRes.data.attributes.rate || 0))
@@ -60,7 +58,10 @@ const Entry = ({ computedMatch }): JSX.Element => {
 					<h1
 						style={{ cursor: 'pointer' }}
 						onClick={(): void => router.push(`/feeds/${titleData.attributes.slug}`)}
-					> {titleData.attributes.name} </h1>
+					>
+						{' '}
+						{titleData.attributes.name}{' '}
+					</h1>
 				</Col>
 				<Col>
 					<Rate disabled value={averageTitleRate} />
@@ -74,44 +75,40 @@ const Entry = ({ computedMatch }): JSX.Element => {
 			<Tooltip title="Up Vote">
 				<ArrowUpOutlined />
 			</Tooltip>
-			<span style={{ color: '#818181', fontSize: 15 }} className="comment-action">
+			<span style={{ color: '#818181', fontSize: 15, marginLeft: 2 }} className="comment-action">
 				{entryData.attributes.votes.value}
 			</span>
-		</span>
+		</span>,
 	]
 
 	const handleCommentTime = (): JSX.Element => (
 		<Tooltip title={`Updated at ${entryData.attributes.updated_at}`}>
-			<span>
-				{entryData.attributes.created_at}
-			</span>
+			<span>{entryData.attributes.created_at}</span>
 		</Tooltip>
 	)
 
 	return (
 		<>
-			<PageHeader
-				title={handleHeaderTitleSection()}
-				style={{ backgroundColor: 'white' }}
-				className="site-page-header"
-			>
+			<PageHeader title={handleHeaderTitleSection()} style={{ backgroundColor: 'white' }} className="site-page-header">
 				<Divider />
 				<Comment
 					actions={handleCommentVotes()}
 					datetime={handleCommentTime()}
 					author={
-						<span onClick={(): void => router.push(`/user/${entryData.attributes.written_by}`)} style={{ cursor: 'pointer' }}>{entryData.attributes.written_by}</span>
+						<Typography.Text
+							onClick={(): void => router.push(`/user/${entryData.attributes.written_by}`)}
+							style={{ cursor: 'pointer', fontSize: 15, color: '#414141' }}
+						>
+							{entryData.attributes.written_by}
+						</Typography.Text>
 					}
 					avatar={
-						<Avatar size="large">
-							{entryData.attributes.written_by.toUpperCase()[0]}
-						</Avatar>
+						<Avatar
+							onClick={(): void => router.push(`/user/${entryData.attributes.written_by}`)}
+							src={`${API_URL}/v1/user/pp?username=${entryData.attributes.written_by}`}
+						/>
 					}
-					content={
-						<p>
-							{entryData.attributes.text}
-						</p>
-					}
+					content={<p>{entryData.attributes.text}</p>}
 				/>
 			</PageHeader>
 		</>

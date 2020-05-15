@@ -1,5 +1,5 @@
 // Antd dependencies
-import { TreeSelect, Modal, Form, Input, Button, Popconfirm, message } from 'antd'
+import { Modal, Form, Input, Button, Popconfirm, message } from 'antd'
 import { InfoCircleOutlined } from '@ant-design/icons'
 
 // Other dependencies
@@ -13,10 +13,11 @@ import {
 	getAverageTitleRate,
 	updateTitle,
 	deleteTitleImage,
-	updateTitleImage
+	updateTitleImage,
+	fetchOneCategory
 } from '@/services/api'
-import { handleArrayFiltering } from '@/services/utils'
 import { API_URL } from '@/../config/constants'
+import { CategorySelect } from '@/components/CategorySelect'
 import FeedHeader from './components/FeedHeader'
 import FeedEntries from './components/FeedEntries'
 import PageLoading from '@/components/PageLoading'
@@ -27,16 +28,17 @@ const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 	const globalState = useSelector((state: any) => state.global)
 	const userRole = useSelector((state: any) => state.user?.attributes.user.role)
 
+	const [title, setTitle]: any = useState(null)
+	const [category, setCategory]: any = useState(null)
+	const [averageTitleRate, setAverageTitleRate] = useState(null)
+	const [updateCategoryId, setUpdateCategoryId] = useState<string | null>(null)
+	const [entryList, setEntryList]: any = useState(null)
+	const [sortEntriesBy, setSortEntriesBy] = useState(null)
+	const [updateModalVisibility, setUpdateModalVisibility] = useState(false)
+	const [titleImageBlob, setTitleImageBlob] = useState<Blob | null>(null)
+
 	const [form] = Form.useForm()
 
-	const [title, setTitle]: any = useState(null)
-	const [averageTitleRate, setAverageTitleRate] = useState(null)
-	const [category, setCategory]: any = useState(null)
-	const [sortEntriesBy, setSortEntriesBy] = useState(null)
-	const [entryList, setEntryList]: any = useState(null)
-	const [updateModalVisibility, setUpdateModalVisibility] = useState(false)
-
-	const [titleImageBlob, setTitleImageBlob] = useState(null)
 
 	const handleEntryFetching = (page: number): void => {
 		fetchEntriesByTitleId(title.attributes.id, page, sortEntriesBy).then(res => {
@@ -52,8 +54,13 @@ const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 		await getAverageTitleRate(titleId).then(res => setAverageTitleRate(res.data.attributes.rate || 0))
 	}
 
-	const handleTitleUpdate = async (values: { categoryId: string, name: string }): Promise<void> => {
-		if (titleImageBlob === false) {
+	const handleTitleUpdate = async (values: { name: string }): Promise<void> => {
+		const updatePayload = {
+			categoryId: updateCategoryId,
+			name: values.name
+		}
+
+		if (!titleImageBlob) {
 			deleteTitleImage(globalState.accessToken, title.attributes.id)
 				.catch(error => message.error(error.response.data.message))
 		}
@@ -66,16 +73,18 @@ const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 				.catch(error => message.error(error.response.data.message))
 		}
 
-		await updateTitle(globalState.accessToken, title.attributes.id, values)
-			.then(_res => {
+		await updateTitle(globalState.accessToken, title.attributes.id, updatePayload)
+			.then((_res: { data: { attributes: { slug: any } } }) => {
 				location.href = `/feeds/${_res.data.attributes.slug}`
 			})
-			.catch(error => message.error(error.response.data.message))
+			.catch((error: any) => message.error(error.response.data.message))
 	}
 
 	useEffect(() => {
 		fetchTitle(computedMatch.params.feedSlug, 'slug').then(async res => {
-			setCategory(handleArrayFiltering(globalState.categoryList, res.data.attributes.category_id))
+			await fetchOneCategory(res.data.attributes.category_id).then(({ data }) => {
+				setCategory(data.attributes)
+			})
 			getTitleRate(res.data.attributes.id)
 			await setTitle(res.data)
 		})
@@ -116,11 +125,7 @@ const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 				<Form
 					onFinish={handleTitleUpdate}
 					form={form}
-					initialValues={{
-						name: title.attributes.name,
-						categoryId: category.id
-					}}
-				>
+					initialValues={{ name: title.attributes.name }}>
 					<div
 						style={{
 							marginBottom: 10,
@@ -132,17 +137,18 @@ const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 						<div>
 							<ImageUpload
 								defaultUrl={`${API_URL}/v1/title/${title.attributes.id}/image`}
-								onImageTake={(_base64, blob): void => setTitleImageBlob(blob)}
-								onRemoveImage={(): void => setTitleImageBlob(false)}
+								onImageTake={(_base64: any, blob: React.SetStateAction<Blob | null>): void => setTitleImageBlob(blob)}
+								onRemoveImage={(): void => setTitleImageBlob(null)}
 							/>
 						</div>
 					</div>
-					<Form.Item
-						name="categoryId"
-						style={{ marginBottom: 10 }}
-						rules={[{ required: true, message: 'Please select category' }]}
-					>
-						<TreeSelect treeData={globalState.categoryTree} style={{ width: '100%' }} placeholder="Electronic" allowClear />
+					<Form.Item style={{ marginBottom: 10 }}>
+						<CategorySelect
+							style={{ width: '100%' }}
+							defaultValue={category.name}
+							placeHolder="Electronic"
+							onSelect={(id): void => setUpdateCategoryId(id)}
+						/>
 					</Form.Item>
 					<Form.Item
 						name="name"

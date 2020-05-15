@@ -107,9 +107,9 @@ export const refreshToken = (): Promise<AxiosResponse> => axios.get('/v1/auth/re
 
 export const fetchAllFeeds = (
 	skip: number,
-	username?: string,
-	categoryIds?: string,
-	sortBy?: 'hot' | 'top'
+	username: string | null,
+	categoryIds: string | null,
+	sortBy?: 'hot' | 'top' | null
 ): Promise<AxiosResponse> => axios.get(
 	'/v1/title/all', {
 		params: {
@@ -129,7 +129,12 @@ export const fetchTitle = (titleSlug: string, type: 'id' | 'slug'): Promise<Axio
 	}
 })
 
-export const fetchAllCategories = (): Promise<AxiosResponse> => axios.get('/v1/category/all')
+export const fetchOneCategory = (categoryId: string): Promise<AxiosResponse> => axios.get(`/v1/category/${categoryId}`)
+
+export const fetchMainCategories = (): Promise<AxiosResponse> => axios.get('/v1/category/main-categories')
+
+export const fetchChildCategories = (categoryId: string): Promise<AxiosResponse> => axios.get(`/v1/category/${categoryId}/child-categories`)
+
 
 export const fetchTrendingCategories = (): Promise<AxiosResponse> => axios.get('/v1/category/trending-categories')
 
@@ -209,7 +214,7 @@ export const updateTitle = (
 	titleId: string,
 	payload: {
 		name: string,
-		categoryId: string
+		categoryId: string | null
 	}
 ): Promise<AxiosResponse> => axios.patch(`/v1/title/${titleId}`, payload, {
 	headers: {

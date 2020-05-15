@@ -11,16 +11,16 @@ import { StepProvider } from './StepContext'
 import Step1 from './components/Step1'
 import Step2 from './components/Step2'
 import Step3 from './components/Step3'
+import PageLoading from '@/components/PageLoading'
 import styles from './style.less'
 
 const CreateFeed: React.FC = () => {
 	const accessToken = useSelector((state: any) => state.global.accessToken)
-	const categoryTree = useSelector((state: any) => state.global.categoryTree)
 
 	const [currentStep, setCurrentStep] = useState<number>(0)
 	const [stepComponent, setStepComponent] = useState<React.ReactNode>(null)
 	const [isRequestReady, setIsRequestReady] = useState(false)
-	const [readableCategoryValue, setReadableCategoryValue] = useState(null)
+	const [readableCategoryValue, setReadableCategoryValue] = useState(undefined)
 	const [firstEntryForm, setFirstEntryForm]: any = useState({
 		text: undefined
 	})
@@ -99,7 +99,6 @@ const CreateFeed: React.FC = () => {
 					component:
 						<Step1
 							stepMovementTo={handleStepMovement}
-							categories={categoryTree}
 							setCreateTitleFormData={setCreateTitleFormData}
 							setReadableCategoryValue={setReadableCategoryValue}
 						/>
