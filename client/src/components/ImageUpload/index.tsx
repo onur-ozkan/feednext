@@ -59,6 +59,7 @@ const ImageUpload: React.FC = ({ onImageTake, onRemoveImage, defaultUrl }): JSX.
 			disabled={!!base64}
 			listType="picture-card"
 			className="avatar-uploader"
+			accept=".jpg, .jpeg, .png"
 			beforeUpload={fileValidation}
 			showUploadList={false}
 			onChange={handleOnUpload}

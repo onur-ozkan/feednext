@@ -33,6 +33,10 @@ export const ConversationList = (params): JSX.Element => {
 			from: string,
 			body: string
 		}) => setLastMessageFromSocket(incMessage))
+
+		return (): void => {
+			params.wss.close()
+		}
 	}, [])
 
 	// Fetch current user's conversations and save them to the state
@@ -98,6 +102,7 @@ export const ConversationList = (params): JSX.Element => {
 		const listView = params.currentConversations.conversations.map((conversation) => {
 			const recipientUsername = (conversation.participants[0] === userState.username) ?
 				conversation.participants[1] : conversation.participants[0]
+			const unreadValue = params.globalState.unreadMessageInfo?.values_by_conversations.find((item: any) => item.id == conversation._id)?.value
 			return (
 				<Col
 					key={conversation._id}
@@ -111,7 +116,7 @@ export const ConversationList = (params): JSX.Element => {
 					<List.Item.Meta
 						style={{ justifyContent: 'center', alignContent: 'center' }}
 						avatar={
-							<Badge count={params.globalState.unreadMessageInfo?.values_by_conversations.find((item: any) => item.id == conversation._id).value}>
+							<Badge count={unreadValue || 0}>
 								<Avatar
 									shape="circle"
 									size="large"

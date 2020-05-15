@@ -59,6 +59,7 @@ const Messages = (): JSX.Element => {
 					<WelcomePage />
 				}
 			</Card>
+			<br/>
 		</div>
 	)
 }

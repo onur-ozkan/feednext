@@ -18,6 +18,7 @@ export const ChatScreen = (params): JSX.Element => {
 	const [messageList, setMessageList] = useState<any[]>([])
 	const [paginationValue, setPaginationValue] = useState(0)
 	const [recipientProfile, setRecipientProfile] = useState(null)
+	const [canPaginate, setCanPaginate] = useState(false)
 
 	const dispatch = useDispatch()
 	const [form] = Form.useForm()
@@ -43,6 +44,10 @@ export const ChatScreen = (params): JSX.Element => {
 					text: incMessage.body,
 					created_at: formatISO(new Date)
 				}])
+				bottomEl.current?.scrollIntoView({
+					behavior: 'smooth',
+					block: 'start'
+				})
 			}
 		})
 
@@ -67,6 +72,8 @@ export const ChatScreen = (params): JSX.Element => {
 		fetchMessagesByConversationId(params.globalState.accessToken, params.conversationId, paginationValue)
 			.then(async ({ data }) => {
 				await data.attributes.messages.map(item => setMessageList((currentState: any) => [item, ...currentState]))
+				if (messageList.length < data.attributes.count) setCanPaginate(true)
+				else setCanPaginate(false)
 			})
 	}, [paginationValue, params.conversationId])
 
@@ -129,7 +136,7 @@ export const ChatScreen = (params): JSX.Element => {
 		)
 	}
 
-	const loadMore = (messageList.length % 10) === 0  && (
+	const loadMore = canPaginate  && (
 		<div style={{ textAlign: 'center', marginTop: 10 }}>
 			<Button
 				onClick={(): void => setPaginationValue(paginationValue + 10)}
