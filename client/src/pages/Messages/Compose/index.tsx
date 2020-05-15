@@ -44,9 +44,6 @@ const Compose = (): JSX.Element => {
 				})
 				router.push({
 					pathname: '/messages',
-					state: {
-						key: formValues.recipient
-					}
 				})
 			})
 		})
