@@ -53,11 +53,15 @@ export const CategorySelect = (props: ComponentProps): JSX.Element => {
 	return (
 		<TreeSelect
 			treeDataSimpleMode
+			showSearch={false}
+			style={props.style}
+			multiple={props.multiple}
 			placeholder={props.placeHolder}
 			defaultValue={props.defaultValue}
 			onChange={handleOnCategoryChangeEvent}
 			loadData={handleOnCategoryLoad}
 			treeData={categories}
+			allowClear={props.allowClear}
 		/>
 	)
 }

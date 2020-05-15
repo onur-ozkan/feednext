@@ -8,7 +8,10 @@ export interface CategoryData {
 }
 
 export interface ComponentProps {
+	style: { [key: string]: string | number }
 	placeHolder?: string
+	multiple?: boolean
+	allowClear?: boolean
 	defaultValue?: string
-	onSelect?: (id: string, title: React.ReactNode[]) => any
+	onSelect: (id: string | string[], title: React.ReactNode[]) => any
 }
