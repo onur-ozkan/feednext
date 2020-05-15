@@ -4,6 +4,7 @@ import ProLayout, { MenuDataItem, Settings } from '@ant-design/pro-layout'
 
 // Other dependencies
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { Dispatch } from 'redux'
 import { Link } from 'umi'
 
@@ -11,8 +12,6 @@ import { Link } from 'umi'
 import RightContent from '@/components/GlobalHeader/RightContent'
 import logoWide from '../assets/logo-wide.svg'
 import logoSquare from '../assets/logo-square.svg'
-
-import { useSelector } from 'react-redux'
 
 export declare interface AppLayoutProps {
 	breadcrumbNameMap: {

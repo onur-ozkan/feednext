@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 // Antd dependencies
 import {
 	Tooltip,

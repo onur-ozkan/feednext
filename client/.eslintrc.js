@@ -23,6 +23,7 @@ module.exports = {
 		'react/display-name': 0,
 		'@typescript-eslint/member-delimiter-style': 0,
 		'@typescript-eslint/no-non-null-assertion': 0,
+		'@typescript-eslint/camelcase': 0
 	},
 	globals: {
 		ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION: true,

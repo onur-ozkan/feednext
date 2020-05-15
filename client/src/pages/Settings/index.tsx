@@ -64,7 +64,7 @@ const Settings = (): JSX.Element => {
 			...(values.password) && { password: values.password },
 		}
 
-		await updateUser(user.username, accessToken, payload)
+		await updateUser(accessToken, payload)
 			.then(_res => {
 				setSendingChanges(false)
 				dispatch({
@@ -162,7 +162,7 @@ const Settings = (): JSX.Element => {
 								}),
 								({ getFieldValue }) => ({
 									validator(rule, value) {
-										if (value || getFieldValue('password') === value) {
+										if (value && getFieldValue('password') === value) {
 											return Promise.reject('The two passwords that you entered do not match!')
 										}
 										return Promise.resolve()
@@ -218,7 +218,7 @@ const Settings = (): JSX.Element => {
 	const handleApplicationTabView = (): void => {
 		setTabView(
 			<div style={{ textAlign: 'center' }}>
-				<LoadingOutlined style={{ fontSize: 20 }} />
+				Application settings are not allowed yet, but it will come soon.
 			</div>
 		)
 	}

@@ -236,7 +236,7 @@ const Feeds = (): JSX.Element => {
 		}
 	}
 
-	const loadMore = feedList?.length > 0 && (
+	const loadMore = (feedList?.length % 10) === 0 && (
 		<div style={{ textAlign: 'center', marginTop: 16 }}>
 			<Button
 				onClick={handleFetchMore}

@@ -26,9 +26,11 @@ const ENVTagColor = {
 }
 
 const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
+	const user = useSelector((state: any) => state.user)
+	const globalState = useSelector((state: any) => state.global)
+
 	const { theme, layout } = props
 	let className = styles.right
-	const user = useSelector((state: any) => state.user)
 
 	if (theme === 'dark' && layout === 'topmenu') {
 		className = `${styles.right}  ${styles.dark}`
@@ -46,7 +48,7 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
 					>
 						New Feed
 					</Button>
-					<MessageBox count={0} />
+					<MessageBox count={globalState.unreadMessageInfo.total_unread_value} />
 					<Avatar />
 				</>
 			)

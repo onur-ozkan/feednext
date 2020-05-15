@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 // Local files
 import { SIGN_IN, UserActions, UPDATE_USER } from '../../Actions/User'
 
@@ -15,7 +14,6 @@ export const userReducer = (state = userReducerDefaultState, action: UserActions
 					...state.attributes,
 					user: {
 						...state.attributes.user,
-						// eslint-disable-next-line @typescript-eslint/camelcase
 						...action.payload.fullName && { full_name: action.payload.fullName },
 						...action.payload.link && { link: action.payload.link },
 						...action.payload.biography && { biography: action.payload.biography },

@@ -45,13 +45,11 @@ export const globalReducer = (state = globalReducerDefaultState, action: GlobalA
 						if (item.id === action.id) {
 							return {
 								...item,
-								// eslint-disable-next-line @typescript-eslint/camelcase
 								value: (item.value + action.value),
 							}
 						}
 						else return item
 					}),
-					// eslint-disable-next-line @typescript-eslint/camelcase
 					total_unread_value: (state.unreadMessageInfo?.total_unread_value + action.value)
 				}
 			}
@@ -64,13 +62,11 @@ export const globalReducer = (state = globalReducerDefaultState, action: GlobalA
 						if (item.id === action.id) {
 							return {
 								...item,
-								// eslint-disable-next-line @typescript-eslint/camelcase
 								value: item.value > 0 ? (item.value - action.value) : 0,
 							}
 						}
 						else return item
 					}),
-					// eslint-disable-next-line @typescript-eslint/camelcase
 					total_unread_value: state.unreadMessageInfo?.total_unread_value > 0 ? (state.unreadMessageInfo?.total_unread_value - action.value) : 0
 				}
 			}
