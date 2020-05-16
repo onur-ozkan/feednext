@@ -1,9 +1,11 @@
+// Other dependencies
+import { defineConfig } from 'umi'
+
 // Local files
 import { routes } from './routes'
 import defaultSettings from './defaultSettings'
 
-
-export default {
+export default defineConfig({
 	routes,
 	ssr: {
 		forceInitial: false,
@@ -11,11 +13,11 @@ export default {
 		mode: 'stream',
 		staticMarkup: false,
 	},
-  	nodeModulesTransform: {
-    	type: 'none',
-  	},
+	nodeModulesTransform: {
+		type: 'none',
+	},
 	theme: defaultSettings.theme,
 	manifest: {
 		basePath: '/',
 	},
-}
+})
