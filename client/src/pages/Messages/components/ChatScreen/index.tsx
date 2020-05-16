@@ -101,6 +101,10 @@ export const ChatScreen = (params): JSX.Element => {
 			text: values.messageText,
 			created_at: formatISO(new Date)
 		}])
+		bottomEl.current?.scrollIntoView({
+			behavior: 'smooth',
+			block: 'start'
+		})
 
 		form.resetFields()
 	}

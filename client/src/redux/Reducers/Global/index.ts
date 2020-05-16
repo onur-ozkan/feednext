@@ -4,18 +4,22 @@ import {
 	SET_UNREAD_MESSAGES_INFO,
 	GlobalActions,
 	INCREASE_UNREAD_MESSAGE_VALUE,
-	DECREASE_UNREAD_MESSAGE_VALUE
+	DECREASE_UNREAD_MESSAGE_VALUE,
+	ADD_ITEM_TO_MESSAGES_INFO
 } from '../../Actions/Global'
 
 const globalReducerDefaultState: {
 	accessToken: string | null,
 	unreadMessageInfo: {
-		values_by_conversations: { id: string, value: number }[],
+		values_by_conversations: { id: string, value: number }[] | [],
 		total_unread_value: number
 	} | null
 } = {
 	accessToken: null,
-	unreadMessageInfo: null,
+	unreadMessageInfo: {
+		values_by_conversations: [],
+		total_unread_value: 0
+	},
 }
 
 export const globalReducer = (state = globalReducerDefaultState, action: GlobalActions): any => {
@@ -30,12 +34,24 @@ export const globalReducer = (state = globalReducerDefaultState, action: GlobalA
 				...state,
 				unreadMessageInfo: action.data
 			}
+		case ADD_ITEM_TO_MESSAGES_INFO:
+			return {
+				...state,
+				unreadMessageInfo: {
+					...state.unreadMessageInfo,
+					values_by_conversations: [
+						...state.unreadMessageInfo.values_by_conversations,
+						action.item
+					],
+					total_unread_value: (state.unreadMessageInfo.total_unread_value + action.item.value)
+				}
+			}
 		case INCREASE_UNREAD_MESSAGE_VALUE:
 			return {
 				...state,
 				unreadMessageInfo: {
 					...state.unreadMessageInfo,
-					values_by_conversations: [...state.unreadMessageInfo?.values_by_conversations].map(item => {
+					values_by_conversations: [...state.unreadMessageInfo.values_by_conversations].map(item => {
 						if (item.id === action.id) {
 							return {
 								...item,
@@ -44,7 +60,7 @@ export const globalReducer = (state = globalReducerDefaultState, action: GlobalA
 						}
 						else return item
 					}),
-					total_unread_value: (state.unreadMessageInfo?.total_unread_value + action.value)
+					total_unread_value: (state.unreadMessageInfo.total_unread_value + action.value)
 				}
 			}
 		case DECREASE_UNREAD_MESSAGE_VALUE:
@@ -52,7 +68,7 @@ export const globalReducer = (state = globalReducerDefaultState, action: GlobalA
 				...state,
 				unreadMessageInfo: {
 					...state.unreadMessageInfo,
-					values_by_conversations: [...state.unreadMessageInfo?.values_by_conversations].map(item => {
+					values_by_conversations: [...state.unreadMessageInfo.values_by_conversations].map(item => {
 						if (item.id === action.id) {
 							return {
 								...item,
@@ -61,7 +77,7 @@ export const globalReducer = (state = globalReducerDefaultState, action: GlobalA
 						}
 						else return item
 					}),
-					total_unread_value: state.unreadMessageInfo?.total_unread_value > 0 ? (state.unreadMessageInfo?.total_unread_value - action.value) : 0
+					total_unread_value: state.unreadMessageInfo.total_unread_value > 0 ? (state.unreadMessageInfo.total_unread_value - action.value) : 0
 				}
 			}
 		default:

@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { history } from 'umi'
 
 // Local files
-import { INCREASE_UNREAD_MESSAGE_VALUE, SET_UNREAD_MESSAGES_INFO } from '@/redux/Actions/Global'
+import { INCREASE_UNREAD_MESSAGE_VALUE, ADD_ITEM_TO_MESSAGES_INFO } from '@/redux/Actions/Global'
 import { fetchUsersConversations, fetchMessagesByConversationId } from '@/services/api'
 import { API_URL } from '@/../config/constants'
 import PageLoading from '@/components/PageLoading'
@@ -51,6 +51,31 @@ export const ConversationList = (params): JSX.Element => {
 	// Pop a notification on conversation bar when message comes via socket
 	useEffect(() => {
 		if (lastMessageFromSocket) {
+
+			// Create a conversation baloon if doesnt exists
+			if (paginationValue === 0 && !params.currentConversations?.conversations.find(item => item._id === lastMessageFromSocket.conversation_id)?._id) {
+				if (params.currentConversations?.conversations.length < 10) {
+					params.setCurrentConversations({
+						...params.currentConversations,
+						conversations: [
+							...params.currentConversations.conversations,
+							{
+								_id: lastMessageFromSocket.conversation_id,
+								participants: [params.username, lastMessageFromSocket.from]
+							}
+						]
+					})
+				}
+				dispatch({
+					type: ADD_ITEM_TO_MESSAGES_INFO,
+					item: {
+						id: lastMessageFromSocket.conversation_id,
+						value: 1
+					}
+				})
+				return
+			}
+
 			if (params.activeConversationId !== lastMessageFromSocket.conversation_id) {
 				dispatch({
 					type: INCREASE_UNREAD_MESSAGE_VALUE,
@@ -65,44 +90,12 @@ export const ConversationList = (params): JSX.Element => {
 		}
 	}, [lastMessageFromSocket])
 
-	useEffect(() => {
-		if (lastMessageFromSocket && paginationValue === 0 &&
-			!params.currentConversations?.conversations.find(item => item._id === lastMessageFromSocket.conversation_id)?._id) {
-			params.setCurrentConversations({
-				...params.currentConversations,
-				conversations: [
-					...params.currentConversations.conversations,
-					{
-						_id: lastMessageFromSocket.conversation_id,
-						participants: [params.username, lastMessageFromSocket.from]
-					}
-				]
-			})
-			// It gets the unread values from dispatch of INCREASE_UNREAD_MESSAGE_VALUE already
-			// Following dispatch is only for saving new conversation to the state
-			dispatch({
-				type: SET_UNREAD_MESSAGES_INFO,
-				data: {
-					values_by_conversations: [
-						...params.globalState.unreadMessageInfo.values_by_conversations,
-						{
-							id: lastMessageFromSocket.conversation_id,
-							value: 0
-						}
-					],
-					total_unread_value: params.globalState.unreadMessageInfo.total_unread_value
-				}
-			})
-		}
-	}, [lastMessageFromSocket])
-
 	if (isLoading) return <PageLoading />
 
 	const handleConversationListView = (): JSX.Element => {
 		const listView = params.currentConversations.conversations.map((conversation) => {
 			const recipientUsername = (conversation.participants[0] === userState.username) ?
 				conversation.participants[1] : conversation.participants[0]
-			const unreadValue = params.globalState.unreadMessageInfo?.values_by_conversations.find((item: any) => item.id == conversation._id)?.value
 			return (
 				<Col
 					key={conversation._id}
@@ -116,7 +109,7 @@ export const ConversationList = (params): JSX.Element => {
 					<List.Item.Meta
 						style={{ justifyContent: 'center', alignContent: 'center' }}
 						avatar={
-							<Badge count={unreadValue || 0}>
+							<Badge count={params.globalState.unreadMessageInfo?.values_by_conversations.find((item: any) => item.id == conversation._id)?.value}>
 								<Avatar
 									shape="circle"
 									size="large"
