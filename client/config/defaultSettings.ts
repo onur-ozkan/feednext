@@ -8,7 +8,7 @@ export type ContentWidth = 'Fluid' | 'Fixed'
 
 export declare interface DefaultSettings {
 	navTheme: MenuTheme
-	primaryColor: string
+	theme: IAppTheme,
 	layout: 'sidemenu' | 'topmenu'
 	contentWidth: ContentWidth
 	fixedHeader: boolean
@@ -37,5 +37,7 @@ export default {
 	title: null,
 	pwa: false,
 	iconfontUrl: '',
-	...appTheme,
-} as DefaultSettings & IAppTheme
+	theme: {
+		...appTheme
+	},
+}
