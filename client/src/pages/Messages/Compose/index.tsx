@@ -5,7 +5,7 @@ import { ArrowLeftOutlined } from '@ant-design/icons'
 // Other dependencies
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { router } from 'umi'
+import { history } from 'umi'
 
 // Local files
 import { searchUser, fetchUserByUsername, fetchUnreadMessageInfo } from '@/services/api'
@@ -42,7 +42,7 @@ const Compose = (): JSX.Element => {
 					type: SET_UNREAD_MESSAGES_INFO,
 					data: data.attributes
 				})
-				router.push({
+				history.push({
 					pathname: '/messages',
 				})
 			})
@@ -91,7 +91,7 @@ const Compose = (): JSX.Element => {
 		<>
 			<Card style={{ padding: 0, minHeight: 500 }}>
 				<Button
-					onClick={(): void => router.goBack()}
+					onClick={(): void => history.goBack()}
 					shape="circle"
 					icon={<ArrowLeftOutlined />}
 					style={{ marginBottom: 25 }}

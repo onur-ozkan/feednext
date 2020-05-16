@@ -5,7 +5,7 @@ import { PlusCircleOutlined, LoginOutlined } from '@ant-design/icons'
 // Other dependencies
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { router } from 'umi'
+import { history } from 'umi'
 
 // Local files
 import Avatar from './AvatarDropdown'
@@ -41,7 +41,7 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
 			return (
 				<>
 					<Button
-						onClick={(): void => router.push('/feeds/create-feed')}
+						onClick={(): void => history.push('/feeds/create-feed')}
 						type="primary"
 						shape="round"
 						icon={<PlusCircleOutlined />}
@@ -55,7 +55,7 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
 		}
 
 		return (
-			<Button onClick={(): void => router.push('/auth/sign-in')} type="primary" shape="round" icon={<LoginOutlined />}>
+			<Button onClick={(): void => history.push('/auth/sign-in')} type="primary" shape="round" icon={<LoginOutlined />}>
 				Sign In
 			</Button>
 		)
@@ -65,7 +65,6 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
 		<div className={className}>
 			<HeaderSearch />
 			{handleAuthorizedElements()}
-			{REACT_APP_ENV && <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>}
 		</div>
 	)
 }

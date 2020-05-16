@@ -3,7 +3,7 @@ import { Button, Result, Descriptions } from 'antd'
 
 // Other dependencies
 import React, { useContext } from 'react'
-import { router } from 'umi'
+import { history } from 'umi'
 
 // Local files
 import StepContext from '../../StepContext'
@@ -12,8 +12,8 @@ import styles from './index.less'
 const Step3: React.FC = ({ titleSlugForRouting, feedCreatedSuccessfully }) => {
 	const { createTitleFormData, readableCategoryValue, firstEntryForm } = useContext(StepContext)
 
-	const onFinish = (): void => router.push('/feeds')
-	const handleOnPostRoute = (): void => router.push(`/feeds/${titleSlugForRouting}`)
+	const onFinish = (): void => history.push('/feeds')
+	const handleOnPostRoute = (): void => history.push(`/feeds/${titleSlugForRouting}`)
 
 	const information = (
 		<div className={styles.information}>
@@ -47,7 +47,7 @@ const Step3: React.FC = ({ titleSlugForRouting, feedCreatedSuccessfully }) => {
 				:
 				<Result
 					status="error"
-					title="Post could not be created"
+					title="Feed could not created"
 					className={styles.result}
 					extra={
 						<Button type="primary"onClick={onFinish}> OK </Button>

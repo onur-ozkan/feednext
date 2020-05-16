@@ -5,7 +5,7 @@ import { UserOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons
 // Other dependencies
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { router } from 'umi'
+import { history } from 'umi'
 
 // Local files
 import { persistor } from '@/redux/store'
@@ -24,12 +24,12 @@ const AvatarDropdown = () => {
 
 	const menuHeaderDropdown = (
 		<Menu className={styles.menu} selectedKeys={[]}>
-			<Menu.Item onClick={(): void => router.push(`/user/${user.username}`)} key="/">
+			<Menu.Item onClick={(): void => history.push(`/user/${user.username}`)} key="/">
 				<UserOutlined />
 				Profile
 			</Menu.Item>
 
-			<Menu.Item onClick={(): void => router.push('/settings')} key="/settings">
+			<Menu.Item onClick={(): void => history.push('/settings')} key="/settings">
 				<SettingOutlined />
 				Settings
 			</Menu.Item>

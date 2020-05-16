@@ -4,8 +4,7 @@ import { Checkbox, message, Form, Input, Tabs, Button } from 'antd'
 // Other dependencies
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { router } from 'umi'
-import Link from 'umi/link'
+import { history, Link } from 'umi'
 
 // Local files
 import { SIGN_IN } from '@/redux/Actions/User'
@@ -42,7 +41,7 @@ const Login: React.FunctionComponent = () => {
 					type: SIGN_IN,
 					user: res.data,
 				})
-				router.push('/feeds')
+				history.push('/feeds')
 			})
 			.catch(error => {
 				message.error(error.response.data.message, 5)

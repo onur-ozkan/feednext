@@ -28,13 +28,16 @@ const Step1: React.FC = (props: any) => {
 		if (!form.getFieldValue('categoryId') && !form.getFieldValue('title')) return
 		setCreateTitleFormData({
 			...createTitleFormData,
-			name: form.getFieldValue('title'),
-			categoryId: form.getFieldValue('categoryId'),
+			name: form.getFieldValue('title')
 		})
 		stepMovementTo('create-entry')
 	}
 
-	const handleReadableCategoryValue = (_id: string | string[], title: React.ReactNode[]): void => {
+	const handleReadableCategoryValue = (id: string | string[], title: React.ReactNode[]): void => {
+		setCreateTitleFormData({
+			...createTitleFormData,
+			categoryId: id,
+		})
 		setReadableCategoryValue(title[0])
 	}
 

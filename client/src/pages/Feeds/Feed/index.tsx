@@ -24,7 +24,7 @@ import PageLoading from '@/components/PageLoading'
 import ImageUpload from '@/components/ImageUpload'
 import styles from './style.less'
 
-const Feed: React.FC = ({ computedMatch }): JSX.Element => {
+const Feed: React.FC = ({ match }): JSX.Element => {
 	const globalState = useSelector((state: any) => state.global)
 	const userRole = useSelector((state: any) => state.user?.attributes.user.role)
 
@@ -81,7 +81,7 @@ const Feed: React.FC = ({ computedMatch }): JSX.Element => {
 	}
 
 	useEffect(() => {
-		fetchTitle(computedMatch.params.feedSlug, 'slug').then(async res => {
+		fetchTitle(match.params.feedSlug, 'slug').then(async res => {
 			await fetchOneCategory(res.data.attributes.category_id).then(({ data }) => {
 				setCategory(data.attributes)
 			})

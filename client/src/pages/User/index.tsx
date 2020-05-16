@@ -17,7 +17,7 @@ import { GridContent } from '@ant-design/pro-layout'
 // Other dependencies
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { router } from 'umi'
+import { history } from 'umi'
 
 // Local files
 import { fetchAllEntriesByAuthor, fetchUserByUsername, fetchUserVotes, fetchAllFeeds } from '@/services/api'
@@ -25,7 +25,7 @@ import PageLoading from '@/components/PageLoading'
 import NotFoundPage from '../404'
 import { API_URL } from '../../../config/constants'
 
-const User: React.FC = ({ computedMatch }): JSX.Element => {
+const User: React.FC = ({ match }): JSX.Element => {
 	const userState = useSelector((state: any) => state.user?.attributes.user)
 
 	const [user, setUser] = useState(userState || null)
@@ -49,8 +49,8 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 	}
 
 	useEffect(() => {
-		if (!user || user.name !== computedMatch.params.username) {
-			fetchUserByUsername(computedMatch.params.username)
+		if (!user || user.name !== match.params.username) {
+			fetchUserByUsername(match.params.username)
 				.then(res => {
 					setUser(res.data.attributes)
 					setIsUserFound(true)
@@ -62,7 +62,7 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 	}, [])
 
 	const handleFeedsTabView = (skip: number): void => {
-		fetchAllFeeds(skip, computedMatch.params.username).then(async res => {
+		fetchAllFeeds(skip, match.params.username).then(async res => {
 			setTotalItems(res.data.attributes.count)
 
 			if (res.data.attributes.titles.length === 0) {
@@ -84,7 +84,7 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 					<Col>
 						{title.name}
 					</Col>
-					<Button onClick={(): void => router.push(`/feeds/${title.slug}`)} size="small" type="primary">
+					<Button onClick={(): void => history.push(`/feeds/${title.slug}`)} size="small" type="primary">
 						Open
 					</Button>
 				</Row>
@@ -98,7 +98,7 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 	}
 
 	const handleEntriesTabView = (skip: number): void => {
-		fetchAllEntriesByAuthor(computedMatch.params.username, skip).then(async res => {
+		fetchAllEntriesByAuthor(match.params.username, skip).then(async res => {
 			setTotalItems(res.data.attributes.count)
 
 			if (res.data.attributes.entries.length === 0) {
@@ -122,7 +122,7 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 							{entry.text}
 						</Typography.Paragraph>
 					</Col>
-					<Button onClick={(): void => router.push(`/entry/${entry.id}`)} size="small" type="primary">
+					<Button onClick={(): void => history.push(`/entry/${entry.id}`)} size="small" type="primary">
 						Open
 					</Button>
 				</Row>
@@ -136,7 +136,7 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 	}
 
 	const handleVotesTabView = (voteType: 'up' | 'down', skip: number): void => {
-		fetchUserVotes(computedMatch.params.username, voteType, skip).then(async res => {
+		fetchUserVotes(match.params.username, voteType, skip).then(async res => {
 			setTotalItems(res.data.attributes.count)
 
 			if (res.data.attributes.entries.length === 0) {
@@ -163,7 +163,7 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 							{entry.text}
 						</Typography.Paragraph>
 					</Col>
-					<Button onClick={(): void => router.push(`/entry/${entry.id}`)} size="small" type="primary">
+					<Button onClick={(): void => history.push(`/entry/${entry.id}`)} size="small" type="primary">
 						Open
 					</Button>
 				</Row>
@@ -241,9 +241,9 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 				<Col lg={10} md={24}>
 					<Card bordered={false}>
 						<div style={{ textAlign: 'right', margin: '-4px 0px 5px 0px'}}>
-							{userState && (userState.username === computedMatch.params.username) &&
+							{userState && (userState.username === match.params.username) &&
 								<SettingOutlined
-									onClick={(): void => router.push('/settings')}
+									onClick={(): void => history.push('/settings')}
 									style={{ fontSize: 18, cursor: 'pointer', color: '#ff2d20' }}
 								/>
 							}
@@ -252,7 +252,7 @@ const User: React.FC = ({ computedMatch }): JSX.Element => {
 							<Avatar
 								style={{ marginBottom: 10 }}
 								size={115}
-								src={`${API_URL}/v1/user/pp?username=${computedMatch.params.username}`}
+								src={`${API_URL}/v1/user/pp?username=${match.params.username}`}
 							/>
 							<Typography.Title level={3}> {user.full_name} </Typography.Title>
 						</div>

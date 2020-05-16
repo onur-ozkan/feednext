@@ -3,7 +3,7 @@ import { Avatar } from 'antd'
 
 // Other dependencies
 import React from 'react'
-import { router } from 'umi'
+import { history } from 'umi'
 import { format, parseISO } from 'date-fns'
 
 // Local files
@@ -20,7 +20,7 @@ const ArticleListContent: React.FC<ArticleListContentProps> = ({
 		<div className={styles.description}>{text}</div>
 		<div className={styles.extra}>
 			<Avatar src={avatar} size="small" />
-			<a style={{ zIndex: 10 }} onClick={(): void => router.push(`/user/${writtenBy}`)}>
+			<a style={{ zIndex: 10 }} onClick={(): void => history.push(`/user/${writtenBy}`)}>
 				{writtenBy}
 			</a> posted at  {format(parseISO(createdAt), 'dd LLL (p O)')}
 		</div>

@@ -3,7 +3,7 @@ import { Button, Result, Typography } from 'antd'
 
 // Other dependencies
 import React from 'react'
-import Link from 'umi/link'
+import { Link } from 'umi'
 
 const actions = (
 	<>

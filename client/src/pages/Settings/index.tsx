@@ -16,7 +16,7 @@ const Settings = (): JSX.Element => {
 	return (
 		<>
 			<Card>
-				<Tabs size="default" tabPosition="top" animated={false} defaultActiveKey="profile" onChange={}>
+				<Tabs size="default" tabPosition="top" animated={false} defaultActiveKey="profile">
 					<Tabs.TabPane
 						tab={
 							<Typography.Text strong>

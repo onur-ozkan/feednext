@@ -25,7 +25,7 @@ import {
 // Other dependencies
 import React, { useState } from 'react'
 import { format, parseISO } from 'date-fns'
-import { router } from 'umi'
+import { history } from 'umi'
 
 // Local files
 import { getUserRateOfTitle, rateTitle, deleteTitle } from '@/services/api'
@@ -143,7 +143,7 @@ const FeedHeader: React.FC = (props: any): JSX.Element => {
 								style={{
 									cursor: item.href ? 'pointer' : 'normal'
 								}}
-								onClick={(): void  => router.push(item.href)}
+								onClick={(): void  => history.push(item.href)}
 							>
 								<Statistic
 									suffix={item.suffix}
@@ -162,7 +162,7 @@ const FeedHeader: React.FC = (props: any): JSX.Element => {
 		deleteTitle(accessToken, titleData.attributes.id)
 			.then(_res => {
 				message.success('Title successfully deleted')
-				router.push('/feeds')
+				history.push('/feeds')
 			})
 			.catch(error => message.error(error.response.data.message))
 	}

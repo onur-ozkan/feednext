@@ -4,7 +4,7 @@ import { Avatar, Row, Col, List, Pagination, Badge } from 'antd'
 // Other dependencies
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { router } from 'umi'
+import { history } from 'umi'
 
 // Local files
 import { INCREASE_UNREAD_MESSAGE_VALUE, SET_UNREAD_MESSAGES_INFO } from '@/redux/Actions/Global'
@@ -136,7 +136,7 @@ export const ConversationList = (params): JSX.Element => {
 		<div className={styles['left']}>
 			<div style={{ textAlign: 'center' }} className={styles['top']}>
 				<Avatar
-					onClick={(): void => router.push('/messages/compose')}
+					onClick={(): void => history.push('/messages/compose')}
 					style={{ cursor: 'pointer' }}
 					shape="square" size="large" src={newMessagePng}
 				/>

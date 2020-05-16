@@ -4,7 +4,7 @@ import { ArrowUpOutlined } from '@ant-design/icons'
 
 // Other dependencies
 import React, { useEffect, useState } from 'react'
-import { router } from 'umi'
+import { history } from 'umi'
 
 // Local files
 import { fetchEntryByEntryId, fetchTitle, getAverageTitleRate, fetchOneCategory } from '@/services/api'
@@ -12,7 +12,7 @@ import { API_URL } from '@/../config/constants'
 import PageLoading from '@/components/PageLoading'
 import NotFoundPage from '../404'
 
-const Entry = ({ computedMatch }): JSX.Element => {
+const Entry = ({ match }): JSX.Element => {
 	const [isFetchingSuccess, setIsFetchingSuccess] = useState<boolean | null>(null)
 	const [averageTitleRate, setAverageTitleRate] = useState(null)
 	const [titleData, setTitleData] = useState(null)
@@ -25,7 +25,7 @@ const Entry = ({ computedMatch }): JSX.Element => {
 
 	useEffect(() => {
 		// Fetch entry Data
-		fetchEntryByEntryId(computedMatch.params.entryId)
+		fetchEntryByEntryId(match.params.entryId)
 			.then(fRes => {
 				setEntryData(fRes.data)
 				// Fetch title Data
@@ -57,7 +57,7 @@ const Entry = ({ computedMatch }): JSX.Element => {
 				<Col style={{ margin: '0px 5px -15px 0px' }}>
 					<h1
 						style={{ cursor: 'pointer' }}
-						onClick={(): void => router.push(`/feeds/${titleData.attributes.slug}`)}
+						onClick={(): void => history.push(`/feeds/${titleData.attributes.slug}`)}
 					>
 						{' '}
 						{titleData.attributes.name}{' '}
@@ -96,7 +96,7 @@ const Entry = ({ computedMatch }): JSX.Element => {
 					datetime={handleCommentTime()}
 					author={
 						<Typography.Text
-							onClick={(): void => router.push(`/user/${entryData.attributes.written_by}`)}
+							onClick={(): void => history.push(`/user/${entryData.attributes.written_by}`)}
 							style={{ cursor: 'pointer', fontSize: 15, color: '#414141' }}
 						>
 							{entryData.attributes.written_by}
@@ -104,7 +104,7 @@ const Entry = ({ computedMatch }): JSX.Element => {
 					}
 					avatar={
 						<Avatar
-							onClick={(): void => router.push(`/user/${entryData.attributes.written_by}`)}
+							onClick={(): void => history.push(`/user/${entryData.attributes.written_by}`)}
 							src={`${API_URL}/v1/user/pp?username=${entryData.attributes.written_by}`}
 						/>
 					}

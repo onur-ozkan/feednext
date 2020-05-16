@@ -5,7 +5,7 @@ import { MessageOutlined } from '@ant-design/icons'
 // Other dependencies
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Redirect, router } from 'umi'
+import { Redirect, history } from 'umi'
 import { stringify } from 'querystring'
 
 // Local files
@@ -101,7 +101,7 @@ const RouteHandler = ({ children, route }) => {
 				title="403"
 				subTitle="Sorry, your account role doesnt have access to this page"
 				extra={
-					<Button type="primary" onClick={(): void => router.push('/')}>
+					<Button type="primary" onClick={(): void => history.push('/')}>
 						Back Home
 					</Button>
 				}

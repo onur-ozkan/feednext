@@ -3,7 +3,7 @@ import { message } from 'antd'
 
 // Other dependencies
 import { parse, ParsedUrlQuery } from 'querystring'
-import { router } from 'umi'
+import { history } from 'umi'
 import pathRegexp from 'path-to-regexp'
 
 // Local files
@@ -15,8 +15,8 @@ export const isUrl = (path: string): boolean => reg.test(path)
 
 export const getPageQuery = (): ParsedUrlQuery => parse(window.location.href.split('?')[1])
 
-export const getAuthorityFromRouter = <T>(router: T[] = [], pathname: string): T | undefined => {
-	const authority = router.find(
+export const getAuthorityFromRouter = <T>(history: T[] = [], pathname: string): T | undefined => {
+	const authority = history.find(
 		({ routes, path = '/' }) =>
 			(path && pathRegexp(path).exec(pathname)) || (routes && getAuthorityFromRouter(routes, pathname)),
 	)
@@ -47,6 +47,6 @@ export const getRouteAuthority = (path: string, routeData): string | string[] | 
 
 export const handleSessionExpiration = async (): Promise<void> => {
 	await persistor.purge()
-	router.push('/auth/sign-in')
+	history.push('/auth/sign-in')
 	message.info('User session has been expired, please Sign in again.', 4)
 }
