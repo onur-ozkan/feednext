@@ -1,88 +1,89 @@
 {
-  "name": "feednext-client",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Client side of feednext.io",
-  "author": "Onur Ozkan",
-  "scripts": {
-	"build": "umi build",
-	"start": "cross-env UMI_UI=none NODE_ENV=production umi dev",
-    "start:dev": "cross-env REACT_APP_ENV=dev MOCK=none umi dev",
-    "lint": "npm run lint:js && npm run lint:style && npm run lint:prettier",
-    "lint-staged": "lint-staged",
-    "lint-staged:js": "eslint --ext .js,.jsx,.ts,.tsx ",
-    "lint:fix": "eslint --fix --cache --ext .js,.jsx,.ts,.tsx --format=pretty ./src && npm run lint:style",
-    "lint:js": "eslint --cache --ext .js,.jsx,.ts,.tsx --format=pretty ./src",
-    "lint:prettier": "check-prettier lint",
-    "lint:style": "stylelint --fix \"src/**/*.less\" --syntax less",
-    "prettier": "prettier -c --write \"**/*\"",
-    "tsc": "tsc"
-  },
-  "lint-staged": {
-    "**/*.less": "stylelint --syntax less",
-    "**/*.{js,jsx,ts,tsx}": "npm run lint-staged:js",
-    "**/*.{js,jsx,tsx,ts,less,md,json}": [
-      "prettier --write"
-    ]
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 10"
-  ],
-  "engines": {
-    "node": "13",
-    "npm": "6"
-  },
-  "dependencies": {
-    "@ant-design/compatible": "0.0.1-rc.1",
-    "@ant-design/icons": "^4.0.0-rc.0",
-    "@ant-design/pro-layout": "^4.10.13",
-    "@typescript-eslint/eslint-plugin": "^2.20.0",
-    "@typescript-eslint/parser": "^2.20.0",
-    "antd": "^4.0.3",
-    "axios": "^0.19.2",
-    "classnames": "^2.2.6",
-    "date-fns": "^2.12.0",
-    "eslint-plugin-react": "^7.18.3",
-    "omit.js": "^1.0.2",
-    "path-to-regexp": "2.4.0",
-    "prop-types": "^15.7.2",
-    "react": "^16.8.6",
-    "react-copy-to-clipboard": "^5.0.1",
-    "react-dom": "^16.8.6",
-    "react-helmet": "^5.2.1",
-    "react-redux": "^7.2.0",
-    "redux": "^4.0.5",
-    "redux-persist": "^6.0.0",
-    "redux-thunk": "^2.3.0",
-    "socket.io-client": "^2.3.0",
-    "umi": "next",
-    "@umijs/preset-react": "^1.4.20"
-  },
-  "devDependencies": {
-    "bufferutil": "^4.0.1",
-    "utf-8-validate": "^5.0.2",
-    "@types/classnames": "^2.2.7",
-    "@types/history": "^4.7.2",
-    "@types/react": "^16.8.19",
-    "@types/react-dom": "^16.8.4",
-    "@types/react-helmet": "^5.0.13",
-    "@types/socket.io-client": "^1.4.32",
-    "@umijs/fabric": "^2.0.2",
-    "chalk": "^3.0.0",
-    "check-prettier": "^1.0.3",
-    "cross-env": "^7.0.0",
-    "lint-staged": "^10.0.0",
-    "node-fetch": "^2.6.0",
-    "prettier": "^1.19.1",
-    "stylelint": "^13.0.0"
-  },
-  "checkFiles": [
-    "src/**/*.js*",
-    "src/**/*.ts*",
-    "src/**/*.less",
-    "config/**/*.js*",
-    "scripts/**/*.js"
-  ]
+	"name": "feednext-client",
+	"version": "1.0.0",
+	"private": true,
+	"description": "Client side of feednext.io",
+	"author": "Onur Ozkan",
+	"scripts": {
+		"build": "umi build",
+		"dev": "umi dev",
+		"prod": "serve -s dist",
+		"lint": "npm run lint:js && npm run lint:style && npm run lint:prettier",
+		"lint-staged": "lint-staged",
+		"lint-staged:js": "eslint --ext .js,.jsx,.ts,.tsx ",
+		"lint:fix": "eslint --fix --cache --ext .js,.jsx,.ts,.tsx --format=pretty ./src && npm run lint:style",
+		"lint:js": "eslint --cache --ext .js,.jsx,.ts,.tsx --format=pretty ./src",
+		"lint:prettier": "check-prettier lint",
+		"lint:style": "stylelint --fix \"src/**/*.less\" --syntax less",
+		"prettier": "prettier -c --write \"**/*\"",
+		"tsc": "tsc"
+	},
+	"lint-staged": {
+		"**/*.less": "stylelint --syntax less",
+		"**/*.{js,jsx,ts,tsx}": "npm run lint-staged:js",
+		"**/*.{js,jsx,tsx,ts,less,md,json}": [
+			"prettier --write"
+		]
+	},
+	"browserslist": [
+		"> 1%",
+		"last 2 versions",
+		"not ie <= 10"
+	],
+	"engines": {
+		"node": "13",
+		"npm": "6"
+	},
+	"dependencies": {
+		"@ant-design/compatible": "0.0.1-rc.1",
+		"@ant-design/icons": "^4.0.0-rc.0",
+		"@ant-design/pro-layout": "^4.10.13",
+		"@typescript-eslint/eslint-plugin": "^2.20.0",
+		"@typescript-eslint/parser": "^2.20.0",
+		"antd": "^4.0.3",
+		"axios": "^0.19.2",
+		"classnames": "^2.2.6",
+		"date-fns": "^2.12.0",
+		"eslint-plugin-react": "^7.18.3",
+		"omit.js": "^1.0.2",
+		"path-to-regexp": "2.4.0",
+		"prop-types": "^15.7.2",
+		"react": "^16.8.6",
+		"react-copy-to-clipboard": "^5.0.1",
+		"react-dom": "^16.8.6",
+		"react-helmet": "^5.2.1",
+		"react-redux": "^7.2.0",
+		"redux": "^4.0.5",
+		"redux-persist": "^6.0.0",
+		"redux-thunk": "^2.3.0",
+		"umi": "3.2.0-beta.9",
+		"@umijs/preset-react": "^1.4.20",
+		"serve": "^11.3.0",
+		"socket.io-client": "^2.3.0"
+	},
+	"devDependencies": {
+		"bufferutil": "^4.0.1",
+		"utf-8-validate": "^5.0.2",
+		"@types/classnames": "^2.2.7",
+		"@types/history": "^4.7.2",
+		"@types/react": "^16.8.19",
+		"@types/react-dom": "^16.8.4",
+		"@types/react-helmet": "^5.0.13",
+		"@types/socket.io-client": "^1.4.32",
+		"@umijs/fabric": "^2.0.2",
+		"chalk": "^3.0.0",
+		"check-prettier": "^1.0.3",
+		"cross-env": "^7.0.0",
+		"lint-staged": "^10.0.0",
+		"node-fetch": "^2.6.0",
+		"prettier": "^1.19.1",
+		"stylelint": "^13.0.0"
+	},
+	"checkFiles": [
+		"src/**/*.js*",
+		"src/**/*.ts*",
+		"src/**/*.less",
+		"config/**/*.js*",
+		"scripts/**/*.js"
+	]
 }
