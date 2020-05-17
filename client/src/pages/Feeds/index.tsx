@@ -31,16 +31,23 @@ import { Link } from 'umi'
 import { fetchAllFeeds, fetchFeaturedEntryByTitleId, fetchTrendingCategories, fetchOneCategory } from '@/services/api'
 import { CategorySelect } from '@/components/CategorySelect'
 import { API_URL } from '@/../config/constants'
+import { PageHelmet } from '@/components/PageHelmet'
 import ArticleListContent from './components/ArticleListContent'
 import globalStyles from '@/global.less'
+import { TrendingCategoriesResponseData } from '@/@types/api'
+import { AxiosError, AxiosResponse } from 'axios'
+import { FeedList } from './types'
+import { AdditionalBlock } from './components/AdditionalBlock'
 
 const Feeds = (): JSX.Element => {
 	const [displayFilterModal, setDisplayFilterModal] = useState(false)
-	const [trendingCategories, setTrendingCategories] = useState(null)
-	const [categoryFilter, setCategoryFilter] = useState<string | null>(null)
-	const [feedList, setFeed]: any = useState(null)
-	const [sortBy, setSortBy] = useState(null)
+	const [trendingCategories, setTrendingCategories] = useState<TrendingCategoriesResponseData[] | undefined>(undefined)
+	const [categoryFilter, setCategoryFilter] = useState<string | undefined>(undefined)
+	const [feedList, setFeed] = useState<FeedList[]>([])
+	const [sortBy, setSortBy] = useState<'hot' | 'top' | undefined>(undefined)
 	const [skipValueForPagination, setSkipValueForPagination] = useState(0)
+	const [canLoadMore, setCanLoadMore] = useState(false)
+	const [isLoading, setIsLoading] = useState(true)
 
 	useEffect(() => {
 		setFeed([])
@@ -48,8 +55,12 @@ const Feeds = (): JSX.Element => {
 	}, [categoryFilter, sortBy])
 
 	const handleDataFetching = (): void => {
-		fetchAllFeeds(skipValueForPagination, null, categoryFilter, sortBy)
-			.then(feedsResponse => {
+		fetchAllFeeds(skipValueForPagination, undefined, categoryFilter, sortBy)
+			.then((feedsResponse: AxiosResponse) => {
+
+				if (feedsResponse.data.attributes.count > feedList?.length) setCanLoadMore(true)
+				else setCanLoadMore(false)
+
 				feedsResponse.data.attributes.titles.map(async (title: any) => {
 					const categoryName = await fetchOneCategory(title.category_id).then(({ data }) => data.attributes.name)
 					await fetchFeaturedEntryByTitleId(title.id)
@@ -58,12 +69,12 @@ const Feeds = (): JSX.Element => {
 								id: title.id,
 								slug: title.slug,
 								name: title.name,
-								href: `/feeds/${title.slug}`,
+								href: `/${title.slug}`,
 								categoryName: categoryName,
 								createdAt: title.created_at,
 								updatedAt: title.updated_at,
 								entryCount: title.entry_count,
-								entry: {
+								featuredEntry: {
 									id: featuredEntryResponse.data.attributes.id,
 									avatar: `${API_URL}/v1/user/pp?username=${featuredEntryResponse.data.attributes.written_by}`,
 									text: featuredEntryResponse.data.attributes.text,
@@ -73,26 +84,26 @@ const Feeds = (): JSX.Element => {
 									writtenBy: featuredEntryResponse.data.attributes.written_by,
 								},
 							}
-							setFeed((feedList: any) => [...feedList, feed])
+							setFeed((feedList: FeedList[]) => [...feedList, feed])
+							setIsLoading(false)
 						})
 						.catch(_error => {
-							const feed = {
+							const feed: any = {
 								id: title.id,
 								slug: title.slug,
 								name: title.name,
-								href: `/feeds/${title.slug}`,
+								href: `/${title.slug}`,
 								categoryName: categoryName,
 								createdAt: title.created_at,
 								updatedAt: title.updated_at,
 								entryCount: title.entry_count,
 							}
-							setFeed((feedList: any) => [...feedList, feed])
+							setFeed((feedList: FeedList[]) => [...feedList, feed])
+							setIsLoading(false)
 						})
 				})
 			})
-			.catch(error => {
-				message.error(error.response.data.message, 3)
-			})
+			.catch((error: AxiosError) => message.error(error.response?.data.message))
 
 		if (!trendingCategories) {
 			fetchTrendingCategories()
@@ -102,7 +113,7 @@ const Feeds = (): JSX.Element => {
 	}
 
 	const handleEntryListRender = (): JSX.Element => {
-		if (!feedList) {
+		if (isLoading) {
 			return (
 				<div style={{ textAlign: 'center', marginTop: 61 }}>
 					<LoadingOutlined spin style={{ fontSize: 25 }} />
@@ -111,7 +122,7 @@ const Feeds = (): JSX.Element => {
 		}
 
 		return (
-			<List<any>
+			<List<FeedList>
 				style={{ marginTop: 25 }}
 				rowKey="id"
 				size="large"
@@ -123,10 +134,10 @@ const Feeds = (): JSX.Element => {
 						key={item.id}
 						actions={[
 							<div key="_" style={{ cursor: 'default' }}>
-								{item.entry && (
+								{item.featuredEntry && (
 									<span style={{ marginRight: 10 }}>
 										<ArrowUpOutlined style={{ marginRight: 3 }} />
-										{item.entry.voteValue}
+										{item.featuredEntry.voteValue}
 									</span>
 								)}
 								<span style={{ cursor: 'pointer' }}>
@@ -165,8 +176,8 @@ const Feeds = (): JSX.Element => {
 							description={ <Tag> {item.categoryName.toUpperCase()} </Tag>
 							}
 						/>
-						{item.entry ?
-								<ArticleListContent data={item.entry} />
+						{item.featuredEntry ?
+								<ArticleListContent data={item.featuredEntry} />
 							:
 								<Typography.Text strong> No Entry Found </Typography.Text>
 						}
@@ -229,7 +240,7 @@ const Feeds = (): JSX.Element => {
 		}
 	}
 
-	const loadMore = (feedList?.length % 10) === 0 && (
+	const loadMore = canLoadMore && (
 		<div style={{ textAlign: 'center', marginTop: 16 }}>
 			<Button
 				onClick={handleFetchMore}
@@ -264,6 +275,14 @@ const Feeds = (): JSX.Element => {
 
 	return (
 		<>
+			<PageHelmet
+				title="Feednext: the source of the feedbacks"
+				description="Best reviews, comments, feedbacks about anything around the world"
+				mediaTitle="the source of the feedbacks"
+				mediaImage="https://avatars1.githubusercontent.com/u/64217221?s=200&v=4"
+				mediaDescription="Best reviews, comments, feedbacks about anything around the world"
+				keywords="reviews, comments, feedbacks, peruse"
+			/>
 			<BackTop />
 			<Row>
 				<Col lg={15} md={24} style={{ padding: 7 }}>
@@ -288,7 +307,7 @@ const Feeds = (): JSX.Element => {
 								trigger={['click']}
 								overlay={
 									<Menu>
-										<Menu.Item onClick={(): void => setSortBy(null)}>
+										<Menu.Item onClick={(): void => setSortBy(undefined)}>
 											<Typography.Text>
 												<StarFilled style={{ color: '#00c853' }} /> New
 											</Typography.Text>
@@ -319,41 +338,7 @@ const Feeds = (): JSX.Element => {
 					<Card style={{ marginBottom: 14 }} bordered={false} title="Trending Categories">
 						{handleTrendingCategoriesRender()}
 					</Card>
-					<Card>
-						<Row style={{ marginBottom: 15 }}>
-							<Col span={12}>
-								<Link to="/about">
-									<Typography.Text strong>
-										About
-									</Typography.Text>
-								</Link>
-							</Col>
-							<Col span={12}>
-								<a href="https://github.com/feednext/feednext#readme" target="_api">
-									<Typography.Text strong>
-										API
-									</Typography.Text>
-								</a>
-							</Col>
-							<Col span={12}>
-								<Typography.Text strong>
-									Support
-								</Typography.Text>
-							</Col>
-							<Col span={12}>
-								<a href="https://github.com/feednext/feednext/blob/master/COPYING" target="_license">
-									<Typography.Text strong>
-										License
-									</Typography.Text>
-								</a>
-							</Col>
-						</Row>
-						<Row>
-							<Typography.Text>
-								Feednext © 2020. All rights reserved
-							</Typography.Text>
-						</Row>
-					</Card>
+					<AdditionalBlock />
 				</Col>
 			</Row>
 			<br/>
