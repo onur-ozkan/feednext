@@ -8,12 +8,13 @@ import { history } from 'umi'
 // Local files
 import StepContext from '../../StepContext'
 import styles from './index.less'
+import { PageHelmet } from '@/components/PageHelmet'
 
 const Step3: React.FC = ({ titleSlugForRouting, feedCreatedSuccessfully }) => {
 	const { createTitleFormData, readableCategoryValue, firstEntryForm } = useContext(StepContext)
 
-	const onFinish = (): void => history.push('/feeds')
-	const handleOnPostRoute = (): void => history.push(`/feeds/${titleSlugForRouting}`)
+	const onFinish = (): void => history.push('/')
+	const handleOnPostRoute = (): void => history.push(`/${titleSlugForRouting}`)
 
 	const information = (
 		<div className={styles.information}>
@@ -40,6 +41,12 @@ const Step3: React.FC = ({ titleSlugForRouting, feedCreatedSuccessfully }) => {
 	)
 	return (
 		<>
+			<PageHelmet
+				title="Feed Status"
+				description="Best reviews, comments, feedbacks about anything around the world"
+				mediaImage="https://avatars1.githubusercontent.com/u/64217221?s=200&v=4"
+				mediaDescription="Best reviews, comments, feedbacks about anything around the world"
+			/>
 			{feedCreatedSuccessfully ?
 				<Result status="success" title="Published" extra={extra} className={styles.result}>
 					{information}

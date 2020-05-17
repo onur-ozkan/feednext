@@ -11,6 +11,7 @@ import { deleteConversation } from '@/services/api'
 import { ConversationList } from './components/ConversationList'
 import { ChatScreen } from './components/ChatScreen/index'
 import { WelcomePage } from './components/WelcomePage'
+import { PageHelmet } from '@/components/PageHelmet'
 import styles from './index.less'
 
 
@@ -35,6 +36,12 @@ const Messages = (): JSX.Element => {
 
 	return (
 		<div>
+			<PageHelmet
+				title="Direct Messages"
+				description="Best reviews, comments, feedbacks about anything around the world"
+				mediaImage="https://avatars1.githubusercontent.com/u/64217221?s=200&v=4"
+				mediaDescription="Best reviews, comments, feedbacks about anything around the world"
+			/>
 			<Card style={{ height: 825 }} className={styles['container']}>
 				<ConversationList
 					wss={wss}

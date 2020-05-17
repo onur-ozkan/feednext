@@ -24,6 +24,7 @@ import { fetchAllEntriesByAuthor, fetchUserByUsername, fetchUserVotes, fetchAllF
 import PageLoading from '@/components/PageLoading'
 import NotFoundPage from '../404'
 import { API_URL } from '../../../config/constants'
+import { PageHelmet } from '@/components/PageHelmet'
 
 const User: React.FC = ({ match }): JSX.Element => {
 	const userState = useSelector((state: any) => state.user?.attributes.user)
@@ -84,7 +85,7 @@ const User: React.FC = ({ match }): JSX.Element => {
 					<Col>
 						{title.name}
 					</Col>
-					<Button onClick={(): void => history.push(`/feeds/${title.slug}`)} size="small" type="primary">
+					<Button onClick={(): void => history.push(`/${title.slug}`)} size="small" type="primary">
 						Open
 					</Button>
 				</Row>
@@ -236,153 +237,163 @@ const User: React.FC = ({ match }): JSX.Element => {
 	if (isUserFound === false) return <NotFoundPage />
 
 	return (
-		<GridContent>
-			<Row gutter={24}>
-				<Col lg={10} md={24}>
-					<Card bordered={false}>
-						<div style={{ textAlign: 'right', margin: '-4px 0px 5px 0px'}}>
-							{userState && (userState.username === match.params.username) &&
-								<SettingOutlined
-									onClick={(): void => history.push('/settings')}
-									style={{ fontSize: 18, cursor: 'pointer', color: '#ff2d20' }}
+		<>
+			<PageHelmet
+				title={`${user.full_name} | Feednext`}
+				description="Best reviews, comments, feedbacks about anything around the world"
+				keywords={`${user.full_name}, ${user.username}, user, profile, account`}
+				mediaTitle={user.username}
+				mediaImage={`${API_URL}/v1/user/pp?username=${user.username}`}
+				mediaDescription={`${user.full_name}'s profile page on Feednext`}
+			/>
+			<GridContent>
+				<Row gutter={24}>
+					<Col lg={10} md={24}>
+						<Card bordered={false}>
+							<div style={{ textAlign: 'right', margin: '-4px 0px 5px 0px'}}>
+								{userState && (userState.username === match.params.username) &&
+									<SettingOutlined
+										onClick={(): void => history.push('/settings')}
+										style={{ fontSize: 18, cursor: 'pointer', color: '#ff2d20' }}
+									/>
+								}
+							</div>
+							<div style={{ textAlign: 'center' }}>
+								<Avatar
+									style={{ marginBottom: 10 }}
+									size={115}
+									src={`${API_URL}/v1/user/pp?username=${match.params.username}`}
 								/>
-							}
-						</div>
-						<div style={{ textAlign: 'center' }}>
-							<Avatar
-								style={{ marginBottom: 10 }}
-								size={115}
-								src={`${API_URL}/v1/user/pp?username=${match.params.username}`}
-							/>
-							<Typography.Title level={3}> {user.full_name} </Typography.Title>
-						</div>
+								<Typography.Title level={3}> {user.full_name} </Typography.Title>
+							</div>
 
-						<Row style={{ padding: 20 }}>
+							<Row style={{ padding: 20 }}>
+								<Col span={24} style={{ fontSize: 16 }}>
+									<Tooltip placement="bottom" title="Username">
+										<Typography.Text>
+											<IdcardOutlined style={{ marginRight: 3, color: '#ff2d20' }} /> {user.username}
+										</Typography.Text>
+									</Tooltip>
+								</Col>
+								<Col span={24} style={{ fontSize: 16 }}>
+									<Tooltip placement="bottom" title="Role">
+										<Typography.Text>
+											<UpSquareOutlined style={{ marginRight: 3, color: '#ff2d20' }} /> {readableRoles[user.role]}
+										</Typography.Text>
+									</Tooltip>
+								</Col>
+								<Col span={24} style={{ fontSize: 16 }}>
+									<Tooltip placement="bottom" title="Link">
+										<LinkOutlined style={{ marginRight: 3, color: '#ff2d20' }} />
+										{user.link ?
+											(
+												<a
+													href={
+														new RegExp('^(https?|ftp)://').test(user.link) ? user.link : `https://${user.link}`
+													}
+													target={`_${user.username}`}
+												>
+													{user.link}
+												</a> )
+											:
+											( <Typography.Text> - </Typography.Text> )
+										}
+									</Tooltip>
+								</Col>
+							</Row>
+							<Divider>
+								<Typography.Text code>
+									<SolutionOutlined style={{ marginRight: 3 }} /> Biography
+								</Typography.Text>
+							</Divider>
 							<Col span={24} style={{ fontSize: 16 }}>
-								<Tooltip placement="bottom" title="Username">
-									<Typography.Text>
-										<IdcardOutlined style={{ marginRight: 3, color: '#ff2d20' }} /> {user.username}
-									</Typography.Text>
-								</Tooltip>
+								{user.biography ?
+									(<Typography.Text> {user.biography} </Typography.Text>)
+									:
+									(<Typography.Text> - </Typography.Text>)
+								}
 							</Col>
-							<Col span={24} style={{ fontSize: 16 }}>
-								<Tooltip placement="bottom" title="Role">
-									<Typography.Text>
-										<UpSquareOutlined style={{ marginRight: 3, color: '#ff2d20' }} /> {readableRoles[user.role]}
-									</Typography.Text>
-								</Tooltip>
-							</Col>
-							<Col span={24} style={{ fontSize: 16 }}>
-								<Tooltip placement="bottom" title="Link">
-									<LinkOutlined style={{ marginRight: 3, color: '#ff2d20' }} />
-									{user.link ?
-										(
-											<a
-												href={
-													new RegExp('^(https?|ftp)://').test(user.link) ? user.link : `https://${user.link}`
-												}
-												target={`_${user.username}`}
-											>
-												{user.link}
-											</a> )
-										:
-										( <Typography.Text> - </Typography.Text> )
+							<Divider style={{ marginBottom: 0 }} orientation="right">
+								<Typography.Text secondary style={{ fontSize: 13 }}>
+									Joined at {user.created_at}
+								</Typography.Text>
+							</Divider>
+						</Card>
+					</Col>
+					<Col lg={14} md={24}>
+						<Card bordered={false}>
+							<Tabs size="small" animated={false} onChange={handleTabChange} defaultActiveKey={currentTab}>
+								<Tabs.TabPane
+									tab={
+										<Typography.Text strong>
+											<CopyOutlined style={{ marginRight: 0 }} /> Created Feeds
+										</Typography.Text>
 									}
-								</Tooltip>
-							</Col>
-						</Row>
-						<Divider>
-							<Typography.Text code>
-								<SolutionOutlined style={{ marginRight: 3 }} /> Biography
-							</Typography.Text>
-						</Divider>
-						<Col span={24} style={{ fontSize: 16 }}>
-							{user.biography ?
-								(<Typography.Text> {user.biography} </Typography.Text>)
-								:
-								(<Typography.Text> - </Typography.Text>)
-							}
-						</Col>
-						<Divider style={{ marginBottom: 0 }} orientation="right">
-							<Typography.Text secondary style={{ fontSize: 13 }}>
-								Joined at {user.created_at}
-							</Typography.Text>
-						</Divider>
-					</Card>
-				</Col>
-				<Col lg={14} md={24}>
-					<Card bordered={false}>
-						<Tabs size="small" animated={false} onChange={handleTabChange} defaultActiveKey={currentTab}>
-							<Tabs.TabPane
-								tab={
-									<Typography.Text strong>
-										<CopyOutlined style={{ marginRight: 0 }} /> Created Feeds
-									</Typography.Text>
-								}
-								key="feeds"
-							>
-								{tabView}
-								{totalItems > 0 &&
-									<>
-										<Divider />
-										{handlePagination(handleFeedsTabView)}
-									</>
-								}
-							</Tabs.TabPane>
-							<Tabs.TabPane
-								tab={
-									<Typography.Text strong>
-										<EditOutlined style={{ marginRight: 0 }} /> Created Entries
-									</Typography.Text>
-								}
-								key="entries"
-							>
-								{tabView}
-								{totalItems > 0 &&
-									<>
-										<Divider />
-										{handlePagination(handleEntriesTabView)}
-									</>
-								}
-							</Tabs.TabPane>
-							<Tabs.TabPane
-								tab={
-									<Typography.Text strong>
-										<UpOutlined style={{ marginRight: 0 }} /> Up Voted Entries
-									</Typography.Text>
-								}
-								key="up-votes"
-							>
-								{tabView}
-								{totalItems > 0 &&
-									<>
-										<Divider />
-										{handlePagination(handleVotesTabView, 'up')}
-									</>
-								}
-							</Tabs.TabPane>
-							<Tabs.TabPane
-								tab={
-									<Typography.Text strong>
-										<DownOutlined style={{ marginRight: 0 }} /> Down Voted Entries
-									</Typography.Text>
-								}
-								key="down-votes"
-							>
-								{tabView}
-								{totalItems > 0 &&
-									<>
-										<Divider />
-										{handlePagination(handleVotesTabView, 'down')}
-									</>
-								}
-							</Tabs.TabPane>
-						</Tabs>
-					</Card>
-				</Col>
-			</Row>
-			<br/>
-		</GridContent>
+									key="feeds"
+								>
+									{tabView}
+									{totalItems > 0 &&
+										<>
+											<Divider />
+											{handlePagination(handleFeedsTabView)}
+										</>
+									}
+								</Tabs.TabPane>
+								<Tabs.TabPane
+									tab={
+										<Typography.Text strong>
+											<EditOutlined style={{ marginRight: 0 }} /> Created Entries
+										</Typography.Text>
+									}
+									key="entries"
+								>
+									{tabView}
+									{totalItems > 0 &&
+										<>
+											<Divider />
+											{handlePagination(handleEntriesTabView)}
+										</>
+									}
+								</Tabs.TabPane>
+								<Tabs.TabPane
+									tab={
+										<Typography.Text strong>
+											<UpOutlined style={{ marginRight: 0 }} /> Up Voted Entries
+										</Typography.Text>
+									}
+									key="up-votes"
+								>
+									{tabView}
+									{totalItems > 0 &&
+										<>
+											<Divider />
+											{handlePagination(handleVotesTabView, 'up')}
+										</>
+									}
+								</Tabs.TabPane>
+								<Tabs.TabPane
+									tab={
+										<Typography.Text strong>
+											<DownOutlined style={{ marginRight: 0 }} /> Down Voted Entries
+										</Typography.Text>
+									}
+									key="down-votes"
+								>
+									{tabView}
+									{totalItems > 0 &&
+										<>
+											<Divider />
+											{handlePagination(handleVotesTabView, 'down')}
+										</>
+									}
+								</Tabs.TabPane>
+							</Tabs>
+						</Card>
+					</Col>
+				</Row>
+				<br/>
+			</GridContent>
+		</>
 	)
 }
 

@@ -7,7 +7,7 @@ import { Link } from 'umi'
 
 const actions = (
 	<>
-		<Link to="/feeds">
+		<Link to="/">
 			<Button style={{ width: '15rem' }} size="large">
 				Send Again
 			</Button>
@@ -36,7 +36,7 @@ const RegisterResult = props => {
 				</Typography.Paragraph>
 			}
 			extra={actions}
-		></Result>
+		/>
 	)
 }
 

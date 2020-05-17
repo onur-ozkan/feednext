@@ -9,6 +9,7 @@ import React, { useContext } from 'react'
 // Local files
 import styles from './index.less'
 import StepContext from '../../StepContext'
+import { PageHelmet } from '@/components/PageHelmet'
 
 const formItemLayout = {
 	labelCol: {
@@ -54,45 +55,53 @@ const Step2: React.FC = (props: any) => {
 	}
 
 	return (
-		<Form {...formItemLayout} form={form} initialValues={{ entry: firstEntryForm.text }} layout="horizontal" className={styles.stepForm}>
-			<Descriptions column={1}>
-				<Descriptions.Item label="Title Image">
-					<Avatar
-						src={createTitleFormData.imageBase64}
-						size="large"
-						shape="square"
-					/>
-				</Descriptions.Item>
-				<Descriptions.Item label="Category">
-					{ readableCategoryValue }
-				</Descriptions.Item>
-				<Descriptions.Item label="Title">
-					{ createTitleFormData.name }
-				</Descriptions.Item>
-			</Descriptions>
-			<Divider style={{ margin: '24px 0' }} />
-			<Form.Item rules={[{ required: true, message: 'Please fill the input above' }]} label="Entry" name="entry">
-				<TextArea placeholder="Share us your thoughts about the title that you are creating" allowClear autoSize={{ minRows: 4 }} />
-			</Form.Item>
-			<Form.Item
-				style={{ marginBottom: 8 }}
-				wrapperCol={{
-					xs: { span: 24, offset: 0 },
-					sm: {
-						span: formItemLayout.wrapperCol.span,
-						offset: formItemLayout.labelCol.span,
-					},
-				}}
-			>
-				<Button type="primary" htmlType="submit" onClick={confirmationModal}>
-					Post
-				</Button>
-				<Button onClick={onPrev} style={{ marginLeft: 8 }}>
-					Previous Step
-				</Button>
-			</Form.Item>
-			{confirmationModal}
-		</Form>
+		<>
+			<PageHelmet
+				title="Enter First Entry"
+				description="Best reviews, comments, feedbacks about anything around the world"
+				mediaImage="https://avatars1.githubusercontent.com/u/64217221?s=200&v=4"
+				mediaDescription="Best reviews, comments, feedbacks about anything around the world"
+			/>
+			<Form {...formItemLayout} form={form} initialValues={{ entry: firstEntryForm.text }} layout="horizontal" className={styles.stepForm}>
+				<Descriptions column={1}>
+					<Descriptions.Item label="Title Image">
+						<Avatar
+							src={createTitleFormData.imageBase64}
+							size="large"
+							shape="square"
+						/>
+					</Descriptions.Item>
+					<Descriptions.Item label="Category">
+						{ readableCategoryValue }
+					</Descriptions.Item>
+					<Descriptions.Item label="Title">
+						{ createTitleFormData.name }
+					</Descriptions.Item>
+				</Descriptions>
+				<Divider style={{ margin: '24px 0' }} />
+				<Form.Item rules={[{ required: true, message: 'Please fill the input above' }]} label="Entry" name="entry">
+					<TextArea placeholder="Share us your thoughts about the title that you are creating" allowClear autoSize={{ minRows: 4 }} />
+				</Form.Item>
+				<Form.Item
+					style={{ marginBottom: 8 }}
+					wrapperCol={{
+						xs: { span: 24, offset: 0 },
+						sm: {
+							span: formItemLayout.wrapperCol.span,
+							offset: formItemLayout.labelCol.span,
+						},
+					}}
+				>
+					<Button type="primary" htmlType="submit" onClick={confirmationModal}>
+						Post
+					</Button>
+					<Button onClick={onPrev} style={{ marginLeft: 8 }}>
+						Previous Step
+					</Button>
+				</Form.Item>
+				{confirmationModal}
+			</Form>
+		</>
 	)
 }
 export default Step2

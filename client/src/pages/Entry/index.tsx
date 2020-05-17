@@ -11,6 +11,7 @@ import { fetchEntryByEntryId, fetchTitle, getAverageTitleRate, fetchOneCategory 
 import { API_URL } from '@/../config/constants'
 import PageLoading from '@/components/PageLoading'
 import NotFoundPage from '../404'
+import { PageHelmet } from '@/components/PageHelmet'
 
 const Entry = ({ match }): JSX.Element => {
 	const [isFetchingSuccess, setIsFetchingSuccess] = useState<boolean | null>(null)
@@ -57,7 +58,7 @@ const Entry = ({ match }): JSX.Element => {
 				<Col style={{ margin: '0px 5px -15px 0px' }}>
 					<h1
 						style={{ cursor: 'pointer' }}
-						onClick={(): void => history.push(`/feeds/${titleData.attributes.slug}`)}
+						onClick={(): void => history.push(`/${titleData.attributes.slug}`)}
 					>
 						{' '}
 						{titleData.attributes.name}{' '}
@@ -89,6 +90,15 @@ const Entry = ({ match }): JSX.Element => {
 
 	return (
 		<>
+			<PageHelmet
+				title={titleData.attributes.name}
+				description={entryData.attributes.text}
+				author={entryData.attributes.written_by}
+				mediaTitle={titleData.attributes.name}
+				mediaImage={`${API_URL}/v1/user/pp?username=${entryData.attributes.written_by}`}
+				mediaDescription={entryData.attributes.text}
+				keywords={entryData.attributes.text.split(' ').join(', ')}
+			/>
 			<PageHeader title={handleHeaderTitleSection()} style={{ backgroundColor: 'white' }} className="site-page-header">
 				<Divider />
 				<Comment

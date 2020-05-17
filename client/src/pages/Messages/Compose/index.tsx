@@ -12,6 +12,7 @@ import { searchUser, fetchUserByUsername, fetchUnreadMessageInfo } from '@/servi
 import { API_URL } from '@/../config/constants'
 import { socketConnection } from '@/services/socket'
 import { SET_UNREAD_MESSAGES_INFO } from '@/redux/Actions/Global'
+import { PageHelmet } from '@/components/PageHelmet'
 
 export declare interface FormDataType {
 	recipient: string
@@ -37,15 +38,17 @@ const Compose = (): JSX.Element => {
 		await fetchUserByUsername(formValues.recipient).then(() => {
 			wss.emit('sendMessage', formValues)
 			// Refresh unread message state with new conversation before routing there
-			fetchUnreadMessageInfo(globalState.accessToken).then(({ data }) => {
-				dispatch({
-					type: SET_UNREAD_MESSAGES_INFO,
-					data: data.attributes
+			setTimeout(() => {
+				fetchUnreadMessageInfo(globalState.accessToken).then(({ data }) => {
+					dispatch({
+						type: SET_UNREAD_MESSAGES_INFO,
+						data: data.attributes
+					})
+					history.push({
+						pathname: '/messages',
+					})
 				})
-				history.push({
-					pathname: '/messages',
-				})
-			})
+			}, 300)
 		})
 		.catch(_error => message.error('User not found'))
 	}
@@ -89,6 +92,12 @@ const Compose = (): JSX.Element => {
 
 	return (
 		<>
+			<PageHelmet
+				title="Send Message"
+				description="Best reviews, comments, feedbacks about anything around the world"
+				mediaImage="https://avatars1.githubusercontent.com/u/64217221?s=200&v=4"
+				mediaDescription="Best reviews, comments, feedbacks about anything around the world"
+			/>
 			<Card style={{ padding: 0, minHeight: 500 }}>
 				<Button
 					onClick={(): void => history.goBack()}
