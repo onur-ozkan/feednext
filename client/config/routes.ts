@@ -28,16 +28,12 @@ const appRoutes = {
 	component: '../middleware/RouteHandler',
 	routes: [
 		{
-			path: '/',
-			redirect: '/feeds',
-		},
-		{
-			path: '/feeds/create-feed',
+			path: '/create-feed',
 			component: '../layouts/AppLayout',
 			authority: User,
 			routes: [
 				{
-					path: '/feeds/create-feed',
+					path: '/create-feed',
 					component: './Feeds/CreateFeed',
 				},
 				{
@@ -83,11 +79,11 @@ const appRoutes = {
 			authority: Guest,
 			routes: [
 				{
-					path: '/feeds',
+					path: '/',
 					component: './Feeds',
 				},
 				{
-					path: '/feeds/:feedSlug',
+					path: '/:feedSlug',
 					component: './Feeds/Feed',
 				},
 				{
