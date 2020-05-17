@@ -5,11 +5,12 @@ import { Form, Button, Input } from 'antd'
 import React, { useContext } from 'react'
 
 // Local files
+import { CategorySelect } from '@/components/CategorySelect'
+import { PageHelmet } from '@/components/PageHelmet'
+import { Step1Props } from '../../types'
 import ImageUpload from '@/components/ImageUpload'
 import StepContext from '../../StepContext'
 import styles from './index.less'
-import { CategorySelect } from '@/components/CategorySelect'
-import { PageHelmet } from '@/components/PageHelmet'
 
 const formItemLayout = {
 	labelCol: {
@@ -20,7 +21,7 @@ const formItemLayout = {
 	},
 }
 
-const Step1: React.FC = (props: any) => {
+const Step1 = (props: Step1Props): JSX.Element => {
 	const [form] = Form.useForm()
 	const { createTitleFormData, readableCategoryValue } = useContext(StepContext)
 	const { setCreateTitleFormData, stepMovementTo, setReadableCategoryValue } = props

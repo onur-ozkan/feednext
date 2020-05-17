@@ -6,11 +6,13 @@ import React, { useContext } from 'react'
 import { history } from 'umi'
 
 // Local files
+import { PageHelmet } from '@/components/PageHelmet'
+import { Step3Props } from '../../types'
 import StepContext from '../../StepContext'
 import styles from './index.less'
-import { PageHelmet } from '@/components/PageHelmet'
 
-const Step3: React.FC = ({ titleSlugForRouting, feedCreatedSuccessfully }) => {
+
+const Step3 = ({ titleSlugForRouting, feedCreatedSuccessfully }: Step3Props): JSX.Element => {
 	const { createTitleFormData, readableCategoryValue, firstEntryForm } = useContext(StepContext)
 
 	const onFinish = (): void => history.push('/')

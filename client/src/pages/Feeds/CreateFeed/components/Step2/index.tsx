@@ -7,9 +7,10 @@ import TextArea from 'antd/lib/input/TextArea'
 import React, { useContext } from 'react'
 
 // Local files
-import styles from './index.less'
-import StepContext from '../../StepContext'
 import { PageHelmet } from '@/components/PageHelmet'
+import { Step2Props } from '../../types'
+import StepContext from '../../StepContext'
+import styles from './index.less'
 
 const formItemLayout = {
 	labelCol: {
@@ -20,7 +21,7 @@ const formItemLayout = {
 	},
 }
 
-const Step2: React.FC = (props: any) => {
+const Step2 = (props: Step2Props): JSX.Element => {
 	const [form] = Form.useForm()
 	const { createTitleFormData, readableCategoryValue, firstEntryForm } = useContext(StepContext)
 
