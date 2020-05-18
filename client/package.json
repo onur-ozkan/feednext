@@ -8,18 +8,15 @@
 		"build": "umi build",
 		"dev": "umi dev",
 		"prod": "serve -s dist",
-		"lint": "npm run lint:js && npm run lint:style && npm run lint:prettier",
+		"lint": "npm run lint:js && npm run lint:prettier",
 		"lint-staged": "lint-staged",
 		"lint-staged:js": "eslint --ext .js,.jsx,.ts,.tsx ",
-		"lint:fix": "eslint --fix --cache --ext .js,.jsx,.ts,.tsx --format=pretty ./src && npm run lint:style",
+		"lint:fix": "eslint --fix --cache --ext .js,.jsx,.ts,.tsx --format=pretty ./src",
 		"lint:js": "eslint --cache --ext .js,.jsx,.ts,.tsx --format=pretty ./src",
 		"lint:prettier": "check-prettier lint",
-		"lint:style": "stylelint --fix \"src/**/*.less\" --syntax less",
-		"prettier": "prettier -c --write \"**/*\"",
-		"tsc": "tsc"
+		"prettier": "prettier -c --write \"**/*\""
 	},
 	"lint-staged": {
-		"**/*.less": "stylelint --syntax less",
 		"**/*.{js,jsx,ts,tsx}": "npm run lint-staged:js",
 		"**/*.{js,jsx,tsx,ts,less,md,json}": [
 			"prettier --write"
@@ -45,19 +42,15 @@
 		"classnames": "^2.2.6",
 		"date-fns": "^2.12.0",
 		"eslint-plugin-react": "^7.18.3",
-		"omit.js": "^1.0.2",
 		"path-to-regexp": "2.4.0",
 		"prop-types": "^15.7.2",
 		"react": "^16.8.6",
-		"react-copy-to-clipboard": "^5.0.1",
 		"react-dom": "^16.8.6",
 		"react-helmet": "^5.2.1",
 		"react-redux": "^7.2.0",
 		"redux": "^4.0.5",
 		"redux-persist": "^6.0.0",
 		"redux-thunk": "^2.3.0",
-		"umi": "3.2.0-beta.9",
-		"@umijs/preset-react": "^1.4.20",
 		"serve": "^11.3.0",
 		"socket.io-client": "^2.3.0"
 	},
@@ -70,14 +63,14 @@
 		"@types/react-dom": "^16.8.4",
 		"@types/react-helmet": "^5.0.13",
 		"@types/socket.io-client": "^1.4.32",
-		"@umijs/fabric": "^2.0.2",
+		"umi": "3.2.0-beta.12",
+		"@umijs/preset-react": "^1.4.20",
 		"chalk": "^3.0.0",
 		"check-prettier": "^1.0.3",
 		"cross-env": "^7.0.0",
 		"lint-staged": "^10.0.0",
 		"node-fetch": "^2.6.0",
-		"prettier": "^1.19.1",
-		"stylelint": "^13.0.0"
+		"prettier": "^1.19.1"
 	},
 	"checkFiles": [
 		"src/**/*.js*",
