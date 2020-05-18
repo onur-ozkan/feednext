@@ -40,7 +40,7 @@ export class AuthService {
                 exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
             }, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
 
-            const verificationUrl: string = `${configService.getEnv('APP_URL')}/api/v1/auth/account-verification?token=${verifyToken}`
+            const verificationUrl: string = `${configService.getEnv('APP_URL')}:${configService.getEnv('APP_PORT')}/api/v1/auth/account-verification?token=${verifyToken}`
 
             const mailBody: MailSenderBody = {
                 receiver: dto.email,

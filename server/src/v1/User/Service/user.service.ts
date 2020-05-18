@@ -86,7 +86,7 @@ export class UserService {
                 exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
             }, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
 
-            const activationUrl: string = `${configService.getEnv('APP_URL')}/api/v1/user/verfiy-update-email?token=${activateToken}`
+            const activationUrl: string = `${configService.getEnv('APP_URL')}:${configService.getEnv('APP_PORT')}/api/v1/user/verfiy-update-email?token=${activateToken}`
             const mailBody: MailSenderBody = {
                 receiver: dto.email,
                 subject: `Verify Your New Email [${profile.username}]`,
@@ -164,7 +164,7 @@ export class UserService {
             exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
         }, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
 
-        const activationUrl: string = `${configService.getEnv('APP_URL')}/api/v1/user/activate-user?token=${activateToken}`
+        const activationUrl: string = `${configService.getEnv('LOCAL_URL')}/api/v1/user/activate-user?token=${activateToken}`
         const mailBody: MailSenderBody = {
             receiver: dto.email,
             subject: `RE-Enable Your Account [${user.username}]`,
