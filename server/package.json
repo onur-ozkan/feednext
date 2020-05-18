@@ -45,6 +45,7 @@
     "jsonwebtoken": "^8.5.1",
     "keymachine": "^1.0.7",
     "mongodb": "^3.5.5",
+    "nan": "^2.14.1",
     "nest-raven": "^5.0.0",
     "nest-router": "^1.0.9",
     "nodemailer": "^6.4.6",
@@ -76,7 +77,7 @@
     "typescript": "^3.8.3"
   },
   "engines": {
-    "node": "13",
+    "node": "12",
     "npm": "6"
   },
   "jest": {

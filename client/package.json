@@ -28,7 +28,7 @@
 		"not ie <= 10"
 	],
 	"engines": {
-		"node": "13",
+		"node": "12",
 		"npm": "6"
 	},
 	"dependencies": {
@@ -56,6 +56,7 @@
 	},
 	"devDependencies": {
 		"bufferutil": "^4.0.1",
+		"nan": "^2.14.1",
 		"utf-8-validate": "^5.0.2",
 		"@types/classnames": "^2.2.7",
 		"@types/history": "^4.7.2",
