@@ -14,40 +14,56 @@ import {
 	updateTitle,
 	deleteTitleImage,
 	updateTitleImage,
-	fetchOneCategory
+	fetchOneCategory,
+	fetchFeaturedEntryByTitleId
 } from '@/services/api'
+import { TitleResponseData, CategoryResponseData } from '@/@types/api'
 import { API_URL } from '@/../config/constants'
 import { CategorySelect } from '@/components/CategorySelect'
+import { PageHelmet } from '@/components/PageHelmet'
+import { EntryAttributes } from './types'
+import NotFoundPage from '@/pages/404'
 import FeedHeader from './components/FeedHeader'
 import FeedEntries from './components/FeedEntries'
 import PageLoading from '@/components/PageLoading'
 import ImageUpload from '@/components/ImageUpload'
 import styles from './style.less'
 
-const Feed: React.FC = ({ match }): JSX.Element => {
+const Feed: React.FC<any> = (props): JSX.Element => {
 	const globalState = useSelector((state: any) => state.global)
 	const userRole = useSelector((state: any) => state.user?.attributes.user.role)
 
-	const [title, setTitle]: any = useState(null)
-	const [category, setCategory]: any = useState(null)
-	const [averageTitleRate, setAverageTitleRate] = useState(null)
-	const [updateCategoryId, setUpdateCategoryId] = useState<string | null>(null)
-	const [entryList, setEntryList]: any = useState(null)
-	const [sortEntriesBy, setSortEntriesBy] = useState(null)
+	const [title, setTitle]: any = useState<TitleResponseData | null>(null)
+	const [category, setCategory]: any = useState<CategoryResponseData | null>(null)
+	const [keywords, setKeywords] = useState('')
+	const [featuredEntry, setFeaturedEntry] = useState<string | undefined>(undefined)
+	const [averageTitleRate, setAverageTitleRate] = useState<number | null>(null)
+	const [updateCategoryId, setUpdateCategoryId] = useState<string | string[] | null>(null)
+	const [entryList, setEntryList] = useState<{
+		entries: EntryAttributes[],
+		count: number
+	}| null>(null)
+	const [sortEntriesBy, setSortEntriesBy] = useState<'newest' | 'top' | null>(null)
 	const [updateModalVisibility, setUpdateModalVisibility] = useState(false)
 	const [titleImageBlob, setTitleImageBlob] = useState<Blob | null>(null)
+	const [titleNotFound, setTitleNotFound] = useState(false)
 
 	const [form] = Form.useForm()
 
-
 	const handleEntryFetching = (page: number): void => {
-		fetchEntriesByTitleId(title.attributes.id, page, sortEntriesBy).then(res => {
-			setEntryList(res.data.attributes)
+		fetchEntriesByTitleId(title.attributes.id, page, sortEntriesBy).then(async ({ data }) => {
+			const entriesAsKeywords: any[] = []
+			await data.attributes.entries.map((entry: { text: string }) => {
+				const keywordsArray = entry.text.split(' ')
+				keywordsArray.map((keyword: string) => entriesAsKeywords.push(keyword))
+			})
+			setKeywords(entriesAsKeywords.join(', '))
+			setEntryList(data.attributes)
 		})
 	}
 
 	useEffect(() => {
-		if (title) handleEntryFetching(0)
+		if (title) handleEntryFetching(10 * (props.location.query?.page - 1) || 0)
 	}, [title, sortEntriesBy])
 
 	const getTitleRate = async (titleId: string): Promise<void> => {
@@ -75,25 +91,36 @@ const Feed: React.FC = ({ match }): JSX.Element => {
 
 		await updateTitle(globalState.accessToken, title.attributes.id, updatePayload)
 			.then((_res: { data: { attributes: { slug: any } } }) => {
-				location.href = `/feeds/${_res.data.attributes.slug}`
+				location.href = `/${_res.data.attributes.slug}`
 			})
 			.catch((error: any) => message.error(error.response.data.message))
 	}
 
 	useEffect(() => {
-		fetchTitle(match.params.feedSlug, 'slug').then(async res => {
-			await fetchOneCategory(res.data.attributes.category_id).then(({ data }) => {
-				setCategory(data.attributes)
-			})
+		fetchTitle(props.match.params.feedSlug, 'slug').then(async res => {
+			await fetchOneCategory(res.data.attributes.category_id).then(({ data }) => setCategory(data))
+			await fetchFeaturedEntryByTitleId(res.data.attributes.id).then(({ data }) => setFeaturedEntry(data.attributes.text))
 			getTitleRate(res.data.attributes.id)
 			await setTitle(res.data)
+		}).catch(_error => {
+			setTitleNotFound(true)
 		})
 	}, [])
 
+	if (titleNotFound) return <NotFoundPage />
 	if (!entryList || !title || !category || (!averageTitleRate && averageTitleRate !== 0)) return <PageLoading />
 
 	return (
 		<>
+			<PageHelmet
+				title={title.attributes.name}
+				description={`Best reviews, comments, feedbacks about ${title.attributes.name} around the world`}
+				author={title.attributes.opened_by}
+				keywords={keywords}
+				mediaTitle={title.attributes.name}
+				mediaDescription={featuredEntry}
+				mediaImage={`${API_URL}/v1/title/${title.attributes.id}/image`}
+			/>
 			<FeedHeader
 				accessToken={globalState.accessToken}
 				styles={styles}
@@ -105,6 +132,7 @@ const Feed: React.FC = ({ match }): JSX.Element => {
 				refreshTitleRate={getTitleRate}
 			/>
 			<FeedEntries
+				defaultPage={props.location.query?.page}
 				sortEntriesBy={sortEntriesBy}
 				setSortEntriesBy={setSortEntriesBy}
 				setEntryList={setEntryList}

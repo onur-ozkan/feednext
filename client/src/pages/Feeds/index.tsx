@@ -25,6 +25,7 @@ import {
 
 // Other dependencies
 import React, { useEffect, useState } from 'react'
+import { AxiosError, AxiosResponse } from 'axios'
 import { Link } from 'umi'
 
 // Local files
@@ -32,12 +33,11 @@ import { fetchAllFeeds, fetchFeaturedEntryByTitleId, fetchTrendingCategories, fe
 import { CategorySelect } from '@/components/CategorySelect'
 import { API_URL } from '@/../config/constants'
 import { PageHelmet } from '@/components/PageHelmet'
+import { AdditionalBlock } from './components/AdditionalBlock'
+import { TrendingCategoriesResponseData } from '@/@types/api'
+import { FeedList } from './types'
 import ArticleListContent from './components/ArticleListContent'
 import globalStyles from '@/global.less'
-import { TrendingCategoriesResponseData } from '@/@types/api'
-import { AxiosError, AxiosResponse } from 'axios'
-import { FeedList } from './types'
-import { AdditionalBlock } from './components/AdditionalBlock'
 
 const Feeds = (): JSX.Element => {
 	const [displayFilterModal, setDisplayFilterModal] = useState(false)

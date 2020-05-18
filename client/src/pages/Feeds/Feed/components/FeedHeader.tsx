@@ -30,8 +30,9 @@ import { history } from 'umi'
 // Local files
 import { getUserRateOfTitle, rateTitle, deleteTitle } from '@/services/api'
 import { API_URL } from '@/../config/constants'
+import { FeedHeaderProps } from '../types'
 
-const FeedHeader: React.FC = (props: any): JSX.Element => {
+const FeedHeader: React.FC<FeedHeaderProps> = (props): JSX.Element => {
 	const {
 		titleData,
 		openUpdateModal,
@@ -97,7 +98,7 @@ const FeedHeader: React.FC = (props: any): JSX.Element => {
 			},
 			{
 				title: 'Category',
-				value: categoryData.name
+				value: categoryData.attributes.name
 			},
 			{
 				title: 'Entry Count',
@@ -162,7 +163,7 @@ const FeedHeader: React.FC = (props: any): JSX.Element => {
 		deleteTitle(accessToken, titleData.attributes.id)
 			.then(_res => {
 				message.success('Title successfully deleted')
-				history.push('/feeds')
+				history.push('/')
 			})
 			.catch(error => message.error(error.response.data.message))
 	}
@@ -172,7 +173,7 @@ const FeedHeader: React.FC = (props: any): JSX.Element => {
 			<PageHeader
 				title={
 					<>
-						<Tag color="blue">{categoryData.name}</Tag>
+						<Tag color="blue">{categoryData.attributes.name}</Tag>
 						<Row>
 							<Col style={{ margin: '0px 5px -15px 0px' }}>
 								<Typography.Paragraph ellipsis={{ rows: 4 }}>

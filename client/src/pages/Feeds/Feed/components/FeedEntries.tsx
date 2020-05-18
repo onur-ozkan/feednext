@@ -24,36 +24,41 @@ import {
 } from '@ant-design/icons'
 
 // Other dependencies
+import React from 'react'
 import { useSelector } from 'react-redux'
+import { history } from 'umi'
 
 // Local files
-import React from 'react'
-import { history } from 'umi'
 import { voteEntry, undoEntryVote, updateEntry, deleteEntry } from '@/services/api'
 import { SuperAdmin, API_URL } from '@/../config/constants'
+import { FeedEntriesProps } from '../types'
 import AddEntry from './AddEntry'
 import globalStyles from '@/global.less'
 
-const FeedEntries: React.FC = ({
-	titleData,
-	sortEntriesBy,
-	setSortEntriesBy,
-	entryList,
-	handleEntryFetching,
-	setEntryList,
-	accessToken,
-}): JSX.Element => {
+const FeedEntries: React.FC<FeedEntriesProps> = (props): JSX.Element => {
+	const {
+		titleData,
+		defaultPage,
+		sortEntriesBy,
+		setSortEntriesBy,
+		entryList,
+		handleEntryFetching,
+		setEntryList,
+		accessToken } = props
+
 	const userState = useSelector((state: any) => state.user?.attributes.user)
 
 	const paginationOptions = {
 		size: 'small',
 		showLessItems: true,
 		hideOnSinglePage: true,
+		defaultCurrent: Number(defaultPage) || 1,
 		showQuickJumper: true,
 		pageSize: 10,
 		total: titleData.attributes.entry_count,
 		onChange: (page: number): void => {
 			handleEntryFetching(10 * (page - 1))
+			history.replace(`${titleData.attributes.slug}?page=${page}`)
 		},
 	}
 
@@ -76,7 +81,7 @@ const FeedEntries: React.FC = ({
 			entry.votes.value--
 			entry.votes.up_voted = entry.votes.up_voted.filter((item: any) => item !== userState.username)
 
-			await setEntryList({
+			setEntryList({
 				...entryList,
 				entries: [...entryList.entries].map(item => {
 					if (item.id === entry.id) {
@@ -91,7 +96,7 @@ const FeedEntries: React.FC = ({
 			entry.votes.value++
 			entry.votes.down_voted = entry.votes.down_voted.filter((item: any) => item !== userState.username)
 
-			await setEntryList({
+			setEntryList({
 				...entryList,
 				entries: [...entryList.entries].map(item => {
 					if (item.id === entry.id) {
