@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common'
 import * as nodemailer from 'nodemailer'
 
 // Local files
-import { MailSenderBody } from './Interfaces/mail.sender.interface'
+import { MailSenderBody } from './types'
 import { configService } from './config.service'
 
 @Injectable()
