@@ -6,6 +6,7 @@ import { routes } from './routes'
 import defaultSettings from './defaultSettings'
 
 export default defineConfig({
+	hash: true,
 	routes,
 	ssr: {
 		forceInitial: false,
