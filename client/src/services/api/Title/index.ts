@@ -3,9 +3,9 @@ import axios, { AxiosResponse } from 'axios'
 
 export const fetchAllFeeds = (
 	skip: number,
-	username: string | null,
-	categoryIds: string | null,
-	sortBy?: 'hot' | 'top' | null
+	username: string | undefined,
+	categoryIds: string | undefined,
+	sortBy?: 'hot' | 'top' | undefined
 ): Promise<AxiosResponse> => axios.get(
 	'/v1/title/all', {
 		params: {
@@ -79,7 +79,7 @@ export const updateTitle = (
 	titleId: string,
 	payload: {
 		name: string,
-		categoryId: string | null
+		categoryId: string | string[] | null
 	}
 ): Promise<AxiosResponse> => axios.patch(`/v1/title/${titleId}`, payload, {
 	headers: {

@@ -1,5 +1,5 @@
 // Antd dependencies
-import { Tag, Button } from 'antd'
+import { Button } from 'antd'
 import { PlusCircleOutlined, LoginOutlined } from '@ant-design/icons'
 
 // Other dependencies
@@ -13,35 +13,18 @@ import HeaderSearch from '../HeaderSearch'
 import MessageBox from '../MessageBox'
 import styles from './index.less'
 
-export type SiderTheme = 'light' | 'dark'
-export declare interface GlobalHeaderRightProps {
-	theme?: SiderTheme
-	layout: 'sidemenu' | 'topmenu'
-}
-
-const ENVTagColor = {
-	dev: 'orange',
-	test: 'green',
-	pre: '#87d068',
-}
-
-const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
+const GlobalHeaderRight: React.SFC = () => {
 	const user = useSelector((state: any) => state.user)
 	const globalState = useSelector((state: any) => state.global)
 
-	const { theme, layout } = props
-	let className = styles.right
-
-	if (theme === 'dark' && layout === 'topmenu') {
-		className = `${styles.right}  ${styles.dark}`
-	}
+	const className = `${styles.right}  ${styles.dark}`
 
 	const handleAuthorizedElements = (): JSX.Element => {
 		if (user) {
 			return (
 				<>
 					<Button
-						onClick={(): void => history.push('/feeds/create-feed')}
+						onClick={(): void => history.push('/create-feed')}
 						type="primary"
 						shape="round"
 						icon={<PlusCircleOutlined />}

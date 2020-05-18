@@ -9,9 +9,8 @@ import { history } from 'umi'
 // Local files
 import { fetchEntryByEntryId, fetchTitle, getAverageTitleRate, fetchOneCategory } from '@/services/api'
 import { API_URL } from '@/../config/constants'
-import { TitleResponseData } from '@/@types/api'
+import { TitleResponseData, EntryResponseData } from '@/@types/api'
 import { PageHelmet } from '@/components/PageHelmet'
-import { EntryResponseData } from '@/@types/api/Entry'
 import PageLoading from '@/components/PageLoading'
 import NotFoundPage from '../404'
 

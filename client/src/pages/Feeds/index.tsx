@@ -276,7 +276,7 @@ const Feeds = (): JSX.Element => {
 	return (
 		<>
 			<PageHelmet
-				title="Feednext: the source of the feedbacks"
+				title="Feednext: the source of feedbacks"
 				description="Best reviews, comments, feedbacks about anything around the world"
 				mediaTitle="the source of the feedbacks"
 				mediaImage="https://avatars1.githubusercontent.com/u/64217221?s=200&v=4"

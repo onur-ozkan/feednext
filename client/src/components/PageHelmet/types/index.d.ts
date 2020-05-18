@@ -1,9 +1,9 @@
 export interface ComponentProps {
-	title: string
-	description: string
+	title: string | undefined
+	description: string | undefined
 	author?: string | undefined
 	keywords?: string | undefined
 	mediaTitle?: string | undefined
-	mediaDescription: string
-	mediaImage: string
+	mediaDescription: string | undefined
+	mediaImage: string | undefined
 }

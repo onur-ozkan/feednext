@@ -6,7 +6,6 @@ import { MessageOutlined } from '@ant-design/icons'
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Redirect, history } from 'umi'
-import { stringify } from 'querystring'
 
 // Local files
 import { SET_ACCESS_TOKEN, SET_UNREAD_MESSAGES_INFO, INCREASE_UNREAD_MESSAGE_VALUE, ADD_ITEM_TO_MESSAGES_INFO } from '@/redux/Actions/Global'
@@ -22,7 +21,6 @@ const RouteHandler = ({ children, route }) => {
 	const globalState = useSelector((state: any) => state.global)
 	const user = useSelector((state: any) => state.user)
 	const wss = socketConnection(globalState.accessToken)
-
 	const dispatch = useDispatch()
 
 	const checkIsSessionValid = async (): Promise<void> => {
@@ -55,9 +53,7 @@ const RouteHandler = ({ children, route }) => {
 		setIsLoading(false)
 	}
 
-	console.log(globalState.unreadMessageInfo?.values_by_conversations)
-
-	useEffect((): void => {
+	useEffect(() => {
 		handleInitialProcessesOnRoute()
 		// Handle message notifications
 		if (globalState.accessToken) {
@@ -75,7 +71,7 @@ const RouteHandler = ({ children, route }) => {
 				}
 			})
 
-			return (): void => {
+			return () => {
 				wss.disconnect()
 			}
 		}
@@ -104,18 +100,14 @@ const RouteHandler = ({ children, route }) => {
 		}
 	}, [lastMessageFromSocket])
 
-	const queryString = stringify({
-		redirect: window.location.href,
-	})
-
 	const authorized: any = getAuthorityFromRouter(route?.routes, location.pathname || '/')
 
 	if (isLoading) {
 		return <PageLoading />
 	}
 
-	if (!user && authorized && authorized.authority >= User && window.location.pathname !== '/auth/sign-in') {
-		return <Redirect to={`/auth/sign-in?${queryString}`} />
+	if (!user && authorized && authorized.authority >= User && window.location.pathname !== '/') {
+		return <Redirect to="/auth/sign-in" />
 	}
 
 	if (user && authorized && authorized.authority > user.attributes.user.role) {

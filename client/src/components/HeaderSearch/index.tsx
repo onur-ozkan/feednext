@@ -47,7 +47,7 @@ const HeaderSearch: React.FC = (): JSX.Element => {
 						label:
 							<div
 								style={{ width: '100%' }}
-								onClick={(): void => handleTitleRouting(`/feeds/${title.slug}`)}
+								onClick={(): void => handleTitleRouting(`/${title.slug}`)}
 							>
 								<Typography.Text style={{ fontSize: 15 }}> {title.name} </Typography.Text>
 							</div>,
