@@ -12,7 +12,6 @@ export const PageHelmet = (props: ComponentProps): JSX.Element => {
 				<title> {props.title} </title>
 				<meta name="application-name" content="Feednext" />
 				<meta name="description" content={props.description} />
-				<meta name="keywords" content={props.keywords} />
 				<meta property="twitter:card" content="summary" />
 				{props.keywords && <meta name="keywords" content={props.keywords} /> }
 				{props.author && <meta name="author" content={props.author} /> }
