@@ -12,6 +12,7 @@ export interface TitleResponseData {
 			username: string,
 			rateValue: number
 		}[],
+		updated_by?: string | undefined,
 		created_at: string,
 		updated_at: string
 	}
