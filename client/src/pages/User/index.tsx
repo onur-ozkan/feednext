@@ -11,6 +11,7 @@ import {
 	UpSquareOutlined,
 	LinkOutlined,
 	SolutionOutlined,
+	MessageOutlined,
 } from '@ant-design/icons'
 import { GridContent } from '@ant-design/pro-layout'
 
@@ -21,15 +22,15 @@ import { history } from 'umi'
 
 // Local files
 import { fetchAllEntriesByAuthor, fetchUserByUsername, fetchUserVotes, fetchAllFeeds } from '@/services/api'
-import PageLoading from '@/components/PageLoading'
-import NotFoundPage from '../404'
 import { API_URL } from '../../../config/constants'
 import { PageHelmet } from '@/components/PageHelmet'
+import PageLoading from '@/components/PageLoading'
+import NotFoundPage from '../404'
 
 const User: React.FC = ({ match }): JSX.Element => {
 	const userState = useSelector((state: any) => state.user?.attributes.user)
 
-	const [user, setUser] = useState(userState || null)
+	const [user, setUser] = useState(userState)
 	const [isUserFound, setIsUserFound] = useState<boolean | null>(null)
 
 	const [currentTab, setCurrentTab] = useState('feeds')
@@ -63,7 +64,7 @@ const User: React.FC = ({ match }): JSX.Element => {
 	}, [])
 
 	const handleFeedsTabView = (skip: number): void => {
-		fetchAllFeeds(skip, match.params.username).then(async res => {
+		fetchAllFeeds(skip, match.params.username, undefined, undefined).then(async res => {
 			setTotalItems(res.data.attributes.count)
 
 			if (res.data.attributes.titles.length === 0) {
@@ -80,7 +81,7 @@ const User: React.FC = ({ match }): JSX.Element => {
 				return
 			}
 
-			const feedList = await res.data.attributes.titles.map((title) =>
+			const feedList = await res.data.attributes.titles.map((title: any) =>
 				<Row key={title.id} style={{ padding: 5 }}>
 					<Col>
 						{title.name}
@@ -157,7 +158,7 @@ const User: React.FC = ({ match }): JSX.Element => {
 				return
 			}
 
-			const entryList = await res.data.attributes.entries.map((entry) =>
+			const entryList = await res.data.attributes.entries.map((entry: any) =>
 				<Row key={entry.id} style={{ padding: 5 }}>
 					<Col>
 						<Typography.Paragraph ellipsis>
@@ -192,7 +193,7 @@ const User: React.FC = ({ match }): JSX.Element => {
 		<Pagination
 			size="small"
 			showLessItems={true}
-			showQuickJumper={true}
+			showQuickJumper={false}
 			defaultCurrent={1}
 			pageSize={10}
 			hideOnSinglePage
@@ -216,7 +217,7 @@ const User: React.FC = ({ match }): JSX.Element => {
 
 	useEffect(() => {
 		setTabView(handleLoadingView)
-		setTotalItems(null)
+		setTotalItems(0)
 		switch (currentTab) {
 			case 'feeds':
 				handleFeedsTabView(0)
@@ -254,6 +255,12 @@ const User: React.FC = ({ match }): JSX.Element => {
 								{userState && (userState.username === match.params.username) &&
 									<SettingOutlined
 										onClick={(): void => history.push('/settings')}
+										style={{ fontSize: 18, cursor: 'pointer', color: '#ff2d20' }}
+									/>
+								}
+								{userState && (userState.username !== match.params.username) &&
+									<MessageOutlined
+										onClick={(): void => history.push('/messages/compose', { defaultUsername: user.username })}
 										style={{ fontSize: 18, cursor: 'pointer', color: '#ff2d20' }}
 									/>
 								}
@@ -314,7 +321,7 @@ const User: React.FC = ({ match }): JSX.Element => {
 								}
 							</Col>
 							<Divider style={{ marginBottom: 0 }} orientation="right">
-								<Typography.Text secondary style={{ fontSize: 13 }}>
+								<Typography.Text style={{ fontSize: 13 }}>
 									Joined at {user.created_at}
 								</Typography.Text>
 							</Divider>
