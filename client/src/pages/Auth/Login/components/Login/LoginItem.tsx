@@ -1,17 +1,16 @@
 // Antd dependencies
-import { Button, Col, Input, Row } from 'antd'
+import { Input } from 'antd'
 import { Form } from '@ant-design/compatible'
 import { FormComponentProps } from '@ant-design/compatible/es/form'
 
 // Other dependencies
 import React, { Component } from 'react'
-import omit from 'omit.js'
 
 // Local files
 import LoginContext, { LoginContextProps } from './LoginContext'
 import ItemMap from './map'
-import styles from './index.less'
 import '@ant-design/compatible/assets/index.css'
+import './index.less'
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 
@@ -135,8 +134,6 @@ class WrapFormItem extends Component<LoginItemProps, LoginItemState> {
 	}
 
 	render(): JSX.Element | undefined {
-		const { count } = this.state
-
 		const {
 			onChange,
 			customProps,
@@ -162,27 +159,6 @@ class WrapFormItem extends Component<LoginItemProps, LoginItemState> {
 		const options = this.getFormItemOptions(this.props)
 		const otherProps = restProps || {}
 
-		if (type === 'Captcha') {
-			const inputProps = omit(otherProps, ['onGetCaptcha', 'countDown'])
-
-			return (
-				<FormItem>
-					<Row gutter={8}>
-						<Col span={16}>{getFieldDecorator(name, options)(<Input {...customProps} {...inputProps} />)}</Col>
-						<Col span={8}>
-							<Button
-								disabled={!!count}
-								className={styles.getCaptcha}
-								size="large"
-								onClick={this.onGetCaptcha}
-							>
-								{count ? `${count} ${getCaptchaSecondText}` : getCaptchaButtonText}
-							</Button>
-						</Col>
-					</Row>
-				</FormItem>
-			)
-		}
 		return <FormItem>{getFieldDecorator(name, options)(<Input {...customProps} {...otherProps} />)}</FormItem>
 	}
 }

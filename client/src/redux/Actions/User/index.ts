@@ -5,12 +5,16 @@ export interface UserPayload {
     type: string
     id: string
     attributes: {
-        email: string
-        username: string
-        "full_name": string
-        role: number
-        "is_active": boolean
-        "created_at": string
+        full_name: string,
+		username: string,
+		email: string,
+		biography: string,
+		link: string,
+		role: number,
+		is_active: boolean,
+		is_verified: boolean
+		created_at: string,
+		updated_at: string
     }
 }
 

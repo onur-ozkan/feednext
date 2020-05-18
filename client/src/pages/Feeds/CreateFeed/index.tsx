@@ -4,14 +4,15 @@ import { Card, Steps, message } from 'antd'
 // Other dependencies
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
+import { AxiosError, AxiosResponse } from 'axios'
 
 // Local files
 import { createTitle, createEntry } from '@/services/api'
+import { CreateTitleFormData } from './types'
 import { StepProvider } from './StepContext'
 import Step1 from './components/Step1'
 import Step2 from './components/Step2'
 import Step3 from './components/Step3'
-import PageLoading from '@/components/PageLoading'
 import styles from './style.less'
 
 const CreateFeed: React.FC = () => {
@@ -21,10 +22,10 @@ const CreateFeed: React.FC = () => {
 	const [stepComponent, setStepComponent] = useState<React.ReactNode>(null)
 	const [isRequestReady, setIsRequestReady] = useState(false)
 	const [readableCategoryValue, setReadableCategoryValue] = useState(undefined)
-	const [firstEntryForm, setFirstEntryForm]: any = useState({
+	const [firstEntryForm, setFirstEntryForm] = useState<{ text: string } | { text: any }>({
 		text: undefined
 	})
-	const [createTitleFormData, setCreateTitleFormData]: any = useState({
+	const [createTitleFormData, setCreateTitleFormData] = useState<CreateTitleFormData | any>({
 		name: undefined,
 		imageBase64: undefined,
 		imageFile: undefined,
@@ -32,21 +33,23 @@ const CreateFeed: React.FC = () => {
 	})
 
 	const [feedCreatedSuccessfully, setFeedCreatedSuccessfully] = useState<boolean | null>(null)
-	const [titleSlugForRouting, setTitleSlugForRouting] = useState(null)
+	const [titleSlugForRouting, setTitleSlugForRouting] = useState<string | null>(null)
 
 	useEffect(() => {
 		if (isRequestReady) {
 			const titleFormData = new FormData()
 
+			createTitleFormData
+
 			titleFormData.append('name', createTitleFormData.name)
 			titleFormData.append('categoryId', createTitleFormData.categoryId)
 			if (createTitleFormData.imageFile) titleFormData.append('image', createTitleFormData.imageFile)
 
-			createTitle(titleFormData, accessToken).then((res) => {
+			createTitle(titleFormData, accessToken).then((res: AxiosResponse) => {
 				createEntry({
 					titleId: res.data.attributes.id,
 					text: firstEntryForm.text,
-				}, accessToken).catch(error => message.error(error.response.data.message))
+				}, accessToken).catch((error: AxiosError) => message.error(error.response?.data.message))
 				setTitleSlugForRouting(res.data.attributes.slug)
 				setFeedCreatedSuccessfully(true)
 			})
@@ -79,9 +82,9 @@ const CreateFeed: React.FC = () => {
 					step: 1,
 					component:
 						<Step2
+							stepMovementTo={handleStepMovement}
 							setFirstEntryForm={setFirstEntryForm}
 							setIsRequestReady={setIsRequestReady}
-							stepMovementTo={handleStepMovement}
 						/>
 				}
 			case 'feed-status':
@@ -89,8 +92,8 @@ const CreateFeed: React.FC = () => {
 					step: 2,
 					component:
 						<Step3
-							feedCreatedSuccessfully={feedCreatedSuccessfully}
 							titleSlugForRouting={titleSlugForRouting}
+							feedCreatedSuccessfully={feedCreatedSuccessfully}
 						/>
 				}
 			default:

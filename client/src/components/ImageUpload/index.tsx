@@ -4,10 +4,11 @@ import { LoadingOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons
 
 // Other dependencies
 import React, { useState } from 'react'
+import { ComponentProps } from './types'
 
-const ImageUpload: React.FC = ({ onImageTake, onRemoveImage, defaultUrl }): JSX.Element => {
+const ImageUpload = ({ onImageTake, onRemoveImage, defaultUrl }: ComponentProps): JSX.Element => {
 	const [isImageLoading, setIsImageLoading] = useState(false)
-	const [base64, setBase64] = useState(defaultUrl)
+	const [base64, setBase64] = useState<string | null>(defaultUrl)
 
 	const getBase64 = (image: File, callback: Function): void => {
 		const reader = new FileReader()

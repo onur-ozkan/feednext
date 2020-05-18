@@ -5,11 +5,10 @@ import { MessageOutlined } from '@ant-design/icons'
 // Other dependencies
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Redirect, router } from 'umi'
-import { stringify } from 'querystring'
+import { Redirect, history } from 'umi'
 
 // Local files
-import { SET_ACCESS_TOKEN, SET_UNREAD_MESSAGES_INFO, INCREASE_UNREAD_MESSAGE_VALUE } from '@/redux/Actions/Global'
+import { SET_ACCESS_TOKEN, SET_UNREAD_MESSAGES_INFO, INCREASE_UNREAD_MESSAGE_VALUE, ADD_ITEM_TO_MESSAGES_INFO } from '@/redux/Actions/Global'
 import { checkAccessToken, refreshToken, fetchUnreadMessageInfo } from '@/services/api'
 import { getAuthorityFromRouter, handleSessionExpiration } from '@/services/utils'
 import { socketConnection } from '@/services/socket'
@@ -18,13 +17,14 @@ import PageLoading from '@/components/PageLoading'
 
 const RouteHandler = ({ children, route }) => {
 	const [isLoading, setIsLoading] = useState(true)
+	const [lastMessageFromSocket, setLastMessageFromSocket] = useState<{ conversation_id: string, from: string, body: string } | null>(null)
+	const globalState = useSelector((state: any) => state.global)
 	const user = useSelector((state: any) => state.user)
-	const accessToken = useSelector((state: any) => state.global.accessToken)
-	const wss = socketConnection(accessToken)
+	const wss = socketConnection(globalState.accessToken)
 	const dispatch = useDispatch()
 
 	const checkIsSessionValid = async (): Promise<void> => {
-		await checkAccessToken(accessToken)
+		await checkAccessToken(globalState.accessToken)
 			.catch(_error => {
 				refreshToken().then(res => {
 					dispatch({
@@ -36,7 +36,7 @@ const RouteHandler = ({ children, route }) => {
 	}
 
 	const handleUnreadMessages = async (): Promise<void> => {
-		await fetchUnreadMessageInfo(accessToken).then(({ data }) => {
+		await fetchUnreadMessageInfo(globalState.accessToken).then(({ data }) => {
 			dispatch({
 				type: SET_UNREAD_MESSAGES_INFO,
 				data: data.attributes
@@ -45,7 +45,7 @@ const RouteHandler = ({ children, route }) => {
 	}
 
 	const handleInitialProcessesOnRoute = async (): Promise<void> => {
-		if (accessToken) {
+		if (globalState.accessToken) {
 			await checkIsSessionValid()
 			await handleUnreadMessages()
 		}
@@ -53,10 +53,10 @@ const RouteHandler = ({ children, route }) => {
 		setIsLoading(false)
 	}
 
-	useEffect((): void => {
+	useEffect(() => {
 		handleInitialProcessesOnRoute()
 		// Handle message notifications
-		if (accessToken) {
+		if (globalState.accessToken) {
 			wss.on('pingMessage', (incMessage: { conversation_id: string, from: string, body: string }) => {
 				if (location.pathname !== '/messages') {
 					notification.info({
@@ -66,23 +66,39 @@ const RouteHandler = ({ children, route }) => {
 						duration: 2,
 						icon: <MessageOutlined style={{ color: '#188fce' }}/>,
 					})
-					dispatch({
-						type: INCREASE_UNREAD_MESSAGE_VALUE,
-						id: incMessage.conversation_id,
-						value: 1
-					})
+
+					setLastMessageFromSocket(incMessage)
 				}
 			})
 
-			return (): void => {
+			return () => {
 				wss.disconnect()
 			}
 		}
 	}, [])
 
-	const queryString = stringify({
-		redirect: window.location.href,
-	})
+	// Handle notifications on messages
+	useEffect(() => {
+		if (lastMessageFromSocket) {
+			const conversation = globalState.unreadMessageInfo?.values_by_conversations.find(item => item.id === lastMessageFromSocket.conversation_id)
+			if (!conversation) {
+				dispatch({
+					type: ADD_ITEM_TO_MESSAGES_INFO,
+					item: {
+						id: lastMessageFromSocket.conversation_id,
+						value: 1
+					}
+				})
+			} else {
+				dispatch({
+					type: INCREASE_UNREAD_MESSAGE_VALUE,
+					id: lastMessageFromSocket.conversation_id,
+					value: 1
+				})
+			}
+			setLastMessageFromSocket(null)
+		}
+	}, [lastMessageFromSocket])
 
 	const authorized: any = getAuthorityFromRouter(route?.routes, location.pathname || '/')
 
@@ -90,8 +106,8 @@ const RouteHandler = ({ children, route }) => {
 		return <PageLoading />
 	}
 
-	if (!user && authorized && authorized.authority >= User && window.location.pathname !== '/auth/sign-in') {
-		return <Redirect to={`/auth/sign-in?${queryString}`} />
+	if (!user && authorized && authorized.authority >= User && window.location.pathname !== '/') {
+		return <Redirect to="/auth/sign-in" />
 	}
 
 	if (user && authorized && authorized.authority > user.attributes.user.role) {
@@ -101,7 +117,7 @@ const RouteHandler = ({ children, route }) => {
 				title="403"
 				subTitle="Sorry, your account role doesnt have access to this page"
 				extra={
-					<Button type="primary" onClick={(): void => router.push('/')}>
+					<Button type="primary" onClick={(): void => history.push('/')}>
 						Back Home
 					</Button>
 				}

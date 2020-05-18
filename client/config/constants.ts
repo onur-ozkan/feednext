@@ -1,7 +1,6 @@
 // APP
 export const API_URL = 'http://localhost/api'
 export const SOCKET_URL = 'http://localhost'
-export const DEV = process.env.NODE_ENV !== 'production'
 
 // ROLES
 export const Guest = -1

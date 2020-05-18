@@ -4,48 +4,34 @@ import { ArrowLeftOutlined } from '@ant-design/icons'
 
 // Other dependencies
 import React, { useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { router } from 'umi'
+import { useSelector } from 'react-redux'
+import { history } from 'umi'
 
 // Local files
-import { searchUser, fetchUserByUsername, fetchUnreadMessageInfo } from '@/services/api'
-import { API_URL } from '@/../config/constants'
+import { searchUser, fetchUserByUsername } from '@/services/api'
+import { FormDataType, ComponentProps } from './types'
 import { socketConnection } from '@/services/socket'
-import { SET_UNREAD_MESSAGES_INFO } from '@/redux/Actions/Global'
+import { PageHelmet } from '@/components/PageHelmet'
+import { API_URL } from '@/../config/constants'
 
-export declare interface FormDataType {
-	recipient: string
-	body: string
-}
 
-const Compose = (): JSX.Element => {
-	const [userFilterInput, setUserFilterInput] = useState<string>('')
+const Compose: React.FC<ComponentProps> = (props): JSX.Element => {
+	const globalState = useSelector((state: any) => state.global)
+	const wss = socketConnection(globalState.accessToken)
+	const [form] = Form.useForm()
+
+	const [userFilterInput, setUserFilterInput] = useState<string>(props.history.location.state?.defaultUsername || '')
 	const [autoCompleteData, setAutoCompleteData] = useState(undefined)
-	const [messageForm, setMessageForm] = useState({
+	const [messageForm, setMessageForm] = useState<{ to: string | null, body: string | null }>({
 		to: null,
 		body: null,
 	})
-	const globalState = useSelector((state: any) => state.global)
-
-	const wss = socketConnection(globalState.accessToken)
-	const [form] = Form.useForm()
-	const dispatch = useDispatch()
-
 
 	const handleMessageSending = async (formValues: FormDataType): Promise<void> => {
 		await form.validateFields()
 		await fetchUserByUsername(formValues.recipient).then(() => {
 			wss.emit('sendMessage', formValues)
-			// Refresh unread message state with new conversation before routing there
-			fetchUnreadMessageInfo(globalState.accessToken).then(({ data }) => {
-				dispatch({
-					type: SET_UNREAD_MESSAGES_INFO,
-					data: data.attributes
-				})
-				router.push({
-					pathname: '/messages',
-				})
-			})
+			location.href = '/messages'
 		})
 		.catch(_error => message.error('User not found'))
 	}
@@ -89,15 +75,21 @@ const Compose = (): JSX.Element => {
 
 	return (
 		<>
+			<PageHelmet
+				title="Send Message"
+				description="Best reviews, comments, feedbacks about anything around the world"
+				mediaImage="https://avatars1.githubusercontent.com/u/64217221?s=200&v=4"
+				mediaDescription="Best reviews, comments, feedbacks about anything around the world"
+			/>
 			<Card style={{ padding: 0, minHeight: 500 }}>
 				<Button
-					onClick={(): void => router.goBack()}
+					onClick={(): void => history.goBack()}
 					shape="circle"
 					icon={<ArrowLeftOutlined />}
 					style={{ marginBottom: 25 }}
 				/>
 
-				<Form form={form} onFinish={handleMessageSending}>
+				<Form form={form} onFinish={handleMessageSending} initialValues={{ recipient: userFilterInput }}>
 					<Form.Item
 						style={{ marginBottom: 10 }}
 						name="recipient"

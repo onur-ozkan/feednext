@@ -3,17 +3,20 @@ import { Button, Result, Descriptions } from 'antd'
 
 // Other dependencies
 import React, { useContext } from 'react'
-import { router } from 'umi'
+import { history } from 'umi'
 
 // Local files
+import { PageHelmet } from '@/components/PageHelmet'
+import { Step3Props } from '../../types'
 import StepContext from '../../StepContext'
 import styles from './index.less'
 
-const Step3: React.FC = ({ titleSlugForRouting, feedCreatedSuccessfully }) => {
+
+const Step3 = ({ titleSlugForRouting, feedCreatedSuccessfully }: Step3Props): JSX.Element => {
 	const { createTitleFormData, readableCategoryValue, firstEntryForm } = useContext(StepContext)
 
-	const onFinish = (): void => router.push('/feeds')
-	const handleOnPostRoute = (): void => router.push(`/feeds/${titleSlugForRouting}`)
+	const onFinish = (): void => history.push('/')
+	const handleOnPostRoute = (): void => history.push(`/${titleSlugForRouting}`)
 
 	const information = (
 		<div className={styles.information}>
@@ -40,6 +43,12 @@ const Step3: React.FC = ({ titleSlugForRouting, feedCreatedSuccessfully }) => {
 	)
 	return (
 		<>
+			<PageHelmet
+				title="Feed Status"
+				description="Best reviews, comments, feedbacks about anything around the world"
+				mediaImage="https://avatars1.githubusercontent.com/u/64217221?s=200&v=4"
+				mediaDescription="Best reviews, comments, feedbacks about anything around the world"
+			/>
 			{feedCreatedSuccessfully ?
 				<Result status="success" title="Published" extra={extra} className={styles.result}>
 					{information}
@@ -47,7 +56,7 @@ const Step3: React.FC = ({ titleSlugForRouting, feedCreatedSuccessfully }) => {
 				:
 				<Result
 					status="error"
-					title="Post could not be created"
+					title="Feed could not created"
 					className={styles.result}
 					extra={
 						<Button type="primary"onClick={onFinish}> OK </Button>

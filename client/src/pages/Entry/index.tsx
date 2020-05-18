@@ -4,34 +4,36 @@ import { ArrowUpOutlined } from '@ant-design/icons'
 
 // Other dependencies
 import React, { useEffect, useState } from 'react'
-import { router } from 'umi'
+import { history } from 'umi'
 
 // Local files
 import { fetchEntryByEntryId, fetchTitle, getAverageTitleRate, fetchOneCategory } from '@/services/api'
 import { API_URL } from '@/../config/constants'
+import { TitleResponseData, EntryResponseData } from '@/@types/api'
+import { PageHelmet } from '@/components/PageHelmet'
 import PageLoading from '@/components/PageLoading'
 import NotFoundPage from '../404'
 
-const Entry = ({ computedMatch }): JSX.Element => {
-	const [isFetchingSuccess, setIsFetchingSuccess] = useState<boolean | null>(null)
-	const [averageTitleRate, setAverageTitleRate] = useState(null)
-	const [titleData, setTitleData] = useState(null)
-	const [entryData, setEntryData] = useState(null)
-	const [categoryName, setCategoryName] = useState(null)
+const Entry = ({ match }): JSX.Element => {
+	const [title, setTitle] = useState<TitleResponseData | undefined>(undefined)
+	const [categoryName, setCategoryName] = useState<string | undefined>(undefined)
+	const [averageTitleRate, setAverageTitleRate] = useState<number | undefined>(undefined)
+	const [entryData, setEntryData] = useState<EntryResponseData | undefined>(undefined)
+	const [isFetchingSuccess, setIsFetchingSuccess] = useState<boolean | undefined>(undefined)
 
 	useEffect(() => {
-		if (titleData && titleData && entryData && categoryName) setIsFetchingSuccess(true)
-	}, [averageTitleRate, titleData, entryData, categoryName])
+		if (title && entryData && categoryName) setIsFetchingSuccess(true)
+	}, [averageTitleRate, title, entryData, categoryName])
 
 	useEffect(() => {
 		// Fetch entry Data
-		fetchEntryByEntryId(computedMatch.params.entryId)
+		fetchEntryByEntryId(match.params.entryId)
 			.then(fRes => {
 				setEntryData(fRes.data)
 				// Fetch title Data
 				fetchTitle(fRes.data.attributes.title_id, 'id')
 					.then(sRes => {
-						setTitleData(sRes.data)
+						setTitle(sRes.data)
 						// Get category
 						fetchOneCategory(sRes.data.attributes.category_id).then(({ data }) => {
 							setCategoryName(data.attributes.name)
@@ -46,7 +48,7 @@ const Entry = ({ computedMatch }): JSX.Element => {
 			.catch(error => setIsFetchingSuccess(false))
 	}, [])
 
-	if (isFetchingSuccess === null) return <PageLoading />
+	if (isFetchingSuccess === undefined) return <PageLoading />
 
 	if (!!!isFetchingSuccess) return <NotFoundPage />
 
@@ -57,10 +59,9 @@ const Entry = ({ computedMatch }): JSX.Element => {
 				<Col style={{ margin: '0px 5px -15px 0px' }}>
 					<h1
 						style={{ cursor: 'pointer' }}
-						onClick={(): void => router.push(`/feeds/${titleData.attributes.slug}`)}
+						onClick={(): void => history.push(`/${title?.attributes.slug}`)}
 					>
-						{' '}
-						{titleData.attributes.name}{' '}
+						{title?.attributes.name}
 					</h1>
 				</Col>
 				<Col>
@@ -76,19 +77,28 @@ const Entry = ({ computedMatch }): JSX.Element => {
 				<ArrowUpOutlined />
 			</Tooltip>
 			<span style={{ color: '#818181', fontSize: 15, marginLeft: 2 }} className="comment-action">
-				{entryData.attributes.votes.value}
+				{entryData?.attributes.votes.value}
 			</span>
 		</span>,
 	]
 
 	const handleCommentTime = (): JSX.Element => (
-		<Tooltip title={`Updated at ${entryData.attributes.updated_at}`}>
-			<span>{entryData.attributes.created_at}</span>
+		<Tooltip title={`Updated at ${entryData?.attributes.updated_at}`}>
+			<span>{entryData?.attributes.created_at}</span>
 		</Tooltip>
 	)
 
 	return (
 		<>
+			<PageHelmet
+				title={`${title?.attributes.name} :${categoryName}`}
+				description={entryData?.attributes.text}
+				author={entryData?.attributes.written_by}
+				mediaTitle={title?.attributes.name}
+				mediaImage={`${API_URL}/v1/user/pp?username=${entryData?.attributes.written_by}`}
+				mediaDescription={entryData?.attributes.text}
+				keywords={entryData?.attributes.text.split(' ').join(', ')}
+			/>
 			<PageHeader title={handleHeaderTitleSection()} style={{ backgroundColor: 'white' }} className="site-page-header">
 				<Divider />
 				<Comment
@@ -96,19 +106,19 @@ const Entry = ({ computedMatch }): JSX.Element => {
 					datetime={handleCommentTime()}
 					author={
 						<Typography.Text
-							onClick={(): void => router.push(`/user/${entryData.attributes.written_by}`)}
+							onClick={(): void => history.push(`/user/${entryData?.attributes.written_by}`)}
 							style={{ cursor: 'pointer', fontSize: 15, color: '#414141' }}
 						>
-							{entryData.attributes.written_by}
+							{entryData?.attributes.written_by}
 						</Typography.Text>
 					}
 					avatar={
 						<Avatar
-							onClick={(): void => router.push(`/user/${entryData.attributes.written_by}`)}
-							src={`${API_URL}/v1/user/pp?username=${entryData.attributes.written_by}`}
+							onClick={(): void => history.push(`/user/${entryData?.attributes.written_by}`)}
+							src={`${API_URL}/v1/user/pp?username=${entryData?.attributes.written_by}`}
 						/>
 					}
-					content={<p>{entryData.attributes.text}</p>}
+					content={<p>{entryData?.attributes.text}</p>}
 				/>
 			</PageHeader>
 		</>

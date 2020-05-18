@@ -43,7 +43,7 @@ const AppLayout: React.FC<AppLayoutProps> = props => {
 				</picture>
 			}
 			menuHeaderRender={(logoDom): JSX.Element => (
-				<Link to="/feeds">
+				<Link to="/">
 					{logoDom}
 				</Link>
 			)}
@@ -54,7 +54,7 @@ const AppLayout: React.FC<AppLayoutProps> = props => {
 				return <Link to={menuItemProps.path}>{defaultDom}</Link>
 			}}
 
-			itemRender={(route, params, routes, paths): JSX.Element => {
+			itemRender={(route, routes, paths): JSX.Element => {
 				const first = routes.indexOf(route) === 0
 				return first ? (
 					<Link to={paths.join('/')}>{route.breadcrumbName}</Link>

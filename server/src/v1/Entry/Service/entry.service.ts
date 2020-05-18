@@ -33,9 +33,7 @@ export class EntryService {
         if (!this.validator.isMongoId(entryId)) throw new BadRequestException('EntryId must be a MongoId.')
 
         const entry: EntriesEntity = await this.entriesRepository.getEntry(entryId)
-        const id: string = String(entry.id)
-        delete entry.id
-        return serializerService.serializeResponse('entry_detail', entry, id)
+        return serializerService.serializeResponse('entry_detail', entry)
     }
 
     async getEntriesByTitleId({ titleId, query }: {

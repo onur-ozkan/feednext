@@ -6,9 +6,9 @@ import { IAppTheme, appTheme } from './themes'
 
 export type ContentWidth = 'Fluid' | 'Fixed'
 
-export declare interface DefaultSettings {
+export interface DefaultSettings {
 	navTheme: MenuTheme
-	primaryColor: string
+	theme: IAppTheme,
 	layout: 'sidemenu' | 'topmenu'
 	contentWidth: ContentWidth
 	fixedHeader: boolean
@@ -32,10 +32,12 @@ export default {
 	fixSiderbar: false,
 	colorWeak: false,
 	menu: {
-		locale: true,
+		locale: false,
 	},
-	title: null,
+	title: 'Feednext: the source of feedbacks',
 	pwa: false,
 	iconfontUrl: '',
-	...appTheme,
-} as DefaultSettings & IAppTheme
+	theme: {
+		...appTheme
+	},
+}
