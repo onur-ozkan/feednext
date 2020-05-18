@@ -9,12 +9,13 @@ import { history } from 'umi'
 // Local files
 import { INCREASE_UNREAD_MESSAGE_VALUE, ADD_ITEM_TO_MESSAGES_INFO } from '@/redux/Actions/Global'
 import { fetchUsersConversations, fetchMessagesByConversationId } from '@/services/api'
+import { ConversationListProps } from '../../types'
 import { API_URL } from '@/../config/constants'
 import PageLoading from '@/components/PageLoading'
 import newMessagePng from '@/assets/newMessage.png'
 import styles from '../../index.less'
 
-export const ConversationList = (params): JSX.Element => {
+export const ConversationList: React.FC<ConversationListProps> = (props): JSX.Element => {
 	const userState = useSelector((state: any) => state.user.attributes.user)
 	const [paginationValue, setPaginationValue] = useState(0)
 	const [isLoading, setIsLoading] = useState(true)
@@ -28,22 +29,22 @@ export const ConversationList = (params): JSX.Element => {
 
 	// Listen incoming messages and save it to the state
 	useEffect(() => {
-		params.wss.on('pingMessage', (incMessage: {
+		props.wss.on('pingMessage', (incMessage: {
 			conversation_id: string,
 			from: string,
 			body: string
 		}) => setLastMessageFromSocket(incMessage))
 
 		return (): void => {
-			params.wss.close()
+			props.wss.close()
 		}
 	}, [])
 
 	// Fetch current user's conversations and save them to the state
 	useEffect(() => {
-		fetchUsersConversations(params.globalState.accessToken, paginationValue)
+		fetchUsersConversations(props.globalState.accessToken, paginationValue)
 			.then(({ data }) => {
-				params.setCurrentConversations(data.attributes)
+				props.setCurrentConversations(data.attributes)
 				if (isLoading) setIsLoading(false)
 			})
 	}, [paginationValue])
@@ -53,17 +54,17 @@ export const ConversationList = (params): JSX.Element => {
 		if (lastMessageFromSocket) {
 
 			// Create a conversation baloon if doesnt exists
-			if (paginationValue === 0 && !params.currentConversations?.conversations.find(item => item._id === lastMessageFromSocket.conversation_id)?._id) {
-				if (params.currentConversations?.conversations.length < 10) {
-					params.setCurrentConversations({
-						...params.currentConversations,
+			if (paginationValue === 0 && !props.currentConversations?.conversations.find(item => item._id === lastMessageFromSocket.conversation_id)?._id) {
+				if (props.currentConversations?.conversations.length < 10) {
+					props.setCurrentConversations({
+						...props.currentConversations,
 						conversations: [
-							...params.currentConversations.conversations,
+							...props.currentConversations.conversations,
 							{
 								_id: lastMessageFromSocket.conversation_id,
-								participants: [params.username, lastMessageFromSocket.from]
+								participants: [props.username, lastMessageFromSocket.from]
 							}
-						]
+						],
 					})
 				}
 				dispatch({
@@ -76,7 +77,7 @@ export const ConversationList = (params): JSX.Element => {
 				return
 			}
 
-			if (params.activeConversationId !== lastMessageFromSocket.conversation_id) {
+			if (props.activeConversationId !== lastMessageFromSocket.conversation_id) {
 				dispatch({
 					type: INCREASE_UNREAD_MESSAGE_VALUE,
 					id: lastMessageFromSocket.conversation_id,
@@ -84,7 +85,7 @@ export const ConversationList = (params): JSX.Element => {
 				})
 			}
 			else {
-				fetchMessagesByConversationId(params.globalState.accessToken, lastMessageFromSocket.conversation_id, 0)
+				fetchMessagesByConversationId(props.globalState.accessToken, lastMessageFromSocket.conversation_id, 0)
 				setLastMessageFromSocket(null)
 			}
 		}
@@ -92,16 +93,16 @@ export const ConversationList = (params): JSX.Element => {
 
 	if (isLoading) return <PageLoading />
 
-	const handleConversationListView = (): JSX.Element => {
-		const listView = params.currentConversations.conversations.map((conversation) => {
+	const handleConversationListView = (): JSX.Element[] => {
+		const listView = props.currentConversations.conversations.map((conversation) => {
 			const recipientUsername = (conversation.participants[0] === userState.username) ?
 				conversation.participants[1] : conversation.participants[0]
 			return (
 				<Col
 					key={conversation._id}
 					onClick={(): void => {
-						params.setActiveConversation(conversation)
-						params.setRecipientUsername(recipientUsername)
+						props.setActiveConversation(conversation)
+						props.setRecipientUsername(recipientUsername)
 					}}
 					className={styles['person']}
 					span={24}
@@ -109,7 +110,7 @@ export const ConversationList = (params): JSX.Element => {
 					<List.Item.Meta
 						style={{ justifyContent: 'center', alignContent: 'center' }}
 						avatar={
-							<Badge count={params.globalState.unreadMessageInfo?.values_by_conversations.find((item: any) => item.id == conversation._id)?.value}>
+							<Badge count={props.globalState.unreadMessageInfo?.values_by_conversations.find((item: any) => item.id == conversation._id)?.value}>
 								<Avatar
 									shape="circle"
 									size="large"
@@ -146,14 +147,16 @@ export const ConversationList = (params): JSX.Element => {
 						zIndex: 1
 					}}
 					onChange={(page: number): void => {
-						params.setActiveConversation(null)
-						params.setRecipientUsername(null)
+						props.setActiveConversation(undefined)
+						props.setRecipientUsername(undefined)
 						setPaginationValue(10 * (page - 1))
 					}}
-					simple
+					size="small"
+					showLessItems={true}
+					showQuickJumper={false}
 					hideOnSinglePage
 					defaultCurrent={1}
-					total={params.currentConversations.count}
+					total={props.currentConversations.count}
 				/>
 			</Row>
 		</div>

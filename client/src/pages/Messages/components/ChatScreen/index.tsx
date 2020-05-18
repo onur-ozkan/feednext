@@ -9,15 +9,17 @@ import { Link } from 'umi'
 
 // Local files
 import { fetchMessagesByConversationId, fetchUserByUsername } from '@/services/api'
+import { ChatScreenProps, MessageAttributes } from '../../types'
 import { DECREASE_UNREAD_MESSAGE_VALUE } from '@/redux/Actions/Global'
+import { GetUserDataResponse } from '@/@types/api'
 import { MessageHeader } from '../MessageHeader'
 import { API_URL } from '@/../config/constants'
 import PageLoading from '@/components/PageLoading'
 
-export const ChatScreen = (params): JSX.Element => {
+export const ChatScreen: React.FC<ChatScreenProps> = (props): JSX.Element => {
 	const [messageList, setMessageList] = useState<any[]>([])
 	const [paginationValue, setPaginationValue] = useState(0)
-	const [recipientProfile, setRecipientProfile] = useState(null)
+	const [recipientProfile, setRecipientProfile] = useState<GetUserDataResponse | null>(null)
 	const [canPaginate, setCanPaginate] = useState(false)
 
 	const dispatch = useDispatch()
@@ -33,12 +35,12 @@ export const ChatScreen = (params): JSX.Element => {
 		setMessageList([])
 
 		// Listen incoming messages
-		params.wss.on('pingMessage', (incMessage: {
+		props.wss.on('pingMessage', (incMessage: {
 			conversation_id: string,
 			from: string,
 			body: string
 		}) => {
-			if (params.conversationId === incMessage.conversation_id) {
+			if (props.conversationId === incMessage.conversation_id) {
 				setMessageList((messageList: any) => [...messageList, {
 					send_by: incMessage.from,
 					text: incMessage.body,
@@ -52,30 +54,30 @@ export const ChatScreen = (params): JSX.Element => {
 		})
 
 		// Get recipient's user attributes
-		fetchUserByUsername(params.recipientUsername).then(({ data }) => setRecipientProfile(data))
+		fetchUserByUsername(props.recipientUsername).then(({ data }) => setRecipientProfile(data))
 
 		// Delete unread value if exists
 		dispatch({
 			type: DECREASE_UNREAD_MESSAGE_VALUE,
-			id: params.conversationId,
-			value: params.globalState.unreadMessageInfo.values_by_conversations.find((item: any) => item.id && item.id === params.conversationId).value
+			id: props.conversationId,
+			value: props.globalState.unreadMessageInfo.values_by_conversations.find((item: any) => item.id && item.id === props.conversationId)?.value
 		})
 
 		// Cut wss connection off on close
 		return (): void => {
-			params.wss.close()
+			props.wss.close()
 		}
-	}, [params.conversationId])
+	}, [props.conversationId])
 
 
 	useEffect(() => {
-		fetchMessagesByConversationId(params.globalState.accessToken, params.conversationId, paginationValue)
+		fetchMessagesByConversationId(props.globalState.accessToken, props.conversationId, paginationValue)
 			.then(async ({ data }) => {
-				await data.attributes.messages.map(item => setMessageList((currentState: any) => [item, ...currentState]))
+				await data.attributes.messages.map((item: any) => setMessageList((currentState) => [item, ...currentState]))
 				if (messageList.length < data.attributes.count) setCanPaginate(true)
 				else setCanPaginate(false)
 			})
-	}, [paginationValue, params.conversationId])
+	}, [paginationValue, props.conversationId])
 
 	// Scroll to message input when page is rendered
 	useEffect(() => {
@@ -92,12 +94,12 @@ export const ChatScreen = (params): JSX.Element => {
 	const handleMessageSend = async (values: { messageText: string }): Promise<void> => {
 		await form.validateFields()
 
-		params.wss.emit('sendMessage', {
-			recipient: params.recipientUsername,
+		props.wss.emit('sendMessage', {
+			recipient: props.recipientUsername,
 			body: values.messageText
 		})
 		setMessageList((messageList: any) => [...messageList, {
-			send_by: params.username,
+			send_by: props.username,
 			text: values.messageText,
 			created_at: formatISO(new Date)
 		}])
@@ -110,7 +112,7 @@ export const ChatScreen = (params): JSX.Element => {
 	}
 
 
-	const renderMessages = (item, index) => {
+	const renderMessages = (item: MessageAttributes, index: number) => {
 		if (index !== 0	&&
 				format(parseISO(messageList[index - 1].created_at), 'dd LLL (p O)') === format(parseISO(item.created_at), 'dd LLL (p O)') &&
 				messageList[index - 1].send_by === item.send_by
@@ -160,7 +162,7 @@ export const ChatScreen = (params): JSX.Element => {
 		<>
 			<MessageHeader
 				title={recipientProfile.attributes.full_name}
-				onDelete={params.deleteConversation}
+				onDelete={props.deleteConversation}
 			/>
 			<div
 				style={{
