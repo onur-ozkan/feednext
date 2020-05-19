@@ -37,8 +37,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             throw new UnauthorizedException()
         }
 
-        if (!user.is_verified ) throw new BadRequestException('Account is not verified, please verify your accunt')
-        else if (!user.is_active ) throw new BadRequestException('Account is not active')
+        if (!user.is_active ) throw new BadRequestException('Account is not active')
 
         const data = {
             full_name: user.full_name,

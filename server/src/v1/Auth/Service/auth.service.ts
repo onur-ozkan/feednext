@@ -30,37 +30,37 @@ export class AuthService {
     ) {}
 
     async signUp(dto: CreateAccountDto): Promise<ISerializeResponse> {
-        const result: UsersEntity = await this.usersRepository.createUser(dto)
+        let user
+        user = await this.usersRepository.find({ username: dto.username})
+        if (user[0]) throw new BadRequestException('Account already exists')
+        user = await this.redisService.getData(dto.username)
+        if (user) throw new BadRequestException('Account is already created but not verified')
 
-        if (configService.isProduction()) {
-            const verifyToken = jwt.sign({
-                username: dto.username,
-                email: dto.email,
-                verificationToken: true,
-                exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
-            }, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
+        const verifyToken = jwt.sign({
+            username: dto.username,
+            email: dto.email,
+            verificationToken: true,
+            exp: Math.floor(Date.now() / 1000) + (120 * 60), // Token expires in 120 min
+        }, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
 
-            const verificationUrl: string = `${configService.getEnv('APP_URL')}:${configService.getEnv('APP_PORT')}/api/v1/auth/account-verification?token=${verifyToken}`
+        const verificationUrl: string = `${configService.getEnv('APP_URL')}:${configService.getEnv('APP_PORT')}/api/v1/auth/account-verification?token=${verifyToken}`
 
-            const mailBody: MailSenderBody = {
-                receiver: dto.email,
-                subject: `Verify Your Account [${dto.username}]`,
-                text: verificationUrl,
-            }
-            await this.mailService.send(mailBody)
+        const mailBody: MailSenderBody = {
+            receiver: dto.email,
+            subject: `Verify Your Account [${dto.username}]`,
+            text: verificationUrl,
         }
 
-        const id: string = String(result.id)
+        await this.mailService.send(mailBody).catch(_error => {
+            throw new BadRequestException('SMTP transport failed')
+        })
 
-        const properties: string[] = ['id', 'password', 'updated_at', 'is_verified']
-        await serializerService.deleteProperties(result, properties)
-
-        return serializerService.serializeResponse('account_informations', result, id)
+        await this.redisService.setData(dto.username, JSON.stringify(dto), 7200)
+        throw new HttpException('Account has been created. Please verify your account to be able to sign in', HttpStatus.OK)
     }
 
     async signIn(userEntity: UsersEntity, dto: LoginDto): Promise<HttpException | ISerializeResponse> {
-        if (!userEntity.is_verified) throw new BadRequestException('Account is not verified, please verify your accunt')
-        else if (!userEntity.is_active) throw new BadRequestException('Account is not active')
+        if (!userEntity.is_active) throw new BadRequestException('Account is not active')
 
         const token: string = this.jwtService.sign({
             role: userEntity.role,
@@ -155,8 +155,10 @@ export class AuthService {
                 throw new BadRequestException('Incoming token is expired.')
             }
 
-            await this.usersRepository.accountVerification(decodedToken)
+            const accountInformation = await this.redisService.getData(decodedToken.username)
+            await this.usersRepository.createUser(JSON.parse(accountInformation))
 
+            await this.redisService.deleteData(decodedToken.username)
             throw new HttpException('Account has been verified.', HttpStatus.OK)
         }
 

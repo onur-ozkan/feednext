@@ -70,11 +70,11 @@ export class UsersRepository extends Repository<UsersEntity> {
                 }
             })
         } catch (err) {
-            throw new BadRequestException('No account found by given credentials.')
+            throw new BadRequestException('Please check your credentials or make sure you have verified your account')
         }
     }
 
-    async createUser(dto: CreateAccountDto): Promise<UsersEntity> {
+    async createUser(dto: CreateAccountDto): Promise<void> {
         const newUser: UsersEntity = new UsersEntity({
             email: dto.email,
             username: dto.username,
@@ -83,9 +83,9 @@ export class UsersRepository extends Repository<UsersEntity> {
         })
 
         try {
-            return await this.save(newUser)
-        } catch (err) {
-            throw new UnprocessableEntityException(err.errmsg)
+            await this.save(newUser)
+        } catch (error) {
+            throw new UnprocessableEntityException(error.errmsg)
         }
     }
 
@@ -188,8 +188,7 @@ export class UsersRepository extends Repository<UsersEntity> {
             throw new BadRequestException('User could not found by given email')
         }
 
-        if (!account.is_verified) throw new BadRequestException('Account is not verified, please verify your accunt')
-        else if (!account.is_active) throw new BadRequestException('Account is not active')
+        if (!account.is_active) throw new BadRequestException('Account is not active')
 
         const generatePassword: string = await kmachine.keymachine()
         account.password = createHmac('sha256', generatePassword).digest('hex')
@@ -198,19 +197,4 @@ export class UsersRepository extends Repository<UsersEntity> {
             password: generatePassword,
         }
     }
-
-    async accountVerification(decodedToken: { email: string, username: string}): Promise<void>  {
-        try {
-            const account: UsersEntity = await this.findOneOrFail({
-                email: decodedToken.email,
-                username: decodedToken.username,
-            })
-
-            account.is_verified = true
-            await this.save(account)
-        } catch (err) {
-            throw new BadRequestException('Incoming token is not valid.')
-        }
-    }
-
 }

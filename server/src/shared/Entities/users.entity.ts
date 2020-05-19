@@ -64,9 +64,6 @@ export class UsersEntity {
     role: number
 
     @Column({ type: 'boolean' })
-    is_verified: boolean
-
-    @Column({ type: 'boolean' })
     is_active: boolean
 
     @CreateDateColumn({ type: 'date' })
@@ -86,6 +83,5 @@ export class UsersEntity {
         this.biography = ''
         this.link = ''
         this.is_active = true
-        this.is_verified = false
     }
 }
