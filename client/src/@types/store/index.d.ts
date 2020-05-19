@@ -38,7 +38,6 @@ export interface UserState {
 			email: string,
 			full_name: string,
 			is_active: boolean,
-			is_verified: boolean,
 			link: string,
 			role: number,
 			updated_at: string,

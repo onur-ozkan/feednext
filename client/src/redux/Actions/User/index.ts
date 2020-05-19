@@ -12,7 +12,6 @@ export interface UserPayload {
 		link: string,
 		role: number,
 		is_active: boolean,
-		is_verified: boolean
 		created_at: string,
 		updated_at: string
     }

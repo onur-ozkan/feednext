@@ -15,7 +15,6 @@ interface AccountSettingsParams {
 		biography: string
 		link: string
 		role: number
-		is_verified: boolean
 		is_active: boolean
 		created_at: string
 		updated_at: string
