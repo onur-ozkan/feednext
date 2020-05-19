@@ -12,15 +12,17 @@ import { configService } from './config.service'
 export class MailService {
     public async send(bodyData: MailSenderBody) {
         const transporter: nodemailer = await nodemailer.createTransport({
-            service: configService.getEnv('NODEMAILER_SERVICE'),
+            service: configService.getEnv('SMTP_SERVICE'),
+            host: configService.getEnv('SMTP_HOST'),
+            port: configService.getEnv('SMTP_PORT'),
             auth: {
-                user: configService.getEnv('NODEMAILER_MAIL'),
-                pass: configService.getEnv('NODEMAILER_PASSWORD'),
-            },
+                user: configService.getEnv('SMTP_MAIL'),
+                pass: configService.getEnv('SMTP_PASSWORD'),
+            }
         })
 
         const mailOptions: object = {
-            from: configService.getEnv('NODEMAILER_MAIL'),
+            from: configService.getEnv('SMTP_MAIL'),
             to: bodyData.receiver,
             subject: bodyData.subject,
             text: bodyData.text,
