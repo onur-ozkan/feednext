@@ -83,7 +83,7 @@ export class UserService {
                 username: profile.username,
                 newEmail: dto.email,
                 verifyUpdateEmailToken: true,
-                exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
+                exp: Math.floor(Date.now() / 1000) + (30 * 60), // Token expires in 30 min
             }, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
 
             const activationUrl = `${configService.getEnv('APP_DOMAIN')}/confirmation/email?token=${activateToken}`
@@ -162,7 +162,7 @@ export class UserService {
             email: user.email,
             username: user.username,
             activationToken: true,
-            exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
+            exp: Math.floor(Date.now() / 1000) + (30 * 60), // Token expires in 30 min
         }, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
 
         const activationUrl = `${configService.getEnv('APP_DOMAIN')}/activation/user?token=${activateToken}`
