@@ -21,7 +21,8 @@ import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthService } from '../Service/auth.service'
 import { CreateAccountDto } from '../Dto/create-account.dto'
 import { LoginDto } from '../Dto/login.dto'
-import { AccountRecoveryDto } from '../Dto/account-recovery.dto'
+import { GenerateRecoveryKeyDto } from '../Dto/generate-recovery-key.dto'
+import { RecoverAccountDto } from '../Dto/recover-account.dto'
 import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { configService } from 'src/shared/Services/config.service'
 
@@ -29,11 +30,6 @@ import { configService } from 'src/shared/Services/config.service'
 @Controller()
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
-
-    @Post('signup')
-    signUp(@Body() dto: CreateAccountDto): Promise<ISerializeResponse> {
-        return this.authService.signUp(dto)
-    }
 
     @Post('signin')
     async signIn(@Body() dto: LoginDto, @Res() res: any): Promise<void> {
@@ -55,6 +51,11 @@ export class AuthController {
         res.send(authResponse)
     }
 
+    @Post('signup')
+    signUp(@Body() dto: CreateAccountDto): Promise<HttpException> {
+        return this.authService.signUp(dto)
+    }
+
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Get('signout')
@@ -62,9 +63,14 @@ export class AuthController {
         return await this.authService.signOut(bearer)
     }
 
-    @Patch('account-recovery')
-    accountRecovery(@Body() dto: AccountRecoveryDto): Promise<HttpException> {
-        return this.authService.accountRecovery(dto)
+    @Patch('generate-recovery-key')
+    generateRecoveryKey(@Body() dto: GenerateRecoveryKeyDto): Promise<HttpException> {
+        return this.authService.generateRecoveryKey(dto)
+    }
+
+    @Patch('recover-account')
+    recoverAccount(@Body() dto: RecoverAccountDto): Promise<HttpException> {
+        return this.authService.recoverAccount(dto)
     }
 
     @Get('account-verification')

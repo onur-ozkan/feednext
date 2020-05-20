@@ -40,7 +40,7 @@ export class UsersEntity {
 
     @Column({
         type: 'string',
-        length: 50,
+        length: 80,
         unique: true,
     })
     email: string
@@ -57,19 +57,22 @@ export class UsersEntity {
     })
     biography: string
 
-    @Column({ type: 'string', nullable: true })
+    @Column('string')
     refresh_token: string
 
-    @Column({ type: 'tinyint' })
+    @Column('string')
+    recovery_key: string | null
+
+    @Column('tinyint')
     role: number
 
-    @Column({ type: 'boolean' })
+    @Column('boolean')
     is_active: boolean
 
-    @CreateDateColumn({ type: 'date' })
+    @CreateDateColumn('date')
     created_at: Date
 
-    @UpdateDateColumn({ type: 'date' })
+    @UpdateDateColumn('date')
     updated_at: Date
 
     @BeforeInsert()

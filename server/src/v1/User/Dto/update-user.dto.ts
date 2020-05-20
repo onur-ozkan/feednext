@@ -2,7 +2,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 
 // Other dependencies
-import { IsEmail, IsOptional, Length, MaxLength, NotContains, IsNotEmpty, ValidateIf, Matches } from 'class-validator'
+import { IsOptional, Length, MaxLength, NotContains, IsNotEmpty, ValidateIf, Matches } from 'class-validator'
 
 export class UpdateUserDto {
     @ApiProperty({
@@ -21,7 +21,9 @@ export class UpdateUserDto {
         example: 'updated@demo.com',
     })
     @IsOptional()
-    @IsEmail()
+    @Matches(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, {
+        message: 'Email must be a type of email'
+    })
     email: string
 
     @ApiProperty({

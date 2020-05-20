@@ -12,7 +12,8 @@ import { UsersEntity } from '../Entities/users.entity'
 import { UpdateUserDto } from 'src/v1/User/Dto/update-user.dto'
 import { CreateAccountDto } from 'src/v1/Auth/Dto/create-account.dto'
 import { LoginDto } from 'src/v1/Auth/Dto/login.dto'
-import { AccountRecoveryDto } from 'src/v1/Auth/Dto/account-recovery.dto'
+import { GenerateRecoveryKeyDto } from 'src/v1/Auth/Dto/generate-recovery-key.dto'
+import { RecoverAccountDto } from 'src/v1/Auth/Dto/recover-account.dto'
 import { configService } from '../Services/config.service'
 
 @EntityRepository(UsersEntity)
@@ -35,7 +36,7 @@ export class UsersRepository extends Repository<UsersEntity> {
         try {
             return await this.findOneOrFail({ email: emailParam })
         } catch (err) {
-            throw new BadRequestException('User could not found by given email.')
+            throw new BadRequestException('User could not found by given email')
         }
     }
 
@@ -179,7 +180,7 @@ export class UsersRepository extends Repository<UsersEntity> {
         }
     }
 
-    async accountRecovery(dto: AccountRecoveryDto): Promise<{ account: UsersEntity, password: string }> {
+    async generateRecoveryKey(dto: GenerateRecoveryKeyDto): Promise<{ account: UsersEntity, generatedKey: string }> {
         let account: UsersEntity
 
         try {
@@ -190,11 +191,28 @@ export class UsersRepository extends Repository<UsersEntity> {
 
         if (!account.is_active) throw new BadRequestException('Account is not active')
 
-        const generatePassword: string = await kmachine.keymachine()
-        account.password = createHmac('sha256', generatePassword).digest('hex')
+        const generatedKey: string = await kmachine.keymachine()
+        account.recovery_key = generatedKey
         return {
             account: await this.save(account),
-            password: generatePassword,
+            generatedKey,
         }
+    }
+
+    async recoverAccount(dto: RecoverAccountDto): Promise<void> {
+        let account: UsersEntity
+
+        try {
+            account = await this.findOneOrFail({
+                email: dto.email,
+                recovery_key: dto.recoveryKey
+            })
+        } catch (error) {
+            throw new BadRequestException('Recovery key does not match')
+        }
+        account.password = createHmac('sha256', dto.password).digest('hex')
+        account.recovery_key = null
+
+        await this.save(account)
     }
 }

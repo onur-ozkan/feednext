@@ -15,9 +15,10 @@ import { UsersRepository } from 'src/shared/Repositories/users.repository'
 import { MailService } from 'src/shared/Services/mail.service'
 import { CreateAccountDto } from '../Dto/create-account.dto'
 import { LoginDto } from '../Dto/login.dto'
-import { AccountRecoveryDto } from '../Dto/account-recovery.dto'
+import { GenerateRecoveryKeyDto } from '../Dto/generate-recovery-key.dto'
 import { serializerService, ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.service'
+import { RecoverAccountDto } from '../Dto/recover-account.dto'
 
 @Injectable()
 export class AuthService {
@@ -29,7 +30,7 @@ export class AuthService {
         private readonly usersRepository: UsersRepository,
     ) {}
 
-    async signUp(dto: CreateAccountDto): Promise<ISerializeResponse> {
+    async signUp(dto: CreateAccountDto): Promise<HttpException> {
         let user
         user = await this.usersRepository.find({ username: dto.username})
         if (user[0]) throw new BadRequestException('Account already exists')
@@ -43,7 +44,7 @@ export class AuthService {
             exp: Math.floor(Date.now() / 1000) + (120 * 60), // Token expires in 120 min
         }, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
 
-        const verificationUrl: string = `${configService.getEnv('APP_URL')}:${configService.getEnv('APP_PORT')}/api/v1/auth/account-verification?token=${verifyToken}`
+        const verificationUrl: string = `${configService.getEnv('APP_DOMAIN')}/auth/sign-up/account-verification?token=${verifyToken}`
 
         const mailBody: MailSenderBody = {
             receiver: dto.email,
@@ -51,7 +52,7 @@ export class AuthService {
             text: verificationUrl,
         }
 
-        await this.mailService.send(mailBody).catch(_error => {
+        await this.mailService.sendVerificationMail(mailBody).catch(_error => {
             throw new BadRequestException('SMTP transport failed')
         })
 
@@ -72,7 +73,7 @@ export class AuthService {
         if (dto.rememberMe) userEntity.refresh_token = await this.usersRepository.triggerRefreshToken(dto.email || dto.username)
 
         const id: any = userEntity.id
-        const properties: string[] = ['id', 'password']
+        const properties: string[] = ['id', 'password', 'recovery_key']
         await serializerService.deleteProperties(userEntity, properties)
 
         const responseData: object = {
@@ -128,17 +129,26 @@ export class AuthService {
         return await this.usersRepository.validateUser(dto)
     }
 
-    async accountRecovery(dto: AccountRecoveryDto): Promise<HttpException> {
-        const { account, password }  = await this.usersRepository.accountRecovery(dto)
+    async generateRecoveryKey(dto: GenerateRecoveryKeyDto): Promise<HttpException> {
+        const { account, generatedKey }  = await this.usersRepository.generateRecoveryKey(dto)
 
         const mailBody: MailSenderBody = {
             receiver: dto.email,
             subject: `Account Recovery [${account.username}]`,
-            text: `By your request we have set your password as '${password}' please sign in and update your Account Password.`,
+            text: `${configService.getEnv('APP_DOMAIN')}/auth/sign-in/account-recover?email=${dto.email}&recoveryKey=${generatedKey}`,
         }
 
-        await this.mailService.send(mailBody)
-        throw new HttpException('OK', HttpStatus.OK)
+        await this.mailService.sendRecoveryMail(mailBody).catch(_error => {
+            throw new BadRequestException('SMTP transport failed')
+        })
+
+        throw new HttpException('Recovery key has been sent to email address', HttpStatus.OK)
+    }
+
+    async recoverAccount(dto: RecoverAccountDto): Promise<HttpException> {
+        await this.usersRepository.getUserByEmail(dto.email)
+        await this.usersRepository.recoverAccount(dto)
+        throw new HttpException('Password has been successfully updated', HttpStatus.OK)
     }
 
     async accountVerification(incToken: string): Promise<HttpException> {

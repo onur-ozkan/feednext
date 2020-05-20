@@ -2,14 +2,16 @@
 import { ApiProperty } from '@nestjs/swagger'
 
 // Other dependencies
-import { IsEmail, IsNotEmpty } from 'class-validator'
+import { IsNotEmpty, Matches } from 'class-validator'
 
-export class AccountRecoveryDto {
+export class GenerateRecoveryKeyDto {
     @ApiProperty({
         required: true,
         example: 'demo@demo.com',
     })
     @IsNotEmpty()
-    @IsEmail()
+    @Matches(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, {
+        message: 'Email must be a type of email'
+    })
     email: string
 }
