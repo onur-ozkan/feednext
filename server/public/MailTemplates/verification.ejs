@@ -36,10 +36,10 @@
             color: #2A2A2A;
             text-align: center;
             margin-bottom: 65px;
-            font-size: 20px;
+            font-size: 18px;
             letter-spacing: 6px;
             font-weight: normal;
-            border: 2px solid black !important;
+            border: 1px solid black !important;
             padding: 15px;
         }
 
@@ -52,6 +52,7 @@
 
         .verifyButtonContainer {
             border: black solid;
+            border-width: 0.5px;
             text-align: center;
             padding: 15px;
         }
@@ -63,7 +64,6 @@
             color: black !important;
             font-family: Tahoma, Geneva, sans-serif;
             letter-spacing: 2px;
-            cursor: pointer;
         }
 
         .extra-info {
@@ -90,7 +90,6 @@
                         <img
                             style="max-width: 100%"
                             src="https://raw.githubusercontent.com/Feednext/feednext/master/server/public/logo-wide.png"
-                            alt="feednext logo"
                         />
                     </a>
                     <hr class="divider" />
@@ -108,7 +107,7 @@
                     <table style="width:100%;">
                         <th>
                         <td style="width:20%"></td>
-                        <td onclick="handleOnVerifyAccount()" class="verifyButtonContainer">
+                        <td class="verifyButtonContainer">
                             <a href="<%= verificationAddress %>" target="_verify" class="verifyButtonInline">
                                 VERIFY YOUR ACCOUNT
                             </a>
@@ -116,7 +115,7 @@
                         <td style="width:20%"></td>
                         </th>
                     </table>
-                    <hr style="margin-top:10px;margin-top:75px" />
+                    <hr style="margin-top:50px" />
                     <p style="text-align:center;margin-bottom:15px">
                         <small class="copyright">Feednext © 2020. All rights reserved </small>
                         <br>
