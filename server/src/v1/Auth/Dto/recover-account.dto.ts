@@ -9,7 +9,6 @@ export class RecoverAccountDto {
         required: true,
         example: 'demo@demo.com',
     })
-    @IsNotEmpty()
     @Matches(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, {
         message: 'Email must be a type of email'
     })
