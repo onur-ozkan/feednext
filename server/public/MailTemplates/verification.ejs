@@ -14,6 +14,7 @@
         .childContainer {
             max-width: 550px;
             min-width: 320px;
+            text-align: left;
             background-color: white;
             border: 1px solid #ddd;
         }
@@ -33,8 +34,8 @@
         .thanks-letter {
             font-family: Tahoma, Geneva, sans-serif;
             font-weight: normal;
-            color: #2A2A2A;
             text-align: center;
+            color: #2A2A2A;
             margin-bottom: 65px;
             font-size: 18px;
             letter-spacing: 6px;
@@ -62,7 +63,8 @@
             margin-right: auto;
             text-decoration: none;
             color: black !important;
-            font-family: Tahoma, Geneva, sans-serif;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 18px;
             letter-spacing: 2px;
         }
 
@@ -94,12 +96,15 @@
                     </a>
                     <hr class="divider" />
                     <h1 class="thanks-letter">
-                        THANK YOU FOR JOINING US!
+                        THANK YOU FOR JOINING US
                     </h1>
                     <h3
                         style="font-family:Palatino Linotype, Book Antiqua, Palatino, serif;font-style:italic;font-weight:500;">
+                        Hi <%= fullName %>,
+                        <p>
                         This verification mail
                         <span style="border-bottom: 1px solid red">will be expire in 2 hours.</span>
+                        </p>
                     </h3>
                     <p class="extra-info">
                         When the account does not get verified during that 2 hours, it will be removed from the
