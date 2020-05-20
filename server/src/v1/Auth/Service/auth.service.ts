@@ -47,7 +47,8 @@ export class AuthService {
         const verificationUrl: string = `${configService.getEnv('APP_DOMAIN')}/auth/sign-up/account-verification?token=${verifyToken}`
 
         const mailBody: MailSenderBody = {
-            receiver: dto.email,
+            receiverEmail: dto.email,
+            recieverFullname: dto.fullName,
             subject: `Verify Your Account [${dto.username}]`,
             text: verificationUrl,
         }
@@ -133,7 +134,8 @@ export class AuthService {
         const { account, generatedKey }  = await this.usersRepository.generateRecoveryKey(dto)
 
         const mailBody: MailSenderBody = {
-            receiver: dto.email,
+            receiverEmail: dto.email,
+            recieverFullname: account.full_name,
             subject: `Account Recovery [${account.username}]`,
             text: `${configService.getEnv('APP_DOMAIN')}/auth/sign-in/account-recover?email=${dto.email}&recoveryKey=${generatedKey}`,
         }

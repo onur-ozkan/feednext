@@ -86,19 +86,20 @@ export class UserService {
                 exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
             }, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
 
-            const activationUrl: string = `${configService.getEnv('APP_URL')}:${configService.getEnv('APP_PORT')}/api/v1/user/verfiy-update-email?token=${activateToken}`
+            const activationUrl = `${configService.getEnv('APP_DOMAIN')}/confirmation/email?token=${activateToken}`
             const mailBody: MailSenderBody = {
-                receiver: dto.email,
+                receiverEmail: dto.email,
+                recieverFullname: dto.fullName || profile.full_name,
                 subject: `Verify Your New Email [${profile.username}]`,
                 text: activationUrl,
             }
 
-            await this.mailService.send(mailBody)
+            await this.mailService.sendEmailUpdate(mailBody)
         }
 
         const id = String(profile.id)
 
-        const properties: string[] = ['id', 'password', 'is_active', 'refresh_token']
+        const properties: string[] = ['id', 'password', 'recovery_key', 'refresh_token']
         await serializerService.deleteProperties(profile, properties)
 
         return serializerService.serializeResponse('updated_profile', profile, id)
@@ -164,14 +165,15 @@ export class UserService {
             exp: Math.floor(Date.now() / 1000) + (15 * 60), // Token expires in 15 min
         }, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
 
-        const activationUrl: string = `${configService.getEnv('LOCAL_URL')}/api/v1/user/activate-user?token=${activateToken}`
+        const activationUrl = `${configService.getEnv('APP_DOMAIN')}/activation/user?token=${activateToken}`
         const mailBody: MailSenderBody = {
-            receiver: dto.email,
-            subject: `RE-Enable Your Account [${user.username}]`,
+            receiverEmail: dto.email,
+            recieverFullname: user.full_name,
+            subject: `Reactivate Your Account [${user.username}]`,
             text: activationUrl,
         }
 
-        await this.mailService.send(mailBody)
+        await this.mailService.sendAccountActivation(mailBody)
         throw new HttpException('OK', HttpStatus.OK)
     }
 
