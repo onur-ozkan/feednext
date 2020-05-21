@@ -1,5 +1,6 @@
 // Antd dependencies
 import { Form, Input, Checkbox, Button, Tabs, message } from 'antd'
+import { LoadingOutlined } from '@ant-design/icons'
 
 // Other dependencies
 import React, { useState } from 'react'
@@ -19,23 +20,33 @@ export declare interface FormDataType {
 }
 
 const Register = () => {
-	const [form] = Form.useForm()
-	const [signedAccount, setSignedAccount] = useState(null)
+	const [requestOnGoing, setRequestOnGoing] = useState(false)
+	const [signedAccount, setSignedAccount] = useState<FormDataType | null>(null)
 
-	const onSubmit = (values: FormDataType) => {
-		signUp({
+	const [form] = Form.useForm()
+
+	const onSubmit = async (values: FormDataType) => {
+		setRequestOnGoing(true)
+		await signUp({
 			fullName: values.fullName,
 			username: values.username,
 			email: values.email,
 			password: values.password,
 		})
 			.then(res => {
-				setSignedAccount(res.data.attributes)
+				setSignedAccount(values)
 			})
 			.catch(error => {
+				setRequestOnGoing(false)
 				message.error(error.response.data.message, 3)
 			})
 	}
+
+	const handleSubmitButtonView = () => (
+		<Button size="large" loading={false} className={styles.submit} type="primary" htmlType="submit">
+			{requestOnGoing ? <LoadingOutlined /> : 'Sign Up'}
+		</Button>
+	)
 
 	if (signedAccount) {
 		return <RegisterResult signedAccount={signedAccount} />
@@ -135,9 +146,7 @@ const Register = () => {
 								</Checkbox>
 							</Form.Item>
 							<Form.Item>
-								<Button size="large" loading={false} className={styles.submit} type="primary" htmlType="submit">
-									Register
-								</Button>
+								{handleSubmitButtonView()}
 								<Link className={styles.login} to="/auth/sign-in">
 									Already have an Account?
 								</Link>

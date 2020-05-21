@@ -7,18 +7,18 @@ import React, { useState, useEffect } from 'react'
 
 // Local files
 import { PageHelmet } from '@/components/PageHelmet'
-import { verifyUpdatedEmail } from '@/services/api'
+import { verifyAccount } from '@/services/api'
 import NotFoundPage from '@/pages/404'
 import styles from './style.less'
 
-const EmailConfirmation: React.FunctionComponent = (props: any) => {
+const AccountVerification: React.FunctionComponent = (props: any) => {
 	const [isRequestSucceess, setIsRequestSucceess] = useState<boolean | null>(null)
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
 	if (!props.location.query?.token) return <NotFoundPage />
 
 	useEffect(() => {
-		verifyUpdatedEmail(props.location.query?.token).then(() => {
+		verifyAccount(props.location.query?.token).then(() => {
 			setIsRequestSucceess(true)
 			setTimeout(() => {
 				location.href = '/auth/sign-in'
@@ -36,7 +36,7 @@ const EmailConfirmation: React.FunctionComponent = (props: any) => {
 	return (
 		<>
 			<PageHelmet
-				title="Email Confirmation | Feednext"
+				title="Account Verification | Feednext"
 				description="Best reviews, comments, feedbacks about anything around the world"
 				mediaImage="https://avatars1.githubusercontent.com/u/64217221?s=200&v=4"
 				mediaDescription="Best reviews, comments, feedbacks about anything around the world"
@@ -52,7 +52,7 @@ const EmailConfirmation: React.FunctionComponent = (props: any) => {
 					(
 						<Result
 							status={isRequestSucceess ? 'success' : 'error'}
-							title={isRequestSucceess ? 'Email Updated Successfully' : errorMessage}
+							title={isRequestSucceess ? 'Account is Successfully Verified' : errorMessage}
 						/>
 					)
 			}
@@ -61,4 +61,4 @@ const EmailConfirmation: React.FunctionComponent = (props: any) => {
 	)
 }
 
-export default EmailConfirmation
+export default AccountVerification
