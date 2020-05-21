@@ -28,54 +28,53 @@ const FlowHeader: React.FC<FlowHeaderProps> = (props): JSX.Element => {
 
 	return (
 		<Row style={{ margin: '10px -15px -25px 0px', position: 'relative', zIndex: 1 }}>
-						<Col />
-							<Button
-								onClick={props.openFilterModal}
-								className={props.antBtnLinkStyle}
-								type="link"
-								style={{ marginRight: 5 }}
-								icon={<FilterFilled />}
-							>
-								FILTER
-							</Button>
-							<Dropdown
-								trigger={['click']}
-								overlay={
-									<Menu>
-										<Menu.Item onClick={(): void => props.setSortBy(undefined)}>
-											<Typography.Text>
-												<StarFilled style={{ color: '#00c853' }} /> New
-											</Typography.Text>
-										</Menu.Item>
-										<Menu.Item onClick={(): void => props.setSortBy('top')}>
-											<Typography.Text>
-												<RiseOutlined style={{ color: '#188fce' }} /> Top
-											</Typography.Text>
-										</Menu.Item>
-										<Menu.Item onClick={(): void => props.setSortBy('hot')}>
-											<Typography.Text>
-												<FireFilled style={{ color: 'red' }} /> Hot
-											</Typography.Text>
-										</Menu.Item>
-									</Menu>
-								}
-							>
-								<Button className={props.antBtnLinkStyle} type="link">
-									SORT BY {handleSortByIcon()}
-								</Button>
-							</Dropdown>
-							<Button
-								onClick={handleFilterReset}
-								className={props.antBtnLinkStyle}
-								type="link"
-								style={{ marginRight: 5 }}
-								icon={<UndoOutlined />}
-							>
-								RESET
-							</Button>
-							<Divider style={{ margin: 5 }} />
-
-						</Row>
+			<Col />
+			<Button
+				onClick={props.openFilterModal}
+				className={props.antBtnLinkStyle}
+				type="link"
+				style={{ marginRight: 5 }}
+				icon={<FilterFilled />}
+			>
+				FILTER
+			</Button>
+			<Dropdown
+				trigger={['click']}
+				overlay={
+					<Menu>
+						<Menu.Item onClick={(): void => props.setSortBy(undefined)}>
+							<Typography.Text>
+								<StarFilled style={{ color: '#00c853' }} /> New
+							</Typography.Text>
+						</Menu.Item>
+						<Menu.Item onClick={(): void => props.setSortBy('top')}>
+							<Typography.Text>
+								<RiseOutlined style={{ color: '#188fce' }} /> Top
+							</Typography.Text>
+						</Menu.Item>
+						<Menu.Item onClick={(): void => props.setSortBy('hot')}>
+							<Typography.Text>
+								<FireFilled style={{ color: 'red' }} /> Hot
+							</Typography.Text>
+						</Menu.Item>
+					</Menu>
+				}
+			>
+				<Button className={props.antBtnLinkStyle} type="link">
+					SORT BY {handleSortByIcon()}
+				</Button>
+			</Dropdown>
+			<Button
+				onClick={handleFilterReset}
+				className={props.antBtnLinkStyle}
+				type="link"
+				style={{ marginRight: 5 }}
+				icon={<UndoOutlined />}
+			>
+				RESET
+			</Button>
+			<Divider style={{ margin: 5 }} />
+		</Row>
 	)
 }
 
