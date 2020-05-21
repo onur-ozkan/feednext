@@ -21,6 +21,12 @@ export const uploadProfilePicture = (file: any, accessToken: string):
 
 export const fetchUserByUsername = (username: string): Promise<AxiosResponse> => axios.get(`/v1/user/${username}`)
 
+export const verifyUpdatedEmail = (token: string): Promise<AxiosResponse> => axios.get('/v1/user/verify-updated-email', {
+	params: {
+		token
+	}
+})
+
 export const fetchUserVotes = (
 	username: string,
 	voteType: 'up' | 'down',
