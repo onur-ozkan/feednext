@@ -32,7 +32,15 @@ export class AuthService {
 
     async signUp(dto: CreateAccountDto): Promise<HttpException> {
         let user
-        user = await this.usersRepository.find({ username: dto.username})
+        user = await this.usersRepository.find({
+        where: {
+            $or: [
+                { username: dto.username },
+                { email: dto.email }
+            ]
+        }
+        })
+
         if (user[0]) throw new BadRequestException('Account already exists')
         user = await this.redisService.getData(dto.username)
         if (user) throw new BadRequestException('Account is already created but not verified')
@@ -161,13 +169,15 @@ export class AuthService {
             throw new BadRequestException('Invalid token signature')
         }
 
-        if (decodedToken.verificationToken) {
+        if (decodedToken.verificationToken && decodedToken.username) {
             const remainingTime: number = await decodedToken.exp - Math.floor(Date.now() / 1000)
             if (remainingTime <= 0) {
                 throw new BadRequestException('Incoming token is expired.')
             }
 
             const accountInformation = await this.redisService.getData(decodedToken.username)
+            if (!accountInformation) throw new BadRequestException('Could not found an account to verify')
+
             await this.usersRepository.createUser(JSON.parse(accountInformation))
 
             await this.redisService.deleteData(decodedToken.username)

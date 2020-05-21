@@ -107,9 +107,9 @@ export class UsersController {
         return this.usersService.updateUser(jwtManipulationService.decodeJwtToken(bearer, 'username'), dto)
     }
 
-    @Get('verfiy-update-email')
-    async verifyUpdateEmail(@Query('token') token: string): Promise<HttpException> {
-        return this.usersService.verifyUpdateEmail(token)
+    @Get('verify-updated-email')
+    async verifyUpdatedEmail(@Query('token') token: string): Promise<HttpException> {
+        return this.usersService.verifyUpdatedEmail(token)
     }
 
     @ApiBearerAuth()

@@ -86,7 +86,7 @@ export class UserService {
                 exp: Math.floor(Date.now() / 1000) + (30 * 60), // Token expires in 30 min
             }, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
 
-            const activationUrl = `${configService.getEnv('APP_DOMAIN')}/confirmation/email?token=${activateToken}`
+            const activationUrl = `${configService.getEnv('APP_DOMAIN')}/auth/confirmation/email?token=${activateToken}`
             const mailBody: MailSenderBody = {
                 receiverEmail: dto.email,
                 recieverFullname: dto.fullName || profile.full_name,
@@ -94,7 +94,9 @@ export class UserService {
                 text: activationUrl,
             }
 
-            await this.mailService.sendEmailUpdate(mailBody)
+            await this.mailService.sendEmailUpdate(mailBody).catch(_error => {
+                throw new BadRequestException('SMTP transport failed')
+            })
         }
 
         const id = String(profile.id)
@@ -105,7 +107,7 @@ export class UserService {
         return serializerService.serializeResponse('updated_profile', profile, id)
     }
 
-    async verifyUpdateEmail(incToken: string): Promise<HttpException> {
+    async verifyUpdatedEmail(incToken: string): Promise<HttpException> {
         let decodedToken
 
         try {
@@ -114,17 +116,21 @@ export class UserService {
             throw new BadRequestException('Invalid token signature')
         }
 
+        if (decodedToken.email === decodedToken.newEmail) {
+            throw new BadRequestException('Current and new email can not be same')
+        }
+
         if (decodedToken.verifyUpdateEmailToken) {
             const remainingTime: number = await decodedToken.exp - Math.floor(Date.now() / 1000)
             if (remainingTime <= 0) {
                 throw new BadRequestException('Incoming token is expired.')
             }
 
-            await this.usersRepository.verifyUpdateEmail(decodedToken)
+            await this.usersRepository.verifyUpdatedEmail(decodedToken)
             throw new HttpException('Email has been updated.', HttpStatus.OK)
         }
 
-        throw new BadRequestException('Incoming token is not valid.')
+        throw new BadRequestException('Incoming token is not valid')
     }
 
     async disableUser(usernameParam: string): Promise<HttpException> {
@@ -165,7 +171,7 @@ export class UserService {
             exp: Math.floor(Date.now() / 1000) + (30 * 60), // Token expires in 30 min
         }, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
 
-        const activationUrl = `${configService.getEnv('APP_DOMAIN')}/activation/user?token=${activateToken}`
+        const activationUrl = `${configService.getEnv('APP_DOMAIN')}/auth/activation/user?token=${activateToken}`
         const mailBody: MailSenderBody = {
             receiverEmail: dto.email,
             recieverFullname: user.full_name,
@@ -173,7 +179,9 @@ export class UserService {
             text: activationUrl,
         }
 
-        await this.mailService.sendAccountActivation(mailBody)
+        await this.mailService.sendAccountActivation(mailBody).catch(_error => {
+            throw new BadRequestException('SMTP transport failed')
+        })
         throw new HttpException('OK', HttpStatus.OK)
     }
 

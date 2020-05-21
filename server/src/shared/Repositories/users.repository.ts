@@ -137,7 +137,7 @@ export class UsersRepository extends Repository<UsersEntity> {
         return profile.refresh_token
     }
 
-    async verifyUpdateEmail(decodedToken: { email: string, username: string, newEmail: string }): Promise<void>  {
+    async verifyUpdatedEmail(decodedToken: { email: string, username: string, newEmail: string }): Promise<void>  {
         try {
             const account: UsersEntity = await this.findOneOrFail({
                 email: decodedToken.email,
@@ -176,7 +176,7 @@ export class UsersRepository extends Repository<UsersEntity> {
           account.is_active = true
           await this.save(account)
         } catch (err) {
-            throw new BadRequestException('Incoming token is not valid.')
+            throw new BadRequestException('Incoming token is not valid')
         }
     }
 
