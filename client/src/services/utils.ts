@@ -47,6 +47,6 @@ export const getRouteAuthority = (path: string, routeData): string | string[] | 
 
 export const handleSessionExpiration = async (): Promise<void> => {
 	await persistor.purge()
-	history.push('/auth/sign-in')
-	message.info('User session has been expired, please Sign in again.', 4)
+	location.href = '/auth/sign-in'
+	message.info('User session has been expired, please Sign in again')
 }
