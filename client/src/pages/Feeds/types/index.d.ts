@@ -17,3 +17,11 @@ export interface FeedList {
 	createdAt: string,
 	updatedAt: string
 }
+
+export interface FlowHeaderProps {
+	sortBy: "top" | "hot" | undefined,
+	setSortBy: (val: "top" | "hot" | undefined) => void,
+	resetCategoryFilter: () => void,
+	openFilterModal: () => void
+	antBtnLinkStyle: string,
+}
