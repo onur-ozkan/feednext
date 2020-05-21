@@ -1,6 +1,5 @@
 // Antd dependencies
-import { DefaultFooter } from '@ant-design/pro-layout'
-import { GithubFilled } from '@ant-design/icons'
+import { Layout, Typography } from 'antd'
 
 // Other dependencies
 import React from 'react'
@@ -26,20 +25,11 @@ const AuthLayout: React.FC = props => {
 					</div>
 					{props.children}
 				</div>
-				<DefaultFooter
-					copyright="2019 Feednext"
-					style={{
-						backgroundColor: 'transparent',
-					}}
-					links={[
-						{
-							key: 'Github',
-							title: <GithubFilled />,
-							href: 'https://github.com/ilter-tech',
-							blankTarget: true,
-						},
-					]}
-				/>
+				<Layout.Footer style={{ background: 'transparent', textAlign: 'center' }}>
+					<Typography.Text>
+						Feednext © 2020. All rights reserved
+					</Typography.Text>
+				</Layout.Footer>
 			</div>
 		</>
 	)

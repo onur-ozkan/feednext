@@ -174,7 +174,7 @@ export const AccountSettings = (params: AccountSettingsParams): JSX.Element => {
 							}),
 							({ getFieldValue }) => ({
 								validator(rule, value) {
-									if (value && getFieldValue('password') === value) {
+									if (value && getFieldValue('password') !== value) {
 										return Promise.reject('The two passwords that you entered do not match!')
 									}
 									return Promise.resolve()

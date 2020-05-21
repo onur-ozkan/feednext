@@ -54,7 +54,7 @@ const Login: React.FunctionComponent = () => {
 			<PageHelmet
 				title="Sign In | Feednext"
 				description="Best reviews, comments, feedbacks about anything around the world"
-				keywords="'sign in, login'"
+				keywords="sign in, login"
 				mediaImage="https://avatars1.githubusercontent.com/u/64217221?s=200&v=4"
 				mediaDescription="Best reviews, comments, feedbacks about anything around the world"
 			/>
@@ -78,6 +78,9 @@ const Login: React.FunctionComponent = () => {
 
 							<Form.Item name="remember" valuePropName="checked">
 								<Checkbox>Remember me</Checkbox>
+								<Link style={{ float: 'right', color: '#d60d17' }} to="/auth/sign-in/forgot-password">
+									Forgot Password
+								</Link>
 							</Form.Item>
 
 							<Form.Item>

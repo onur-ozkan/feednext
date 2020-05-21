@@ -1,26 +1,15 @@
 // Antd dependencies
-import { Button, Result, Typography } from 'antd'
+import { Result, Typography } from 'antd'
 
 // Other dependencies
 import React from 'react'
-import { Link } from 'umi'
-
-const actions = (
-	<>
-		<Link to="/">
-			<Button style={{ width: '15rem' }} size="large">
-				Send Again
-			</Button>
-		</Link>
-	</>
-)
 
 const RegisterResult = props => {
 	const signedAccount = props.signedAccount
 	return (
 		<Result
 			status="success"
-			title={<h2>Hey {signedAccount.full_name},</h2>}
+			title={<h2>Hey {signedAccount.fullName},</h2>}
 			subTitle={
 				<Typography.Paragraph>
 					<Typography.Text
@@ -35,7 +24,6 @@ const RegisterResult = props => {
 					</Typography.Text>
 				</Typography.Paragraph>
 			}
-			extra={actions}
 		/>
 	)
 }
