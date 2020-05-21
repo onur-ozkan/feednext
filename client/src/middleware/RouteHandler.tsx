@@ -106,11 +106,11 @@ const RouteHandler = ({ children, route }) => {
 		return <PageLoading />
 	}
 
-	if (!user && authorized && authorized.authority >= User && window.location.pathname !== '/') {
+	if (!user && authorized?.authority >= User && window.location.pathname !== '/') {
 		return <Redirect to="/auth/sign-in" />
 	}
 
-	if (user && authorized && authorized.authority > user.attributes.user.role) {
+	if (user && authorized?.authority > user.attributes.user.role) {
 		return (
 			<Result
 				status="403"
