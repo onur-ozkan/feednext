@@ -9,19 +9,9 @@ import {
 	Row,
 	Col,
 	Typography,
-	Dropdown,
-	Menu,
 	Modal
 } from 'antd'
-import {
-	LoadingOutlined,
-	ArrowUpOutlined,
-	LinkOutlined,
-	RiseOutlined,
-	FilterFilled,
-	StarFilled,
-	FireFilled,
-} from '@ant-design/icons'
+import { LoadingOutlined, ArrowUpOutlined, LinkOutlined } from '@ant-design/icons'
 
 // Other dependencies
 import React, { useEffect, useState } from 'react'
@@ -38,6 +28,7 @@ import { TrendingCategoriesResponseData } from '@/@types/api'
 import { FeedList } from './types'
 import ArticleListContent from './components/ArticleListContent'
 import globalStyles from '@/global.less'
+import FlowHeader from './components/FlowHeader'
 
 const Feeds = (): JSX.Element => {
 	const [displayFilterModal, setDisplayFilterModal] = useState(false)
@@ -229,17 +220,6 @@ const Feeds = (): JSX.Element => {
 
 	const handleFetchMore = (): void => setSkipValueForPagination(skipValueForPagination + 10)
 
-	const handleSortByIcon = (): JSX.Element | void => {
-		switch(sortBy){
-			case 'top':
-				return <RiseOutlined style={{ color: '#188fce' }} />
-			case 'hot':
-				return <FireFilled style={{ color: 'red' }} />
-			default:
-				return <StarFilled style={{ color: '#00c853' }} />
-		}
-	}
-
 	const loadMore = canLoadMore && (
 		<div style={{ textAlign: 'center', marginTop: 16 }}>
 			<Button
@@ -292,44 +272,13 @@ const Feeds = (): JSX.Element => {
 							padding: '8px 32px 32px 32px',
 						}}
 					>
-						<Row style={{ margin: '10px -15px -25px 0px', position: 'relative', zIndex: 1 }}>
-						<Col />
-							<Button
-								onClick={(): void => setDisplayFilterModal(true)}
-								className={globalStyles.antBtnLink}
-								type="link"
-								style={{ marginRight: 5 }}
-								icon={<FilterFilled />}
-							>
-								FILTER
-							</Button>
-							<Dropdown
-								trigger={['click']}
-								overlay={
-									<Menu>
-										<Menu.Item onClick={(): void => setSortBy(undefined)}>
-											<Typography.Text>
-												<StarFilled style={{ color: '#00c853' }} /> New
-											</Typography.Text>
-										</Menu.Item>
-										<Menu.Item onClick={(): void => setSortBy('top')}>
-											<Typography.Text>
-												<RiseOutlined style={{ color: '#188fce' }} /> Top
-											</Typography.Text>
-										</Menu.Item>
-										<Menu.Item onClick={(): void => setSortBy('hot')}>
-											<Typography.Text>
-												<FireFilled style={{ color: 'red' }} /> Hot
-											</Typography.Text>
-										</Menu.Item>
-									</Menu>
-								}
-							>
-								<Button className={globalStyles.antBtnLink} type="link">
-									SORT BY {handleSortByIcon()}
-								</Button>
-							</Dropdown>
-						</Row>
+						<FlowHeader
+							openFilterModal={(): void => setDisplayFilterModal(true)}
+							setSortBy={(val: 'top' | 'hot' | undefined): void => setSortBy(val)}
+							resetCategoryFilter={(): void => setCategoryFilter(undefined)}
+							sortBy={sortBy}
+							antBtnLinkStyle={globalStyles.antBtnLink}
+						/>
 						{handleModalScreen()}
 						{handleEntryListRender()}
 					</Card>
