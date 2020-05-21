@@ -4,6 +4,7 @@ import { LoadingOutlined } from '@ant-design/icons'
 
 // Other dependencies
 import React, { useState, useEffect } from 'react'
+import { persistor } from '@/redux/store'
 
 // Local files
 import { PageHelmet } from '@/components/PageHelmet'
@@ -18,8 +19,9 @@ const EmailConfirmation: React.FunctionComponent = (props: any) => {
 	if (!props.location.query?.token) return <NotFoundPage />
 
 	useEffect(() => {
-		verifyUpdatedEmail(props.location.query?.token).then(() => {
+		verifyUpdatedEmail(props.location.query?.token).then(async () => {
 			setIsRequestSucceess(true)
+			await persistor.purge()
 			setTimeout(() => {
 				location.href = '/auth/sign-in'
 			}, 2000)

@@ -59,9 +59,15 @@ export const AccountSettings = (params: AccountSettingsParams): JSX.Element => {
 						...(values.biography !== params.user.biography && { biography: values.biography }),
 					},
 				})
+				if (values.email !== params.user.email) {
+					message.info('Verification mail has been sent to your new email address')
+				}
 				message.success('Changes are saved', 3)
 			})
-			.catch(error => message.error(error.response.data.message))
+			.catch(error => {
+				setSendingChanges(false)
+				message.error(error.response.data.message)
+			})
 	}
 
 	const fileValidation = (file: File): boolean => {

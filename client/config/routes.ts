@@ -10,12 +10,28 @@ const authRoutes = {
 			redirect: '/auth/sign-in',
 		},
 		{
+			path: '/auth/confirmation/email',
+			component: './Auth/EmailConfirmation',
+		},
+		{
 			path: '/auth/sign-in',
 			component: './Auth/Login',
 		},
 		{
+			path: '/auth/sign-in/forgot-password',
+			component: './Auth/ForgotPassword',
+		},
+		{
+			path: '/auth/sign-in/account-recover',
+			component: './Auth/AccountRecover'
+		},
+		{
 			path: '/auth/sign-up',
 			component: './Auth/Register',
+		},
+		{
+			path: '/auth/sign-up/account-verification',
+			component: './Auth/AccountVerification'
 		},
 		{
 			component: '404',
