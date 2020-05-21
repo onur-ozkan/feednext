@@ -45,8 +45,14 @@ const Feeds = (): JSX.Element => {
 		setSkipValueForPagination(0)
 	}, [categoryFilter, sortBy])
 
-	const handleDataFetching = (): void => {
-		fetchAllFeeds(skipValueForPagination, undefined, categoryFilter, sortBy)
+	const handleDataFetching = async (): Promise<void> => {
+
+		if (!trendingCategories) {
+			fetchTrendingCategories()
+				.then(res => setTrendingCategories(res.data.attributes.categories))
+		}
+
+		await fetchAllFeeds(skipValueForPagination, undefined, categoryFilter, sortBy)
 			.then((feedsResponse: AxiosResponse) => {
 
 				if (feedsResponse.data.attributes.count > feedList?.length) setCanLoadMore(true)
@@ -76,7 +82,6 @@ const Feeds = (): JSX.Element => {
 								},
 							}
 							setFeed((feedList: FeedList[]) => [...feedList, feed])
-							setIsLoading(false)
 						})
 						.catch(_error => {
 							const feed: any = {
@@ -90,17 +95,11 @@ const Feeds = (): JSX.Element => {
 								entryCount: title.entry_count,
 							}
 							setFeed((feedList: FeedList[]) => [...feedList, feed])
-							setIsLoading(false)
 						})
 				})
 			})
 			.catch((error: AxiosError) => message.error(error.response?.data.message))
-
-		if (!trendingCategories) {
-			fetchTrendingCategories()
-				.then(res => setTrendingCategories(res.data.attributes.categories))
-		}
-
+		setIsLoading(false)
 	}
 
 	const handleEntryListRender = (): JSX.Element => {
@@ -265,7 +264,7 @@ const Feeds = (): JSX.Element => {
 			/>
 			<BackTop />
 			<Row>
-				<Col lg={15} md={24} style={{ padding: 7 }}>
+				<Col xl={16} lg={14} md={24} sm={24} style={{ padding: 7 }}>
 					<Card
 						bordered={false}
 						bodyStyle={{
@@ -283,7 +282,7 @@ const Feeds = (): JSX.Element => {
 						{handleEntryListRender()}
 					</Card>
 				</Col>
-				<Col lg={9} md={24} style={{ padding: 7 }}>
+				<Col xl={8} lg={10} md={24} sm={24} style={{ padding: 7 }}>
 					<Card style={{ marginBottom: 14 }} bordered={false} title="Trending Categories">
 						{handleTrendingCategoriesRender()}
 					</Card>

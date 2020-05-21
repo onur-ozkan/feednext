@@ -67,7 +67,7 @@ const AppLayout: React.FC<AppLayoutProps> = props => {
 			{...settings}
 		>
 			<Row style={{ backgroundColor: 'transparent', justifyContent: 'center' }}>
-				<Col xxl={16} xl={16} lg={18} md={22} sm={24}>
+				<Col xxl={18} xl={20} lg={22} md={22} sm={24}>
 					{props.children}
 				</Col>
 			</Row>
