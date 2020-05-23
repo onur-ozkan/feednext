@@ -13,10 +13,8 @@ import { checkAccessToken, refreshToken, fetchUnreadMessageInfo } from '@/servic
 import { getAuthorityFromRouter, handleSessionExpiration } from '@/services/utils'
 import { socketConnection } from '@/services/socket'
 import { User } from '@/../config/constants'
-import PageLoading from '@/components/PageLoading'
 
 const RouteHandler = ({ children, route }) => {
-	const [isLoading, setIsLoading] = useState(true)
 	const [lastMessageFromSocket, setLastMessageFromSocket] = useState<{ conversation_id: string, from: string, body: string } | null>(null)
 	const globalState = useSelector((state: any) => state.global)
 	const user = useSelector((state: any) => state.user)
@@ -49,8 +47,6 @@ const RouteHandler = ({ children, route }) => {
 			await checkIsSessionValid()
 			await handleUnreadMessages()
 		}
-
-		setIsLoading(false)
 	}
 
 	useEffect(() => {
@@ -101,10 +97,6 @@ const RouteHandler = ({ children, route }) => {
 	}, [lastMessageFromSocket])
 
 	const authorized: any = getAuthorityFromRouter(route?.routes, location.pathname || '/')
-
-	if (isLoading) {
-		return <PageLoading />
-	}
 
 	if (!user && authorized?.authority >= User && window.location.pathname !== '/') {
 		return <Redirect to="/auth/sign-in" />

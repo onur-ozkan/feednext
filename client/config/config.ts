@@ -6,17 +6,17 @@ import { routes } from './routes'
 import defaultSettings from './defaultSettings'
 
 export default defineConfig({
-	hash: true,
-	routes,
 	ssr: {
-		forceInitial: false,
+		forceInitial: true,
 		devServerRender: true,
-		mode: 'stream',
+		mode: 'string',
 		staticMarkup: false,
 	},
 	nodeModulesTransform: {
 		type: 'none',
 	},
+	hash: true,
+	routes,
 	theme: defaultSettings.theme,
 	manifest: {
 		basePath: '/',

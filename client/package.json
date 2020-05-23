@@ -6,8 +6,8 @@
 	"author": "Onur Ozkan",
 	"scripts": {
 		"build": "umi build",
-		"dev": "umi dev",
-		"prod": "serve -s dist",
+		"start:dev": "umi dev",
+		"start:prod": "serve -s dist",
 		"lint": "npm run lint:js && npm run lint:prettier",
 		"lint-staged": "lint-staged",
 		"lint-staged:js": "eslint --ext .js,.jsx,.ts,.tsx ",
