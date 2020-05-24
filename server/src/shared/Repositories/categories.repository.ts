@@ -24,6 +24,9 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
         const [categories, total] = await this.findAndCount({
             where: {
                 parent_category: null
+            },
+            order: {
+                name: 'ASC'
             }
         })
         return { categories, count: total }
@@ -32,7 +35,11 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
     async getChildCategories(categoryId: string): Promise<{categories: CategoriesEntity[], count: number}> {
         const [categories, total] = await this.findAndCount({
             where: {
-                parent_category: categoryId
+                parent_category: categoryId,
+            },
+            order: {
+                is_leaf: 'ASC',
+                name: 'ASC'
             }
         })
         return { categories, count: total }
