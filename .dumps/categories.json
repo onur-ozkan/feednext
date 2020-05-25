@@ -1,0 +1,91 @@
+[{
+  "_id": {
+    "$oid": "5ecbfdf74e4c1c32d76217a0"
+  },
+  "name": "Electronic",
+  "is_leaf": false,
+  "ancestors": [],
+  "created_at": {
+    "$date": "2020-05-25T17:18:47.363Z"
+  },
+  "updated_at": {
+    "$date": "2020-05-25T17:18:47.363Z"
+  }
+},{
+  "_id": {
+    "$oid": "5ecbfe324e4c1c32d76217a1"
+  },
+  "name": "Phone",
+  "is_leaf": true,
+  "ancestors": [
+    "5ecbfdf74e4c1c32d76217a0"
+  ],
+  "parent_category": "5ecbfdf74e4c1c32d76217a0",
+  "created_at": {
+    "$date": "2020-05-25T17:19:46.353Z"
+  },
+  "updated_at": {
+    "$date": "2020-05-25T17:19:46.353Z"
+  }
+},{
+  "_id": {
+    "$oid": "5ecbfe364e4c1c32d76217a2"
+  },
+  "name": "Computers",
+  "is_leaf": true,
+  "ancestors": [
+    "5ecbfdf74e4c1c32d76217a0"
+  ],
+  "parent_category": "5ecbfdf74e4c1c32d76217a0",
+  "created_at": {
+    "$date": "2020-05-25T17:19:50.474Z"
+  },
+  "updated_at": {
+    "$date": "2020-05-25T17:19:50.474Z"
+  }
+},{
+  "_id": {
+    "$oid": "5ecbfe3c4e4c1c32d76217a3"
+  },
+  "name": "Other",
+  "is_leaf": true,
+  "ancestors": [
+    "5ecbfdf74e4c1c32d76217a0"
+  ],
+  "parent_category": "5ecbfdf74e4c1c32d76217a0",
+  "created_at": {
+    "$date": "2020-05-25T17:19:56.156Z"
+  },
+  "updated_at": {
+    "$date": "2020-05-25T17:19:56.156Z"
+  }
+},{
+  "_id": {
+    "$oid": "5ecbfe5a4e4c1c32d76217a4"
+  },
+  "name": "Musics & Songs",
+  "is_leaf": false,
+  "ancestors": [],
+  "created_at": {
+    "$date": "2020-05-25T17:20:26.363Z"
+  },
+  "updated_at": {
+    "$date": "2020-05-25T17:20:26.363Z"
+  }
+},{
+  "_id": {
+    "$oid": "5ecbfee84e4c1c32d76217a5"
+  },
+  "name": "Dance/Electronic",
+  "is_leaf": true,
+  "ancestors": [
+    "5ecbfe5a4e4c1c32d76217a4"
+  ],
+  "parent_category": "5ecbfe5a4e4c1c32d76217a4",
+  "created_at": {
+    "$date": "2020-05-25T17:22:48.979Z"
+  },
+  "updated_at": {
+    "$date": "2020-05-25T17:22:48.979Z"
+  }
+}]

@@ -1,0 +1,25 @@
+[{
+  "_id": {
+    "$oid": "5ecbff584e4c1c32d76217a6"
+  },
+  "name": "Woke Up This Morning - Alabama 3",
+  "slug": "woke-up-this-morning-alabama-3",
+  "category_id": "5ecbfee84e4c1c32d76217a5",
+  "category_ancestors": [
+    "5ecbfe5a4e4c1c32d76217a4"
+  ],
+  "opened_by": "admin",
+  "rate": [
+    {
+      "username": "admin",
+      "rateValue": 5
+    }
+  ],
+  "entry_count": 4,
+  "created_at": {
+    "$date": "2020-05-25T17:24:40.479Z"
+  },
+  "updated_at": {
+    "$date": "2020-05-25T17:26:54.342Z"
+  }
+}]

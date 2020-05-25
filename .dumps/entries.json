@@ -1,0 +1,75 @@
+[{
+  "_id": {
+    "$oid": "5ecbff584e4c1c32d76217a7"
+  },
+  "text": "One of the greatest song of the earth. It also used in 'The Sopranos' intro.",
+  "title_id": "5ecbff584e4c1c32d76217a6",
+  "written_by": "admin",
+  "votes": {
+    "value": 0,
+    "up_voted": [],
+    "down_voted": []
+  },
+  "created_at": {
+    "$date": "2020-05-25T17:24:40.527Z"
+  },
+  "updated_at": {
+    "$date": "2020-05-25T17:27:11.461Z"
+  }
+},{
+  "_id": {
+    "$oid": "5ecbff904e4c1c32d76217a8"
+  },
+  "text": "Great song!",
+  "title_id": "5ecbff584e4c1c32d76217a6",
+  "written_by": "jacky_eirl",
+  "votes": {
+    "value": 0,
+    "up_voted": [],
+    "down_voted": []
+  },
+  "created_at": {
+    "$date": "2020-05-25T17:25:36.881Z"
+  },
+  "updated_at": {
+    "$date": "2020-05-25T17:27:22.016Z"
+  }
+},{
+  "_id": {
+    "$oid": "5ecbffa44e4c1c32d76217a9"
+  },
+  "text": "Makes me remember Sopranos days..",
+  "title_id": "5ecbff584e4c1c32d76217a6",
+  "written_by": "jens.auhrk",
+  "votes": {
+    "value": 0,
+    "up_voted": [],
+    "down_voted": []
+  },
+  "created_at": {
+    "$date": "2020-05-25T17:25:56.181Z"
+  },
+  "updated_at": {
+    "$date": "2020-05-25T17:25:56.181Z"
+  }
+},{
+  "_id": {
+    "$oid": "5ecbffde4e4c1c32d76217aa"
+  },
+  "text": "Sopranos fans, stand for your national anthem!",
+  "title_id": "5ecbff584e4c1c32d76217a6",
+  "written_by": "teo.alpha",
+  "votes": {
+    "value": 1,
+    "up_voted": [
+      "admin"
+    ],
+    "down_voted": []
+  },
+  "created_at": {
+    "$date": "2020-05-25T17:26:54.340Z"
+  },
+  "updated_at": {
+    "$date": "2020-05-25T17:27:10.117Z"
+  }
+}]
