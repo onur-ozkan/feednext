@@ -55,7 +55,7 @@ const Feeds = (): JSX.Element => {
 		await fetchAllFeeds(skipValueForPagination, undefined, categoryFilter, sortBy)
 			.then((feedsResponse: AxiosResponse) => {
 
-				if (feedsResponse.data.attributes.count > feedList?.length) setCanLoadMore(true)
+				if (feedList.length > 0 && feedsResponse.data.attributes.count > feedList.length) setCanLoadMore(true)
 				else setCanLoadMore(false)
 
 				feedsResponse.data.attributes.titles.map(async (title: any) => {
@@ -130,10 +130,6 @@ const Feeds = (): JSX.Element => {
 										{item.featuredEntry.voteValue}
 									</span>
 								)}
-								<span style={{ cursor: 'pointer' }}>
-									<LinkOutlined style={{ marginRight: 3 }} />
-									Share
-								</span>
 							</div>
 						]}
 					>
@@ -264,7 +260,7 @@ const Feeds = (): JSX.Element => {
 			/>
 			<BackTop />
 			<Row>
-				<Col xl={16} lg={14} md={24} sm={24} style={{ padding: 7 }}>
+				<Col xl={16} lg={14} md={24} sm={24} xs={24} style={{ padding: 7 }}>
 					<Card
 						bordered={false}
 						bodyStyle={{
@@ -282,7 +278,7 @@ const Feeds = (): JSX.Element => {
 						{handleEntryListRender()}
 					</Card>
 				</Col>
-				<Col xl={8} lg={10} md={24} sm={24} style={{ padding: 7 }}>
+				<Col xl={8} lg={10} md={24} sm={24} xs={24} style={{ padding: 7 }}>
 					<Card style={{ marginBottom: 14 }} bordered={false} title="Trending Categories">
 						{handleTrendingCategoriesRender()}
 					</Card>

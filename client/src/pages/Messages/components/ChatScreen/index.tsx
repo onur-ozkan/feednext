@@ -74,7 +74,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = (props): JSX.Element => {
 		fetchMessagesByConversationId(props.globalState.accessToken, props.conversationId, paginationValue)
 			.then(async ({ data }) => {
 				await data.attributes.messages.map((item: any) => setMessageList((currentState) => [item, ...currentState]))
-				if (messageList.length < data.attributes.count) setCanPaginate(true)
+				if (messageList.length > 0  && data.attributes.count > messageList.length) setCanPaginate(true)
 				else setCanPaginate(false)
 			})
 	}, [paginationValue, props.conversationId])
