@@ -1,7 +1,7 @@
 dev:
-	docker-compose up webserver backend redis mongo
+	docker-compose up nginx_dev redis_dev mongo_dev backend
 dev2:
-	docker-compose up redis_dev2 mongo_dev2
+	docker-compose up redis_dev mongo_dev
 prod:
 	docker-compose up -d nginx certbot redis backend mongo
 down:
