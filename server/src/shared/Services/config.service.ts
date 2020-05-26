@@ -35,8 +35,7 @@ export class ConfigService {
             entities: [
                 UsersEntity, CategoriesEntity, EntriesEntity, TitlesEntity, ConversationsEntity, MessagesEntity
             ],
-
-            ssl: this.isProduction(),
+            ssl: false,
         }
     }
 }
