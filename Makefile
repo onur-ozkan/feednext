@@ -1,3 +1,5 @@
+force_db_defaults:
+	./db.restore.sh
 dev:
 	docker-compose up nginx_dev redis_dev mongo_dev backend
 dev2:

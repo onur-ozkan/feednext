@@ -133,6 +133,7 @@ services:
   mongo_dev:
     image: mongo:${MONGO_SERVER}
     hostname: mongo_dev
+    container_name: mongo_dev
     ports:
       # [local-machine:]local-port:docker-port
       - ${LOCAL_LISTEN_ADDR}${MONGO_CONTAINER_PORT}:27017
