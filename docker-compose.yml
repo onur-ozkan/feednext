@@ -8,19 +8,31 @@ services:
   # ------------------------------------------------------------
   # Nginx - Webserver
   # ------------------------------------------------------------
-  webserver:
+  nginx:
     image: nginx:mainline-alpine
-    container_name: webserver
     restart: unless-stopped
+    container_name: nginx
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
     ports:
       - ${BACKEND_CONTAINER_PORT}:80
+      - "443:443"
     volumes:
-      - ./.docker/nginx/conf.d/:/etc/nginx/conf.d:z
-    depends_on:
-      - backend
+      - ./.docker/nginx:/etc/nginx/conf.d:z
+      - ./.docker/certbot/conf:/etc/letsencrypt:z
+      - ./.docker/certbot/www:/var/www/certbot:z
     networks:
       - app-network
 
+  # ------------------------------------------------------------
+  # CERTBOT - SSL CERTIFICATION
+  # ------------------------------------------------------------
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    volumes:
+      - ./.docker/certbot/conf:/etc/letsencrypt:z
+      - ./.docker/certbot/www:/var/www/certbot:z
 
   # ------------------------------------------------------------
   # Node - Backend
