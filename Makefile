@@ -3,6 +3,6 @@ dev:
 dev2:
 	docker-compose up redis_dev2 mongo_dev2
 prod:
-	docker-compose up -d nginx certbot redos backend mongo
+	docker-compose up -d nginx certbot redis backend mongo
 down:
 	docker-compose down
