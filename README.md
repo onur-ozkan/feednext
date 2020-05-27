@@ -18,7 +18,7 @@
 
   ## What is this all About ?
 
-  feednext.io is an open source social media platform of the Feednext organization, founded by a Software Engineer [Onur Ozkan](https://github.com/ozkanonur). The main purpose of the project is to inform people around the world about any physical object or a virtual object from a single central source. Like a phone model, TV, Computer components or a Song even. By doing that with the best way, this platform will turn into a central system of information distribution about product reviewing around the world.
+  feednext.io is an open source social media platform of the Feednext organization, founded by Software Engineer [Onur Ozkan](https://github.com/ozkanonur). The main purpose of the project is to inform people around the world about any physical or a virtual object from a single central source. Like a phone model, TV, Computer components or a Song even. By doing that with the best way, this platform will turn into a central system of information distribution about product reviewing around the world.
 
   - [Requirements](https://github.com/feednext/feednext#requirements)
   - [Installation](https://github.com/feednext/feednext#installation)
