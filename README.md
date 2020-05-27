@@ -15,4 +15,15 @@
       <img src="https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square" alt="Extra Info"/>
     <a/>
   </p>
+
+  ## What is this all About ?
+
+  feednext.io is an open source social media platform of the Feednext organization, founded by an Software Engineer [Onur Ozkan](https://github.com/ozkanonur). The main purpose of the project is to inform people around the world about any physical object or a virtual object from a single central source. Like a phone model, TV, Computer components or a Song even. By doing that with the best way,  this platform will be the central system of information distribution about product reviewing around the world.
+
+  - [Requirements](https://github.com/feednext/feednext#requirements)
+  - [Installation](https://github.com/feednext/feednext#installation)
+  - [Contributing](https://github.com/feednext/feednext#contributing)
+  - [Issue Tracking](https://github.com/feednext/feednext/issues)
+  - [Support](https://github.com/feednext/feednext#support)
+
 </div>
