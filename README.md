@@ -79,6 +79,17 @@
   make import_db_dumps
   ```
 
+  <p style="font-weight: bold;"> In development mode, you can not create user accounts because of the sign-up mechanism of Feednext. Instead of creating accounts, you can sign in with already created demo accounts. The account credentials are as in the following table: </p>
+
+  | Username | Email | Password | Role |
+  | ------ | ------ | ------ | ------ |
+  | admin | admin@demo.com | admin123 | 5 |
+  | jacky_eirl | jacky_eirl@demo.com | demo123 | 0 |
+  | jens.auhrk | jens.auhrk@demo.com | demo123 | 0 |
+  | teo.alpha | teo.alpha@demo.com | demo123 | 0 |
+  | saul.kuvarsk | saul.kuvarsk@demo.com | demo123 | 0 |
+  | onur.ozkan | onur.ozkan@demo.com | demo123 | 0 |
+
   ### FRONTEND
   cd into client directory and then:
   ```bash
