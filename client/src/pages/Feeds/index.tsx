@@ -11,7 +11,7 @@ import {
 	Typography,
 	Modal
 } from 'antd'
-import { LoadingOutlined, ArrowUpOutlined, LinkOutlined } from '@ant-design/icons'
+import { LoadingOutlined, ArrowUpOutlined } from '@ant-design/icons'
 
 // Other dependencies
 import React, { useEffect, useState } from 'react'
