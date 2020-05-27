@@ -22,7 +22,6 @@
   - [Installation](https://github.com/feednext/feednext#installation)
   - [Contributing](https://github.com/feednext/feednext#contributing)
   - [Issue Tracking](https://github.com/feednext/feednext/issues)
-  - [Support](https://github.com/feednext/feednext#support)
 
   ## Installation
   #### Requirements
