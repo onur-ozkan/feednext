@@ -20,10 +20,32 @@
 
   feednext.io is an open source social media platform of the Feednext organization, founded by Software Engineer [Onur Ozkan](https://github.com/ozkanonur). The main purpose of the project is to inform people around the world about any physical or a virtual object from a single central source. Like a phone model, TV, Computer components or a Song even. By doing that with the best way, this platform will turn into a central system of information distribution about product reviewing around the world.
 
-  - [Requirements](https://github.com/feednext/feednext#requirements)
   - [Installation](https://github.com/feednext/feednext#installation)
   - [Contributing](https://github.com/feednext/feednext#contributing)
   - [Issue Tracking](https://github.com/feednext/feednext/issues)
   - [Support](https://github.com/feednext/feednext#support)
+
+
+  ## Installation
+  #### Requirements
+  | Technology | Version |
+  | ------ | ------ |
+  | Docker | * |
+  | Node | 12 |
+
+  ## Contributing
+  Technically, feednext.io is developed with Software Patterns & Design Principles all around it. PRs are welcome as long as they are fits in the principles, structure of the feednext.io.
+
+  Please do not directly PR to 'master' branch, instead go for 'dev' branch.
+
+  ### Styleguilde
+
+  #### Commit Messages
+  - If you have changed things below the server or client directories, commit messages must have [server] or [client] prefix.
+  - Commit messages should never include emojies
+  - Commit messages must be imperative like "Add stuff" not "Added stuff"
+
+  #### Coding
+  - Do not break the eslint rules.
 
 </div>
