@@ -26,6 +26,8 @@
   - [API Documentation](https://github.com/feednext/feednext#api-documentation)
   - [Contributing](https://github.com/feednext/feednext#contributing)
   - [Issue Tracking](https://github.com/feednext/feednext/issues)
+  - [Privacy Policy](https://github.com/feednext/feednext/blob/master/PRIVACY-POLICY.md)
+  - [Terms & Conditions](https://github.com/feednext/feednext/blob/master/TERMS-CONDITIONS.md)
 
   ## Installation
   #### Requirements
