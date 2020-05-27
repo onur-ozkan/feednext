@@ -1,5 +1,5 @@
 // Antd dependencies
-import { Form, Input, Checkbox, Button, Tabs, message, Modal, Typography } from 'antd'
+import { Form, Input, Checkbox, Button, Tabs, message } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 
 // Other dependencies
@@ -11,8 +11,7 @@ import { signUp } from '@/services/api'
 import { PageHelmet } from '@/components/PageHelmet'
 import RegisterResult from './Result'
 import styles from './style.less'
-import { PrivacyPolicy } from './components/PrivacyPolicy'
-import { TermsAndConditions } from './components/TermsAndConditions'
+import { Aggrements } from '@/components/Aggrements'
 
 export declare interface FormDataType {
 	fullName: string
@@ -54,18 +53,6 @@ const Register = () => {
 		return <RegisterResult signedAccount={signedAccount} />
 	}
 
-	const handleAggrementViewRender = () => (
-		<Modal
-			transitionName='fade'
-			visible={!!aggrementModalVisibility}
-			closable={false}
-			footer={null}
-			onCancel={(): void => setAggrementModalVisibilit(null)}
-		>
-			{aggrementModalVisibility === 'policy' ? <PrivacyPolicy /> : <TermsAndConditions />}
-		</Modal>
-	)
-
 	return (
 		<>
 			<PageHelmet
@@ -76,7 +63,10 @@ const Register = () => {
 				mediaDescription="Best reviews, comments, feedbacks about anything around the world"
 			/>
 			<div className={styles.main}>
-				{handleAggrementViewRender()}
+				<Aggrements
+					aggrementModalVisibility={aggrementModalVisibility}
+					closeAggrementWindow={(): void => setAggrementModalVisibilit(null)}
+				/>
 				<Form form={form} name="sign-up" onFinish={onSubmit} size="middle" scrollToFirstError>
 					<Tabs>
 						<Tabs.TabPane
