@@ -31,8 +31,49 @@
   | Technology | Version |
   | ------ | ------ |
   | Docker | * |
+  | Docker Compose | * |
   | Node | 12 |
+  
+  #### RUNNING API
+  
+  After you have cloned this repository to your machine, cd into project folder and then create .env files from .env.example ones with following command:
+  
+  ```bash
+  cp .env.example .env && cp ./server/.env.example ./server/.env
+  ```
+ Once .env files are created successfully, now you can run the api on your local by running following command:
+ 
+  ```bash
+  make dev
+  ```
+ With the command above, api will start running on http://localhost
+  
+  #### WARNING (For Osx & Windows Users)
+  
+  The way of Docker (Linux containers) works on non-linux machines are pretty messy. With feednext, we have whole project folder passed into linux containers synchronously which works crystal clear on Linux machines. But, on non-linux machines it enforces your machine's drive pretty hard. For non-linux users, we have an alternative development way, instead of passing project folder, we will only use mongo and redis as containers and then will start api manually below the server directory.
+  
+  Start mongo and redis containers:
+  ```bash
+  make dev2
+  ```
+  cd into server directory, and update the following values in .env file:
+  ```
+  DB_HOST=localhost:27017
+  REDIS_HOST=localhost
+  ```
 
+  Install dependencies:
+  ```bash
+  npm ci
+  ```
+  
+  Run API:
+  ```bash
+  npm run start:dev
+  ```
+  
+  Right after the command above, api will start running on http://localhost:3000
+  
   ## Contributing
   Technically, feednext.io is developed with Software Patterns & Design Principles all around it. PRs are welcome as long as they are fits in the principles, structure of the feednext.io.
 
