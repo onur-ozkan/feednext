@@ -19,7 +19,7 @@ const RegisterResult = props => {
 						}}
 					>
 						Your account verification mail has been sent to{' '}
-						<span style={{ color: '#5199FF' }}>{signedAccount.email}</span>, please check your mails and do the
+						<span style={{ color: '#5199FF' }}>{signedAccount.email}</span>, please check your mails (might be in spams) and do the
 						verification to sign in.
 					</Typography.Text>
 				</Typography.Paragraph>
