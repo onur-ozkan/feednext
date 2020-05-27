@@ -1,4 +1,4 @@
-force_db_defaults:
+import_db_dumps:
 	./db.restore.sh
 dev:
 	docker-compose up nginx_dev redis_dev mongo_dev backend
