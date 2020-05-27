@@ -1,5 +1,5 @@
 // Antd dependencies
-import { Form, Input, Checkbox, Button, Tabs, message } from 'antd'
+import { Form, Input, Checkbox, Button, Tabs, message, Modal, Typography } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 
 // Other dependencies
@@ -11,6 +11,8 @@ import { signUp } from '@/services/api'
 import { PageHelmet } from '@/components/PageHelmet'
 import RegisterResult from './Result'
 import styles from './style.less'
+import { PrivacyPolicy } from './components/PrivacyPolicy'
+import { TermsAndConditions } from './components/TermsAndConditions'
 
 export declare interface FormDataType {
 	fullName: string
@@ -22,7 +24,7 @@ export declare interface FormDataType {
 const Register = () => {
 	const [requestOnGoing, setRequestOnGoing] = useState(false)
 	const [signedAccount, setSignedAccount] = useState<FormDataType | null>(null)
-
+	const [aggrementModalVisibility, setAggrementModalVisibilit] = useState<null | 'policy' | 'terms'>(null)
 	const [form] = Form.useForm()
 
 	const onSubmit = async (values: FormDataType) => {
@@ -52,6 +54,18 @@ const Register = () => {
 		return <RegisterResult signedAccount={signedAccount} />
 	}
 
+	const handleAggrementViewRender = () => (
+		<Modal
+			transitionName='fade'
+			visible={!!aggrementModalVisibility}
+			closable={false}
+			footer={null}
+			onCancel={(): void => setAggrementModalVisibilit(null)}
+		>
+			{aggrementModalVisibility === 'policy' ? <PrivacyPolicy /> : <TermsAndConditions />}
+		</Modal>
+	)
+
 	return (
 		<>
 			<PageHelmet
@@ -62,6 +76,7 @@ const Register = () => {
 				mediaDescription="Best reviews, comments, feedbacks about anything around the world"
 			/>
 			<div className={styles.main}>
+				{handleAggrementViewRender()}
 				<Form form={form} name="sign-up" onFinish={onSubmit} size="middle" scrollToFirstError>
 					<Tabs>
 						<Tabs.TabPane
@@ -137,12 +152,30 @@ const Register = () => {
 								rules={[
 									{
 										validator: (_, value) =>
-											value ? Promise.resolve() : Promise.reject('Should accept agreement'),
+											value ? Promise.resolve() : Promise.reject('You must accept the privacy aaa'),
 									},
 								]}
 							>
 								<Checkbox>
-									I have read the <a href="">agreement</a>
+									I have read the
+									{' '}
+									<Button
+										onClick={(): void => setAggrementModalVisibilit('policy')}
+										type="link"
+										style={{ margin: 0, padding: 0 }}
+									>
+										privacy policy
+									</Button>
+									{' '}
+									and
+									{' '}
+									<Button
+										onClick={(): void => setAggrementModalVisibilit('terms')}
+										type="link"
+										style={{ margin: 0, padding: 0 }}
+									>
+										terms & conditions
+									</Button>
 								</Checkbox>
 							</Form.Item>
 							<Form.Item>
