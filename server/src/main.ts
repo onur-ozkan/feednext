@@ -16,7 +16,6 @@ import * as compress from 'fastify-compress'
 import { AppModule } from './app.module'
 import { configService } from './shared/Services/config.service'
 
-declare const module: any
 async function bootstrap() {
     const fastifyAdapter = new FastifyAdapter({
         logger: !configService.isProduction() ? true : false,
@@ -40,9 +39,7 @@ async function bootstrap() {
     fastifyAdapter.register(fastifyMultipart) // Enable multipart data support
 
     const app = await NestFactory.create<NestFastifyApplication>(AppModule, fastifyAdapter )
-
     app.setGlobalPrefix('/api') // Setting base path
-
     app.useGlobalPipes(new ValidationPipe()) // Initialize global validation
 
     if (!configService.isProduction()) {
@@ -53,16 +50,11 @@ async function bootstrap() {
             .build()
         const document = SwaggerModule.createDocument(app, options)
         SwaggerModule.setup('/api', app, document)
+    } else {
+        sentry.init({ dsn: configService.getEnv('SENTRY_DSN') })
     }
-
-    if (configService.isProduction()) sentry.init({ dsn: configService.getEnv('SENTRY_DSN') })
 
     app.listen(Number(configService.getEnv('APP_PORT')) + Number(configService.getEnv('INSTANCE_ID') || 0), '0.0.0.0')
-
-    if (module.hot) {
-        module.hot.accept()
-        module.hot.dispose(() => app.close())
-    }
 }
 
 bootstrap()
