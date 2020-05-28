@@ -6,5 +6,6 @@ export const socketConnection = (accessToken: string): SocketIOClient.Socket => 
 	query: {
 		Authorization: `Bearer ${accessToken}`,
 		transports: ['websocket']
-	}
+	},
+	secure: process.env.NODE_ENV === 'production' ? true : false
 })
