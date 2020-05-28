@@ -10,10 +10,11 @@ import { TermsAndConditions } from "./components/TermsAndConditions"
 import { ComponentProps } from "./types"
 
 export const Aggrements: React.FC<ComponentProps> = (props): JSX.Element => (
-	<>
+	<div style={{ position: 'absolute' }}>
 		{props.aggrementModalVisibility && ( // To handle buggy animation on window close
 			<Modal
 				transitionName='fade'
+				style={{ top: 35 }}
 				visible={!!props.aggrementModalVisibility}
 				closable={false}
 				footer={null}
@@ -22,5 +23,5 @@ export const Aggrements: React.FC<ComponentProps> = (props): JSX.Element => (
 				{props.aggrementModalVisibility === 'policy' ? <PrivacyPolicy /> : <TermsAndConditions />}
 			</Modal>
 		)}
-	</>
+	</div>
 )

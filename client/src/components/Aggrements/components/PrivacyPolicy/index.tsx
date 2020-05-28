@@ -2,7 +2,7 @@
 import React from 'react'
 
 export const PrivacyPolicy = () => (
-	<div>
+	<div style={{ height: 650, overflow: 'scroll' }}>
 		<strong>Privacy Policy</strong>
 		<p>
 			Onur Ozkan built the Feednext app as an Open Source app. This SERVICE is provided by Onur Ozkan at no cost and is

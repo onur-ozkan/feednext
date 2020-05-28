@@ -142,7 +142,7 @@ const Register = () => {
 								rules={[
 									{
 										validator: (_, value) =>
-											value ? Promise.resolve() : Promise.reject('You must accept the privacy aaa'),
+											value ? Promise.resolve() : Promise.reject('You must accept the privacy policy and terms & conditions'),
 									},
 								]}
 							>

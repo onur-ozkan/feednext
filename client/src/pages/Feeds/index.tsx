@@ -147,17 +147,17 @@ const Feeds = (): JSX.Element => {
 										</Link>
 
 									</Col>
-									<Col style={{ position: 'absolute', right: 0 }}>
-										<img
-											width={100}
-											style={{
-												maxHeight: 100
-											}}
-											src={`${API_URL}/v1/title/${item.id}/image`}
-											alt="Title Image"
-										/>
-									</Col>
 								</Row>
+							}
+							avatar={
+								<img
+									width={100}
+									style={{
+										maxHeight: 100
+									}}
+									src={`${API_URL}/v1/title/${item.id}/image`}
+									alt="Title Image"
+								/>
 							}
 							description={ <Tag> {item.categoryName.toUpperCase()} </Tag>
 							}

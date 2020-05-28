@@ -1,5 +1,5 @@
 // Antd dependencies
-import { Avatar } from 'antd'
+import { Avatar, Typography } from 'antd'
 
 // Other dependencies
 import React from 'react'
@@ -14,10 +14,14 @@ declare interface ArticleListContentProps {
 }
 
 const ArticleListContent: React.FC<ArticleListContentProps> = ({
-	data: { text, createdAt, avatar, writtenBy, profileUrl },
+	data: { text, createdAt, avatar, writtenBy },
 }) => (
 	<div className={styles.listContent}>
-		<div className={styles.description}>{text}</div>
+		<div className={styles.description}>
+			<Typography.Paragraph ellipsis>
+				{text}
+			</Typography.Paragraph>
+		</div>
 		<div className={styles.extra}>
 			<Avatar src={avatar} size="small" />
 			<a style={{ zIndex: 10 }} onClick={(): void => history.push(`/user/${writtenBy}`)}>

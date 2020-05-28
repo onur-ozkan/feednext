@@ -2,7 +2,7 @@
 import React from 'react'
 
 export const TermsAndConditions = () => (
-	<div>
+	<div style={{ height: 650, overflow: 'scroll' }}>
 		<strong>Terms &amp; Conditions</strong>
 		<p>
 			By downloading or using the app, these terms will automatically apply to you – you should make sure therefore
