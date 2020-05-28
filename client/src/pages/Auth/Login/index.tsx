@@ -1,5 +1,5 @@
 // Antd dependencies
-import { Checkbox, message, Form, Input, Tabs, Button } from 'antd'
+import { Checkbox, message, Form, Input, Tabs, Button, Row, Col } from 'antd'
 
 // Other dependencies
 import React from 'react'
@@ -76,12 +76,19 @@ const Login: React.FunctionComponent = () => {
 								<Input.Password placeholder="Password" />
 							</Form.Item>
 
-							<Form.Item name="remember" valuePropName="checked">
-								<Checkbox>Remember me</Checkbox>
-								<Link style={{ float: 'right', color: '#d60d17' }} to="/auth/sign-in/forgot-password">
-									Forgot Password
-								</Link>
-							</Form.Item>
+							<Row>
+								<Col>
+									<Form.Item name="remember" valuePropName="checked">
+										<Checkbox>Remember me</Checkbox>
+									</Form.Item>
+								</Col>
+
+								<Form.Item>
+									<Link style={{ float: 'right', color: '#d60d17' }} to="/auth/sign-in/forgot-password">
+											Forgot Password
+									</Link>
+								</Form.Item>
+							</Row>
 
 							<Form.Item>
 								<Button className={styles.submit} size="large" type="primary" htmlType="submit">
