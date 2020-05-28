@@ -38,7 +38,7 @@
   | Node | 12 |
 
   ### API
-  After you have cloned this repository to your machine, cd into project folder and then create .env files from .env.example ones with following command:
+  After you have forked and cloned this repository to your machine, cd into project folder and then create .env files from .env.example ones with following command:
 
   ```bash
   cp .env.example .env && cp ./server/.env.example ./server/.env
@@ -94,6 +94,13 @@
 
   ### FRONTEND
   cd into client directory and then:
+
+  Install dependencies:
+  ```bash
+  npm ci
+  ```
+
+  Run Frontend:
   ```bash
   npm run start:dev
   ```
