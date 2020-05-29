@@ -7,5 +7,7 @@ export const socketConnection = (accessToken: string): SocketIOClient.Socket => 
 		Authorization: `Bearer ${accessToken}`,
 	},
 	transports: ['websocket'],
+	rejectUnauthorized: false,
+	reconnection: true,
 	secure: process.env.NODE_ENV === 'production' ? true : false
 })
