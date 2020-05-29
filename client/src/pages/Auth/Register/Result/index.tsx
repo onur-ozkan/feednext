@@ -18,9 +18,9 @@ const RegisterResult = props => {
 							fontSize: 20,
 						}}
 					>
-						Your account verification mail has been sent to{' '}
+						Your account verification mail has been sent  to{' '}
 						<span style={{ color: '#5199FF' }}>{signedAccount.email}</span>, please check your mails (might be in spams) and do the
-						verification to sign in.
+						verification to sign in. It may take up to 5 minutes for the mail to arrive.
 					</Typography.Text>
 				</Typography.Paragraph>
 			}
