@@ -3,7 +3,6 @@ import {
 	Button,
 	Card,
 	List,
-	Tag,
 	message,
 	BackTop,
 	Row,
@@ -152,15 +151,11 @@ const Feeds = (): JSX.Element => {
 							avatar={
 								<img
 									width={100}
-									style={{
-										maxHeight: 100
-									}}
 									src={`${API_URL}/v1/title/${item.id}/image`}
 									alt="Title Image"
 								/>
 							}
-							description={ <Tag> {item.categoryName.toUpperCase()} </Tag>
-							}
+							description={item.categoryName.toUpperCase()}
 						/>
 						{item.featuredEntry ?
 								<ArticleListContent data={item.featuredEntry} />
@@ -260,7 +255,7 @@ const Feeds = (): JSX.Element => {
 			/>
 			<BackTop />
 			<Row>
-				<Col xl={16} lg={14} md={24} sm={24} xs={24} style={{ padding: 7 }}>
+				<Col xl={16} lg={14} md={24} sm={24} xs={24} style={{ padding: 4 }}>
 					<Card
 						bordered={false}
 						bodyStyle={{
@@ -278,8 +273,8 @@ const Feeds = (): JSX.Element => {
 						{handleEntryListRender()}
 					</Card>
 				</Col>
-				<Col xl={8} lg={10} md={24} sm={24} xs={24} style={{ padding: 7 }}>
-					<Card style={{ marginBottom: 14 }} bordered={false} title="Trending Categories">
+				<Col xl={8} lg={10} md={24} sm={24} xs={24} style={{ padding: 4 }}>
+					<Card style={{ marginBottom: 8 }} bordered={false} title="Trending Categories">
 						{handleTrendingCategoriesRender()}
 					</Card>
 					<AdditionalBlock />
