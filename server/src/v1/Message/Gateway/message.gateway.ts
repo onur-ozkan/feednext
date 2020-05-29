@@ -8,8 +8,9 @@ import { Server } from 'socket.io'
 // Local files
 import { MessageService } from '../Service/message.service'
 import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.service'
+import { configService } from 'src/shared/Services/config.service'
 
-@WebSocketGateway({
+@WebSocketGateway(4001 + Number(configService.getEnv('INSTANCE_ID') || 0), {
     transports: ['websocket'],
     // origins: configService.getEnv('APP_DOMAIN'),
 })
