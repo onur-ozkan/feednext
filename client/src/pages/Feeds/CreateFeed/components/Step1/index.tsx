@@ -76,7 +76,7 @@ const Step1 = (props: Step1Props): JSX.Element => {
 				layout="horizontal"
 				className={styles.stepForm}
 			>
-				<Form.Item label="Title Image" rules={[{ required: false }]}>
+				<Form.Item label="Image (Optional)" rules={[{ required: false }]}>
 					<ImageUpload
 						defaultUrl={createTitleFormData.imageBase64}
 						onImageTake={handleOnUpload}
