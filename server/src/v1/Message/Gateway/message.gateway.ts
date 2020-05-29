@@ -10,7 +10,7 @@ import { MessageService } from '../Service/message.service'
 import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.service'
 
 @WebSocketGateway({
-    transport: ['websocket'],
+    transports: ['websocket'],
     // origins: configService.getEnv('APP_DOMAIN'),
 })
 export class MessageGateway {
