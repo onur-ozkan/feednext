@@ -117,7 +117,7 @@
   See hosted documentation [here](https://documenter.getpostman.com/view/4176747/SzYW3faf)
 
   ## Contributing
-  Technically, feednext.io is developed with Software Patterns & Design Principles all around it. PRs are welcome as long as they are fits in the principles, structure of the feednext.io.
+  Technically, feednext.io is performance oriented application which is developed with Software Patterns & Design Principles using modern technologies all around it. PRs are welcome as long as they are fits in the principles, structure of the feednext.io.
 
   Please do not directly PR to 'master' branch, instead go for 'dev' branch.
 
