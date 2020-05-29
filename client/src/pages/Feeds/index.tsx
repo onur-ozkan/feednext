@@ -38,6 +38,7 @@ const Feeds = (): JSX.Element => {
 	const [skipValueForPagination, setSkipValueForPagination] = useState(0)
 	const [canLoadMore, setCanLoadMore] = useState(false)
 	const [isLoading, setIsLoading] = useState(true)
+	const [isFetching, setIsFetching] = useState(false)
 
 	useEffect(() => {
 		setFeed([])
@@ -45,7 +46,6 @@ const Feeds = (): JSX.Element => {
 	}, [categoryFilter, sortBy])
 
 	const handleDataFetching = async (): Promise<void> => {
-
 		if (!trendingCategories) {
 			fetchTrendingCategories()
 				.then(res => setTrendingCategories(res.data.attributes.categories))
@@ -53,8 +53,7 @@ const Feeds = (): JSX.Element => {
 
 		await fetchAllFeeds(skipValueForPagination, undefined, categoryFilter, sortBy)
 			.then((feedsResponse: AxiosResponse) => {
-
-				if (feedList.length > 0 && feedsResponse.data.attributes.count > feedList.length) setCanLoadMore(true)
+				if (feedsResponse.data.attributes.count > feedList.length) setCanLoadMore(true)
 				else setCanLoadMore(false)
 
 				feedsResponse.data.attributes.titles.map(async (title: any) => {
@@ -99,6 +98,7 @@ const Feeds = (): JSX.Element => {
 			})
 			.catch((error: AxiosError) => message.error(error.response?.data.message))
 		setIsLoading(false)
+		setIsFetching(false)
 	}
 
 	const handleEntryListRender = (): JSX.Element => {
@@ -208,7 +208,10 @@ const Feeds = (): JSX.Element => {
 	}, [skipValueForPagination, categoryFilter, sortBy])
 
 
-	const handleFetchMore = (): void => setSkipValueForPagination(skipValueForPagination + 10)
+	const handleFetchMore = (): void => {
+		setIsFetching(true)
+		setSkipValueForPagination(skipValueForPagination + 10)
+	}
 
 	const loadMore = canLoadMore && (
 		<div style={{ textAlign: 'center', marginTop: 16 }}>
@@ -219,7 +222,7 @@ const Feeds = (): JSX.Element => {
 					paddingRight: 48,
 				}}
 			>
-				More
+				{isFetching ? <LoadingOutlined /> : 'More'}
 			</Button>
 		</div>
 	)
