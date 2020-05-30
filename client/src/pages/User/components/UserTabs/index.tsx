@@ -1,5 +1,5 @@
 // Ant dependencies
-import { Card, Tabs, Typography, Divider, Pagination, Empty, Row, Col, Button } from 'antd'
+import { Card, Tabs, Typography, Divider, Pagination, Empty, Button, List } from 'antd'
 import { CopyOutlined, EditOutlined, LoadingOutlined, UpOutlined, DownOutlined } from '@ant-design/icons'
 
 // Other dependencies
@@ -91,14 +91,18 @@ export const UserTabs: React.FC<{username: string}> = (props) => {
 			}
 
 			const feedList = await res.data.attributes.titles.map((title: any) =>
-				<Row key={title.id} style={{ padding: 5 }}>
-					<Col>
-						{title.name}
-					</Col>
-					<Button onClick={(): void => history.push(`/${title.slug}`)} size="small" type="primary">
-						Open
-					</Button>
-				</Row>
+				<List.Item.Meta
+					title={
+						<Typography.Text ellipsis>
+							{title.name}
+						</Typography.Text>
+					}
+					avatar={
+						<Button onClick={(): void => history.push(`/${title.slug}`)} size="small" type="primary">
+							Open
+						</Button>
+					}
+				/>
 			)
 			setTabView(
 				<div style={{ minHeight: 460 }}>
@@ -127,16 +131,18 @@ export const UserTabs: React.FC<{username: string}> = (props) => {
 			}
 
 			const entryList = await res.data.attributes.entries.map((entry: any) =>
-				<Row key={entry.id} style={{ padding: 5 }}>
-					<Col>
-						<Typography.Paragraph ellipsis>
+				<List.Item.Meta
+					title={
+						<Typography.Text ellipsis>
 							{entry.text}
-						</Typography.Paragraph>
-					</Col>
-					<Button onClick={(): void => history.push(`/entry/${entry.id}`)} size="small" type="primary">
-						Open
-					</Button>
-				</Row>
+						</Typography.Text>
+					}
+					avatar={
+						<Button onClick={(): void => history.push(`/entry/${entry.id}`)} size="small" type="primary">
+							Open
+						</Button>
+					}
+				/>
 			)
 			setTabView(
 				<div style={{ minHeight: 460 }}>
@@ -168,16 +174,18 @@ export const UserTabs: React.FC<{username: string}> = (props) => {
 			}
 
 			const entryList = await res.data.attributes.entries.map((entry: any) =>
-				<Row key={entry.id} style={{ padding: 5 }}>
-					<Col>
-						<Typography.Paragraph ellipsis>
+				<List.Item.Meta
+					title={
+						<Typography.Text ellipsis>
 							{entry.text}
-						</Typography.Paragraph>
-					</Col>
-					<Button onClick={(): void => history.push(`/entry/${entry.id}`)} size="small" type="primary">
-						Open
-					</Button>
-				</Row>
+						</Typography.Text>
+					}
+					avatar={
+						<Button onClick={(): void => history.push(`/entry/${entry.id}`)} size="small" type="primary">
+							Open
+						</Button>
+					}
+				/>
 			)
 			setTabView(
 				<div style={{ minHeight: 460 }}>

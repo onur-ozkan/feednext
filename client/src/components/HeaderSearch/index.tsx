@@ -4,7 +4,6 @@ import { SearchOutlined } from '@ant-design/icons'
 
 // Other dependencies
 import React, { useRef, useState, useEffect } from 'react'
-import { history } from 'umi'
 import classNames from 'classnames'
 
 // Local files
@@ -30,13 +29,6 @@ const HeaderSearch: React.FC = (): JSX.Element => {
 		setSearchMode(false)
 	}
 
-	const handleTitleRouting = (route: string): void => {
-		setAutoCompleteData(null)
-		setSearchMode(false)
-		setValue('')
-		history.push(route)
-	}
-
 	useEffect(() => {
 		if (value === '') setAutoCompleteData(null)
 
@@ -47,7 +39,7 @@ const HeaderSearch: React.FC = (): JSX.Element => {
 						label:
 							<div
 								style={{ width: '100%' }}
-								onClick={(): void => handleTitleRouting(`/${title.slug}`)}
+								onClick={(): string => location.href = `/${title.slug}`}
 							>
 								<Typography.Text style={{ fontSize: 15 }}> {title.name} </Typography.Text>
 							</div>,
