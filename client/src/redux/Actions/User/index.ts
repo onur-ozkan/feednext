@@ -1,20 +1,36 @@
-import { Dispatch } from 'redux'
-import { SIGN_IN, SIGN_OUT, UserPayload, SignInAction, SignOutAction } from './types'
+export const SIGN_IN = 'SIGN_IN'
+export const UPDATE_USER = 'UPDATE_USER'
 
-export const StartUserActions = {
-	signIn: (userPayload: UserPayload) => {
-		return (dispatch: Dispatch<SignInAction>): void => {
-			dispatch({
-				type: SIGN_IN,
-				user: userPayload
-			})
-		}
-	},
-	signOut: () => {
-		return (dispatch: Dispatch<SignOutAction>): void => {
-			dispatch({
-				type: SIGN_OUT,
-			})
-		}
-	}
+export interface UserPayload {
+    type: string
+    id: string
+    attributes: {
+        full_name: string,
+		username: string,
+		email: string,
+		biography: string,
+		link: string,
+		role: number,
+		is_active: boolean,
+		created_at: string,
+		updated_at: string
+    }
 }
+
+export interface UpdateUserPayload {
+	fullName?: string
+	link?: string
+	biography?: string
+}
+
+export interface SignInAction {
+	type: typeof SIGN_IN
+	user: UserPayload
+}
+
+export interface UpdateUserAction {
+	type: typeof UPDATE_USER
+	payload: UpdateUserPayload
+}
+
+export type UserActions = SignInAction | UpdateUserAction

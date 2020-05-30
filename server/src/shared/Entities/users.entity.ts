@@ -8,7 +8,7 @@ import {
     UpdateDateColumn,
     BeforeInsert,
 } from 'typeorm'
-import * as crypto from 'crypto'
+import { createHmac } from 'crypto'
 
 @Entity('Users')
 export class UsersEntity {
@@ -34,52 +34,57 @@ export class UsersEntity {
 
     @Column({
         type: 'string',
-        length: 15,
+        length: 20,
     })
     password: string
 
     @Column({
         type: 'string',
-        length: 50,
+        length: 80,
         unique: true,
     })
     email: string
 
-    @Column({ type: 'string', nullable: true })
+    @Column({
+        type: 'string',
+        length: 90,
+    })
+    link: string
+
+    @Column({
+        type: 'string',
+        length: 155,
+    })
+    biography: string
+
+    @Column('string')
     refresh_token: string
 
-    @Column({ type: 'tinyint' })
+    @Column('string')
+    recovery_key: string | null
+
+    @Column('tinyint')
     role: number
 
-    @Column({ type: 'array' })
-    up_voted_entries: string[]
-
-    @Column({ type: 'array' })
-    down_voted_entries: string[]
-
-    @Column({ type: 'boolean' })
-    is_verified: boolean
-
-    @Column({ type: 'boolean' })
+    @Column('boolean')
     is_active: boolean
 
-    @CreateDateColumn({ type: 'date' })
+    @CreateDateColumn('date')
     created_at: Date
 
-    @UpdateDateColumn({ type: 'date' })
+    @UpdateDateColumn('date')
     updated_at: Date
 
     @BeforeInsert()
     hashPassword() {
-        this.password = crypto.createHmac('sha256', this.password).digest('hex')
+        this.password = createHmac('sha256', this.password).digest('hex')
     }
 
     @BeforeInsert()
     fillDefaults() {
         this.role = 0
+        this.biography = ''
+        this.link = ''
         this.is_active = true
-        this.is_verified = false,
-        this.up_voted_entries = []
-        this.down_voted_entries = []
     }
 }

@@ -9,8 +9,8 @@ import { RolesGuard } from 'src/shared/Guards/roles.guard'
 import { Roles } from 'src/shared/Decorators/roles.decorator'
 import { CreateEntryDto } from '../Dto/create-entry.dto'
 import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.service'
-import { JuniorAuthor, Admin, SuperAdmin, User } from 'src/shared/Constants'
 import { ISerializeResponse } from 'src/shared/Services/serializer.service'
+import { Role } from 'src/shared/Enums/Roles'
 
 @ApiTags('v1/entry')
 @UseGuards(RolesGuard)
@@ -23,15 +23,26 @@ export class EntryController {
         return this.entryService.getEntry(entryId)
     }
 
-    @Get(':titleId/all')
+    @Get('by-author/:username/all')
+    getEntriesByAuthorOfIt(
+        @Param('username') username: string,
+        @Query() query: { skip: number },
+    ): Promise<any> {
+        return this.entryService.getEntriesByAuthorOfIt({ username, query })
+    }
+
+    @Get('by-title/:titleId/all')
     getEntriesByTitleId(
-        @Query() query: { limit: number, skip: number, orderBy: any },
         @Param('titleId') titleId: string,
+        @Query() query: {
+            skip: number,
+            sortBy: 'newest' | 'top'
+        },
     ): Promise<ISerializeResponse> {
         return this.entryService.getEntriesByTitleId({ titleId, query })
     }
 
-    @Get(':titleId/featured')
+    @Get('by-title/:titleId/featured')
     getFeaturedEntryByTitleId(
         @Param('titleId') titleId: string
     ): Promise<ISerializeResponse> {
@@ -41,7 +52,6 @@ export class EntryController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Patch(':entryId')
-    @Roles(Admin)
     updateEntry(
         @Headers('authorization') bearer: string, @Param('entryId') entryId: string, @Body('text') text: string,
     ): Promise<ISerializeResponse> {
@@ -51,7 +61,7 @@ export class EntryController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Patch('up-vote/:entryId')
-    @Roles(User)
+    @Roles(Role.User)
     upVoteEntry(
         @Param('entryId') entryId: string,
         @Headers('authorization') bearer: string,
@@ -62,7 +72,7 @@ export class EntryController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Patch('down-vote/:entryId')
-    @Roles(User)
+    @Roles(Role.User)
     downVoteEntry(
         @Param('entryId') entryId: string,
         @Headers('authorization') bearer: string,
@@ -73,7 +83,7 @@ export class EntryController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Patch('undo-vote/:entryId')
-    @Roles(User)
+    @Roles(Role.User)
     undoVoteEntry(
         @Param('entryId') entryId: string,
         @Query('isUpVoted') isUpVoted: string,
@@ -89,7 +99,7 @@ export class EntryController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Post('create-entry')
-    @Roles(JuniorAuthor)
+    @Roles(Role.User)
     createEntry(
         @Headers('authorization') bearer: string, @Body() dto: CreateEntryDto,
     ): Promise<HttpException | ISerializeResponse> {
@@ -99,9 +109,11 @@ export class EntryController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Delete(':entryId')
-    @Roles(SuperAdmin)
     deleteTitle(
-        @Param('entryId') entryId: string): Promise<HttpException> {
-        return this.entryService.deleteEntry(entryId)
+        @Param('entryId') entryId: string,
+        @Headers('authorization') bearer: string,
+    ): Promise<HttpException> {
+        const { username, role } = jwtManipulationService.decodeJwtToken(bearer, 'all')
+        return this.entryService.deleteEntry(username, role, entryId)
     }
 }

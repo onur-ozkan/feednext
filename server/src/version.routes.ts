@@ -8,6 +8,7 @@ import { CategoryModule } from './v1/Category/category.module'
 import { EntryModule } from './v1/Entry/entry.module'
 import { UserModule } from './v1/User/user.module'
 import { TitleModule } from './v1/Title/title.module'
+import { MessageModule } from './v1/Message/message.module'
 
 export const versionRoutes: Routes = [
     {
@@ -33,6 +34,10 @@ export const versionRoutes: Routes = [
             {
                 path: '/user',
                 module: UserModule,
+            },
+            {
+                path: '/message',
+                module: MessageModule,
             },
         ],
     },

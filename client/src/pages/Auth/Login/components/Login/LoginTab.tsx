@@ -1,10 +1,12 @@
+// Antd dependencies
+import { Tabs } from 'antd'
+import { TabPaneProps } from 'antd/es/tabs'
+
+// Other dependencies
 import React, { Component } from 'react'
 
-import { TabPaneProps } from 'antd/es/tabs'
-import { Tabs } from 'antd'
+// Local files
 import LoginContext, { LoginContextProps } from './LoginContext'
-
-const { TabPane } = Tabs
 
 const generateId = ((): ((prefix?: any) => any) => {
 	let i = 0
@@ -35,7 +37,7 @@ class LoginTab extends Component<LoginTabProps> {
 
 	render(): JSX.Element {
 		const { children } = this.props
-		return <TabPane {...this.props}>{children}</TabPane>
+		return <Tabs.TabPane {...this.props}>{children}</Tabs.TabPane>
 	}
 }
 

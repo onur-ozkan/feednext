@@ -1,120 +1,220 @@
-import React, { useEffect, useState } from 'react'
-import { Form } from '@ant-design/compatible'
-import { Button, Card, List, Select, Tag, message } from 'antd'
+// Antd dependencies
 import {
-	LoadingOutlined,
-	ArrowUpOutlined,
-	LinkOutlined,
-} from '@ant-design/icons'
-import '@ant-design/compatible/assets/index.css'
+	Button,
+	Card,
+	List,
+	message,
+	BackTop,
+	Row,
+	Col,
+	Typography,
+	Modal
+} from 'antd'
+import { LoadingOutlined, ArrowUpOutlined } from '@ant-design/icons'
 
+// Other dependencies
+import React, { useEffect, useState } from 'react'
+import { AxiosError, AxiosResponse } from 'axios'
+import { Link } from 'umi'
+
+// Local files
+import { fetchAllFeeds, fetchFeaturedEntryByTitleId, fetchTrendingCategories, fetchOneCategory } from '@/services/api'
+import { CategorySelect } from '@/components/CategorySelect'
+import { API_URL } from '@/../config/constants'
+import { PageHelmet } from '@/components/PageHelmet'
+import { AdditionalBlock } from './components/AdditionalBlock'
+import { TrendingCategoriesResponseData } from '@/@types/api'
+import { FeedList } from './types'
 import ArticleListContent from './components/ArticleListContent'
-import StandardFormRow from './components/StandardFormRow'
-import TagSelect from './components/TagSelect'
-import styles from './style.less'
-import api from '@/utils/api'
+import globalStyles from '@/global.less'
+import FlowHeader from './components/FlowHeader'
 
-const Feeds = () => {
+const Feeds = (): JSX.Element => {
+	const [displayFilterModal, setDisplayFilterModal] = useState(false)
+	const [trendingCategories, setTrendingCategories] = useState<TrendingCategoriesResponseData[] | undefined>(undefined)
+	const [categoryFilter, setCategoryFilter] = useState<string | undefined>(undefined)
+	const [feedList, setFeed] = useState<FeedList[]>([])
+	const [sortBy, setSortBy] = useState<'hot' | 'top' | undefined>(undefined)
+	const [skipValueForPagination, setSkipValueForPagination] = useState(0)
+	const [canLoadMore, setCanLoadMore] = useState(false)
 	const [isLoading, setIsLoading] = useState(true)
-	const [feedList, setFeed]: any = useState([])
-
-	const { Option } = Select
-	const FormItem = Form.Item
+	const [isFetching, setIsFetching] = useState(false)
 
 	useEffect(() => {
-		api.fetchAllFeeds()
-			.then(async feedsResponse => {
-				await feedsResponse.data.attributes.titles.map(async (title: any) => {
-					await api
-						.fetchFeaturedEntryByTitleId(title.id)
-						.then(async featuredEntryResponse => {
-							const feed = {
-								id: title.id,
-								name: title.name,
-								categoryName: await api
-									.fetchOneCategoryById(title.category_id)
-									.then(categoryResponse => categoryResponse.data.attributes.name),
-								rate: title.rate,
-								createdAt: title.created_at,
-								updatedAt: title.updated_at,
-								entryCount: title.entry_count,
-								entry: {
-									id: featuredEntryResponse.data.attributes.id,
-									avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-									profileUrl: '#',
-									text: featuredEntryResponse.data.attributes.text,
-									createdAt: featuredEntryResponse.data.attributes.created_at,
-									updatedAt: featuredEntryResponse.data.attributes.updated_at,
-									votes: featuredEntryResponse.data.attributes.votes,
-									writtenBy: featuredEntryResponse.data.attributes.written_by,
-								},
-							}
-							await setFeed((feedList: any) => [...feedList, feed])
-						})
-						.catch(error => message.error(error.response.data.message, 3))
-				})
-			})
-			.then(() => {
-				setIsLoading(false)
-			})
-			.catch(error => message.error(error.response.data.message, 3))
-	}, [])
+		setFeed([])
+		setSkipValueForPagination(0)
+	}, [categoryFilter, sortBy])
 
-	const owners = [
-		{
-			id: 'tr',
-			name: 'Türkçe',
-		},
-		{
-			id: 'en',
-			name: 'English',
-		},
-	]
+	const handleDataFetching = async (): Promise<void> => {
+		if (!trendingCategories) {
+			fetchTrendingCategories()
+				.then(res => setTrendingCategories(res.data.attributes.categories))
+		}
+
+		await fetchAllFeeds(skipValueForPagination, undefined, categoryFilter, sortBy)
+			.then(async (feedsResponse: AxiosResponse) => {
+				if (feedsResponse.data.attributes.count > feedList.length) setCanLoadMore(true)
+				else setCanLoadMore(false)
+
+				const promises = await feedsResponse.data.attributes.titles.map(async (title: any) => {
+					const categoryName = await fetchOneCategory(title.category_id).then(({ data }) => data.attributes.name)
+					const featuredEntry: any = await fetchFeaturedEntryByTitleId(title.id).then(featuredEntryResponse => featuredEntryResponse.data.attributes)
+					.catch(_error => {})
+
+					const feed = {
+						id: title.id,
+						slug: title.slug,
+						name: title.name,
+						href: `/${title.slug}`,
+						categoryName: categoryName,
+						createdAt: title.created_at,
+						updatedAt: title.updated_at,
+						entryCount: title.entry_count,
+						...featuredEntry && {
+							featuredEntry: {
+								id: featuredEntry.id,
+								avatar: `${API_URL}/v1/user/pp?username=${featuredEntry.written_by}`,
+								text: featuredEntry.text,
+								createdAt: featuredEntry.created_at,
+								updatedAt: featuredEntry.updated_at,
+								voteValue: featuredEntry.votes.value,
+								writtenBy: featuredEntry.written_by,
+							}
+						}
+					}
+					return feed
+				})
+
+				const result = await Promise.all(promises)
+
+				/* TODO
+				* This is a workaround to fix wrong list order of Feeds Flow.
+				* Updating feeds should be refactored.
+				*/
+				result.map(item => setFeed((feedList: FeedList[]) => [...feedList, item]))
+
+			})
+			.catch((error: AxiosError) => message.error(error.response?.data.message))
+		setIsLoading(false)
+		setIsFetching(false)
+	}
+
+
+
+
+	const handleFeedListView = (): JSX.Element => {
+		if (isLoading) {
+			return (
+				<div style={{ textAlign: 'center', marginTop: 61 }}>
+					<LoadingOutlined spin style={{ fontSize: 25 }} />
+				</div>
+			)
+		}
+
+		return (
+			<List<FeedList>
+				style={{ marginTop: 25 }}
+				rowKey="id"
+				size="large"
+				itemLayout="vertical"
+				loadMore={loadMore}
+				dataSource={feedList}
+				renderItem={(item): JSX.Element => (
+					<List.Item
+						key={item.id}
+						actions={[
+							<div key="_" style={{ cursor: 'default' }}>
+								{item.featuredEntry && (
+									<span style={{ marginRight: 10 }}>
+										<ArrowUpOutlined style={{ marginRight: 3 }} />
+										{item.featuredEntry.voteValue}
+									</span>
+								)}
+							</div>
+						]}
+					>
+						<List.Item.Meta
+							title={
+								<Row>
+									<Col>
+										<Link
+											to={item.href}
+											style={{ cursor: 'pointer' }}
+										>
+											<Typography.Text style={{ fontSize: 17 }}>
+												{item.name}
+											</Typography.Text>
+										</Link>
+
+									</Col>
+								</Row>
+							}
+							avatar={
+								<img
+									width={100}
+									src={`${API_URL}/v1/title/${item.id}/image`}
+									alt="Title Image"
+								/>
+							}
+							description={item.categoryName.toUpperCase()}
+						/>
+						{item.featuredEntry ?
+								<ArticleListContent data={item.featuredEntry} />
+							:
+								<Typography.Text strong> No Entry Found </Typography.Text>
+						}
+					</List.Item>
+				)}
+			/>
+		)
+	}
+
+	const handleTrendingCategoriesRender = (): JSX.Element => {
+
+		if (!trendingCategories) {
+			return (
+				<div style={{ textAlign: 'center' }}>
+					<LoadingOutlined spin style={{ fontSize: 25 }} />
+				</div>
+			)
+		}
+
+		return (
+			<div style={{ marginTop: -20 }}>
+				{trendingCategories.map(category => {
+					return (
+						<Row key={category.id} style={{ marginBottom: 10, marginTop: 10,  alignItems: 'center'  }}>
+							<Col>
+								<Typography.Text strong>
+									{category.name.length > 17 ? `${category.name.substring(0, 15).toUpperCase()}..` : category.name.toUpperCase()}
+								</Typography.Text>
+							</Col>
+							<Button onClick={(): void => setCategoryFilter(category.id)} type="primary" key={category.id}>
+								<Typography.Text
+									style={{ color: 'white' }}
+									strong
+								>
+									Display
+								</Typography.Text>
+							</Button>
+						</Row>
+					)
+				})}
+			</div>
+		)
+	}
+
+	useEffect(() => {
+		handleDataFetching()
+	}, [skipValueForPagination, categoryFilter, sortBy])
 
 	const handleFetchMore = (): void => {
-		// TODO
-		return
+		setIsFetching(true)
+		setSkipValueForPagination(skipValueForPagination + 10)
 	}
 
-	const IconText: React.FC<{
-		type: string
-		text: React.ReactNode
-	}> = ({ type, text }) => {
-		switch (type) {
-			case 'link':
-				return (
-					<span>
-						<LinkOutlined
-							style={{
-								marginRight: 8,
-							}}
-						/>
-						{text}
-					</span>
-				)
-			case 'up':
-				return (
-					<span>
-						<ArrowUpOutlined
-							style={{
-								marginRight: 8,
-							}}
-						/>
-						{text}
-					</span>
-				)
-			default:
-				return null
-		}
-	}
-
-	const loadMore = feedList.length > 0 && (
-		<div
-			style={{
-				textAlign: 'center',
-				marginTop: 16,
-			}}
-		>
+	const loadMore = canLoadMore && (
+		<div style={{ textAlign: 'center', marginTop: 16 }}>
 			<Button
 				onClick={handleFetchMore}
 				style={{
@@ -122,99 +222,68 @@ const Feeds = () => {
 					paddingRight: 48,
 				}}
 			>
-				{isLoading ? (
-					<span>
-						<LoadingOutlined /> Loading...
-					</span>
-				) : (
-					'load more'
-				)}
+				{isFetching ? <LoadingOutlined /> : 'More'}
 			</Button>
 		</div>
 	)
 
+	const handleModalScreen = (): JSX.Element => (
+		<Modal
+			transitionName='fade'
+			style={{ textAlign: 'center'}}
+			visible={displayFilterModal}
+			closable={false}
+			footer={null}
+			onCancel={(): void => setDisplayFilterModal(false)}
+		>
+			<CategorySelect
+				multiple
+				onSelect={(id): void => setCategoryFilter(String(id))}
+				style={{ width: '100%' }}
+				placeHolder="All Categories"
+				allowClear
+			/>
+		</Modal>
+	)
+
 	return (
 		<>
-			<Card bordered={false}>
-				<Form layout="inline">
-					<StandardFormRow
-						title="Category"
-						block
-						style={{
-							paddingBottom: 11,
+			<PageHelmet
+				title="Feednext: the source of feedbacks"
+				description="Best reviews, comments, feedbacks about anything around the world"
+				mediaTitle="the source of the feedbacks"
+				mediaImage="https://avatars1.githubusercontent.com/u/64217221?s=200&v=4"
+				mediaDescription="Best reviews, comments, feedbacks about anything around the world"
+				keywords="reviews, comments, feedbacks, peruse"
+			/>
+			<BackTop />
+			<Row>
+				<Col xl={16} lg={14} md={24} sm={24} xs={24} style={{ padding: 4 }}>
+					<Card
+						bordered={false}
+						bodyStyle={{
+							padding: '8px 32px 32px 32px',
 						}}
 					>
-						<FormItem>
-							<TagSelect expandable>
-								<TagSelect.Option value="cat1">Category one</TagSelect.Option>
-								<TagSelect.Option value="cat2">Category two</TagSelect.Option>
-								<TagSelect.Option value="cat3">Category three</TagSelect.Option>
-								<TagSelect.Option value="cat4">Category four</TagSelect.Option>
-								<TagSelect.Option value="cat5">Category five</TagSelect.Option>
-								<TagSelect.Option value="cat6">Category six</TagSelect.Option>
-							</TagSelect>
-						</FormItem>
-					</StandardFormRow>
-					<StandardFormRow title="Language" grid>
-						<Select
-							mode="multiple"
-							style={{
-								maxWidth: 286,
-								width: '100%',
-							}}
-							placeholder="Language Filter"
-						>
-							{owners.map(owner => (
-								<Option key={owner.id} value={owner.id}>
-									{owner.name}
-								</Option>
-							))}
-						</Select>
-					</StandardFormRow>
-				</Form>
-			</Card>
-			<Card
-				style={{
-					marginTop: 24,
-				}}
-				bordered={false}
-				bodyStyle={{
-					padding: '8px 32px 32px 32px',
-				}}
-			>
-				<List<any>
-					size="large"
-					loading={feedList.length === 0 ? isLoading : false}
-					rowKey="id"
-					itemLayout="vertical"
-					loadMore={loadMore}
-					dataSource={feedList}
-					renderItem={(item): JSX.Element => (
-						<List.Item
-							key={item.id}
-							actions={[
-								<IconText key="up" type="up" text={item.entry.votes} />,
-								<IconText key="link" type="link" text="Share" />,
-							]}
-							extra={<div className={styles.listItemExtra} />}
-						>
-							<List.Item.Meta
-								title={
-									<a className={styles.listItemMetaTitle} href={item.href}>
-										{item.name}
-									</a>
-								}
-								description={
-									<span>
-										<Tag>{item.categoryName}</Tag>
-									</span>
-								}
-							/>
-							<ArticleListContent data={item.entry} />
-						</List.Item>
-					)}
-				/>
-			</Card>
+						<FlowHeader
+							openFilterModal={(): void => setDisplayFilterModal(true)}
+							setSortBy={(val: 'top' | 'hot' | undefined): void => setSortBy(val)}
+							resetCategoryFilter={(): void => setCategoryFilter(undefined)}
+							sortBy={sortBy}
+							antBtnLinkStyle={globalStyles.antBtnLink}
+						/>
+						{handleModalScreen()}
+						{handleFeedListView()}
+					</Card>
+				</Col>
+				<Col xl={8} lg={10} md={24} sm={24} xs={24} style={{ padding: 4 }}>
+					<Card style={{ marginBottom: 8 }} bordered={false} title="Trending Categories">
+						{handleTrendingCategoriesRender()}
+					</Card>
+					<AdditionalBlock />
+				</Col>
+			</Row>
+			<br/>
 		</>
 	)
 }

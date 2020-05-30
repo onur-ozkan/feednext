@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Controller, Post, Body, UseGuards, Param, Get, Delete, Query, Patch } from '@nestjs/common'
+import { Controller, Post, Body, UseGuards, Param, Get, Delete, Patch } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 
@@ -9,8 +9,8 @@ import { Roles } from 'src/shared/Decorators/roles.decorator'
 import { CreateCategoryDto } from '../Dto/create-category.dto'
 import { CategoryService } from '../Service/category.service'
 import { UpdateCategoryDto } from '../Dto/update-category.dto'
-import { SeniorAuthor, Admin, SuperAdmin } from 'src/shared/Constants'
 import { ISerializeResponse } from 'src/shared/Services/serializer.service'
+import { Role } from 'src/shared/Enums/Roles'
 
 @ApiTags('v1/category')
 @Controller()
@@ -25,15 +25,25 @@ export class CategoryController {
         return this.categoryService.getCategory(categoryId)
     }
 
-    @Get('all')
-    getCategoryList(@Query() query: { limit: number, skip: number, orderBy: any }): Promise<ISerializeResponse> {
-        return this.categoryService.getCategoryList(query)
+    @Get('main-categories')
+    getMainCategories(): Promise<ISerializeResponse> {
+        return this.categoryService.getMainCategories()
+    }
+
+    @Get(':categoryId/child-categories')
+    getChildCategories(@Param('categoryId') categoryId: string): Promise<ISerializeResponse> {
+        return this.categoryService.getChildCategories(categoryId)
+    }
+
+    @Get('trending-categories')
+    getTrendingCategories(): Promise<ISerializeResponse> {
+        return this.categoryService.getTrendingCategories()
     }
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
-    @Post('create-category')
-    @Roles(SeniorAuthor)
+    @Post()
+    @Roles(Role.SuperAdmin)
     createCategory(@Body() dto: CreateCategoryDto): Promise<ISerializeResponse> {
         return this.categoryService.createCategory(dto)
     }
@@ -41,7 +51,7 @@ export class CategoryController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Patch(':categoryId')
-    @Roles(Admin)
+    @Roles(Role.Admin)
     updateCategory(@Param('categoryId') categoryId: string, @Body() dto: UpdateCategoryDto): Promise<ISerializeResponse> {
         return this.categoryService.updateCategory(categoryId, dto)
     }
@@ -49,7 +59,7 @@ export class CategoryController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Delete(':categoryId')
-    @Roles(SuperAdmin)
+    @Roles(Role.SuperAdmin)
     deleteCategory(@Param('categoryId') categoryId: string): Promise<ISerializeResponse> {
         return this.categoryService.deleteCategory(categoryId)
     }

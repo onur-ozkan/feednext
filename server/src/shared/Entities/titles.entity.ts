@@ -21,6 +21,9 @@ export class TitlesEntity {
     @Column({ type: 'string' })
     category_id: string
 
+    @Column({ type: 'array' })
+    category_ancestors: string[]
+
     @Column({
         unique: true,
         type: 'string',
@@ -31,8 +34,8 @@ export class TitlesEntity {
     @Column({ type: 'string' })
     slug: string
 
-    @Column({ type: 'tinyint' })
-    rate: number
+    @Column({ type: 'array' })
+    rate: []
 
     @Column({ type: 'int' })
     entry_count: number
@@ -57,7 +60,7 @@ export class TitlesEntity {
 
     @BeforeInsert()
     fillDefaults() {
-        this.rate = 0
+        this.rate = []
         this.entry_count = 0
     }
 }

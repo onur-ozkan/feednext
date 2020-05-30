@@ -24,20 +24,18 @@ export class EntriesEntity {
     @Column({ type: 'string' })
     text: string
 
-    @Column({ type: 'int' })
-    votes: number
+    @Column({ type: 'json' })
+    votes: {
+        value: number,
+        up_voted: string[],
+        down_voted: string[]
+    }
 
     @Column({
         type: 'string',
         length: 17,
     })
     written_by: string
-
-    @Column({
-        type: 'string',
-        length: 17,
-    })
-    updated_by: string
 
     @CreateDateColumn({ type: 'date' })
     created_at: Date
@@ -47,6 +45,10 @@ export class EntriesEntity {
 
     @BeforeInsert()
     fillDefaults() {
-        this.votes = 0
+        this.votes = {
+            value: 0,
+            up_voted: [],
+            down_voted: []
+        }
     }
 }

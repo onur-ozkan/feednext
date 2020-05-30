@@ -1,32 +1,62 @@
 @import '~antd/es/style/themes/default.less';
 
+@pro-header-hover-bg: rgba(0, 0, 0, 0.025);
+
 .headerSearch {
+
 	:global(.anticon-search) {
+		margin-right: 10px;
 		font-size: 16px;
 		cursor: pointer;
 	}
+
 	.input {
 		width: 0;
-		background: transparent;
 		border-radius: 0;
 		transition: width 0.3s, margin-left 0.3s;
 		:global(.ant-select-selection) {
 			background: transparent;
 		}
+
+		.action {
+			display: inline-block;
+			height: 100%;
+			padding: 0 12px;
+			cursor: pointer;
+			transition: all 0.3s;
+			> i {
+				color: @text-color;
+				vertical-align: middle;
+			}
+			&:hover {
+				background: @pro-header-hover-bg;
+			}
+			&:global(.opened) {
+				background: @pro-header-hover-bg;
+			}
+		}
+		.search {
+			padding: 0 12px;
+			&:hover {
+				background: transparent;
+			}
+		}
+
 		input {
 			padding-right: 0;
 			padding-left: 0;
 			border: 0;
+			background: #016d9b;
+			color: #eee;
 			box-shadow: none !important;
 		}
 		&,
-		&:hover,
 		&:focus {
 			border-bottom: 1px solid @border-color-base;
 		}
 		&.show {
 			width: 210px;
-			margin-left: 8px;
+			margin-left: 125px;
 		}
 	}
 }

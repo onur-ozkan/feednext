@@ -1,5 +1,5 @@
 // Nest dependencies
-import { NotFoundException, BadRequestException, UnprocessableEntityException } from '@nestjs/common'
+import { BadRequestException, UnprocessableEntityException, ForbiddenException, ConflictException } from '@nestjs/common'
 
 // Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
@@ -7,6 +7,7 @@ import { Repository, EntityRepository } from 'typeorm'
 // Local files
 import { EntriesEntity } from '../Entities/entries.entity'
 import { CreateEntryDto } from 'src/v1/Entry/Dto/create-entry.dto'
+import { Role } from '../Enums/Roles'
 
 @EntityRepository(EntriesEntity)
 export class EntriesRepository extends Repository<EntriesEntity> {
@@ -15,33 +16,89 @@ export class EntriesRepository extends Repository<EntriesEntity> {
             const entry: EntriesEntity = await this.findOneOrFail(entryId)
             return entry
         } catch (err) {
-            throw new NotFoundException('Entry with that id could not found in the database.')
+            throw new BadRequestException('Entry could not found by given id')
         }
     }
 
-    async getEntriesByTitleId({ titleId, query }: {
-        titleId: string, query: { limit: number, skip: number, orderBy: any }
-    }): Promise<{ entries: EntriesEntity[], count: number }> {
-        const orderBy = query.orderBy || 'ASC'
-
-        try {
-            const [entries, total] = await this.findAndCount({
-                where: {
-                    title_id: titleId
-                },
-                order: {
-                    created_at: orderBy.toUpperCase(),
-                },
-                take: Number(query.limit) || 10,
-                skip: Number(query.skip) || 0,
-            })
-            return {
-                entries,
-                count: total,
-            }
-        } catch (err) {
-            throw new BadRequestException(err)
+    async getVotedEntriesByUsername({ username, query }: {
+        username: string,
+        query: {
+            skip: number,
+            voteType: 'up' | 'down'
         }
+    }): Promise<{ entries: EntriesEntity[], count: number }> {
+        const [entries, total] = await this.findAndCount({
+            where: {
+                ...query.voteType !== 'down' && {
+                    'votes.up_voted': { $in: [username] }
+                },
+                ...query.voteType === 'down' && {
+                    'votes.down_voted': { $in: [username] }
+                },
+            },
+            order: {
+                created_at: 'DESC',
+            },
+            take: 10,
+            skip: Number(query.skip) || 0,
+        })
+
+        return { entries, count: total }
+    }
+
+    async getEntriesByTitleId({ titleId, query }: {
+        titleId: string,
+        query: {
+            skip: number,
+            sortBy: 'newest' | 'top'
+        }
+    }): Promise<{ entries: EntriesEntity[], count: number }> {
+        const [entries, total] = await this.findAndCount({
+            where: {
+                title_id: titleId
+            },
+            order: {
+                ...query.sortBy === 'newest' && {
+                    created_at: 'DESC',
+                },
+                ...query.sortBy === 'top' && {
+                    votes: 'DESC',
+                }
+            },
+            take: 10,
+            skip: Number(query.skip) || 0,
+        })
+
+        return { entries, count: total }
+    }
+
+    async getEntriesByAuthorOfIt({ username, query }: {
+        username: string, query: { skip: number }
+    }): Promise<{ entries: EntriesEntity[], count: number }> {
+        const [entries, total] = await this.findAndCount({
+            where: {
+                written_by: username
+            },
+            order: {
+                created_at: 'DESC',
+            },
+            take: 10,
+            skip: Number(query.skip) || 0,
+        })
+
+        return { entries, count: total }
+    }
+
+    async getLatestEntries(): Promise<{ entries: EntriesEntity[], count: number }> {
+        const [entries, total] = await this.findAndCount({
+            order: {
+                created_at: 'DESC',
+            },
+            skip: 0,
+            take: 250,
+        })
+
+        return { entries, count: total }
     }
 
     async getFeaturedEntryByTitleId({ titleId }: { titleId: string }): Promise<EntriesEntity> {
@@ -58,7 +115,7 @@ export class EntriesRepository extends Repository<EntriesEntity> {
             return entries
 
         } catch (err) {
-            throw new BadRequestException('No entry found for given titleId')
+            throw new BadRequestException('No entry found for given TitleId')
         }
     }
 
@@ -76,20 +133,21 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         }
     }
 
-    async updateEntry(updatedBy: string, entryId: string, text: string): Promise<EntriesEntity> {
+    async updateEntry(username: string, entryId: string, text: string): Promise<EntriesEntity> {
         if (!text) throw new BadRequestException('Entry text can not be null.')
 
         let entry: EntriesEntity
         try {
             entry = await this.findOneOrFail(entryId)
         } catch {
-            throw new NotFoundException('Entry with that id could not found in the database.')
+            throw new BadRequestException('Entry could not found by given id')
         }
+
+        if (entry.written_by !== username) throw new BadRequestException('Only author of the entry can update it')
+        if (entry.text === text) throw new BadRequestException('Text must be different to update entry')
 
         try {
             entry.text = text
-            entry.updated_by = updatedBy
-
             await this.save(entry)
             return entry
         } catch (err) {
@@ -97,24 +155,63 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         }
     }
 
-    async voteEntry({ entryId, isUpVoted }: { entryId: string, isUpVoted: boolean }): Promise<void> {
+    async voteEntry({ entryId, isUpVoted, username }: { entryId: string, isUpVoted: boolean, username: string }): Promise<void> {
         const entry: EntriesEntity = await this.findOneOrFail(entryId)
-        isUpVoted ? entry.votes++ : entry.votes--
+
+        if (isUpVoted) {
+            if (entry.votes.up_voted.includes(username)) throw new ConflictException('The entry is already up voted')
+            if (entry.votes.down_voted.includes(username)) {
+                entry.votes.value++
+                entry.votes.down_voted = entry.votes.down_voted.filter(item => item !== username)
+            }
+            entry.votes.value++
+            entry.votes.up_voted.push(username)
+        } else {
+            if (entry.votes.down_voted.includes(username)) throw new ConflictException('The entry is already down voted')
+            if (entry.votes.up_voted.includes(username)) {
+                entry.votes.value--
+                entry.votes.up_voted = entry.votes.up_voted.filter(item => item !== username)
+            }
+            entry.votes.value--
+            entry.votes.down_voted.push(username)
+        }
+
         this.save(entry)
     }
 
-    async deleteEntry(entryId: string): Promise<EntriesEntity> {
-        try {
-            const entry: EntriesEntity = await this.findOneOrFail(entryId)
-            await this.delete(entry)
-            return entry
-        } catch (err) {
-            throw new NotFoundException('Entry with that id could not found in the database.')
+    async undoVoteOfEntry({ entryId, isUpVoted, username }: { entryId: string, isUpVoted: boolean, username: string }): Promise<void> {
+        const entry: EntriesEntity = await this.findOneOrFail(entryId)
+        if (isUpVoted) {
+            if (!entry.votes.up_voted.includes(username)) throw new BadRequestException('Entry has not up voted yet')
+            entry.votes.value--
+            entry.votes.up_voted = entry.votes.up_voted.filter(item => item !== username)
+        } else {
+            if (!entry.votes.down_voted.includes(username)) throw new BadRequestException('Entry has not down voted yet')
+            entry.votes.value++
+            entry.votes.down_voted = entry.votes.down_voted.filter(item => item !== username)
         }
+
+        this.save(entry)
     }
 
-    async deleteEntriesBelongsToTitle(titleId: string): Promise<void> {
-        const entries: any = await this.find({ title_id: titleId })
-        await this.delete(entries)
+    async deleteEntry(username: string, role: number, entryId: string): Promise<EntriesEntity> {
+        let entry: EntriesEntity
+        try {
+            entry = await this.findOneOrFail(entryId)
+        } catch (err) {
+            throw new BadRequestException('Entry could not found by given id')
+        }
+
+        if (role !== Role.SuperAdmin && entry.written_by !== username) {
+            throw new ForbiddenException('You have no permission to do this action')
+        }
+
+        await this.delete(entry)
+        return entry
+    }
+
+    async deleteEntriesBelongsToTitle(title_id: string): Promise<void> {
+        const entries: any = await this.find({ title_id })
+        await this.remove(entries)
     }
 }

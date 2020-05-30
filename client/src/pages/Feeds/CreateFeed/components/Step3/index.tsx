@@ -1,15 +1,22 @@
+// Antd dependencies
 import { Button, Result, Descriptions } from 'antd'
+
+// Other dependencies
 import React, { useContext } from 'react'
-import styles from './index.less'
+import { history } from 'umi'
+
+// Local files
+import { PageHelmet } from '@/components/PageHelmet'
+import { Step3Props } from '../../types'
 import StepContext from '../../StepContext'
-import { router } from 'umi'
+import styles from './index.less'
 
-const Step3: React.FC = () => {
-	const { createTitleForm, readableCategoryValue, firstEntryForm } = useContext(StepContext)
 
-	const onFinish = () => {
-		router.push('/feeds')
-	}
+const Step3 = ({ titleSlugForRouting, feedCreatedSuccessfully }: Step3Props): JSX.Element => {
+	const { createTitleFormData, readableCategoryValue, firstEntryForm } = useContext(StepContext)
+
+	const onFinish = (): void => history.push('/')
+	const handleOnPostRoute = (): void => history.push(`/${titleSlugForRouting}`)
 
 	const information = (
 		<div className={styles.information}>
@@ -18,10 +25,7 @@ const Step3: React.FC = () => {
 					{ readableCategoryValue }
 				</Descriptions.Item>
 				<Descriptions.Item label="Title">
-					{ createTitleForm.name }
-				</Descriptions.Item>
-				<Descriptions.Item label="Description">
-					{ createTitleForm.description }
+					{ createTitleFormData.name }
 				</Descriptions.Item>
 				<Descriptions.Item label="Entry">
 					{ firstEntryForm.text }
@@ -34,13 +38,32 @@ const Step3: React.FC = () => {
 			<Button type="primary" onClick={onFinish}>
 				OK
 			</Button>
-			<Button>Route to Post</Button>
+			<Button onClick={handleOnPostRoute}>Route to Feed</Button>
 		</>
 	)
 	return (
-		<Result status="success" title="Published" extra={extra} className={styles.result}>
-			{information}
-		</Result>
+		<>
+			<PageHelmet
+				title="Feed Status"
+				description="Best reviews, comments, feedbacks about anything around the world"
+				mediaImage="https://avatars1.githubusercontent.com/u/64217221?s=200&v=4"
+				mediaDescription="Best reviews, comments, feedbacks about anything around the world"
+			/>
+			{feedCreatedSuccessfully ?
+				<Result status="success" title="Published" extra={extra} className={styles.result}>
+					{information}
+				</Result>
+				:
+				<Result
+					status="error"
+					title="Feed could not created"
+					className={styles.result}
+					extra={
+						<Button type="primary"onClick={onFinish}> OK </Button>
+					}
+				/>
+			}
+		</>
 	)
 }
 

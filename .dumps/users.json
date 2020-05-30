@@ -1,0 +1,109 @@
+[{
+  "_id": {
+    "$oid": "5ecbfd164e4c1c32d762179a"
+  },
+  "email": "admin@demo.com",
+  "username": "admin",
+  "password": "9a9e0d33fa0d884224f816e2e9691ee9267208399d18d17095253555791fa975",
+  "full_name": "Admin User",
+  "role": 5,
+  "biography": "Curabitur condimentum dolor vel enim ullamcorper congue ut accumsan diam.",
+  "link": "https://feednext.io",
+  "is_active": true,
+  "created_at": {
+    "$date": "2020-05-25T17:15:02.015Z"
+  },
+  "updated_at": {
+    "$date": "2020-05-25T17:15:02.015Z"
+  }
+},{
+  "_id": {
+    "$oid": "5ecbfd224e4c1c32d762179b"
+  },
+  "email": "jacky_eirl@demo.com",
+  "username": "jacky_eirl",
+  "password": "2298e715372f0126a72b856f286c8bd09cce0ee37412076b45e1d05f620177ad",
+  "full_name": "Jacky Eirl",
+  "role": 0,
+  "biography": "",
+  "link": "https://feednext.io",
+  "is_active": true,
+  "created_at": {
+    "$date": "2020-05-25T17:15:14.490Z"
+  },
+  "updated_at": {
+    "$date": "2020-05-25T17:15:14.490Z"
+  }
+},{
+  "_id": {
+    "$oid": "5ecbfd274e4c1c32d762179c"
+  },
+  "email": "jens.auhrk@demo.com",
+  "username": "jens.auhrk",
+  "password": "2298e715372f0126a72b856f286c8bd09cce0ee37412076b45e1d05f620177ad",
+  "full_name": "Jens Auhrk",
+  "role": 0,
+  "biography": "",
+  "link": "https://feednext.io",
+  "is_active": true,
+  "created_at": {
+    "$date": "2020-05-25T17:15:19.696Z"
+  },
+  "updated_at": {
+    "$date": "2020-05-25T17:15:19.696Z"
+  }
+},{
+  "_id": {
+    "$oid": "5ecbfd2b4e4c1c32d762179d"
+  },
+  "email": "teo.alpha@demo.com",
+  "username": "teo.alpha",
+  "password": "2298e715372f0126a72b856f286c8bd09cce0ee37412076b45e1d05f620177ad",
+  "full_name": "Teo Alpha",
+  "role": 0,
+  "biography": "",
+  "link": "https://feednext.io",
+  "is_active": true,
+  "created_at": {
+    "$date": "2020-05-25T17:15:23.651Z"
+  },
+  "updated_at": {
+    "$date": "2020-05-25T17:15:23.651Z"
+  }
+},{
+  "_id": {
+    "$oid": "5ecbfd2f4e4c1c32d762179e"
+  },
+  "email": "saul.kuvarsk@demo.com",
+  "username": "saul.kuvarsk",
+  "password": "2298e715372f0126a72b856f286c8bd09cce0ee37412076b45e1d05f620177ad",
+  "full_name": "Saul Kuvarsk",
+  "role": 0,
+  "biography": "",
+  "link": "https://feednext.io",
+  "is_active": true,
+  "created_at": {
+    "$date": "2020-05-25T17:15:27.080Z"
+  },
+  "updated_at": {
+    "$date": "2020-05-25T17:15:27.080Z"
+  }
+},{
+  "_id": {
+    "$oid": "5ecbfd324e4c1c32d762179f"
+  },
+  "email": "onur.ozkan@demo.com",
+  "username": "onur.ozkan",
+  "password": "2298e715372f0126a72b856f286c8bd09cce0ee37412076b45e1d05f620177ad",
+  "full_name": "Onur Ozkan",
+  "role": 0,
+  "biography": "",
+  "link": "https://feednext.io",
+  "is_active": true,
+  "created_at": {
+    "$date": "2020-05-25T17:15:30.407Z"
+  },
+  "updated_at": {
+    "$date": "2020-05-25T17:15:30.407Z"
+  }
+}]

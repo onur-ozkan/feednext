@@ -2,7 +2,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 
 // Other dependencies
-import { IsEmail, IsOptional, Length, MaxLength, NotContains, IsNotEmpty, ValidateIf } from 'class-validator'
+import { IsOptional, Length, MaxLength, NotContains, IsNotEmpty, ValidateIf, Matches } from 'class-validator'
 
 export class UpdateUserDto {
     @ApiProperty({
@@ -10,7 +10,10 @@ export class UpdateUserDto {
         example: 'Updated Name',
     })
     @IsOptional()
-    @MaxLength(50)
+    @Matches(/^(?!\s*$).+/, {
+        message: 'Name can not be empty or whitespace'
+    })
+    @Length(3, 50)
     fullName: string
 
     @ApiProperty({
@@ -18,8 +21,35 @@ export class UpdateUserDto {
         example: 'updated@demo.com',
     })
     @IsOptional()
-    @IsEmail()
+    @Matches(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, {
+        message: 'Email must be a type of email'
+    })
     email: string
+
+    @ApiProperty({
+        required: false,
+        example: 'https://twitter.com/_ozkanonur',
+    })
+    @IsOptional()
+    @MaxLength(90)
+    link: string
+
+    @ApiProperty({
+        required: false,
+        example: 'Demo User, X Years old.',
+    })
+    @IsOptional()
+    @MaxLength(155)
+    biography: string
+
+    @ApiProperty({
+        required: false,
+        example: 'demo123',
+    })
+    @IsOptional()
+    @NotContains(' ')
+    @Length(6, 15)
+    password: string
 
     @ApiProperty({
         required: true,
@@ -30,13 +60,4 @@ export class UpdateUserDto {
     @NotContains(' ')
     @Length(6, 15)
     oldPassword: string
-
-    @ApiProperty({
-        required: false,
-        example: 'demo123',
-    })
-    @IsOptional()
-    @NotContains(' ')
-    @Length(6, 15)
-    password: string
 }

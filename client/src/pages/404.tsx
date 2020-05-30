@@ -1,21 +1,32 @@
+// Antd dependencies
 import { Button, Result } from 'antd'
+
+// Other dependencies
 import React from 'react'
-import { router } from 'umi'
+import { history } from 'umi'
 
-// The 404 result component of antd should be used here,
-// But it hasn't been released yet, let's start with a simple one.
+// Local files
+import { PageHelmet } from '@/components/PageHelmet'
 
-const NoFoundPage: React.FC<{}> = () => (
-	<Result
-		status="404"
-		title="404"
-		subTitle="Sorry, the page you visited does not exist."
-		extra={
-			<Button type="primary" onClick={(): void => router.push('/')}>
-				Back Home
-			</Button>
-		}
-	/>
+const NotFoundPage: React.FC<{}> = () => (
+	<>
+		<PageHelmet
+			title="404 Not Found | Feednext"
+			description="Best reviews, comments, feedbacks about anything around the world"
+			mediaImage="https://avatars1.githubusercontent.com/u/64217221?s=200&v=4"
+			mediaDescription="Best reviews, comments, feedbacks about anything around the world"
+		/>
+		<Result
+			status="404"
+			title="404"
+			subTitle="Sorry, the page you visited does not exist"
+			extra={
+				<Button type="primary" onClick={(): void => history.push('/')}>
+					Back Home
+				</Button>
+			}
+		/>
+	</>
 )
 
-export default NoFoundPage
+export default NotFoundPage

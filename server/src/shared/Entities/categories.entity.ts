@@ -5,7 +5,7 @@ import {
     ObjectID,
     ObjectIdColumn,
     CreateDateColumn,
-    UpdateDateColumn
+    UpdateDateColumn,
 } from 'typeorm'
 
 @Entity('Categories')
@@ -20,12 +20,18 @@ export class CategoriesEntity {
     @Column({ type: 'string', nullable: true })
     parent_category: string
 
-    @Column({ type: 'string', length: 50, unique: true})
+    @Column({ type: 'string', length: 50 })
     name: string
 
-    @CreateDateColumn({ type: 'date' })
+    @Column('boolean')
+    is_leaf: boolean
+
+    @Column('array')
+    ancestors: string[]
+
+    @CreateDateColumn('date')
     created_at: Date
 
-    @UpdateDateColumn({ type: 'date' })
+    @UpdateDateColumn('date')
     updated_at: Date
 }

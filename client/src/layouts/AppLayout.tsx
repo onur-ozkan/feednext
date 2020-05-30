@@ -1,16 +1,17 @@
-import ProLayout, { MenuDataItem, Settings, DefaultFooter } from '@ant-design/pro-layout'
-import React, { useEffect } from 'react'
-import { Link } from 'umi'
-import { Dispatch } from 'redux'
+// Antd dependencies
 import { Row, Col } from 'antd'
-import { formatMessage } from 'umi-plugin-react/locale'
+import ProLayout, { MenuDataItem, Settings } from '@ant-design/pro-layout'
 
-import RightContent from '@/components/GlobalHeader/RightContent'
-import { checkIsUserExpired } from '@/services/utils'
-import logo from '../assets/logo.svg'
-import { Route } from 'antd/lib/breadcrumb/Breadcrumb'
-import { GithubFilled } from '@ant-design/icons'
+// Other dependencies
+import React from 'react'
 import { useSelector } from 'react-redux'
+import { Dispatch } from 'redux'
+import { Link } from 'umi'
+
+// Local files
+import RightContent from '@/components/GlobalHeader/RightContent'
+import logoWide from '../assets/logo-wide.svg'
+import logoSquare from '../assets/logo-square.svg'
 
 export declare interface AppLayoutProps {
 	breadcrumbNameMap: {
@@ -22,42 +23,28 @@ export declare interface AppLayoutProps {
 	settings: Settings
 	dispatch: Dispatch
 }
-export type AppLayoutContext = { [K in 'location']: AppLayoutProps[K] } & {
+export type AppLayoutContext = { [K in 'location']: AppLayoutProps } & {
 	breadcrumbNameMap: {
 		[path: string]: MenuDataItem
 	}
 }
 
-const handleFooterRendering = (): JSX.Element => (
-	<DefaultFooter
-		copyright="2019 Ilter Technology"
-		style={{ backgroundColor: 'transparent' }}
-		links={[
-			{
-				key: 'Github',
-				title: <GithubFilled />,
-				href: 'https://github.com/ilter-tech',
-				blankTarget: true,
-			},
-		]}
-	/>
-)
-
 const AppLayout: React.FC<AppLayoutProps> = props => {
 	const settings = useSelector((state: any) => state.settings)
-	const user = useSelector((state: any) => state.user)
-
-	useEffect(() => {
-		if (user) checkIsUserExpired(user.attributes.access_token)
-	}, [])
 
 	return (
 		<ProLayout
-			logo={logo}
-			menuHeaderRender={(logoDom, titleDom): JSX.Element => (
+			collapsedButtonRender={false}
+			logo={
+				<picture>
+					<source media="(max-width: 768px)" srcSet={logoSquare}/>
+					<source style={{ marginLeft: 15 }} media="(min-width: 767px)" srcSet={logoWide} />
+					<img src={logoWide} />
+				</picture>
+			}
+			menuHeaderRender={(logoDom): JSX.Element => (
 				<Link to="/">
 					{logoDom}
-					{titleDom}
 				</Link>
 			)}
 			menuItemRender={(menuItemProps, defaultDom): React.ReactNode => {
@@ -66,17 +53,8 @@ const AppLayout: React.FC<AppLayoutProps> = props => {
 				}
 				return <Link to={menuItemProps.path}>{defaultDom}</Link>
 			}}
-			breadcrumbRender={(routers = []): Route[] => [
-				{
-					path: '/',
-					breadcrumbName: formatMessage({
-						id: 'menu.home',
-						defaultMessage: 'Home',
-					}),
-				},
-				...routers,
-			]}
-			itemRender={(route, params, routes, paths): JSX.Element => {
+
+			itemRender={(route, routes, paths): JSX.Element => {
 				const first = routes.indexOf(route) === 0
 				return first ? (
 					<Link to={paths.join('/')}>{route.breadcrumbName}</Link>
@@ -84,14 +62,12 @@ const AppLayout: React.FC<AppLayoutProps> = props => {
 					<span>{route.breadcrumbName}</span>
 				)
 			}}
-			footerRender={handleFooterRendering}
-			formatMessage={formatMessage}
 			rightContentRender={(): JSX.Element => <RightContent />}
 			{...props}
 			{...settings}
 		>
-			<Row style={{ backgroundColor: 'transparent' }}>
-				<Col span={18} offset={3}>
+			<Row style={{ backgroundColor: 'transparent', justifyContent: 'center' }}>
+				<Col xxl={16} xl={20} lg={22} md={22} sm={24}>
 					{props.children}
 				</Col>
 			</Row>

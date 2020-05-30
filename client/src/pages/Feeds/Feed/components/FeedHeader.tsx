@@ -1,71 +1,171 @@
-import React from 'react'
-import { Button, Dropdown, Menu, Row, PageHeader, Tag, Rate, Col } from 'antd'
-import { EllipsisOutlined, InfoCircleOutlined } from '@ant-design/icons'
+// Antd dependencies
+import {
+	Button,
+	Row,
+	PageHeader,
+	Tag,
+	Rate,
+	Col,
+	Modal,
+	message,
+	Popconfirm,
+	Statistic,
+	Typography,
+	Card
+} from 'antd'
+import {
+	InfoCircleOutlined,
+	CheckOutlined,
+	LoadingOutlined,
+	DeleteFilled,
+	EditOutlined,
+	WarningOutlined
+} from '@ant-design/icons'
 
-const FeedHeader: React.FC = () => {
-	const menu = (
-		<Menu>
-			<Menu.Item>
-				<a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">
-					1st menu item
-				</a>
-			</Menu.Item>
-			<Menu.Item>
-				<a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">
-					2nd menu item
-				</a>
-			</Menu.Item>
-			<Menu.Item>
-				<a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">
-					3rd menu item
-				</a>
-			</Menu.Item>
-		</Menu>
+// Other dependencies
+import React, { useState } from 'react'
+import { format, parseISO } from 'date-fns'
+import { history } from 'umi'
+
+// Local files
+import { getUserRateOfTitle, rateTitle, deleteTitle } from '@/services/api'
+import { API_URL } from '@/../config/constants'
+import { FeedHeaderProps } from '../types'
+
+const FeedHeader: React.FC<FeedHeaderProps> = (props): JSX.Element => {
+	const {
+		titleData,
+		openUpdateModal,
+		categoryData,
+		accessToken,
+		averageTitleRate,
+		refreshTitleRate,
+		userRole,
+		styles
+	} = props
+
+	const [rateModalVisibility, setRateModalVisibility] = useState(false)
+	const [detailsModalVisibility, setDetailsModalVisibility] = useState(false)
+	const [initialRatingModalValue, setInitialRatingModalValue] = useState<number | null>(null)
+	const [rateValue, setRateValue] = useState(0)
+
+	const handleOnRatingChange = (value: number): void => setRateValue(value)
+
+	const handleTitleVoting = async (): Promise<void> => {
+		await rateTitle(rateValue, titleData.attributes.id, accessToken)
+			.then(_res => refreshTitleRate(titleData.attributes.id))
+			.catch(error => message.error(error.response.data.message))
+		setRateModalVisibility(false)
+	}
+
+	const handleRateModalVisibility = async (): Promise<void> => {
+		if (!accessToken) return // TODO pop sign in window
+
+		setRateModalVisibility(true)
+		await getUserRateOfTitle(titleData.attributes.id, accessToken)
+			.then(res => setInitialRatingModalValue(res.data.attributes.rate))
+			.catch(_error => setInitialRatingModalValue(0))
+	}
+
+	const handleRateModalRender = (): JSX.Element => (
+		<Modal
+			transitionName='fade'
+			style={{ textAlign: 'center'}}
+			visible={rateModalVisibility}
+			closable={false}
+			width='225px'
+			footer={null}
+			onCancel={(): void => setRateModalVisibility(false)}
+		>
+			{ initialRatingModalValue || initialRatingModalValue === 0  ?
+				<>
+					<Rate defaultValue={initialRatingModalValue} onChange={handleOnRatingChange} style={{ marginRight: 10 }} />
+					<Button shape="circle" icon={<CheckOutlined />} onClick={handleTitleVoting} />
+				</>
+				:
+				<>
+					<LoadingOutlined style={{ fontSize: 24 }} spin />
+				</>
+			}
+		</Modal>
 	)
 
-	const DropdownMenu = () => {
+	const handleDetailsModalRender = (): JSX.Element => {
+		const gridData = [
+			{
+				title: 'Title Name',
+				value: titleData.attributes.name
+			},
+			{
+				title: 'Category',
+				value: categoryData.attributes.name
+			},
+			{
+				title: 'Entry Count',
+				value: titleData.attributes.entry_count
+			},
+			{
+				title: 'Rate',
+				value: averageTitleRate,
+				suffix: '/ 5'
+
+			},
+			{
+				title: 'Opened by',
+				value: titleData.attributes.opened_by,
+				href: `/user/${titleData.attributes.opened_by}`
+			},
+			{
+				title: 'Opened At',
+				value: format(parseISO(titleData.attributes.created_at), 'dd LLL yyyy')
+			},
+			{
+				title: 'Updated by',
+				value: titleData.attributes.updated_by || ' - ',
+				href: titleData.attributes.updated_by ? `/user/${titleData.attributes.opened_by}` : undefined
+			},
+		]
+
 		return (
-			<Dropdown trigger={['click']} key="more" overlay={menu}>
-				<Button
-					style={{
-						border: 'none',
-						padding: 0,
-					}}
-				>
-					<EllipsisOutlined
-						style={{
-							fontSize: 20,
-							verticalAlign: 'top',
-						}}
-					/>
-				</Button>
-			</Dropdown>
+			<Modal
+				transitionName='fade'
+				visible={detailsModalVisibility}
+				width="750px"
+				closable={false}
+				footer={null}
+				onCancel={(): void => setDetailsModalVisibility(false)}
+			>
+				<Card style={{ padding: 15 }} bordered={false}>
+					{gridData.map(item => {
+						return (
+							<Card.Grid
+								key={item.title}
+								className={styles.cardGrids}
+								style={{
+									cursor: item.href ? 'pointer' : 'normal'
+								}}
+								onClick={(): void  => history.push(item.href)}
+							>
+								<Statistic
+									suffix={item.suffix}
+									title={item.title}
+									value={item.value}
+								/>
+							</Card.Grid>
+						)
+					})}
+				</Card>
+			</Modal>
 		)
 	}
 
-	const IconLink = ({ src, text }) => (
-		<a
-			style={{
-				marginRight: 16,
-			}}
-		>
-			<img
-				style={{
-					marginRight: 8,
-				}}
-				src={src}
-				alt={text}
-			/>
-			{text}
-		</a>
-	)
-
-	const Content = ({ children, extraContent }) => {
-		return (
-			<Row>
-				<div className="image">{extraContent}</div>
-			</Row>
-		)
+	const handleTitleDelete = (): void => {
+		deleteTitle(accessToken, titleData.attributes.id)
+			.then(_res => {
+				message.success('Title successfully deleted')
+				history.push('/')
+			})
+			.catch(error => message.error(error.response.data.message))
 	}
 
 	return (
@@ -73,13 +173,20 @@ const FeedHeader: React.FC = () => {
 			<PageHeader
 				title={
 					<>
-						<Tag color="blue">Phone</Tag>
+						<Tag color="blue">{categoryData.attributes.name}</Tag>
 						<Row>
 							<Col style={{ margin: '0px 5px -15px 0px' }}>
-								<h1>Xphone Model 7s Plus</h1>
+								<Typography.Paragraph ellipsis={{ rows: 4 }}>
+									{titleData.attributes.name}
+								</Typography.Paragraph>
 							</Col>
 							<Col>
-								<Rate allowHalf defaultValue={2.5} />
+								<Rate disabled value={averageTitleRate} />
+								<Button onClick={handleRateModalVisibility} style={{ marginLeft: 5 }} type="primary" size="small">
+									<Typography.Text style={{ color: 'white' }} strong>
+										Rate
+									</Typography.Text>
+								</Button>
 							</Col>
 						</Row>
 					</>
@@ -88,37 +195,45 @@ const FeedHeader: React.FC = () => {
 				className="site-page-header"
 				extra={[
 					<>
-						<Button type="dashed" icon={<InfoCircleOutlined />}>
+						{userRole >= 5 &&
+							<Popconfirm
+								placement="bottom"
+								style={{ fontSize: 15 }}
+								icon={<WarningOutlined style={{ color: 'red' }} />}
+								title="Are you sure that you want to delete this feed?"
+								onConfirm={handleTitleDelete}
+								okText="Yes"
+								cancelText="No"
+							>
+								<Button
+									shape="circle"
+									danger
+									icon={<DeleteFilled />}
+								/>
+							</Popconfirm>
+						}
+						{userRole >= 4 &&
+							<Button onClick={openUpdateModal} icon={<EditOutlined />}>
+								Edit
+							</Button>
+						}
+						<Button
+							onClick={(): void => setDetailsModalVisibility(true)}type="dashed"
+							icon={<InfoCircleOutlined />}
+						>
 							Details
 						</Button>
-						<Dropdown trigger={['click']} key="more" overlay={menu}>
-							<Button
-								style={{
-									border: 'none',
-									padding: 0,
-								}}
-							>
-								<EllipsisOutlined
-									style={{
-										fontSize: 20,
-										verticalAlign: 'top',
-									}}
-								/>
-							</Button>
-						</Dropdown>
-					</>,
+					</>
 				]}
 			>
-				<Content
-					extraContent={
-						<img
-							src="https://gw.alipayobjects.com/zos/antfincdn/K%24NnlsB%26hz/pageHeader.svg"
-							alt="content"
-							width="100%"
-						/>
-					}
-				></Content>
+				<img
+					src={`${API_URL}/v1/title/${titleData.attributes.id}/image`}
+					width={150}
+					alt="Title Image"
+				/>
 			</PageHeader>
+			{handleDetailsModalRender()}
+			{handleRateModalRender()}
 		</>
 	)
 }

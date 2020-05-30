@@ -9,6 +9,7 @@ import { AuthModule } from './Auth/auth.module'
 import { CategoryModule } from './Category/category.module'
 import { EntryModule } from './Entry/entry.module'
 import { TitleModule } from './Title/title.module'
+import { MessageModule } from './Message/message.module'
 
 @Module({
     imports: [
@@ -17,6 +18,7 @@ import { TitleModule } from './Title/title.module'
         CategoryModule,
         EntryModule,
         TitleModule,
+        MessageModule
     ],
     providers: [RedisService],
 })

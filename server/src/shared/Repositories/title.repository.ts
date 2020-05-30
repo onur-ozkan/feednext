@@ -1,8 +1,9 @@
 // Nest dependencies
-import { UnprocessableEntityException, BadRequestException, NotFoundException } from '@nestjs/common'
+import { UnprocessableEntityException, BadRequestException } from '@nestjs/common'
 
 // Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
+import { ObjectId } from 'mongodb'
 import slugify from 'slugify'
 
 // Local files
@@ -12,50 +13,120 @@ import { UpdateTitleDto } from 'src/v1/Title/Dto/update-title.dto'
 
 @EntityRepository(TitlesEntity)
 export class TitlesRepository extends Repository<TitlesEntity> {
-    async getTitle(titleSlug: string): Promise<TitlesEntity> {
+    async getTitleBySlug(titleSlug: string): Promise<TitlesEntity> {
         try {
             const title: TitlesEntity = await this.findOneOrFail({slug: titleSlug})
             return title
         } catch (err) {
-            throw new NotFoundException('No title found for given slug')
+            throw new BadRequestException('No title found for given slug')
         }
     }
 
-    async updateEntryCount(titleId: string, isIncrement: boolean): Promise<void> {
+    async getTitleById(titleId: string): Promise<TitlesEntity> {
+        try {
+            const title: TitlesEntity = await this.findOneOrFail(titleId)
+            return title
+        } catch (err) {
+            throw new BadRequestException('No title found for given id')
+        }
+    }
+
+    async searchTitle({ searchValue } : { searchValue: string }): Promise<{ titles: TitlesEntity[] }> {
+        const [titles] = await this.findAndCount({
+            where: {
+                name: new RegExp(searchValue, 'i')
+            },
+            take: 5,
+            order: {
+                entry_count: 'DESC'
+            }
+        })
+
+        return { titles }
+    }
+
+    async updateEntryCount(titleId: ObjectId, isIncrement: boolean): Promise<void> {
         try {
             const title: TitlesEntity = await this.findOneOrFail(titleId)
             isIncrement ? title.entry_count++ : title.entry_count--
             this.save(title)
         } catch (err) {
-            throw new NotFoundException('Title with that id could not found in the database.')
+            throw new BadRequestException('Title with that id could not found in the database')
         }
     }
 
-    async getTitleList(query: { limit: number, skip: number, orderBy: any }): Promise<{ titles: TitlesEntity[], count: number }> {
-        const orderBy = query.orderBy || 'ASC'
-
-        try {
-            const [titles, total] = await this.findAndCount({
-                order: {
-                    name: orderBy.toUpperCase(),
+    async getTitleList(
+        query: {
+            author: string,
+            categoryIds: string[],
+            sortBy: 'hot' | 'top',
+            skip: number,
+        }
+    ): Promise<{ titles: TitlesEntity[], count: number }> {
+        const [titles, total] = await this.findAndCount({
+            where: {
+                ...query.author && {
+                    opened_by: query.author
                 },
-                take: Number(query.limit) || 10,
-                skip: Number(query.skip) || 0,
-            })
-            return {
-                titles,
-                count: total,
-            }
-        } catch (err) {
-            throw new BadRequestException(err)
-        }
+                ...query.categoryIds && {
+                    $or: [
+                        {
+                            category_id: {
+                                $in: query.categoryIds
+                            }
+                        },
+                        {
+                            category_ancestors: {
+                                $in: query.categoryIds
+                            }
+                        },
+                    ]
+                },
+                ...query.sortBy === 'hot' && {
+                    created_at: {
+                        // Query for last 24 hours
+                        $gte: new Date(new Date().setDate(new Date().getDate() - 1))
+                    }
+                },
+            },
+            order: {
+                ...query.sortBy === undefined && {
+                    created_at: 'DESC',
+                },
+                ...(query.sortBy === 'top' || query.sortBy === 'hot') && {
+                    entry_count: 'DESC',
+                }
+            },
+            take: 10,
+            skip: Number(query.skip) || 0,
+        })
+
+        return { titles, count: total }
     }
 
-    async createTitle(openedBy: string, dto: CreateTitleDto): Promise<TitlesEntity> {
+    async getTitleListByIds(idList: ObjectId[]): Promise<{ titles: TitlesEntity[], count: number }> {
+        const [titles, total] = await this.findAndCount({
+            where: {
+                '_id': {
+                    $in: idList
+                }
+            },
+            order: {
+                entry_count: 'DESC'
+            },
+            take: 5,
+            skip: 0,
+        })
+
+        return { titles, count: total }
+    }
+
+    async createTitle(openedBy: string, dto: CreateTitleDto, categoryAncestors: string[]): Promise<TitlesEntity> {
         const newTitle: TitlesEntity = new TitlesEntity({
             name: dto.name,
             slug: slugify(dto.name, { lower: true }),
             category_id: dto.categoryId,
+            category_ancestors: categoryAncestors,
             opened_by: openedBy,
         })
 
@@ -66,28 +137,65 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         }
     }
 
-    async updateTitle(updatedBy: string, titleId: string, dto: UpdateTitleDto): Promise<TitlesEntity> {
-        if (dto.categoryId) {
-            try {
-                await this.findOneOrFail(dto.categoryId)
-            } catch (err) {
-                throw new NotFoundException('Category with that id could not found in the database.')
-            }
+    async rateTitle(ratedBy: string, titleId: string, rateValue: number): Promise<void> {
+        let title
+        try {
+            title = await this.findOneOrFail(titleId)
+        } catch (error) {
+            throw new BadRequestException('Title not found by given title id')
         }
 
+        const docIfAlreadyRated = title.rate.find(item => item.username === ratedBy)
+        if (docIfAlreadyRated) docIfAlreadyRated.rateValue = rateValue
+        else title.rate.push({ username: ratedBy, rateValue})
+
+        this.save(title)
+    }
+
+    async getRateOfUser(username: string, titleId: string): Promise<any> {
         let title: TitlesEntity
         try {
             title = await this.findOneOrFail(titleId)
-        } catch {
-            throw new NotFoundException('Title related to that id could not found in the database.')
+        } catch (error) {
+            throw new BadRequestException('Title not found by given title id')
         }
 
+        const userRate: { rateValue: number } | undefined = title.rate.find((
+            item: {username: string, rateValue: number }
+        ) => item.username === username)
+
+        if (userRate) return userRate!.rateValue
+        throw new BadRequestException('This user did not rate this title yet')
+    }
+
+    async getAvarageRate(titleId: string): Promise<number> {
+        let title: TitlesEntity
+        try {
+            title = await this.findOneOrFail(titleId)
+        } catch (error) {
+            throw new BadRequestException('Title not found by given title id')
+        }
+
+        const averageRate = title.rate.reduce((
+            total,
+            next: { username: string, rateValue: number }
+        ) => total + next.rateValue, 0) / title.rate.length
+
+        return Math.round(averageRate)
+    }
+
+    async updateTitle(updatedBy: string, title: TitlesEntity, dto: UpdateTitleDto, categoryAncestors: string[]): Promise<TitlesEntity> {
         try {
             if (dto.name) {
                 title.name = dto.name
                 title.slug = slugify(dto.name, { lower: true })
             }
-            if (dto.categoryId) title.category_id = dto.categoryId
+
+            if (dto.categoryId) {
+                title.category_id = dto.categoryId
+                title.category_ancestors = categoryAncestors
+            }
+
             title.updated_by = updatedBy
 
             await this.save(title)
@@ -97,13 +205,12 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         }
     }
 
-    async deleteTitle(titleId: string): Promise<TitlesEntity> {
+    async deleteTitle(titleId: string): Promise<void> {
         try {
             const title: TitlesEntity = await this.findOneOrFail(titleId)
             await this.delete(title)
-            return title
         } catch (err) {
-            throw new NotFoundException('Title with that id could not found in the database.')
+            throw new BadRequestException('Title with that id could not found in the database.')
         }
     }
 }

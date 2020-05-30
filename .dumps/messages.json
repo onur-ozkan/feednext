@@ -1,0 +1,14 @@
+[{
+  "_id": {
+    "$oid": "5ecc00514e4c1c32d76217ac"
+  },
+  "conversation_id": "5ecc00514e4c1c32d76217ab",
+  "send_by": "admin",
+  "text": "10d6cc4439b5ec792602006053b3368e",
+  "created_at": {
+    "$date": "2020-05-25T17:28:49.161Z"
+  },
+  "updated_at": {
+    "$date": "2020-05-25T17:28:49.161Z"
+  }
+}]

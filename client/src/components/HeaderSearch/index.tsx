@@ -1,172 +1,83 @@
-import { AutoComplete, Input } from 'antd'
+// Antd dependencies
+import { AutoComplete, Input, Typography } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
-import { AutoCompleteProps, DataSourceItemType } from 'antd/es/auto-complete'
-import React, { Component } from 'react'
 
+// Other dependencies
+import React, { useRef, useState, useEffect } from 'react'
 import classNames from 'classnames'
-import debounce from 'lodash/debounce'
+
+// Local files
+import { searchTitle } from '@/services/api'
 import styles from './index.less'
 
-export declare interface HeaderSearchProps {
-	onPressEnter: (value: string) => void
-	onSearch: (value: string) => void
-	onChange: (value: string) => void
-	onVisibleChange: (b: boolean) => void
-	className: string
-	placeholder: string
-	defaultActiveFirstOption: boolean
-	dataSource: DataSourceItemType[]
-	defaultOpen: boolean
-	open?: boolean
-	defaultValue?: string
-}
 
-declare interface HeaderSearchState {
-	value?: string
-	searchMode: boolean
-}
+const HeaderSearch: React.FC = (): JSX.Element => {
+	const inputEl = useRef(null)
 
-export default class HeaderSearch extends Component<HeaderSearchProps, HeaderSearchState> {
-	private inputRef: Input | null = null
+	const [value, setValue] = useState('')
+	const [searchMode, setSearchMode] = useState(false)
+	const [autoCompleteData, setAutoCompleteData] = useState(null)
 
-	static defaultProps = {
-		defaultActiveFirstOption: false,
-		onPressEnter: (): void => {
-			return
-		},
-		onSearch: (): void => {
-			return
-		},
-		onChange: (): void => {
-			return
-		},
-		className: '',
-		placeholder: '',
-		dataSource: [],
-		defaultOpen: false,
-		onVisibleChange: (): void => {
-			return
-		},
+	const enterSearchMode = (): void => {
+		if (autoCompleteData) return
+		setSearchMode(true)
+		inputEl.current.focus()
 	}
 
-	static getDerivedStateFromProps(
-		props: HeaderSearchProps,
-	): {
-		searchMode: boolean | undefined
-	} | null {
-		if ('open' in props) {
-			return {
-				searchMode: props.open,
-			}
-		}
-		return null
+	const leaveSearchMode = (): void => {
+		setValue('')
+		setSearchMode(false)
 	}
 
-	constructor(props: HeaderSearchProps) {
-		super(props)
-		this.state = {
-			searchMode: props.defaultOpen,
-			value: props.defaultValue,
-		}
-		this.debouncePressEnter = debounce(this.debouncePressEnter, 500, {
-			leading: true,
-			trailing: false,
-		})
-	}
+	useEffect(() => {
+		if (value === '') setAutoCompleteData(null)
 
-	onKeyDown = (e: React.KeyboardEvent): void => {
-		if (e.key === 'Enter') {
-			this.debouncePressEnter()
-		}
-	}
-
-	onChange: AutoCompleteProps['onChange'] = value => {
-		if (typeof value === 'string') {
-			const { onSearch, onChange } = this.props
-			this.setState({
-				value,
-			})
-			if (onSearch) {
-				onSearch(value)
-			}
-			if (onChange) {
-				onChange(value)
-			}
-		}
-	}
-
-	enterSearchMode = (): void => {
-		const { onVisibleChange } = this.props
-		onVisibleChange(true)
-		this.setState(
-			{
-				searchMode: true,
-			},
-			() => {
-				const { searchMode } = this.state
-				if (searchMode && this.inputRef) {
-					this.inputRef.focus()
-				}
-			},
-		)
-	}
-
-	leaveSearchMode = (): void => {
-		this.setState({
-			searchMode: false,
-		})
-	}
-
-	debouncePressEnter = (): void => {
-		const { onPressEnter } = this.props
-		const { value } = this.state
-		onPressEnter(value || '')
-	}
-
-	render(): JSX.Element {
-		const { className, defaultValue, placeholder, open, ...restProps } = this.props
-		const { searchMode, value } = this.state
-		delete restProps.defaultOpen // for rc-select not affected
-		const inputClass = classNames(styles.input, {
-			[styles.show]: searchMode,
-		})
-
-		return (
-			<span
-				className={classNames(className, styles.headerSearch)}
-				onClick={this.enterSearchMode}
-				onTransitionEnd={({ propertyName }): void => {
-					if (propertyName === 'width' && !searchMode) {
-						const { onVisibleChange } = this.props
-						onVisibleChange(searchMode)
+		if (value.length >= 3) {
+			searchTitle(value).then(res => {
+				const foundTitles = res.data.attributes.titles.map(title => {
+					return {
+						label:
+							<div
+								style={{ width: '100%' }}
+								onClick={(): string => location.href = `/${title.slug}`}
+							>
+								<Typography.Text style={{ fontSize: 15 }}> {title.name} </Typography.Text>
+							</div>,
+						options: []
 					}
-				}}
+				})
+				if (foundTitles.length === 0) setAutoCompleteData(null)
+				else setAutoCompleteData(foundTitles)
+			})
+		}
+	}, [value])
+
+	const inputClass = classNames(styles.input, {
+		[styles.show]: searchMode,
+		[styles.headerSearch]: true,
+		[styles.search]: true,
+		[styles.action]: true,
+	})
+
+	return (
+		<span className={inputClass} onClick={enterSearchMode}>
+			<AutoComplete
+				className={inputClass}
+				value={value}
+				onChange={(value: string): void => setValue(value)}
+				onBlur={leaveSearchMode}
+				options={autoCompleteData}
 			>
-				<SearchOutlined
-					key="Icon"
-					style={{
-						cursor: 'pointer',
-					}}
+				<Input
+					ref={inputEl} placeholder="Search Feeds.."
+					onBlur={leaveSearchMode}
 				/>
-				<AutoComplete
-					key="AutoComplete"
-					{...restProps}
-					className={inputClass}
-					value={value}
-					onChange={this.onChange}
-				>
-					<Input
-						ref={(node): void => {
-							this.inputRef = node
-						}}
-						defaultValue={defaultValue}
-						aria-label={placeholder}
-						placeholder={placeholder}
-						onKeyDown={this.onKeyDown}
-						onBlur={this.leaveSearchMode}
-					/>
-				</AutoComplete>
-			</span>
-		)
-	}
+			</AutoComplete>
+			<SearchOutlined
+				key="Icon"
+			/>
+		</span>
+	)
 }
+
+export default HeaderSearch

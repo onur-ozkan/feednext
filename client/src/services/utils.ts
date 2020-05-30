@@ -1,9 +1,13 @@
-import { parse, ParsedUrlQuery } from 'querystring'
-import pathRegexp from 'path-to-regexp'
-import { Route } from '@/models/connect'
-import { persistor } from '@/redux/store'
+// Antd dependencies
 import { message } from 'antd'
-import { router } from 'umi'
+
+// Other dependencies
+import { parse, ParsedUrlQuery } from 'querystring'
+import { history } from 'umi'
+import pathRegexp from 'path-to-regexp'
+
+// Local files
+import { persistor } from '@/redux/store'
 
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/
 
@@ -11,13 +15,8 @@ export const isUrl = (path: string): boolean => reg.test(path)
 
 export const getPageQuery = (): ParsedUrlQuery => parse(window.location.href.split('?')[1])
 
-/**
- * props.route.routes
- * @param router [{}]
- * @param pathname string
- */
-export const getAuthorityFromRouter = <T extends Route>(router: T[] = [], pathname: string): T | undefined => {
-	const authority = router.find(
+export const getAuthorityFromRouter = <T>(history: T[] = [], pathname: string): T | undefined => {
+	const authority = history.find(
 		({ routes, path = '/' }) =>
 			(path && pathRegexp(path).exec(pathname)) || (routes && getAuthorityFromRouter(routes, pathname)),
 	)
@@ -25,7 +24,7 @@ export const getAuthorityFromRouter = <T extends Route>(router: T[] = [], pathna
 	return undefined
 }
 
-export const getRouteAuthority = (path: string, routeData: Route[]): string | string[] | undefined => {
+export const getRouteAuthority = (path: string, routeData): string | string[] | undefined => {
 	let authorities: string[] | string | undefined
 	routeData.forEach(route => {
 		// match prefix
@@ -48,19 +47,6 @@ export const getRouteAuthority = (path: string, routeData: Route[]): string | st
 
 export const handleSessionExpiration = async (): Promise<void> => {
 	await persistor.purge()
-	router.push('/auth/sign-in')
-	message.info('User session has been expired, please Sign in again.', 4)
-}
-
-export const forgeDataTree = (dataset: any[]): any[] => {
-	const hashTable = Object.create(null)
-	dataset.forEach((item: { id: string | number }) => (hashTable[item.id] = { ...item, childNodes: [] }))
-
-	const dataTree: any[] = []
-	dataset.forEach((item: { parent_category: string | number; id: string | number }) => {
-		if (item.parent_category) hashTable[item['parent_category']].childNodes.push(hashTable[item.id])
-		else dataTree.push(hashTable[item.id])
-	})
-
-	return dataTree
+	location.href = '/auth/sign-in'
+	message.info('User session has been expired, please Sign in again')
 }

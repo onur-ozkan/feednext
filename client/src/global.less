@@ -1,18 +1,21 @@
 @import '~antd/es/style/themes/default.less';
 
+@navbar-background: #016d9b !important;
+@navbar-font-color: #eee !important;
+
 html,
 body,
 #root {
 	height: 100%;
 }
 
-.colorWeak {
-	filter: invert(80%);
-}
-
 .ant-layout {
 	min-height: 100vh;
 	background-color: #eee;
+}
+
+.antBtnLink {
+	color: rgba(0, 0, 0, 0.65) !important;
 }
 
 canvas {
@@ -28,6 +31,56 @@ body {
 ul,
 ol {
 	list-style: none;
+}
+
+:global(.ant-col-xxl-18) {
+	max-width: 1350px;
+}
+
+@media (max-width: 768px) {
+	.ant-pro-global-header {
+		background-color: @navbar-background;
+		color: @navbar-font-color;
+	}
+
+	.ant-pro-top-nav-header {
+		background-color: @navbar-background;
+		color: @navbar-font-color;
+	}
+
+	.ant-pro-top-nav-header-menu > ul {
+		background-color: @navbar-background;
+		color: @navbar-font-color;
+	}
+
+	.ant-pro-global-header-logo img {
+		display: flex;
+		height: 64px;
+	}
+}
+
+@media (min-width: 767px) {
+	.ant-pro-top-nav-header {
+		color: @navbar-font-color;
+	}
+
+	.ant-pro-top-nav-header-left {
+		position: absolute;
+		left: 0px;
+	}
+
+	.ant-pro-top-nav-header-logo img {
+		display: flex;
+		height: 100%;
+	}
+
+	.ant-pro-top-nav-header-menu > ul {
+		background-color: @navbar-background;
+	}
+
+	.ant-pro-top-nav-header-main > div {
+		background-color: @navbar-background;
+	}
 }
 
 @media (max-width: @screen-xs) {

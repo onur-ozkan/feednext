@@ -1,80 +1,53 @@
-import { Avatar, Menu, Spin } from 'antd'
-import { ClickParam } from 'antd/es/menu'
-import { FormattedMessage } from 'umi-plugin-react/locale'
-import React from 'react'
-import { connect } from 'dva'
-import { router } from 'umi'
-
-import { ConnectProps, ConnectState } from '@/models/connect'
-import { CurrentUser } from '@/models/user'
-import HeaderDropdown from '../HeaderDropdown'
-import styles from './index.less'
+// Antd dependencies
+import { Avatar, Menu } from 'antd'
 import { UserOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons'
 
-export declare interface GlobalHeaderRightProps extends ConnectProps {
-	currentUser?: CurrentUser
-}
+// Other dependencies
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { history } from 'umi'
 
-class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
-	onMenuClick = (event: ClickParam): void => {
-		const { key } = event
+// Local files
+import { persistor } from '@/redux/store'
+import { API_URL } from '@/../config/constants'
+import HeaderDropdown from '../HeaderDropdown'
+import styles from './index.less'
 
-		if (key === '/logout') {
-			const { dispatch } = this.props
-			if (dispatch) {
-				dispatch({
-					type: 'login/logout',
-				})
-			}
 
-			return
-		}
-		router.push(`/account${key}`)
+const AvatarDropdown = () => {
+	const user = useSelector((state: any) => state.user?.attributes.user)
+
+	const handleSignOut = async (): Promise<void> => {
+		await persistor.purge()
+		location.reload()
 	}
 
-	render(): React.ReactNode {
-		const {
-			currentUser = {
-				avatar: '',
-				name: '',
-			},
-		} = this.props
+	const menuHeaderDropdown = (
+		<Menu className={styles.menu} selectedKeys={[]}>
+			<Menu.Item onClick={(): void => history.push(`/user/${user.username}`)} key="/">
+				<UserOutlined />
+				Profile
+			</Menu.Item>
 
-		const menuHeaderDropdown = (
-			<Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
-				<Menu.Item key="/">
-					<UserOutlined />
-					<FormattedMessage id="menu.account" defaultMessage="account center" />
-				</Menu.Item>
+			<Menu.Item onClick={(): void => history.push('/settings')} key="/settings">
+				<SettingOutlined />
+				Settings
+			</Menu.Item>
 
-				<Menu.Item key="/settings">
-					<SettingOutlined />
-					<FormattedMessage id="menu.account.settings" defaultMessage="account settings" />
-				</Menu.Item>
+			<Menu.Item onClick={handleSignOut} key="/logout">
+				<LogoutOutlined />
+				Sign Out
+			</Menu.Item>
+		</Menu>
+	)
 
-				<Menu.Item key="/logout">
-					<LogoutOutlined />
-					<FormattedMessage id="menu.account.logout" defaultMessage="logout" />
-				</Menu.Item>
-			</Menu>
-		)
-
-		return currentUser && currentUser.name ? (
-			<HeaderDropdown overlay={menuHeaderDropdown}>
-				<span className={`${styles.action} ${styles.account}`}>
-					<Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
-					<span className={styles.name}>{currentUser.name}</span>
-				</span>
-			</HeaderDropdown>
-		) : (
-			<Spin
-				size="small"
-				style={{
-					marginLeft: 8,
-					marginRight: 8,
-				}}
-			/>
-		)
-	}
+	return (
+		<HeaderDropdown trigger={['click']} overlay={menuHeaderDropdown}>
+			<span className={`${styles.action} ${styles.account}`}>
+				<Avatar size="small" className={styles.avatar} src={`${API_URL}/v1/user/pp?username=${user.username}`} />
+				<span className={styles.name}>{user.full_name.split(' ')[0]}</span>
+			</span>
+		</HeaderDropdown>
+	)
 }
 export default AvatarDropdown

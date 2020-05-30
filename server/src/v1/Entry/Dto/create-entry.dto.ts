@@ -2,7 +2,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 
 // Other dependencies
-import { IsNotEmpty, IsMongoId } from 'class-validator'
+import { IsNotEmpty } from 'class-validator'
 
 export class CreateEntryDto {
     @ApiProperty({
@@ -14,9 +14,8 @@ export class CreateEntryDto {
 
     @ApiProperty({
         required: true,
-        example: '507f1f77bcf86cd799439011',
+        example: '5dd44d587d0c680f77d9688e',
     })
     @IsNotEmpty()
-    @IsMongoId()
     titleId: string
 }

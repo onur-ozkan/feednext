@@ -1,3 +1,4 @@
+// Local files
 import { User, Guest } from './constants'
 
 const authRoutes = {
@@ -9,12 +10,28 @@ const authRoutes = {
 			redirect: '/auth/sign-in',
 		},
 		{
+			path: '/auth/confirmation/email',
+			component: './Auth/EmailConfirmation',
+		},
+		{
 			path: '/auth/sign-in',
 			component: './Auth/Login',
 		},
 		{
+			path: '/auth/sign-in/forgot-password',
+			component: './Auth/ForgotPassword',
+		},
+		{
+			path: '/auth/sign-in/account-recover',
+			component: './Auth/AccountRecover'
+		},
+		{
 			path: '/auth/sign-up',
 			component: './Auth/Register',
+		},
+		{
+			path: '/auth/sign-up/account-verification',
+			component: './Auth/AccountVerification'
 		},
 		{
 			component: '404',
@@ -27,35 +44,13 @@ const appRoutes = {
 	component: '../middleware/RouteHandler',
 	routes: [
 		{
-			path: '/',
-			redirect: '/feeds',
-		},
-		{
-			path: '/feeds/create-feed',
+			path: '/create-feed',
 			component: '../layouts/AppLayout',
 			authority: User,
 			routes: [
 				{
-					path: '/feeds/create-feed',
+					path: '/create-feed',
 					component: './Feeds/CreateFeed',
-				},
-				{
-					component: '404',
-				},
-			],
-		},
-		{
-			path: '/account',
-			component: '../layouts/AppLayout',
-			authority: User,
-			routes: [
-				{
-					path: '/account',
-					component: './Account',
-				},
-				{
-					path: '/account/settings',
-					component: './Account/Settings',
 				},
 				{
 					component: '404',
@@ -72,6 +67,24 @@ const appRoutes = {
 					component: './Messages',
 				},
 				{
+					path: '/messages/compose',
+					component: './Messages/Compose',
+				},
+				{
+					component: '404',
+				},
+			],
+		},
+		{
+			path: '/settings',
+			component: '../layouts/AppLayout',
+			authority: User,
+			routes: [
+				{
+					path: '/settings',
+					component: './Settings',
+				},
+				{
 					component: '404',
 				},
 			],
@@ -82,24 +95,20 @@ const appRoutes = {
 			authority: Guest,
 			routes: [
 				{
-					name: 'Feeds',
-					icon: 'CopyFilled',
-					path: '/feeds',
+					path: '/',
 					component: './Feeds',
 				},
 				{
-					path: '/feeds/feed',
+					path: '/:feedSlug',
 					component: './Feeds/Feed',
 				},
 				{
-					path: '/user/',
-					component: './User',
+					path: '/entry/:entryId',
+					component: './Entry',
 				},
 				{
-					name: 'Top Feeders',
-					icon: 'CrownOutlined',
-					path: '/top-feeders',
-					component: './TopFeeders',
+					path: '/user/:username',
+					component: './User',
 				},
 				{
 					component: '404',

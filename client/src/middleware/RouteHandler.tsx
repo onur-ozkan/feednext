@@ -1,61 +1,115 @@
-import React, { useState, useEffect } from 'react'
-import { PageLoading } from '@ant-design/pro-layout'
-import { Redirect, router } from 'umi'
-import { stringify } from 'querystring'
-import { getAuthorityFromRouter, handleSessionExpiration } from '@/services/utils'
-import { User } from '@/../config/constants'
-import { Result, Button } from 'antd'
-import { useSelector, useDispatch } from 'react-redux'
-import { SET_ACCESS_TOKEN } from '@/redux/Actions/Global/types'
-import { checkAccessToken, refreshToken } from '@/services/api'
+// Antd dependencies
+import { Button, Result, notification  } from 'antd'
+import { MessageOutlined } from '@ant-design/icons'
 
-const RouteHandler = ({ children, loading, route }) => {
-	const [isReady, setIsReady] = useState(false)
+// Other dependencies
+import React, { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { Redirect, history } from 'umi'
+
+// Local files
+import { SET_ACCESS_TOKEN, SET_UNREAD_MESSAGES_INFO, INCREASE_UNREAD_MESSAGE_VALUE, ADD_ITEM_TO_MESSAGES_INFO } from '@/redux/Actions/Global'
+import { checkAccessToken, refreshToken, fetchUnreadMessageInfo } from '@/services/api'
+import { getAuthorityFromRouter, handleSessionExpiration } from '@/services/utils'
+import { socketConnection } from '@/services/socket'
+import { User } from '@/../config/constants'
+
+const RouteHandler = ({ children, route }) => {
+	const [lastMessageFromSocket, setLastMessageFromSocket] = useState<{ conversation_id: string, from: string, body: string } | null>(null)
+	const globalState = useSelector((state: any) => state.global)
 	const user = useSelector((state: any) => state.user)
-	const accessToken = useSelector((state: any) => state.global.accessToken)
+	const wss = socketConnection(globalState.accessToken)
 	const dispatch = useDispatch()
 
-	const checkSessionSituation = async (): Promise<void> => {
-		await checkAccessToken(`Bearer ${accessToken}`).catch(err => {
-			refreshToken().then(res => {
-				dispatch({
-					type: SET_ACCESS_TOKEN,
-					token: res.data.attributes.access_token
-				})
-			}).catch(e => {
-				handleSessionExpiration()
+	const checkIsSessionValid = async (): Promise<void> => {
+		await checkAccessToken(globalState.accessToken)
+			.catch(_error => {
+				refreshToken().then(res => {
+					dispatch({
+						type: SET_ACCESS_TOKEN,
+						token: res.data.attributes.access_token
+					})
+				}).catch(_e => handleSessionExpiration())
+			})
+	}
+
+	const handleUnreadMessages = async (): Promise<void> => {
+		await fetchUnreadMessageInfo(globalState.accessToken).then(({ data }) => {
+			dispatch({
+				type: SET_UNREAD_MESSAGES_INFO,
+				data: data.attributes
 			})
 		})
-		setIsReady(true)
+	}
+
+	const handleInitialProcessesOnRoute = async (): Promise<void> => {
+		if (globalState.accessToken) {
+			await checkIsSessionValid()
+			await handleUnreadMessages()
+		}
 	}
 
 	useEffect(() => {
-		if (accessToken) checkSessionSituation()
-		else setIsReady(true)
+		handleInitialProcessesOnRoute()
+		// Handle message notifications
+		if (globalState.accessToken) {
+			wss.on('pingMessage', (incMessage: { conversation_id: string, from: string, body: string }) => {
+				if (location.pathname !== '/messages') {
+					notification.info({
+						closeIcon: null,
+						message: incMessage.from,
+						description: incMessage.body,
+						duration: 2,
+						icon: <MessageOutlined style={{ color: '#188fce' }}/>,
+					})
+
+					setLastMessageFromSocket(incMessage)
+				}
+			})
+
+			return () => {
+				wss.disconnect()
+			}
+		}
 	}, [])
 
-	const queryString = stringify({
-		redirect: window.location.href,
-	})
+	// Handle notifications on messages
+	useEffect(() => {
+		if (lastMessageFromSocket) {
+			const conversation = globalState.unreadMessageInfo?.values_by_conversations.find(item => item.id === lastMessageFromSocket.conversation_id)
+			if (!conversation) {
+				dispatch({
+					type: ADD_ITEM_TO_MESSAGES_INFO,
+					item: {
+						id: lastMessageFromSocket.conversation_id,
+						value: 1
+					}
+				})
+			} else {
+				dispatch({
+					type: INCREASE_UNREAD_MESSAGE_VALUE,
+					id: lastMessageFromSocket.conversation_id,
+					value: 1
+				})
+			}
+			setLastMessageFromSocket(null)
+		}
+	}, [lastMessageFromSocket])
 
 	const authorized: any = getAuthorityFromRouter(route?.routes, location.pathname || '/')
 
-	if (loading || !isReady) {
-		return <PageLoading />
+	if (!user && authorized?.authority >= User && window.location.pathname !== '/') {
+		return <Redirect to="/auth/sign-in" />
 	}
 
-	if (!user && authorized.authority >= User && window.location.pathname !== '/auth/sign-in') {
-		return <Redirect to={`/auth/sign-in?${queryString}`} />
-	}
-
-	if (user &&  authorized.authority > user.attributes.user.role) {
+	if (user && authorized?.authority > user.attributes.user.role) {
 		return (
 			<Result
 				status="403"
 				title="403"
 				subTitle="Sorry, your account role doesnt have access to this page"
 				extra={
-					<Button type="primary" onClick={(): void => router.push('/')}>
+					<Button type="primary" onClick={(): void => history.push('/')}>
 						Back Home
 					</Button>
 				}

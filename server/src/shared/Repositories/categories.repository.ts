@@ -1,9 +1,8 @@
 // Nest dependencies
-import { NotFoundException, BadRequestException, UnprocessableEntityException } from '@nestjs/common'
+import { BadRequestException, UnprocessableEntityException } from '@nestjs/common'
 
 // Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
-import { ObjectID } from 'mongodb'
 
 // Local files
 import { CategoriesEntity } from '../Entities/categories.entity'
@@ -17,43 +16,70 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
             const category: CategoriesEntity = await this.findOneOrFail(categoryId)
             return category
         } catch (err) {
-            throw new NotFoundException('Category with that id could not found in the database.')
+            throw new BadRequestException('Category with that id could not found in the database.')
         }
     }
 
-    async getCategoryList(query: { limit: number, skip: number, orderBy: any }): Promise<{categories: CategoriesEntity[], count: number}> {
-        const orderBy = query.orderBy || 'ASC'
-
-        try {
-            const [categories, total] = await this.findAndCount({
-                order: {
-                    name: orderBy.toUpperCase(),
-                },
-                take: Number(query.limit) || 10,
-                skip: Number(query.skip) || 0,
-            })
-            return {
-                categories,
-                count: total,
+    async getMainCategories(): Promise<{categories: CategoriesEntity[], count: number}> {
+        const [categories, total] = await this.findAndCount({
+            where: {
+                parent_category: null
+            },
+            order: {
+                name: 'ASC'
             }
-        } catch (err) {
-            throw new BadRequestException(err)
-        }
+        })
+        return { categories, count: total }
+    }
+
+    async getChildCategories(categoryId: string): Promise<{categories: CategoriesEntity[], count: number}> {
+        const [categories, total] = await this.findAndCount({
+            where: {
+                parent_category: categoryId,
+            },
+            order: {
+                is_leaf: 'ASC',
+                name: 'ASC'
+            }
+        })
+        return { categories, count: total }
+    }
+
+    async getCategoryListByIds(idList: string[]): Promise<{categories: CategoriesEntity[], count: number}> {
+        const [categories, total] = await this.findAndCount({
+            where: {
+                '_id': {
+                    $in: idList
+                }
+            },
+            skip: 0,
+        })
+        return { categories, count: total }
     }
 
     async createCategory(dto: CreateCategoryDto): Promise<CategoriesEntity> {
+        const categoryPayload: {
+            name: string,
+            parent_category?: string,
+            is_leaf: boolean,
+            ancestors: string[]
+        } = {
+            name: dto.categoryName,
+            is_leaf: dto.isLeaf,
+            ancestors: []
+        }
+
         if (dto.parentCategoryId) {
             try {
-                await this.findOneOrFail(dto.parentCategoryId)
+                const parentCategory = await this.findOneOrFail(dto.parentCategoryId)
+                categoryPayload.parent_category = dto.parentCategoryId
+                categoryPayload.ancestors.push(...parentCategory.ancestors, dto.parentCategoryId)
             } catch (err) {
                 throw new BadRequestException(`Category with id:${dto.parentCategoryId} does not match in database.`)
             }
         }
 
-        const newCategory: CategoriesEntity = new CategoriesEntity({
-            name: dto.categoryName,
-            parent_category: (dto.parentCategoryId) ? ObjectID(dto.parentCategoryId) : null,
-        })
+        const newCategory: CategoriesEntity = new CategoriesEntity(categoryPayload)
 
         try {
             return await this.save(newCategory)
@@ -63,11 +89,12 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
     }
 
     async updateCategory(categoryId: string, dto: UpdateCategoryDto): Promise<CategoriesEntity> {
+        let parentCategory: CategoriesEntity | null = null
         if (dto.parentCategoryId) {
             try {
-                await this.findOneOrFail(dto.parentCategoryId)
+                parentCategory = await this.findOneOrFail(dto.parentCategoryId)
             } catch (err) {
-                throw new NotFoundException('Parent category with that id could not found in the database.')
+                throw new BadRequestException('Parent category with that id could not found in the database.')
             }
         }
 
@@ -75,12 +102,16 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
         try {
             category = await this.findOneOrFail(categoryId)
         } catch {
-            throw new NotFoundException('Category with that id could not found in the database.')
+            throw new BadRequestException('Category with that id could not found in the database.')
         }
 
         try {
             if (dto.categoryName) category.name = dto.categoryName
-            if (dto.parentCategoryId) category.parent_category = dto.parentCategoryId
+            if (dto.isLeaf !== undefined) category.is_leaf = dto.isLeaf
+            if (parentCategory) {
+                category.parent_category = dto.parentCategoryId
+                category.ancestors = [...parentCategory.ancestors, String(parentCategory.id)]
+            }
 
             await this.save(category)
             return category
@@ -89,14 +120,24 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
         }
     }
 
-    async deleteCategory(categoryId: string): Promise<CategoriesEntity> {
+    async deleteCategory(categoryId: string): Promise<void> {
+        let category: CategoriesEntity
         try {
-            const category: CategoriesEntity = await this.findOneOrFail(categoryId)
+            category = await this.findOneOrFail(categoryId)
             await this.delete(category)
-            return category
         } catch (err) {
-            throw new NotFoundException('Category with that id could not found in the database.')
+            throw new BadRequestException('Category with that id could not found in the database.')
         }
+
+        // Delete all child categories that belongs to deleted category
+        const childCategories: any[]  = await this.find({
+            where: {
+                ancestors: {
+                    $in: [String(category.id)]
+                }
+            },
+        })
+        await this.remove(childCategories)
     }
 
 }

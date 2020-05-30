@@ -1,64 +1,101 @@
+// Antd dependencies
+import { Form, Button, Input } from 'antd'
+
+// Other dependencies
 import React, { useContext } from 'react'
-import { Form, Button, Divider, Input, Row, TreeSelect } from 'antd'
-import styles from './index.less'
-import TextArea from 'antd/lib/input/TextArea'
+
+// Local files
+import { CategorySelect } from '@/components/CategorySelect'
+import { PageHelmet } from '@/components/PageHelmet'
+import { Step1Props } from '../../types'
+import ImageUpload from '@/components/ImageUpload'
 import StepContext from '../../StepContext'
+import styles from './index.less'
 
 const formItemLayout = {
 	labelCol: {
-		span: 5,
+		span: 7,
 	},
 	wrapperCol: {
-		span: 19,
+		span: 17,
 	},
 }
 
-const Step1: React.FC = (props: any) => {
+const Step1 = (props: Step1Props): JSX.Element => {
 	const [form] = Form.useForm()
-	const { createTitleForm } = useContext(StepContext)
-	const { categories, setCreateTitleForm, stepMovementTo, setReadableCategoryValue } = props
+	const { createTitleFormData, readableCategoryValue } = useContext(StepContext)
+	const { setCreateTitleFormData, stepMovementTo, setReadableCategoryValue } = props
 
 	const onValidateForm = (): void => {
 		if (!form.getFieldValue('categoryId') && !form.getFieldValue('title')) return
-		setCreateTitleForm({
-			name: form.getFieldValue('title'),
-			categoryId: form.getFieldValue('categoryId'),
-			description: form.getFieldValue('description')
+		setCreateTitleFormData({
+			...createTitleFormData,
+			name: form.getFieldValue('title')
 		})
 		stepMovementTo('create-entry')
 	}
 
-	const handleReadableCategoryValue = (id, title) => {
+	const handleReadableCategoryValue = (id: string | string[], title: React.ReactNode[]): void => {
+		setCreateTitleFormData({
+			...createTitleFormData,
+			categoryId: id,
+		})
 		setReadableCategoryValue(title[0])
 	}
 
+
+	const handleOnUpload = (base64Link: string, fileBlob: File): void => {
+		setCreateTitleFormData({
+			...createTitleFormData,
+			imageBase64: base64Link,
+			imageFile: fileBlob
+		})
+	}
+
+	const handleOnPictureDelete = (): void => {
+		setCreateTitleFormData({
+			...createTitleFormData,
+			imageBase64: null,
+			imageFile: null
+		})
+	}
+
+
 	return (
 		<>
-			<Form {...formItemLayout} initialValues={{ categoryId: createTitleForm.categoryId, title: createTitleForm.name, description: createTitleForm.description }} form={form} layout="horizontal" className={styles.stepForm}>
+			<PageHelmet
+				title="Create Title"
+				description="Best reviews, comments, feedbacks about anything around the world"
+				mediaImage="https://avatars1.githubusercontent.com/u/64217221?s=200&v=4"
+				mediaDescription="Best reviews, comments, feedbacks about anything around the world"
+			/>
+			<Form
+				{...formItemLayout}
+				form={form}
+				initialValues={{ categoryId: createTitleFormData.categoryId, title: createTitleFormData.name }}
+				layout="horizontal"
+				className={styles.stepForm}
+			>
+				<Form.Item label="Image (Optional)" rules={[{ required: false }]}>
+					<ImageUpload
+						defaultUrl={createTitleFormData.imageBase64}
+						onImageTake={handleOnUpload}
+						onRemoveImage={handleOnPictureDelete}
+					/>
+				</Form.Item>
 				<Form.Item
 					label="Category"
 					name="categoryId"
 					rules={[{ required: true, message: 'Please select category' }]}
 				>
-					<TreeSelect placeholder="Electronic" onChange={handleReadableCategoryValue} allowClear>
-						{categories.map((data: any) => (
-							<TreeSelect.TreeNode key={data.id} value={data.id} title={data.name}>
-								{data.childNodes.map((child: any) => (
-									<TreeSelect.TreeNode key={child.id} value={child.id} title={child.name} />
-								))}
-							</TreeSelect.TreeNode>
-						))}
-					</TreeSelect>
+					<CategorySelect
+						defaultValue={readableCategoryValue}
+						placeHolder="Electronic"
+						onSelect={handleReadableCategoryValue}
+					/>
 				</Form.Item>
 				<Form.Item label="Title" name="title" rules={[{ required: true, message: 'Please fill the title input' }]}>
 					<Input placeholder="Xphone Model 7s Plus" />
-				</Form.Item>
-				<Form.Item label="Description" name="description">
-					<TextArea
-						placeholder="Xphone Model 7s Plus is a phone released at 2014, here is the device you can check better https://example.com/xphone-model-7s-plus"
-						allowClear
-						autoSize={{ minRows: 4 }}
-					/>
 				</Form.Item>
 				<Form.Item
 					wrapperCol={{
@@ -74,28 +111,6 @@ const Step1: React.FC = (props: any) => {
 					</Button>
 				</Form.Item>
 			</Form>
-			<Divider style={{ margin: '40px 0 24px' }} />
-			<div className={styles.desc}>
-				<h3 style={{ fontWeight: 'bold' }}>FORM GUIDE</h3>
-				<Row style={{ alignItems: 'center' }}>
-					<h3 style={{ marginRight: 10, fontWeight: 'bold' }}>Category</h3>
-					<p>
-						You have to make sure the category of your feed pointed correctly. If the category that you looking for doesnt exist,
-						please select 'Other' and tell us the category name in the description box so we can add it to application.
-					</p>
-				</Row>
-				<Row style={{ alignItems: 'center' }}>
-					<h3 style={{ marginRight: 10, fontWeight: 'bold' }}>Title</h3>
-					<p>You have to make sure the title of your feed represents a visible material.</p>
-				</Row>
-				<Row style={{ alignItems: 'center' }}>
-					<h3 style={{ marginRight: 10, fontWeight: 'bold' }}>Description</h3>
-					<p>
-						This is not a required field for known, popular materials. But for some materials, this field may
-						help to increase approvement of the feed.
-					</p>
-				</Row>
-			</div>
 		</>
 	)
 }

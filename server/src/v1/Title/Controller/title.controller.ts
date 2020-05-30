@@ -1,17 +1,37 @@
 // Nest dependencies
-import { Controller, UseGuards, Headers, Post, Body, HttpException, Get, Param, Query, Delete, Patch } from '@nestjs/common'
+import {
+    Controller,
+    UseGuards,
+    Headers,
+    Post,
+    Body,
+    HttpException,
+    Get,
+    Param,
+    Query,
+    Delete,
+    Patch,
+    Put,
+    Req,
+    BadRequestException,
+    HttpStatus,
+    Res
+} from '@nestjs/common'
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthGuard } from '@nestjs/passport/dist/auth.guard'
 
+// Other dependencies
+import * as concat from 'concat-stream'
+
 // Local dependencies
 import { RolesGuard } from 'src/shared/Guards/roles.guard'
-import { CreateTitleDto } from '../Dto/create-title.dto'
 import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.service'
 import { Roles } from 'src/shared/Decorators/roles.decorator'
 import { UpdateTitleDto } from '../Dto/update-title.dto'
-import { JuniorAuthor, Admin, SuperAdmin } from 'src/shared/Constants'
 import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { TitleService } from '../Service/title.service'
+import { RateTitleDto } from '../Dto/rate-title.dto'
+import { Role } from 'src/shared/Enums/Roles'
 
 @ApiTags('v1/title')
 @Controller()
@@ -20,28 +40,111 @@ import { TitleService } from '../Service/title.service'
 export class TitleController {
     constructor(private readonly titleService: TitleService) {}
 
-    @Get(':titleSlug')
-    getTitle(@Param('titleSlug') titleSlug: string): Promise<ISerializeResponse> {
-        return this.titleService.getTitle(titleSlug)
+    @Get(':titleQueryData')
+    getTitle(
+        @Param('titleQueryData') titleQueryData: string,
+        @Query('type') type: 'id' | 'slug'
+    ): Promise<ISerializeResponse> {
+        return this.titleService.getTitle(titleQueryData, type === 'id')
+    }
+
+    @Get('search')
+    searchTitle(@Query('searchValue') searchValue: string): Promise<ISerializeResponse> {
+        return this.titleService.searchTitle({ searchValue })
     }
 
     @Get('all')
-    getTitleList(@Query() query: { limit: number, skip: number, orderBy: any }): Promise<ISerializeResponse> {
+    getTitleList(
+        @Query() query: {
+            author: string,
+            categoryIds: any,
+            sortBy: 'hot' | 'top',
+            skip: number,
+        }
+    ): Promise<ISerializeResponse> {
+        if (query.categoryIds) query.categoryIds = query.categoryIds.split(',')
         return this.titleService.getTitleList(query)
+    }
+
+    @Get(':titleId/image')
+    async getTitleImage(@Param('titleId') titleId,  @Res() res: any): Promise<void> {
+        const buffer = await this.titleService.getTitleImage(titleId)
+        res.type('image/jpeg').send(buffer)
     }
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Post('create-title')
-    @Roles(JuniorAuthor)
-    createTitle(@Headers('authorization') bearer: string, @Body() dto: CreateTitleDto): Promise<HttpException | ISerializeResponse> {
-        return this.titleService.createTitle(jwtManipulationService.decodeJwtToken(bearer, 'username'), dto)
+    async createTitle(@Headers('authorization') bearer: string, @Req() req) {
+        return new Promise((resolve, reject) => {
+            const payload: any = {}
+            let image: Buffer
+
+            const fileHandler = async (_field, file, _filename, _encoding, mimetype) => {
+                if (mimetype !== 'image/jpeg' && mimetype !== 'image/png') {
+                    reject(new BadRequestException('File must be image'))
+                    return
+                }
+                file.pipe(concat(buffer => image = buffer))
+            }
+
+            const mpForm = req.multipart(fileHandler, async (error) => {
+                if (error) {
+                    reject(new BadRequestException('Not valid multipart request'))
+                    return
+                }
+                try {
+                    const result = await this.titleService.createTitle(jwtManipulationService.decodeJwtToken(bearer, 'username'), payload, image)
+                        .catch(e => {
+                            // if titleService.createTitle fails, throw the error to catch block
+                            throw e
+                        })
+                    resolve(result)
+                } catch (e) {
+                    reject(e)
+                }
+            })
+
+            mpForm.on('field', (key, value) => {
+                payload[key] = value
+            })
+        })
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
+    @Put('/image')
+    @Roles(Role.Admin)
+    updateTitleImage(@Query('titleId') titleId, @Req() req): Promise<HttpException> {
+        return new Promise((resolve, reject) => {
+            const handler = (_field, file, _filename, _encoding, mimetype) => {
+                if (mimetype !== 'image/jpeg' && mimetype !== 'image/png') reject(new BadRequestException('File must be image'))
+                file.pipe(concat(buffer => {
+                    this.titleService.updateTitleImage(titleId, buffer)
+                        .catch(error => reject(error))
+                }))
+            }
+
+            req.multipart(handler, (error) => {
+                if (error) reject(new BadRequestException('Not valid multipart request'))
+                resolve(new HttpException('Upload successfully ended', HttpStatus.OK))
+            })
+        })
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
+    @Delete('/image')
+    @Roles(Role.Admin)
+    deleteTitleImage(@Query('titleId') titleId): HttpException {
+        this.titleService.deleteTitleImage(titleId)
+        throw new HttpException('Image successfully deleted', HttpStatus.OK)
     }
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Patch(':titleId')
-    @Roles(Admin)
+    @Roles(Role.Admin)
     updateTitle(
         @Headers('authorization') bearer: string,
         @Param('titleId') titleId: string,
@@ -52,8 +155,36 @@ export class TitleController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
+    @Patch(':titleId/rate')
+    @Roles(Role.User)
+    rateTitle(
+        @Headers('authorization') bearer: string,
+        @Param('titleId') titleId: string,
+        @Body() dto: RateTitleDto
+    ): Promise<HttpException> {
+        return this.titleService.rateTitle(jwtManipulationService.decodeJwtToken(bearer, 'username'), titleId, dto.rateValue)
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
+    @Get(':titleId/rate-of-user')
+    @Roles(Role.User)
+    getRateOfUser(
+        @Headers('authorization') bearer: string,
+        @Param('titleId') titleId: string,
+    ): Promise<HttpException> {
+        return this.titleService.getRateOfUser(jwtManipulationService.decodeJwtToken(bearer, 'username'), titleId)
+    }
+
+    @Get(':titleId/average-rate')
+    getAvarageRate(@Param('titleId') titleId: string): Promise<ISerializeResponse> {
+        return this.titleService.getAvarageRate(titleId)
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
     @Delete(':titleId')
-    @Roles(SuperAdmin)
+    @Roles(Role.SuperAdmin)
     deleteTitle(@Param('titleId') titleId: string): Promise<HttpException> {
         return this.titleService.deleteTitle(titleId)
     }

@@ -1,15 +1,19 @@
-import { Form } from '@ant-design/compatible'
-import '@ant-design/compatible/assets/index.css'
+// Antd dependencies
 import { Tabs } from 'antd'
-import React, { Component } from 'react'
+import { Form } from '@ant-design/compatible'
 import { FormComponentProps } from '@ant-design/compatible/es/form'
+
+// Other dependencies
+import React, { Component } from 'react'
 import classNames from 'classnames'
+
+// Local files
 import LoginContext from './LoginContext'
 import LoginItem, { LoginItemProps, LoginItemType } from './LoginItem'
-
 import LoginSubmit from './LoginSubmit'
 import LoginTab from './LoginTab'
 import styles from './index.less'
+import '@ant-design/compatible/assets/index.css'
 
 export declare interface LoginProps {
 	defaultActiveKey?: string
@@ -17,7 +21,7 @@ export declare interface LoginProps {
 	style?: React.CSSProperties
 	onSubmit?: (error: any, values: any) => void
 	className?: string
-	form: FormComponentProps['form']
+	m: FormComponentProps['form']
 	children: React.ReactElement<typeof LoginTab>[]
 }
 

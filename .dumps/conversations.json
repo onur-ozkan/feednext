@@ -1,0 +1,29 @@
+[{
+  "_id": {
+    "$oid": "5ecc00514e4c1c32d76217ab"
+  },
+  "participants": [
+    "admin",
+    "teo.alpha"
+  ],
+  "unread_messages": [
+    {
+      "username": "admin",
+      "value": 0
+    },
+    {
+      "username": "teo.alpha",
+      "value": 1
+    }
+  ],
+  "deleted_from": [],
+  "last_message_send_at": {
+    "$date": "2020-05-25T17:28:49.128Z"
+  },
+  "created_at": {
+    "$date": "2020-05-25T17:28:49.128Z"
+  },
+  "updated_at": {
+    "$date": "2020-05-25T17:28:51.177Z"
+  }
+}]

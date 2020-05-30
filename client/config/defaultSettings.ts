@@ -1,11 +1,14 @@
+// Antd dependencies
 import { MenuTheme } from 'antd/es/menu/MenuContext'
+
+// Local files
 import { IAppTheme, appTheme } from './themes'
 
 export type ContentWidth = 'Fluid' | 'Fixed'
 
-export declare interface DefaultSettings {
+export interface DefaultSettings {
 	navTheme: MenuTheme
-	primaryColor: string
+	theme: IAppTheme,
 	layout: 'sidemenu' | 'topmenu'
 	contentWidth: ContentWidth
 	fixedHeader: boolean
@@ -14,15 +17,14 @@ export declare interface DefaultSettings {
 	menu: {
 		locale: boolean
 	}
-	title: string
+	title: string | null
 	pwa: boolean
 	iconfontUrl: string
 	colorWeak: boolean
 }
 
 export default {
-	navTheme: 'light',
-	primaryColor: '#1890ff',
+	navTheme: 'dark',
 	layout: 'topmenu',
 	contentWidth: 'Fluid',
 	fixedHeader: true,
@@ -30,10 +32,12 @@ export default {
 	fixSiderbar: false,
 	colorWeak: false,
 	menu: {
-		locale: true,
+		locale: false,
 	},
-	title: 'Feednext',
+	title: 'Feednext: the source of feedbacks',
 	pwa: false,
 	iconfontUrl: '',
-	...appTheme,
-} as DefaultSettings & IAppTheme
+	theme: {
+		...appTheme
+	},
+}

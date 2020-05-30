@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .mainContainer {
+            border-collapse: collapse;
+            padding: 0;
+            margin: 0px;
+            background-color: #f5f5f5;
+        }
+
+        .childContainer {
+            max-width: 550px;
+            min-width: 320px;
+            text-align: left;
+            background-color: white;
+            border: 1px solid #ddd;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .divider {
+            margin-top: 10px;
+            margin-bottom: 50px;
+            border: none;
+            border-bottom: 1px solid #616161;
+        }
+
+        .thanks-letter {
+            font-family: Tahoma, Geneva, sans-serif;
+            font-weight: normal;
+            text-align: center;
+            color: #2A2A2A;
+            margin-bottom: 65px;
+            font-size: 18px;
+            letter-spacing: 6px;
+            font-weight: normal;
+            border: 1px solid black !important;
+            padding: 15px;
+        }
+
+        .copyright {
+            text-align: center;
+            font-family: Courier New, Courier, monospace;
+            font-size: 10px;
+            color: #666;
+        }
+
+        .verifyButtonContainer {
+            border: black solid;
+            border-width: 0.5px;
+            text-align: center;
+            padding: 15px;
+        }
+
+        .verifyButtonInline {
+            margin-left: auto;
+            margin-right: auto;
+            text-decoration: none;
+            color: black !important;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 18px;
+            letter-spacing: 2px;
+        }
+
+        .extra-info {
+            font-family: Palatino Linotype, Book Antiqua, Palatino, serif;
+            font-size: 15px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: justify;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 35px
+        }
+    </style>
+</head>
+
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="mainContainer">
+    <tr valign="top">
+        <td align="center">
+            <div class="childContainer">
+                <div style="margin-left:30px;margin-right:30px">
+                    <br>
+                    <a target="_home" href="https://feednext.io" class="brand-logo">
+                        <img
+                            style="max-width: 100%"
+                            src="https://raw.githubusercontent.com/Feednext/feednext/master/server/public/logo-wide.png"
+                        />
+                    </a>
+                    <hr class="divider" />
+                    <h1 class="thanks-letter">
+                        ACCOUNT ACTIVATION
+                    </h1>
+                    <h3 style="font-family:Palatino Linotype, Book Antiqua, Palatino, serif;font-style:italic;font-weight:500;">
+                        Hi <%= fullName %>,
+                        <p>
+                            Your account has been passive for a while. We just received a request that you would like to
+                            <span style="border-bottom: 1px solid red">reactivate your account </span> back.
+                            To do that, please click the following button below.
+                        </p>
+                    </h3>
+                    <table style="width:100%;">
+                        <th>
+                        <td style="width:20%"></td>
+                        <td class="verifyButtonContainer">
+                            <a href="<%= accountActivationAddress %>" target="_recover" class="verifyButtonInline">
+                                Activate My Account
+                            </a>
+                        </td>
+                        <td style="width:20%"></td>
+                        </th>
+                    </table>
+                    <hr style="margin-top:50px" />
+                    <p style="text-align:center;margin-bottom:15px">
+                        <small class="copyright">Feednext © 2020. All rights reserved </small>
+                        <br>
+                    </p>
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+</html>

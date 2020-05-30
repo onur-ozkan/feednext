@@ -1,4 +1,5 @@
-import { NAV_LAYOUT, NAV_THEME, SettingsActions } from '../../Actions/Settings/types'
+// Local files
+import { NAV_LAYOUT, NAV_THEME, SettingsActions } from '../../Actions/Settings'
 import defaultSettings from '@/../config/defaultSettings'
 
 const settingsReducerDefaultState: any = defaultSettings
