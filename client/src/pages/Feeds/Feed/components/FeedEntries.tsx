@@ -258,7 +258,8 @@ const FeedEntries: React.FC<FeedEntriesProps> = (props): JSX.Element => {
 							}
 							content={
 								<>
-									<Typography.Paragraph
+									<Typography.Text
+										style={{ whiteSpace: 'pre-wrap' }}
 										{...(userState?.username === item.written_by && {
 											editable: {
 												onChange: (value: string): void => handleEntryUpdate(value, item),
@@ -266,7 +267,7 @@ const FeedEntries: React.FC<FeedEntriesProps> = (props): JSX.Element => {
 										})}
 									>
 										{item.text}
-									</Typography.Paragraph>
+									</Typography.Text>
 									{(userState?.username === item.written_by || userState?.role === SuperAdmin) && (
 										<span style={{ float: 'right' }}>
 											<Popconfirm
