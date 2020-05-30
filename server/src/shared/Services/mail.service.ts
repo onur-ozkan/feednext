@@ -17,6 +17,7 @@ export class MailService {
                 service: configService.getEnv('SMTP_SERVICE'),
                 host: configService.getEnv('SMTP_HOST'),
                 port: configService.getEnv('SMTP_PORT'),
+                secure: true,
                 auth: {
                     user: configService.getEnv('SMTP_MAIL'),
                     pass: configService.getEnv('SMTP_PASSWORD'),
@@ -50,6 +51,7 @@ export class MailService {
                 service: configService.getEnv('SMTP_SERVICE'),
                 host: configService.getEnv('SMTP_HOST'),
                 port: configService.getEnv('SMTP_PORT'),
+                secure: true,
                 auth: {
                     user: configService.getEnv('SMTP_MAIL'),
                     pass: configService.getEnv('SMTP_PASSWORD'),
@@ -83,6 +85,7 @@ export class MailService {
                 service: configService.getEnv('SMTP_SERVICE'),
                 host: configService.getEnv('SMTP_HOST'),
                 port: configService.getEnv('SMTP_PORT'),
+                secure: true,
                 auth: {
                     user: configService.getEnv('SMTP_MAIL'),
                     pass: configService.getEnv('SMTP_PASSWORD'),
@@ -116,6 +119,7 @@ export class MailService {
                 service: configService.getEnv('SMTP_SERVICE'),
                 host: configService.getEnv('SMTP_HOST'),
                 port: configService.getEnv('SMTP_PORT'),
+                secure: true,
                 auth: {
                     user: configService.getEnv('SMTP_MAIL'),
                     pass: configService.getEnv('SMTP_PASSWORD'),
