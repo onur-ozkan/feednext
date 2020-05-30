@@ -52,56 +52,57 @@ const Feeds = (): JSX.Element => {
 		}
 
 		await fetchAllFeeds(skipValueForPagination, undefined, categoryFilter, sortBy)
-			.then((feedsResponse: AxiosResponse) => {
+			.then(async (feedsResponse: AxiosResponse) => {
 				if (feedsResponse.data.attributes.count > feedList.length) setCanLoadMore(true)
 				else setCanLoadMore(false)
 
-				feedsResponse.data.attributes.titles.map(async (title: any) => {
+				const promises = await feedsResponse.data.attributes.titles.map(async (title: any) => {
 					const categoryName = await fetchOneCategory(title.category_id).then(({ data }) => data.attributes.name)
-					await fetchFeaturedEntryByTitleId(title.id)
-						.then(async featuredEntryResponse => {
-							const feed = {
-								id: title.id,
-								slug: title.slug,
-								name: title.name,
-								href: `/${title.slug}`,
-								categoryName: categoryName,
-								createdAt: title.created_at,
-								updatedAt: title.updated_at,
-								entryCount: title.entry_count,
-								featuredEntry: {
-									id: featuredEntryResponse.data.attributes.id,
-									avatar: `${API_URL}/v1/user/pp?username=${featuredEntryResponse.data.attributes.written_by}`,
-									text: featuredEntryResponse.data.attributes.text,
-									createdAt: featuredEntryResponse.data.attributes.created_at,
-									updatedAt: featuredEntryResponse.data.attributes.updated_at,
-									voteValue: featuredEntryResponse.data.attributes.votes.value,
-									writtenBy: featuredEntryResponse.data.attributes.written_by,
-								},
+					const featuredEntry: any = await fetchFeaturedEntryByTitleId(title.id).then(featuredEntryResponse => featuredEntryResponse.data.attributes)
+					.catch(_error => {})
+
+					const feed = {
+						id: title.id,
+						slug: title.slug,
+						name: title.name,
+						href: `/${title.slug}`,
+						categoryName: categoryName,
+						createdAt: title.created_at,
+						updatedAt: title.updated_at,
+						entryCount: title.entry_count,
+						...featuredEntry && {
+							featuredEntry: {
+								id: featuredEntry.id,
+								avatar: `${API_URL}/v1/user/pp?username=${featuredEntry.written_by}`,
+								text: featuredEntry.text,
+								createdAt: featuredEntry.created_at,
+								updatedAt: featuredEntry.updated_at,
+								voteValue: featuredEntry.votes.value,
+								writtenBy: featuredEntry.written_by,
 							}
-							setFeed((feedList: FeedList[]) => [...feedList, feed])
-						})
-						.catch(_error => {
-							const feed: any = {
-								id: title.id,
-								slug: title.slug,
-								name: title.name,
-								href: `/${title.slug}`,
-								categoryName: categoryName,
-								createdAt: title.created_at,
-								updatedAt: title.updated_at,
-								entryCount: title.entry_count,
-							}
-							setFeed((feedList: FeedList[]) => [...feedList, feed])
-						})
+						}
+					}
+					return feed
 				})
+
+				const result = await Promise.all(promises)
+
+				/* TODO
+				* This is a workaround to fix wrong list order of Feeds Flow.
+				* Updating feeds should be refactored.
+				*/
+				result.map(item => setFeed((feedList: FeedList[]) => [...feedList, item]))
+
 			})
 			.catch((error: AxiosError) => message.error(error.response?.data.message))
 		setIsLoading(false)
 		setIsFetching(false)
 	}
 
-	const handleEntryListRender = (): JSX.Element => {
+
+
+
+	const handleFeedListView = (): JSX.Element => {
 		if (isLoading) {
 			return (
 				<div style={{ textAlign: 'center', marginTop: 61 }}>
@@ -207,7 +208,6 @@ const Feeds = (): JSX.Element => {
 		handleDataFetching()
 	}, [skipValueForPagination, categoryFilter, sortBy])
 
-
 	const handleFetchMore = (): void => {
 		setIsFetching(true)
 		setSkipValueForPagination(skipValueForPagination + 10)
@@ -273,7 +273,7 @@ const Feeds = (): JSX.Element => {
 							antBtnLinkStyle={globalStyles.antBtnLink}
 						/>
 						{handleModalScreen()}
-						{handleEntryListRender()}
+						{handleFeedListView()}
 					</Card>
 				</Col>
 				<Col xl={8} lg={10} md={24} sm={24} xs={24} style={{ padding: 4 }}>
