@@ -31,7 +31,7 @@ export class CreateAccountDto {
     @IsNotEmpty()
     @Matches(/^[a-z0-9_.-]{3,17}$/, {
         // tslint:disable-next-line:quotemark
-        message: "Your username can only contain letters, numbers, '_', '-' and '.' with min 3 max 17 length"
+        message: "Username can only contain lowercase letters, numbers, '_', '-' and '.' with min 3 max 17 length"
     })
     username: string
 
