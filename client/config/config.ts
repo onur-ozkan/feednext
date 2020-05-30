@@ -8,7 +8,7 @@ import defaultSettings from './defaultSettings'
 export default defineConfig({
 	ssr: {
 		forceInitial: true,
-		devServerRender: false,
+		devServerRender: true,
 		mode: 'string',
 		staticMarkup: false,
 	},
