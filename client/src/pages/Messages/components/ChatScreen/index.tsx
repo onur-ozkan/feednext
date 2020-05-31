@@ -114,7 +114,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = (props): JSX.Element => {
 
 	const renderMessages = (item: MessageAttributes, index: number) => {
 		if (index !== 0	&&
-				format(parseISO(messageList[index - 1].created_at), 'dd LLL (p O)') === format(parseISO(item.created_at), 'dd LLL (p O)') &&
+				format(parseISO(messageList[index - 1].created_at), 'dd LLL yyyy (p O)') === format(parseISO(item.created_at), 'dd LLL yyyy (p O)') &&
 				messageList[index - 1].send_by === item.send_by
 		) {
 			return (
@@ -134,7 +134,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = (props): JSX.Element => {
 						<Link to={`user/${item.send_by}`} style={{ fontWeight: 'bold', color: '#212121' }}>
 							{item.send_by}
 						</Link>
-						<span style={{ color: 'gray', fontSize: 12 }}> {format(parseISO(item.created_at), 'dd LLL (p O)')} </span>
+						<span style={{ color: 'gray', fontSize: 12 }}> {format(parseISO(item.created_at), 'dd LLL yyyy (p O)')} </span>
 					</>
 				}
 				description={<span style={{ color: '#333' }}> {item.text} </span>}
