@@ -107,8 +107,8 @@ export class UserService {
         return serializerService.serializeResponse('updated_profile', profile, id)
     }
 
-    async banOrUnbanUser(username: string, banSituation: boolean): Promise<HttpException> {
-        await this.usersRepository.banOrUnbanUser(username, banSituation)
+    async banOrUnbanUser(operatorRole: number, username: string, banSituation: boolean): Promise<HttpException> {
+        await this.usersRepository.banOrUnbanUser(operatorRole, username, banSituation)
         throw new HttpException(`User ban situation updated to ${banSituation}`, HttpStatus.OK)
     }
 

@@ -178,7 +178,7 @@ export class UsersRepository extends Repository<UsersEntity> {
         }
     }
 
-    async banOrUnbanUser(username: string, banSituation: boolean): Promise<void>  {
+    async banOrUnbanUser(operatorRole: number, username: string, banSituation: boolean): Promise<void>  {
         let user: UsersEntity
 
         try {
@@ -186,6 +186,8 @@ export class UsersRepository extends Repository<UsersEntity> {
         } catch (err) {
             throw new BadRequestException('User could not found')
         }
+
+        if (operatorRole <= user.role) throw new BadRequestException('Target must have lower role than operator user')
 
         user.is_banned = banSituation
         await this.save(user)

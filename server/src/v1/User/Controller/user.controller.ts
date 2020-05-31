@@ -32,8 +32,10 @@ import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { Roles } from 'src/shared/Decorators/roles.decorator'
 import { Role } from 'src/shared/Enums/Roles'
 import { UserBanDto } from '../Dto/user-ban.dto'
+import { RolesGuard } from 'src/shared/Guards/roles.guard'
 
 @ApiTags('v1/user')
+@UseGuards(RolesGuard)
 @Controller()
 export class UsersController {
     constructor(private readonly usersService: UserService) {}
@@ -114,9 +116,14 @@ export class UsersController {
     @Roles(Role.Admin)
     banOrUnbanUser(
         @Param('username') username,
+        @Headers('authorization') bearer: string,
         @Body() dto: UserBanDto
     ): Promise<HttpException> {
-        return this.usersService.banOrUnbanUser(username, dto.banSituation)
+        return this.usersService.banOrUnbanUser(
+            jwtManipulationService.decodeJwtToken(bearer, 'role'),
+            username,
+            dto.banSituation
+        )
     }
 
     @Get('verify-updated-email')
