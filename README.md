@@ -108,7 +108,7 @@
   If you follow the Osx & Windows way for running API, then apply following changes on /config/constants.ts:
   ```
   'http://localhost/api' TO 'http://localhost:3000/api'
-  'http://localhost' TO 'http://localhost:3000'
+  'http://localhost' TO 'http://localhost:4001'
   ```
 
   ## API Documentation
