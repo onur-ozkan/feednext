@@ -1,6 +1,6 @@
 {
   "name": "feednext-backend",
-  "version": "0.0.1",
+  "version": "0.1.0-alpha",
   "description": "Server side of feednext.io",
   "author": "Onur Ozkan",
   "license": "MIT",
