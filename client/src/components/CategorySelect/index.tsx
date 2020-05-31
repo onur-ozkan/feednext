@@ -32,21 +32,18 @@ export const CategorySelect = (props: ComponentProps): JSX.Element => {
 		props.onSelect(id, title)
 	}
 
-	const handleOnCategoryLoad = (treeNode: any): any => {
-		return new Promise(async resolve => {
-			await fetchChildCategories(treeNode.id).then(async ({ data }) => {
-				data.attributes.categories.map((item: CategoryData) => {
-					setCategories((currentState) => [...currentState, {
-						id: item.id,
-						pId: treeNode.id,
-						title: item.is_leaf ? item.name : item.name.toUpperCase(),
-						value: item.id,
-						disabled: (!item.is_leaf && !props.multiple),
-						isLeaf: item.is_leaf
-					}])
-				})
+	const handleOnCategoryLoad = async (treeNode: any): any => {
+		await fetchChildCategories(treeNode.id).then(async ({ data }) => {
+			data.attributes.categories.map((item: CategoryData) => {
+				setCategories((currentState) => [...currentState, {
+					id: item.id,
+					pId: treeNode.id,
+					title: item.is_leaf ? item.name : item.name.toUpperCase(),
+					value: item.id,
+					disabled: (!item.is_leaf && !props.multiple),
+					isLeaf: item.is_leaf
+				}])
 			})
-			resolve()
 		})
 	}
 
