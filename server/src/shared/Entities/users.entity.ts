@@ -89,6 +89,5 @@ export class UsersEntity {
         this.biography = ''
         this.link = ''
         this.is_active = true
-        this.is_banned = false
     }
 }
