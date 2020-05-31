@@ -214,4 +214,11 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         const entries: any = await this.find({ title_id })
         await this.remove(entries)
     }
+
+    async deleteEntriesBelongsToUsername(username: string): Promise<EntriesEntity[]> {
+        const entries: EntriesEntity[] = await this.find({ written_by: username })
+        await this.remove(entries)
+
+        return entries
+    }
 }
