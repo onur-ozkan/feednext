@@ -1,11 +1,12 @@
 // Antd dependencies
-import { Card, Row, Typography, Col } from 'antd'
+import { Card, Row, Typography, Col, Divider } from 'antd'
 
 // Other dependencies
 import React, { useState } from 'react'
 
 // Local files
 import { Aggrements } from '@/components/Aggrements'
+import packageJson from '@/../package.json'
 
 export const AdditionalBlock = (): JSX.Element => {
 	const [aggrementModalVisibility, setAggrementModalVisibilit] = useState<null | 'policy' | 'terms'>(null)
@@ -50,6 +51,11 @@ export const AdditionalBlock = (): JSX.Element => {
 				<Typography.Text>
 					Feednext © 2020. All rights reserved
 				</Typography.Text>
+				<Divider style={{ marginBottom: -15 }} orientation="right">
+					<Typography.Text style={{ fontSize: 13, opacity: 0.65, color: '#016d9b' }}>
+						v{packageJson.version}
+					</Typography.Text>
+				</Divider>
 			</Row>
 		</Card>
 	)

@@ -37,6 +37,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             throw new UnauthorizedException()
         }
 
+        if (user.is_banned) throw new BadRequestException('This is a banned account')
         if (!user.is_active ) throw new BadRequestException('Account is not active')
 
         const data = {

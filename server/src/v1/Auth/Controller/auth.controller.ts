@@ -25,8 +25,10 @@ import { GenerateRecoveryKeyDto } from '../Dto/generate-recovery-key.dto'
 import { RecoverAccountDto } from '../Dto/recover-account.dto'
 import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { configService } from 'src/shared/Services/config.service'
+import { RolesGuard } from 'src/shared/Guards/roles.guard'
 
 @ApiTags('v1/auth')
+@UseGuards(RolesGuard)
 @Controller()
 export class AuthController {
     constructor(private readonly authService: AuthService) {}

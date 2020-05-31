@@ -70,6 +70,7 @@ export class AuthService {
     }
 
     async signIn(userEntity: UsersEntity, dto: LoginDto): Promise<HttpException | ISerializeResponse> {
+        if (userEntity.is_banned) throw new BadRequestException('This is a banned account')
         if (!userEntity.is_active) throw new BadRequestException('Account is not active')
 
         const token: string = this.jwtService.sign({

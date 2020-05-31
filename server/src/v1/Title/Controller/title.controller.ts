@@ -34,7 +34,6 @@ import { RateTitleDto } from '../Dto/rate-title.dto'
 import { Role } from 'src/shared/Enums/Roles'
 
 @ApiTags('v1/title')
-@Controller()
 @UseGuards(RolesGuard)
 @Controller()
 export class TitleController {

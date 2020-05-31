@@ -69,6 +69,9 @@ export class UsersEntity {
     @Column('boolean')
     is_active: boolean
 
+    @Column('boolean')
+    is_banned: boolean
+
     @CreateDateColumn('date')
     created_at: Date
 

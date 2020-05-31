@@ -107,6 +107,11 @@ export class UserService {
         return serializerService.serializeResponse('updated_profile', profile, id)
     }
 
+    async banOrUnbanUser(operatorRole: number, username: string, banSituation: boolean): Promise<HttpException> {
+        await this.usersRepository.banOrUnbanUser(operatorRole, username, banSituation)
+        throw new HttpException(`User ban situation updated to ${banSituation}`, HttpStatus.OK)
+    }
+
     async verifyUpdatedEmail(incToken: string): Promise<HttpException> {
         let decodedToken
 
@@ -162,7 +167,8 @@ export class UserService {
 
     async sendActivationMail(dto: ActivateUserDto): Promise<HttpException> {
         const user: UsersEntity = await this.usersRepository.getUserByEmail(dto.email)
-        if (user.is_active) throw new BadRequestException('This account is already active.')
+        if (user.is_banned) throw new BadRequestException('Banned accounts can not do activation mail processes')
+        if (user.is_active) throw new BadRequestException('This account is already active')
 
         const activateToken: string = jwt.sign({
             email: user.email,

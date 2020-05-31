@@ -119,14 +119,15 @@ export class EntryService {
     async deleteEntriesBelongsToUsername(username: string): Promise<HttpException> {
         await this.usersRepository.getUserByUsername(username)
         const entries: EntriesEntity[] = await this.entriesRepository.deleteEntriesBelongsToUsername(username)
+        // Get get entry count belongs to title id
         const entriesWithTitleId = [...entries.reduce((previous, current) => {
             if(!previous.has(current.title_id)) previous.set(current.title_id, {id: current.title_id, entryCount: 1})
             else previous.get(current.title_id).entryCount++
             return previous
         // tslint:disable-next-line:new-parens
         }, new Map).values()]
-        entriesWithTitleId.map((item: { id: string, entryCount: number}) => {
-            this.titlesRepository.updateEntryCount(item.id, -item.entryCount)
+        entriesWithTitleId.map(async (item: { id: string, entryCount: number}) => {
+            await this.titlesRepository.updateEntryCount(item.id, -item.entryCount)
         })
         throw new HttpException('Entries are deleted', HttpStatus.OK)
     }
