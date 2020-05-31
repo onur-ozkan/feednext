@@ -6,6 +6,7 @@ import { GridContent } from '@ant-design/pro-layout'
 // Other dependencies
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
+import { format, parseISO } from 'date-fns'
 import { history } from 'umi'
 
 // Local files
@@ -132,7 +133,7 @@ const User: React.FC = ({ match }): JSX.Element => {
 							</Col>
 							<Divider style={{ marginBottom: 0 }} orientation="right">
 								<Typography.Text style={{ fontSize: 13 }}>
-									Joined at {user.created_at}
+									Joined at {format(parseISO(user.created_at), 'dd LLL yyyy (p O)')}
 								</Typography.Text>
 							</Divider>
 						</Card>

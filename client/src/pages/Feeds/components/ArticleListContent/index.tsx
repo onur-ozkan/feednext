@@ -26,7 +26,7 @@ const ArticleListContent: React.FC<ArticleListContentProps> = ({
 			<Avatar src={avatar} size="small" />
 			<a style={{ zIndex: 10 }} onClick={(): void => history.push(`/user/${writtenBy}`)}>
 				{writtenBy}
-			</a> posted at  {format(parseISO(createdAt), 'dd LLL (p O)')}
+			</a> posted at  {format(parseISO(createdAt), 'dd LLL yyyy (p O)')}
 		</div>
 	</div>
 )

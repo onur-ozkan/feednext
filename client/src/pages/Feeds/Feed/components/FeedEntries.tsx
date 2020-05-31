@@ -26,6 +26,7 @@ import {
 // Other dependencies
 import React from 'react'
 import { useSelector } from 'react-redux'
+import { format, parseISO } from 'date-fns'
 import { history } from 'umi'
 
 // Local files
@@ -291,7 +292,7 @@ const FeedEntries: React.FC<FeedEntriesProps> = (props): JSX.Element => {
 							}
 							datetime={
 								<span onClick={(): void => handleEntryRouting(item.id)} style={{ cursor: 'pointer' }}>
-									{item.created_at}
+									{format(parseISO(item.created_at), 'dd LLL yyyy (p O)')}
 								</span>
 							}
 						/>
