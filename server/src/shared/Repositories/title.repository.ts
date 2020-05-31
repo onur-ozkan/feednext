@@ -45,10 +45,10 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         return { titles }
     }
 
-    async updateEntryCount(titleId: ObjectId, isIncrement: boolean): Promise<void> {
+    async updateEntryCount(titleId: ObjectId, value: number): Promise<void> {
         try {
             const title: TitlesEntity = await this.findOneOrFail(titleId)
-            isIncrement ? title.entry_count++ : title.entry_count--
+            title.entry_count += value
             this.save(title)
         } catch (err) {
             throw new BadRequestException('Title with that id could not found in the database')

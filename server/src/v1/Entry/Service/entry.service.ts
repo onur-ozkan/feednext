@@ -72,7 +72,7 @@ export class EntryService {
         if (dto.text.length === 0) throw new BadRequestException('Entry text can not be whitespace')
 
         try {
-            await this.titlesRepository.updateEntryCount(dto.titleId, true)
+            await this.titlesRepository.updateEntryCount(dto.titleId, 1)
         } catch (err) {
             throw new BadRequestException(`${dto.titleId} does not match in the database`)
         }
@@ -112,7 +112,22 @@ export class EntryService {
         await this.usersRepository.getUserByUsername(username)
 
         const entry: EntriesEntity = await this.entriesRepository.deleteEntry(username, role, entryId)
-        await this.titlesRepository.updateEntryCount(entry.title_id, false)
+        await this.titlesRepository.updateEntryCount(entry.title_id, -1)
         throw new HttpException('Entry has been deleted.', HttpStatus.OK)
+    }
+
+    async deleteEntriesBelongsToUsername(username: string): Promise<HttpException> {
+        await this.usersRepository.getUserByUsername(username)
+        const entries: EntriesEntity[] = await this.entriesRepository.deleteEntriesBelongsToUsername(username)
+        const entriesWithTitleId = [...entries.reduce((previous, current) => {
+            if(!previous.has(current.title_id)) previous.set(current.title_id, {id: current.title_id, entryCount: 1})
+            else previous.get(current.title_id).entryCount++
+            return previous
+        // tslint:disable-next-line:new-parens
+        }, new Map).values()]
+        entriesWithTitleId.map((item: { id: string, entryCount: number}) => {
+            this.titlesRepository.updateEntryCount(item.id, -item.entryCount)
+        })
+        throw new HttpException('Entries are deleted', HttpStatus.OK)
     }
 }
