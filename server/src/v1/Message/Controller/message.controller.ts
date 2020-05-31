@@ -10,8 +10,8 @@ import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.ser
 import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 
 @ApiTags('v1/message')
-@Controller()
 @UseGuards(RolesGuard)
+@Controller()
 export class MessageController {
     constructor(
         private readonly messageService: MessageService,

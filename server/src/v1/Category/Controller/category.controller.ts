@@ -13,8 +13,8 @@ import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { Role } from 'src/shared/Enums/Roles'
 
 @ApiTags('v1/category')
-@Controller()
 @UseGuards(RolesGuard)
+@Controller()
 export class CategoryController {
     constructor(
         private readonly categoryService: CategoryService,
