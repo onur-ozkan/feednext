@@ -152,18 +152,16 @@ export class UsersRepository extends Repository<UsersEntity> {
     }
 
     async disableUser(username: string): Promise<void>  {
-        let profile: UsersEntity
+        let user: UsersEntity
 
         try {
-             profile = await this.findOneOrFail({
-                username,
-            })
+            user = await this.findOneOrFail({ username })
         } catch (err) {
             throw new BadRequestException('User could not found')
         }
 
-        profile.is_active = false
-        await this.save(profile)
+        user.is_active = false
+        await this.save(user)
     }
 
     async activateUser(decodedToken: { email: string, username: string }): Promise<void>  {
@@ -180,6 +178,19 @@ export class UsersRepository extends Repository<UsersEntity> {
         }
     }
 
+    async banOrUnbanUser(username: string, banSituation: boolean): Promise<void>  {
+        let user: UsersEntity
+
+        try {
+            user = await this.findOneOrFail({ username })
+        } catch (err) {
+            throw new BadRequestException('User could not found')
+        }
+
+        user.is_banned = banSituation
+        await this.save(user)
+    }
+
     async generateRecoveryKey(dto: GenerateRecoveryKeyDto): Promise<{ account: UsersEntity, generatedKey: string }> {
         let account: UsersEntity
 
@@ -189,6 +200,7 @@ export class UsersRepository extends Repository<UsersEntity> {
             throw new BadRequestException('User could not found by given email')
         }
 
+        if (account.is_banned) throw new BadRequestException('Banned accounts can not generate recovery key')
         if (!account.is_active) throw new BadRequestException('Account is not active')
 
         const generatedKey: string = await kmachine.keymachine()
