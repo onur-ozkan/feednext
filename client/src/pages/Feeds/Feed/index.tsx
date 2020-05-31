@@ -99,7 +99,7 @@ const Feed: React.FC<any> = (props): JSX.Element => {
 	useEffect(() => {
 		fetchTitle(props.match.params.feedSlug, 'slug').then(async res => {
 			await fetchOneCategory(res.data.attributes.category_id).then(({ data }) => setCategory(data))
-			await fetchFeaturedEntryByTitleId(res.data.attributes.id).then(({ data }) => setFeaturedEntry(data.attributes.text))
+			await fetchFeaturedEntryByTitleId(res.data.attributes.id).then(({ data }) => setFeaturedEntry(data.attributes.text)).catch(_error => {})
 			getTitleRate(res.data.attributes.id)
 			await setTitle(res.data)
 		}).catch(_error => {
