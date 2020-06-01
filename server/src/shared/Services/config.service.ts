@@ -24,6 +24,16 @@ export class ConfigService {
         return this.getEnv('MODE') === 'PROD'
     }
 
+    public getGlobalRateLimitations() {
+        return {
+            type: 'Memory',
+            points: this.getEnv('RATE_LIMIT_PER_MIN'),
+            duration: 60,
+            errorMessage: 'Rate limit exceeded, please try again later',
+            keyPrefix: 'global',
+        }
+    }
+
     public getTypeOrmConfig(): TypeOrmModuleOptions {
         return {
             type: 'mongodb',
