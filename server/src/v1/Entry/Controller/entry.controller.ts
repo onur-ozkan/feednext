@@ -10,6 +10,7 @@ import { Roles } from 'src/shared/Decorators/roles.decorator'
 import { CreateEntryDto } from '../Dto/create-entry.dto'
 import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.service'
 import { ISerializeResponse } from 'src/shared/Services/serializer.service'
+import { UpdateEntryDto } from '../Dto/update-entry.dto'
 import { Role } from 'src/shared/Enums/Roles'
 
 @ApiTags('v1/entry')
@@ -53,9 +54,9 @@ export class EntryController {
     @UseGuards(AuthGuard('jwt'))
     @Patch(':entryId')
     updateEntry(
-        @Headers('authorization') bearer: string, @Param('entryId') entryId: string, @Body('text') text: string,
+        @Headers('authorization') bearer: string, @Param('entryId') entryId: string, @Body() dto: UpdateEntryDto,
     ): Promise<ISerializeResponse> {
-        return this.entryService.updateEntry(jwtManipulationService.decodeJwtToken(bearer, 'username'), entryId, text)
+        return this.entryService.updateEntry(jwtManipulationService.decodeJwtToken(bearer, 'username'), entryId, dto.text)
     }
 
     @ApiBearerAuth()

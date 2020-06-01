@@ -134,8 +134,6 @@ export class EntriesRepository extends Repository<EntriesEntity> {
     }
 
     async updateEntry(username: string, entryId: string, text: string): Promise<EntriesEntity> {
-        if (!text) throw new BadRequestException('Entry text can not be null.')
-
         let entry: EntriesEntity
         try {
             entry = await this.findOneOrFail(entryId)
