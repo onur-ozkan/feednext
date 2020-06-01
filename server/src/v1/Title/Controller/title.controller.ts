@@ -22,9 +22,9 @@ import { AuthGuard } from '@nestjs/passport/dist/auth.guard'
 
 // Other dependencies
 import * as concat from 'concat-stream'
+import { RateLimit } from 'nestjs-fastify-rate-limiter'
 
 // Local dependencies
-import { RolesGuard } from 'src/shared/Guards/roles.guard'
 import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.service'
 import { Roles } from 'src/shared/Decorators/roles.decorator'
 import { UpdateTitleDto } from '../Dto/update-title.dto'
@@ -34,7 +34,6 @@ import { RateTitleDto } from '../Dto/rate-title.dto'
 import { Role } from 'src/shared/Enums/Roles'
 
 @ApiTags('v1/title')
-@UseGuards(RolesGuard)
 @Controller()
 export class TitleController {
     constructor(private readonly titleService: TitleService) {}
@@ -73,6 +72,11 @@ export class TitleController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
+    @RateLimit({
+        points: 3,
+        duration: 60,
+        errorMessage: 'You have reached the limit. You have to wait 60 seconds before trying again.'
+    })
     @Post('create-title')
     async createTitle(@Headers('authorization') bearer: string, @Req() req) {
         return new Promise((resolve, reject) => {
@@ -112,6 +116,11 @@ export class TitleController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
+    @RateLimit({
+        points: 3,
+        duration: 60,
+        errorMessage: 'You have reached the limit. You have to wait 60 seconds before trying again.'
+    })
     @Put('/image')
     @Roles(Role.Admin)
     updateTitleImage(@Query('titleId') titleId, @Req() req): Promise<HttpException> {
@@ -133,6 +142,11 @@ export class TitleController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
+    @RateLimit({
+        points: 3,
+        duration: 60,
+        errorMessage: 'You have reached the limit. You have to wait 60 seconds before trying again.'
+    })
     @Delete('/image')
     @Roles(Role.Admin)
     deleteTitleImage(@Query('titleId') titleId): HttpException {
@@ -142,6 +156,11 @@ export class TitleController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
+    @RateLimit({
+        points: 3,
+        duration: 60,
+        errorMessage: 'You have reached the limit. You have to wait 60 seconds before trying again.'
+    })
     @Patch(':titleId')
     @Roles(Role.Admin)
     updateTitle(

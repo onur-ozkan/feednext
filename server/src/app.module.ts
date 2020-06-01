@@ -5,8 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { RouterModule } from 'nest-router'
 
 // Other dependencies
-
 import { RavenInterceptor } from 'nest-raven'
+import { RateLimiterInterceptor, RateLimiterModule } from 'nestjs-fastify-rate-limiter'
 
 // Local files
 import { versionRoutes } from 'src/version.routes'
@@ -18,6 +18,7 @@ import { V1Module } from './v1/v1.module'
     imports: [
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         RouterModule.forRoutes(versionRoutes),
+        RateLimiterModule.register(configService.getGlobalRateLimitations()),
         V1Module,
     ],
     providers: [
@@ -25,7 +26,11 @@ import { V1Module } from './v1/v1.module'
         {
             provide: APP_INTERCEPTOR,
             useValue: new RavenInterceptor()
-        }
+        },
+        {
+            provide: APP_INTERCEPTOR,
+            useClass: RateLimiterInterceptor,
+        },
     ],
 })
 

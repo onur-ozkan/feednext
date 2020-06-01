@@ -4,13 +4,11 @@ import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthGuard } from '@nestjs/passport'
 
 // Local files
-import { RolesGuard } from 'src/shared/Guards/roles.guard'
 import { MessageService } from '../Service/message.service'
 import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.service'
 import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 
 @ApiTags('v1/message')
-@UseGuards(RolesGuard)
 @Controller()
 export class MessageController {
     constructor(

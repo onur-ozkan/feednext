@@ -4,7 +4,6 @@ import { AuthGuard } from '@nestjs/passport'
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 
 // Local files
-import { RolesGuard } from 'src/shared/Guards/roles.guard'
 import { Roles } from 'src/shared/Decorators/roles.decorator'
 import { CreateCategoryDto } from '../Dto/create-category.dto'
 import { CategoryService } from '../Service/category.service'
@@ -13,7 +12,6 @@ import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { Role } from 'src/shared/Enums/Roles'
 
 @ApiTags('v1/category')
-@UseGuards(RolesGuard)
 @Controller()
 export class CategoryController {
     constructor(
@@ -51,7 +49,7 @@ export class CategoryController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Patch(':categoryId')
-    @Roles(Role.Admin)
+    @Roles(Role.SuperAdmin)
     updateCategory(@Param('categoryId') categoryId: string, @Body() dto: UpdateCategoryDto): Promise<ISerializeResponse> {
         return this.categoryService.updateCategory(categoryId, dto)
     }

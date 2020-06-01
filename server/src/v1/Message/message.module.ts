@@ -12,9 +12,9 @@ import { ConversationsRepository } from 'src/shared/Repositories/conversations.r
 
 @Module({
     imports: [TypeOrmModule.forFeature([MessagesRepository, ConversationsRepository, UsersRepository])],
-    providers: [MessageService, MessageGateway],
-    exports: [MessageService],
     controllers: [MessageController],
+    providers: [MessageService, MessageGateway],
+    exports: [MessageService]
 })
 
 export class MessageModule {}
