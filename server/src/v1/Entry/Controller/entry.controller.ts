@@ -5,16 +5,15 @@ import { AuthGuard } from '@nestjs/passport'
 
 // Local files
 import { EntryService } from '../Service/entry.service'
-import { RolesGuard } from 'src/shared/Guards/roles.guard'
 import { Roles } from 'src/shared/Decorators/roles.decorator'
 import { CreateEntryDto } from '../Dto/create-entry.dto'
 import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.service'
 import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { UpdateEntryDto } from '../Dto/update-entry.dto'
 import { Role } from 'src/shared/Enums/Roles'
+import { RateLimit } from 'nestjs-fastify-rate-limiter'
 
 @ApiTags('v1/entry')
-@UseGuards(RolesGuard)
 @Controller()
 export class EntryController {
     constructor(private readonly entryService: EntryService) { }
@@ -52,6 +51,11 @@ export class EntryController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
+    @RateLimit({
+        points: 3,
+        duration: 60,
+        errorMessage: 'You have reached the limit. You have to wait 60 seconds before trying again.'
+    })
     @Patch(':entryId')
     updateEntry(
         @Headers('authorization') bearer: string, @Param('entryId') entryId: string, @Body() dto: UpdateEntryDto,
@@ -99,6 +103,11 @@ export class EntryController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
+    @RateLimit({
+        points: 1,
+        duration: 60,
+        errorMessage: 'You can only create 1 entry in 60 seconds'
+    })
     @Post('create-entry')
     @Roles(Role.User)
     createEntry(
