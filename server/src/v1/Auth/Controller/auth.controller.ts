@@ -17,6 +17,9 @@ import {
 import { AuthGuard } from '@nestjs/passport'
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 
+// Other dependencies
+import { RateLimit } from 'nestjs-fastify-rate-limiter'
+
 // Local files
 import { AuthService } from '../Service/auth.service'
 import { CreateAccountDto } from '../Dto/create-account.dto'
@@ -25,14 +28,17 @@ import { GenerateRecoveryKeyDto } from '../Dto/generate-recovery-key.dto'
 import { RecoverAccountDto } from '../Dto/recover-account.dto'
 import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { configService } from 'src/shared/Services/config.service'
-import { RolesGuard } from 'src/shared/Guards/roles.guard'
 
 @ApiTags('v1/auth')
-@UseGuards(RolesGuard)
 @Controller()
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
+    @RateLimit({
+        points: 5,
+        duration: 3000,
+        errorMessage: 'You have reached the limit of login requests. You have to wait 5 minutes before trying again.'
+    })
     @Post('signin')
     async signIn(@Body() dto: LoginDto, @Res() res: any): Promise<void> {
         const user = await this.authService.validateUser(dto)
@@ -53,6 +59,11 @@ export class AuthController {
         res.send(authResponse)
     }
 
+    @RateLimit({
+        points: 1,
+        duration: 60,
+        errorMessage: 'You can only create 1 account in 60 seconds'
+    })
     @Post('signup')
     signUp(@Body() dto: CreateAccountDto): Promise<HttpException> {
         return this.authService.signUp(dto)
@@ -65,16 +76,31 @@ export class AuthController {
         return await this.authService.signOut(bearer)
     }
 
+    @RateLimit({
+        points: 1,
+        duration: 3000,
+        errorMessage: 'You can only generate 1 key in 5 minutes'
+    })
     @Patch('generate-recovery-key')
     generateRecoveryKey(@Body() dto: GenerateRecoveryKeyDto): Promise<HttpException> {
         return this.authService.generateRecoveryKey(dto)
     }
 
+    @RateLimit({
+        points: 3,
+        duration: 3000,
+        errorMessage: 'You have reached the limit. You have to wait 5 minutes before trying again.'
+    })
     @Patch('recover-account')
     recoverAccount(@Body() dto: RecoverAccountDto): Promise<HttpException> {
         return this.authService.recoverAccount(dto)
     }
 
+    @RateLimit({
+        points: 3,
+        duration: 3000,
+        errorMessage: 'You have reached the limit. You have to wait 5 minutes before trying again.'
+    })
     @Get('account-verification')
     verifyAccount(@Query('token') token: string): Promise<HttpException> {
         return this.authService.accountVerification(token)

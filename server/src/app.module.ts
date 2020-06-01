@@ -6,7 +6,7 @@ import { RouterModule } from 'nest-router'
 
 // Other dependencies
 import { RavenInterceptor } from 'nest-raven'
-import { RateLimiterInterceptor, RateLimiterModule } from 'nestjs-rate-limiter'
+import { RateLimiterInterceptor, RateLimiterModule } from 'nestjs-fastify-rate-limiter'
 
 // Local files
 import { versionRoutes } from 'src/version.routes'
