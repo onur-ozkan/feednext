@@ -8,7 +8,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import * as fastifyCookie from 'fastify-cookie'
 import * as fastifyMultipart from 'fastify-multipart'
 import * as sentry from '@sentry/node'
-import * as fastifyRateLimit from 'fastify-rate-limit'
 import * as helmet from 'fastify-helmet'
 import * as compress from 'fastify-compress'
 
@@ -24,13 +23,6 @@ async function bootstrap() {
     fastifyAdapter.enableCors({
         credentials: true,
         origin: true
-    })
-
-    // Set request limit as 1 for per second
-    fastifyAdapter.register(fastifyRateLimit, {
-        max: 300,
-        timeWindow: 60 * 1000,
-        whitelist: ['127.0.0.1'],
     })
 
     fastifyAdapter.register(helmet) // Initialize security middleware module 'fastify-helmet'
