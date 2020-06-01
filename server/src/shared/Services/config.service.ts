@@ -29,7 +29,7 @@ export class ConfigService {
             type: 'Memory',
             points: this.getEnv('RATE_LIMIT_PER_MIN'),
             duration: 60,
-            errorMessage: 'Rate limit exceeded, please try again later',
+            errorMessage: 'Rate limit exceeded, you have to wait 60 seconds before trying again',
             keyPrefix: 'global',
         }
     }

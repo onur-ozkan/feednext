@@ -24,7 +24,7 @@ import { RolesGuard } from 'src/shared/Guards/roles.guard'
     imports: [
         TypeOrmModule.forFeature([UsersEntity, UsersRepository]),
         UserModule,
-        RateLimiterModule,
+        RateLimiterModule.register(configService.getGlobalRateLimitations()),
         PassportModule.register({ defaultStrategy: 'jwt' }),
         JwtModule.registerAsync({
             useFactory: () => {
