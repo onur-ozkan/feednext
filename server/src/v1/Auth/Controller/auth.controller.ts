@@ -36,7 +36,7 @@ export class AuthController {
 
     @RateLimit({
         points: 5,
-        duration: 3000,
+        duration: 300,
         errorMessage: 'You have reached the limit of login requests. You have to wait 5 minutes before trying again.'
     })
     @Post('signin')
@@ -78,7 +78,7 @@ export class AuthController {
 
     @RateLimit({
         points: 1,
-        duration: 3000,
+        duration: 300,
         errorMessage: 'You can only generate 1 key in 5 minutes'
     })
     @Patch('generate-recovery-key')
@@ -88,7 +88,7 @@ export class AuthController {
 
     @RateLimit({
         points: 3,
-        duration: 3000,
+        duration: 300,
         errorMessage: 'You have reached the limit. You have to wait 5 minutes before trying again.'
     })
     @Patch('recover-account')
@@ -98,7 +98,7 @@ export class AuthController {
 
     @RateLimit({
         points: 3,
-        duration: 3000,
+        duration: 300,
         errorMessage: 'You have reached the limit. You have to wait 5 minutes before trying again.'
     })
     @Get('account-verification')
