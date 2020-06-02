@@ -1,5 +1,6 @@
 // Antd dependencies
 import { Checkbox, message, Form, Input, Tabs, Button, Row, Col } from 'antd'
+import { UserOutlined, LockOutlined } from '@ant-design/icons'
 
 // Other dependencies
 import React from 'react'
@@ -69,11 +70,11 @@ const Login: React.FunctionComponent = () => {
 								name="usernameOrEmail"
 								rules={[{ required: true, message: 'Please input your username or email!' }]}
 							>
-								<Input placeholder="Username or Email" />
+								<Input prefix={<UserOutlined style={{ color: '#717171'}} />} placeholder="Username or Email" />
 							</Form.Item>
 
 							<Form.Item name="password" rules={[{ required: true, message: 'Please input your password!' }]}>
-								<Input.Password placeholder="Password" />
+								<Input.Password prefix={<LockOutlined style={{ color: '#717171'}} />} placeholder="Password" />
 							</Form.Item>
 
 							<Row>

@@ -58,11 +58,11 @@ export const LoginForm: React.FC = (): JSX.Element => {
 				name="usernameOrEmail"
 				rules={[{ required: true, message: "Enter an username or email" }]}
 			>
-				<Input prefix={<UserOutlined />} placeholder="Username or Email" />
+				<Input prefix={<UserOutlined style={{ color: '#717171'}} />} placeholder="Username or Email" />
 			</Form.Item>
 
 			<Form.Item name="password" rules={[{ required: true, message: "Enter your password" }]}>
-				<Input.Password prefix={<LockOutlined />} placeholder="Password" />
+				<Input.Password prefix={<LockOutlined style={{ color: '#717171'}} />} placeholder="Password" />
 			</Form.Item>
 
 			<Row style={{ margin: "-15px 0px -10px 0px" }}>

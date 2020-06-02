@@ -1,6 +1,6 @@
 // Antd dependencies
 import { Form, Input, Checkbox, Button, Tabs, message } from 'antd'
-import { LoadingOutlined } from '@ant-design/icons'
+import { LoadingOutlined, IdcardOutlined, UserOutlined, MailOutlined, LockOutlined } from '@ant-design/icons'
 
 // Other dependencies
 import React, { useState } from 'react'
@@ -77,13 +77,13 @@ const Register = () => {
 								name="fullName"
 								rules={[{ required: true, message: 'Please input your name and surname!', whitespace: true }]}
 							>
-								<Input placeholder="Full Name" />
+								<Input prefix={<IdcardOutlined style={{ color: '#717171'}} />} placeholder="Full Name" />
 							</Form.Item>
 							<Form.Item
 								name="username"
 								rules={[{ required: true, message: 'Please input your username!', whitespace: true }]}
 							>
-								<Input placeholder="Username" />
+								<Input prefix={<UserOutlined style={{ color: '#717171'}} />} placeholder="Username" />
 							</Form.Item>
 							<Form.Item
 								name="email"
@@ -98,7 +98,7 @@ const Register = () => {
 									},
 								]}
 							>
-								<Input placeholder="Email" />
+								<Input prefix={<MailOutlined style={{ color: '#717171'}} />} placeholder="Email" />
 							</Form.Item>
 
 							<Form.Item
@@ -111,7 +111,7 @@ const Register = () => {
 								]}
 								hasFeedback
 							>
-								<Input.Password placeholder="Password" />
+								<Input.Password prefix={<LockOutlined style={{ color: '#717171'}} />} placeholder="Password" />
 							</Form.Item>
 
 							<Form.Item
@@ -133,7 +133,7 @@ const Register = () => {
 									}),
 								]}
 							>
-								<Input.Password placeholder="Confirm Password" />
+								<Input.Password prefix={<LockOutlined style={{ color: '#717171'}} />} placeholder="Confirm Password" />
 							</Form.Item>
 
 							<Form.Item
