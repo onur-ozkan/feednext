@@ -29,6 +29,7 @@ import { history } from 'umi'
 
 // Local files
 import { getUserRateOfTitle, rateTitle, deleteTitle } from '@/services/api'
+import { SignModal } from '@/components/SignModal'
 import { API_URL } from '@/../config/constants'
 import { FeedHeaderProps } from '../types'
 
@@ -44,6 +45,7 @@ const FeedHeader: React.FC<FeedHeaderProps> = (props): JSX.Element => {
 		styles
 	} = props
 
+	const [signModalVisibility, setSignModalVisibility] = useState(false)
 	const [rateModalVisibility, setRateModalVisibility] = useState(false)
 	const [detailsModalVisibility, setDetailsModalVisibility] = useState(false)
 	const [initialRatingModalValue, setInitialRatingModalValue] = useState<number | null>(null)
@@ -59,7 +61,10 @@ const FeedHeader: React.FC<FeedHeaderProps> = (props): JSX.Element => {
 	}
 
 	const handleRateModalVisibility = async (): Promise<void> => {
-		if (!accessToken) return // TODO pop sign in window
+		if (!accessToken) {
+			setSignModalVisibility(true)
+			return
+		}
 
 		setRateModalVisibility(true)
 		await getUserRateOfTitle(titleData.attributes.id, accessToken)
@@ -170,6 +175,10 @@ const FeedHeader: React.FC<FeedHeaderProps> = (props): JSX.Element => {
 
 	return (
 		<>
+			<SignModal
+				closeModal={(): void => setSignModalVisibility(false)}
+				visibility={signModalVisibility}
+			/>
 			<PageHeader
 				title={
 					<>
