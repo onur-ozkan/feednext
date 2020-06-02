@@ -24,13 +24,14 @@ import {
 } from '@ant-design/icons'
 
 // Other dependencies
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { format, parseISO } from 'date-fns'
 import { history } from 'umi'
 
 // Local files
 import { voteEntry, undoEntryVote, updateEntry, deleteEntry } from '@/services/api'
+import { SignModal } from '@/components/SignModal'
 import { SuperAdmin, API_URL } from '@/../config/constants'
 import { FeedEntriesProps } from '../types'
 import AddEntry from './AddEntry'
@@ -48,6 +49,7 @@ const FeedEntries: React.FC<FeedEntriesProps> = (props): JSX.Element => {
 		accessToken } = props
 
 	const userState = useSelector((state: any) => state.user?.attributes.user)
+	const [signModalVisibility, setSignModalVisibility] = useState(false)
 
 	const paginationOptions = {
 		size: 'small',
@@ -73,7 +75,10 @@ const FeedEntries: React.FC<FeedEntriesProps> = (props): JSX.Element => {
 	}
 
 	const handleVoteEntry = async (entry: any, voteTo: 'up' | 'down'): Promise<void> => {
-		if (!userState) return // TODO pop sign in window
+		if (!userState) {
+			setSignModalVisibility(true)
+			return
+		}
 
 		const isAlreadyUpVoted = isEntryAlreadyVoted(entry.votes, 'up')
 		const isAlreadyDownVoted = isEntryAlreadyVoted(entry.votes, 'down')
@@ -203,6 +208,10 @@ const FeedEntries: React.FC<FeedEntriesProps> = (props): JSX.Element => {
 
 	return (
 		<Card bordered={false}>
+			<SignModal
+				closeModal={(): void => setSignModalVisibility(false)}
+				visibility={signModalVisibility}
+			/>
 			<List
 				pagination={paginationOptions}
 				className="comment-list"

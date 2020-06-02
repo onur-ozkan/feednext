@@ -18,7 +18,6 @@ const AccountRecover: React.FunctionComponent = (props: any) => {
 
 	if (!props.location.query?.email || !props.location?.query?.recoveryKey) return <NotFoundPage />
 
-	console.log(props.location.query?.email, props.location?.query?.recoveryKey)
 	const onSubmit = ({ password }: { password: string}) => {
 		setRequestOnGoing(true)
 
