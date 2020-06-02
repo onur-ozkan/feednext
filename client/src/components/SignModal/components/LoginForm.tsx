@@ -65,7 +65,7 @@ export const LoginForm: React.FC = (): JSX.Element => {
 				<Input.Password prefix={<LockOutlined style={{ color: '#717171'}} />} placeholder="Password" />
 			</Form.Item>
 
-			<Row style={{ margin: "-15px 0px -10px 0px" }}>
+			<Row style={{ margin: "-5px 0px -10px 0px" }}>
 				<Col>
 					<Form.Item name="remember" valuePropName="checked">
 						<Checkbox>Remember me</Checkbox>
