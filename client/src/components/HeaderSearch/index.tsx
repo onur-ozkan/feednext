@@ -8,7 +8,7 @@ import classNames from 'classnames'
 
 // Local files
 import { searchTitle } from '@/services/api'
-import styles from './index.less'
+import './index.less'
 
 
 const HeaderSearch: React.FC = (): JSX.Element => {
@@ -52,11 +52,11 @@ const HeaderSearch: React.FC = (): JSX.Element => {
 		}
 	}, [value])
 
-	const inputClass = classNames(styles.input, {
-		[styles.show]: searchMode,
-		[styles.headerSearch]: true,
-		[styles.search]: true,
-		[styles.action]: true,
+	const inputClass = classNames('input', {
+		'show': searchMode,
+		'headerSearch': true,
+		'search': true,
+		'action': true,
 	})
 
 	return (

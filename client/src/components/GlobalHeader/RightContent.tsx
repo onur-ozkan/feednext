@@ -5,26 +5,27 @@ import { PlusCircleOutlined, LoginOutlined } from '@ant-design/icons'
 // Other dependencies
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { history } from 'umi'
+import { useRouter } from 'next/router'
 
 // Local files
 import Avatar from './AvatarDropdown'
 import HeaderSearch from '../HeaderSearch'
 import MessageBox from '../MessageBox'
-import styles from './index.less'
+import './style.less'
 
 const GlobalHeaderRight: React.SFC = () => {
+	const router = useRouter()
 	const user = useSelector((state: any) => state.user)
 	const globalState = useSelector((state: any) => state.global)
 
-	const className = `${styles.right}  ${styles.dark}`
+	const className = `right  dark`
 
 	const handleAuthorizedElements = (): JSX.Element => {
 		if (user) {
 			return (
 				<>
 					<Button
-						onClick={(): void => history.push('/create-feed')}
+						onClick={() => router.push('/create-feed')}
 						type="primary"
 						shape="round"
 						icon={<PlusCircleOutlined />}
@@ -38,7 +39,7 @@ const GlobalHeaderRight: React.SFC = () => {
 		}
 
 		return (
-			<Button onClick={(): void => history.push('/auth/sign-in')} type="primary" shape="round" icon={<LoginOutlined />}>
+			<Button onClick={() => router.push('/auth/sign-in')} type="primary" shape="round" icon={<LoginOutlined />}>
 				Sign In
 			</Button>
 		)

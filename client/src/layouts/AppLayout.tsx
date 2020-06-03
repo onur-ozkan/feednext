@@ -1,18 +1,21 @@
 // Antd dependencies
 import { Row, Col } from 'antd'
-import ProLayout, { MenuDataItem, Settings } from '@ant-design/pro-layout'
+import { MenuDataItem, Settings } from '@ant-design/pro-layout'
 
 // Other dependencies
 import React from 'react'
+import dynamic from 'next/dynamic'
 import { useSelector } from 'react-redux'
 import { Dispatch } from 'redux'
-import { Link } from 'umi'
+import Link from 'next/link'
 
 // Local files
 import RightContent from '@/components/GlobalHeader/RightContent'
+import RouteHandler from '@/middleware/RouteHandler'
+import defaultSettings from '@/../config/defaultSettings'
 import logoWide from '../assets/logo-wide.svg'
 import logoSquare from '../assets/logo-square.svg'
-import RouteHandler from '@/middleware/RouteHandler'
+import '../global.less'
 
 export declare interface AppLayoutProps {
 	breadcrumbNameMap: {
@@ -30,12 +33,17 @@ export type AppLayoutContext = { [K in 'location']: AppLayoutProps } & {
 	}
 }
 
+const ProLayout = dynamic(() => import('@ant-design/pro-layout'), {
+	ssr: false
+})
+
 const AppLayout: React.FC<AppLayoutProps> = props => {
 	const settings = useSelector((state: any) => state.settings)
 
 	return (
 		<RouteHandler authority={props.authority}>
 			<ProLayout
+				{...defaultSettings}
 				collapsedButtonRender={false}
 				logo={
 					<picture>
@@ -45,28 +53,11 @@ const AppLayout: React.FC<AppLayoutProps> = props => {
 					</picture>
 				}
 				menuHeaderRender={(logoDom): JSX.Element => (
-					<Link to="/">
+					<Link href="/">
 						{logoDom}
 					</Link>
 				)}
-				menuItemRender={(menuItemProps, defaultDom): React.ReactNode => {
-					if (menuItemProps.isUrl || menuItemProps.children || !menuItemProps.path) {
-						return defaultDom
-					}
-					return <Link to={menuItemProps.path}>{defaultDom}</Link>
-				}}
-
-				itemRender={(route, routes, paths): JSX.Element => {
-					const first = routes.indexOf(route) === 0
-					return first ? (
-						<Link to={paths.join('/')}>{route.breadcrumbName}</Link>
-					) : (
-						<span>{route.breadcrumbName}</span>
-					)
-				}}
 				rightContentRender={(): JSX.Element => <RightContent />}
-				{...props}
-				{...settings}
 			>
 				<Row style={{ backgroundColor: 'transparent', justifyContent: 'center' }}>
 					<Col xxl={16} xl={20} lg={22} md={22} sm={24}>

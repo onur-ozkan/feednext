@@ -5,7 +5,7 @@ import { UserOutlined, LockOutlined, LoadingOutlined } from '@ant-design/icons'
 // Other dependencies
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { Link } from 'umi'
+import Link from 'next/link'
 
 // Local files
 import { signIn } from '@/services/api'
@@ -73,7 +73,7 @@ export const LoginForm: React.FC = (): JSX.Element => {
 				</Col>
 
 				<Form.Item>
-					<Link style={{ float: "right", color: "#d60d17" }} to="/auth/sign-in/forgot-password">
+					<Link style={{ float: "right", color: "#d60d17" }} href="/auth/sign-in/forgot-password">
 						Forgot Password
 					</Link>
 				</Form.Item>
@@ -86,7 +86,7 @@ export const LoginForm: React.FC = (): JSX.Element => {
 			</Form.Item>
 
 			<Divider style={{ margin: "0px 0px -10px 0px" }} orientation="right">
-				<Link to="/auth/sign-up">Sign Up</Link>
+				<Link href="/auth/sign-up">Sign Up</Link>
 			</Divider>
 		</Form>
 	)

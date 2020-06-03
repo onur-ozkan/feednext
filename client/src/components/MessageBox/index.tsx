@@ -4,23 +4,24 @@ import { InboxOutlined } from '@ant-design/icons'
 
 // Other dependencies
 import React from 'react'
-import { history } from 'umi'
+import { useRouter } from 'next/router'
 
 // Local files
-import styles from './index.less'
+import './style.less'
 
 const MessageBox = ({ count }: { count: number }): JSX.Element => {
-	const handleOnClick = (): void => history.push('/messages')
+	const router = useRouter()
+	const handleOnClick = () => router.push('/messages')
 	return (
-		<div className={styles.messageButton}>
+		<div className={'messageButton'}>
 			<Badge
 				count={count}
 				style={{
 					boxShadow: 'none',
 				}}
-				className={styles.badge}
+				className={'badge'}
 			>
-				<InboxOutlined onClick={handleOnClick} className={styles.icon} />
+				<InboxOutlined onClick={handleOnClick} className={'icon'} />
 			</Badge>
 		</div>
 	)

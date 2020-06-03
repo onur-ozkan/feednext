@@ -5,7 +5,7 @@ import { MessageOutlined } from '@ant-design/icons'
 // Other dependencies
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Redirect, history } from 'umi'
+import { useRouter } from 'next/router'
 
 // Local files
 import { SET_ACCESS_TOKEN, SET_UNREAD_MESSAGES_INFO, INCREASE_UNREAD_MESSAGE_VALUE, ADD_ITEM_TO_MESSAGES_INFO } from '@/redux/Actions/Global'
@@ -13,9 +13,10 @@ import { checkAccessToken, refreshToken, fetchUnreadMessageInfo } from '@/servic
 import { handleSessionExpiration } from '@/services/utils'
 import { socketConnection } from '@/services/socket'
 import { User } from '@/../config/constants'
-import { BaseLayout } from '@/layouts/BaseLayout'
 
 const RouteHandler = (props: { authority: number, children: React.ReactNode }) => {
+	const router = useRouter()
+
 	const [lastMessageFromSocket, setLastMessageFromSocket] = useState<{ conversation_id: string, from: string, body: string } | null>(null)
 	const globalState = useSelector((state: any) => state.global)
 	const user = useSelector((state: any) => state.user)
@@ -30,11 +31,9 @@ const RouteHandler = (props: { authority: number, children: React.ReactNode }) =
 						type: SET_ACCESS_TOKEN,
 						token: res.data.attributes.access_token
 					})
-				}).catch(_e => handleSessionExpiration())
+				}).catch(_e => {})
 			})
 	}
-
-	console.log(props)
 
 	const handleUnreadMessages = async (): Promise<void> => {
 		await fetchUnreadMessageInfo(globalState.accessToken).then(({ data }) => {
@@ -57,7 +56,7 @@ const RouteHandler = (props: { authority: number, children: React.ReactNode }) =
 		// Handle message notifications
 		if (globalState.accessToken) {
 			wss.on('pingMessage', (incMessage: { conversation_id: string, from: string, body: string }) => {
-				if (location.pathname !== '/messages') {
+				if (router.route !== '/messages') {
 					notification.info({
 						closeIcon: null,
 						message: incMessage.from,
@@ -99,8 +98,8 @@ const RouteHandler = (props: { authority: number, children: React.ReactNode }) =
 		}
 	}, [lastMessageFromSocket])
 
-	if (!user && props.authority >= User && window.location.pathname !== '/') {
-		return <Redirect to="/auth/sign-in" />
+	if (process.browser && !user && props.authority >= User && router.route !== '/') {
+		router.push('/auth/sign-in')
 	}
 
 	if (user && props.authority > user.attributes.user.role) {
@@ -110,7 +109,7 @@ const RouteHandler = (props: { authority: number, children: React.ReactNode }) =
 				title="403"
 				subTitle="Sorry, your account role doesnt have access to this page"
 				extra={
-					<Button type="primary" onClick={(): void => history.push('/')}>
+					<Button type="primary" onClick={() => router.push('/')}>
 						Back Home
 					</Button>
 				}

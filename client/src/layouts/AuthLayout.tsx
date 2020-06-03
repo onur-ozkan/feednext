@@ -4,30 +4,30 @@ import { Layout, Typography } from 'antd'
 // Other dependencies
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { Link, Redirect } from 'umi'
+import Link from 'next/link'
 
 // Local files
 import logo from '../assets/logo-square.svg'
-import styles from './AuthLayout.less'
+import './AuthLayout.less'
 
 const AuthLayout: React.FC = props => {
 	const user = useSelector((state: any) => state.user)
 
 	if (user && (location.pathname === '/auth/sign-in' || location.pathname === '/auth/sign-up')) {
-		return <Redirect to="/" />
+		location.href = '/'
 	}
 
 	return (
-		<div className={styles.container}>
-			<div className={styles.content}>
-				<div className={styles.top}>
-					<div className={styles.header}>
-						<Link to="/">
-							<img alt="logo" className={styles.logo} src={logo} />
-							<span className={styles.title}>Feednext</span>
-						</Link>
+		<div className={'container'}>
+			<div className={'content'}>
+				<div className={'top'}>
+					<div className={'header'}>
+						<a href="/">
+							<img alt="logo" className={'logo'} src={logo} />
+							<span className={'title'}>Feednext</span>
+						</a>
 					</div>
-					<div className={styles.desc} />
+					<div className={'desc'} />
 				</div>
 				{props.children}
 			</div>

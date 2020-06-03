@@ -5,16 +5,17 @@ import { UserOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons
 // Other dependencies
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { history } from 'umi'
+import { useRouter } from 'next/router'
 
 // Local files
 import { persistor } from '@/redux/store'
 import { API_URL } from '@/../config/constants'
 import HeaderDropdown from '../HeaderDropdown'
-import styles from './index.less'
+import './style.less'
 
 
 const AvatarDropdown = () => {
+	const router = useRouter()
 	const user = useSelector((state: any) => state.user?.attributes.user)
 
 	const handleSignOut = async (): Promise<void> => {
@@ -23,13 +24,13 @@ const AvatarDropdown = () => {
 	}
 
 	const menuHeaderDropdown = (
-		<Menu className={styles.menu} selectedKeys={[]}>
-			<Menu.Item onClick={(): void => history.push(`/user/${user.username}`)} key="/">
+		<Menu className={'menu'} selectedKeys={[]}>
+			<Menu.Item onClick={() => router.push(`/user/${user.username}`)} key="/">
 				<UserOutlined />
 				Profile
 			</Menu.Item>
 
-			<Menu.Item onClick={(): void => history.push('/settings')} key="/settings">
+			<Menu.Item onClick={() => router.push('/settings')} key="/settings">
 				<SettingOutlined />
 				Settings
 			</Menu.Item>
@@ -43,9 +44,9 @@ const AvatarDropdown = () => {
 
 	return (
 		<HeaderDropdown trigger={['click']} overlay={menuHeaderDropdown}>
-			<span className={`${styles.action} ${styles.account}`}>
-				<Avatar size="small" className={styles.avatar} src={`${API_URL}/v1/user/pp?username=${user.username}`} />
-				<span className={styles.name}>{user.full_name.split(' ')[0]}</span>
+			<span className={'action account'}>
+				<Avatar size="small" className={'avatar'} src={`${API_URL}/v1/user/pp?username=${user.username}`} />
+				<span className={'name'}>{user.full_name.split(' ')[0]}</span>
 			</span>
 		</HeaderDropdown>
 	)

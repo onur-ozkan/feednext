@@ -1,6 +1,6 @@
 // Other dependencies
 import React from 'react'
-import { Helmet } from 'react-helmet'
+import Head from 'next/head'
 
 // Local files
 import { ComponentProps } from './types'
@@ -8,7 +8,7 @@ import { ComponentProps } from './types'
 export const PageHelmet = (props: ComponentProps): JSX.Element => {
 	return (
 		<>
-			<Helmet>
+			<Head>
 				<title> {props.title} </title>
 				<meta name="application-name" content="Feednext" />
 				<meta name="description" content={props.description} />
@@ -19,26 +19,26 @@ export const PageHelmet = (props: ComponentProps): JSX.Element => {
 				<meta property="og:type" content="article" />
 				<meta property="og:site_name" content="Feednext" />
 				<meta property="og:locale" content="en_EN" />
-			</Helmet>
+			</Head>
 
 			{props.mediaTitle &&
-				<Helmet>
+				<Head>
 					<meta property="twitter:title" content={props.mediaTitle} />
 					<meta property="og:title" content={props.mediaTitle} />
-				</Helmet>
+				</Head>
 			}
 
 			{props.mediaDescription &&
-				<Helmet>
+				<Head>
 					<meta property="twitter:description" content={props.mediaDescription} />
-				</Helmet>
+				</Head>
 			}
 
 			{props.mediaImage &&
-				<Helmet>
+				<Head>
 					<meta property="twitter:image" content={props.mediaImage} />
 					<meta property="og:image" content={props.mediaImage} />
-				</Helmet>
+				</Head>
 			}
 		</>
 	)

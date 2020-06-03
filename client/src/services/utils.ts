@@ -3,7 +3,6 @@ import { message } from 'antd'
 
 // Other dependencies
 import { parse, ParsedUrlQuery } from 'querystring'
-import { history } from 'umi'
 import pathRegexp from 'path-to-regexp'
 
 // Local files
