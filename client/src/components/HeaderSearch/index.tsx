@@ -8,7 +8,7 @@ import classNames from 'classnames'
 
 // Local files
 import { searchTitle } from '@/services/api'
-import './index.less'
+import './style.less'
 
 
 const HeaderSearch: React.FC = (): JSX.Element => {

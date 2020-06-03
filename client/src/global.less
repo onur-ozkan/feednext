@@ -37,50 +37,32 @@ ol {
 	max-width: 1350px;
 }
 
-@media (max-width: 768px) {
-	.ant-pro-global-header {
-		background-color: @navbar-background;
-		color: @navbar-font-color;
-	}
-
-	.ant-pro-top-nav-header {
-		background-color: @navbar-background;
-		color: @navbar-font-color;
-	}
-
-	.ant-pro-top-nav-header-menu > ul {
-		background-color: @navbar-background;
-		color: @navbar-font-color;
-	}
-
-	.ant-pro-global-header-logo img {
-		display: flex;
-		height: 64px;
-	}
+.navBarlogo {
+	height: 40px;
 }
 
-@media (min-width: 767px) {
-	.ant-pro-top-nav-header {
-		color: @navbar-font-color;
-	}
+.ant-menu-submenu {
+	display: none !important;
+}
 
-	.ant-pro-top-nav-header-left {
-		position: absolute;
-		left: 0px;
-	}
+.ant-menu-dark.ant-menu-horizontal {
+	background-color: @navbar-background;
+}
 
-	.ant-pro-top-nav-header-logo img {
-		display: flex;
-		height: 100%;
-	}
+.ant-layout-header {
+	background-color: @navbar-background;
+	color: @navbar-font-color;
+}
 
-	.ant-pro-top-nav-header-menu > ul {
-		background-color: @navbar-background;
-	}
+.ant-layout-header {
+	cursor: default;
+	background-color: @navbar-background;
+	color: @navbar-font-color;
+}
 
-	.ant-pro-top-nav-header-main > div {
-		background-color: @navbar-background;
-	}
+.ant-layout-header > ul {
+	background-color: @navbar-background;
+	color: @navbar-font-color;
 }
 
 @media (max-width: @screen-xs) {

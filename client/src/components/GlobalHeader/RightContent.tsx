@@ -18,7 +18,7 @@ const GlobalHeaderRight: React.SFC = () => {
 	const user = useSelector((state: any) => state.user)
 	const globalState = useSelector((state: any) => state.global)
 
-	const className = `right  dark`
+	const className = 'right dark'
 
 	const handleAuthorizedElements = (): JSX.Element => {
 		if (user) {
@@ -39,14 +39,14 @@ const GlobalHeaderRight: React.SFC = () => {
 		}
 
 		return (
-			<Button onClick={() => router.push('/auth/sign-in')} type="primary" shape="round" icon={<LoginOutlined />}>
+			<Button onClick={() => router.replace('/auth/sign-in')} type="primary" shape="round" icon={<LoginOutlined />}>
 				Sign In
 			</Button>
 		)
 	}
 
 	return (
-		<div className={className}>
+		<div className={className} style={{ position: 'absolute', right: 12, top: 0, background: '#016d9b' }}>
 			<HeaderSearch />
 			{handleAuthorizedElements()}
 		</div>
