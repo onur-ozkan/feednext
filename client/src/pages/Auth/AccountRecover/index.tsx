@@ -11,6 +11,7 @@ import { PageHelmet } from '@/components/PageHelmet'
 import { recoverAccountWithKey } from '@/services/api'
 import NotFoundPage from '@/pages/404'
 import styles from './style.less'
+import AuthLayout from '@/layouts/AuthLayout'
 
 const AccountRecover: React.FunctionComponent = (props: any) => {
 	const [requestOnGoing, setRequestOnGoing] = useState(false)
@@ -44,7 +45,7 @@ const AccountRecover: React.FunctionComponent = (props: any) => {
 	)
 
 	return (
-		<>
+		<AuthLayout>
 			<PageHelmet
 				title="Change Password | Feednext"
 				description="Best reviews, comments, feedbacks about anything around the world"
@@ -102,7 +103,7 @@ const AccountRecover: React.FunctionComponent = (props: any) => {
 					</Tabs>
 				</Form>
 			</div>
-		</>
+		</AuthLayout>
 	)
 }
 

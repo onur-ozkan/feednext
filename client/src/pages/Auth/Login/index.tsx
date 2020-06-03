@@ -13,6 +13,7 @@ import { SET_ACCESS_TOKEN } from '@/redux/Actions/Global'
 import { PageHelmet } from '@/components/PageHelmet'
 import { signIn } from '@/services/api'
 import styles from './style.less'
+import AuthLayout from '@/layouts/AuthLayout'
 
 export declare interface FormDataType {
 	usernameOrEmail: string
@@ -51,7 +52,7 @@ const Login: React.FunctionComponent = () => {
 	}
 
 	return (
-		<>
+		<AuthLayout>
 			<PageHelmet
 				title="Sign In | Feednext"
 				description="Best reviews, comments, feedbacks about anything around the world"
@@ -103,7 +104,7 @@ const Login: React.FunctionComponent = () => {
 					</Tabs>
 				</Form>
 			</div>
-		</>
+		</AuthLayout>
 	)
 }
 

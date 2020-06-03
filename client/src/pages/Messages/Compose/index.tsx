@@ -12,7 +12,8 @@ import { searchUser, fetchUserByUsername } from '@/services/api'
 import { FormDataType, ComponentProps } from './types'
 import { socketConnection } from '@/services/socket'
 import { PageHelmet } from '@/components/PageHelmet'
-import { API_URL } from '@/../config/constants'
+import { API_URL, User } from '@/../config/constants'
+import AppLayout from '@/layouts/AppLayout'
 
 
 const Compose: React.FC<ComponentProps> = (props): JSX.Element => {
@@ -74,7 +75,7 @@ const Compose: React.FC<ComponentProps> = (props): JSX.Element => {
 	}, [userFilterInput])
 
 	return (
-		<>
+		<AppLayout authority={User}>
 			<PageHelmet
 				title="Send Message"
 				description="Best reviews, comments, feedbacks about anything around the world"
@@ -137,7 +138,7 @@ const Compose: React.FC<ComponentProps> = (props): JSX.Element => {
 				</Form>
 			</Card>
 			<br />
-		</>
+		</AppLayout>
 	)
 }
 

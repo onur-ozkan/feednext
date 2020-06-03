@@ -10,11 +10,12 @@ import { Redirect, history } from 'umi'
 // Local files
 import { SET_ACCESS_TOKEN, SET_UNREAD_MESSAGES_INFO, INCREASE_UNREAD_MESSAGE_VALUE, ADD_ITEM_TO_MESSAGES_INFO } from '@/redux/Actions/Global'
 import { checkAccessToken, refreshToken, fetchUnreadMessageInfo } from '@/services/api'
-import { getAuthorityFromRouter, handleSessionExpiration } from '@/services/utils'
+import { handleSessionExpiration } from '@/services/utils'
 import { socketConnection } from '@/services/socket'
 import { User } from '@/../config/constants'
+import { BaseLayout } from '@/layouts/BaseLayout'
 
-const RouteHandler = ({ children, route }) => {
+const RouteHandler = (props: { authority: number, children: React.ReactNode }) => {
 	const [lastMessageFromSocket, setLastMessageFromSocket] = useState<{ conversation_id: string, from: string, body: string } | null>(null)
 	const globalState = useSelector((state: any) => state.global)
 	const user = useSelector((state: any) => state.user)
@@ -32,6 +33,8 @@ const RouteHandler = ({ children, route }) => {
 				}).catch(_e => handleSessionExpiration())
 			})
 	}
+
+	console.log(props)
 
 	const handleUnreadMessages = async (): Promise<void> => {
 		await fetchUnreadMessageInfo(globalState.accessToken).then(({ data }) => {
@@ -96,13 +99,11 @@ const RouteHandler = ({ children, route }) => {
 		}
 	}, [lastMessageFromSocket])
 
-	const authorized: any = getAuthorityFromRouter(route?.routes, location.pathname || '/')
-
-	if (!user && authorized?.authority >= User && window.location.pathname !== '/') {
+	if (!user && props.authority >= User && window.location.pathname !== '/') {
 		return <Redirect to="/auth/sign-in" />
 	}
 
-	if (user && authorized?.authority > user.attributes.user.role) {
+	if (user && props.authority > user.attributes.user.role) {
 		return (
 			<Result
 				status="403"
@@ -117,7 +118,7 @@ const RouteHandler = ({ children, route }) => {
 		)
 	}
 
-	return children
+	return props.children
 }
 
 export default RouteHandler

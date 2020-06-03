@@ -7,9 +7,11 @@ import { history } from 'umi'
 
 // Local files
 import { PageHelmet } from '@/components/PageHelmet'
+import { Guest } from '@/../config/constants'
+import AppLayout from '@/layouts/AppLayout'
 
 const NotFoundPage: React.FC<{}> = () => (
-	<>
+	<AppLayout authority={Guest}>
 		<PageHelmet
 			title="404 Not Found | Feednext"
 			description="Best reviews, comments, feedbacks about anything around the world"
@@ -26,7 +28,7 @@ const NotFoundPage: React.FC<{}> = () => (
 				</Button>
 			}
 		/>
-	</>
+	</AppLayout>
 )
 
 export default NotFoundPage

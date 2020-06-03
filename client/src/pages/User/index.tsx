@@ -11,11 +11,12 @@ import { history } from 'umi'
 
 // Local files
 import { fetchUserByUsername } from '@/services/api'
-import { API_URL } from '../../../config/constants'
+import { API_URL, Guest } from '../../../config/constants'
 import { PageHelmet } from '@/components/PageHelmet'
 import PageLoading from '@/components/PageLoading'
 import NotFoundPage from '../404'
 import { UserTabs } from './components/UserTabs'
+import AppLayout from '@/layouts/AppLayout'
 
 const User: React.FC = ({ match }): JSX.Element => {
 	const userState = useSelector((state: any) => state.user?.attributes.user)
@@ -49,7 +50,7 @@ const User: React.FC = ({ match }): JSX.Element => {
 	if (isUserFound === false) return <NotFoundPage />
 
 	return (
-		<>
+		<AppLayout authority={Guest}>
 			<PageHelmet
 				title={`${user.full_name} | Feednext`}
 				description="Best reviews, comments, feedbacks about anything around the world"
@@ -144,7 +145,7 @@ const User: React.FC = ({ match }): JSX.Element => {
 				</Row>
 				<br/>
 			</GridContent>
-		</>
+		</AppLayout>
 	)
 }
 

@@ -8,11 +8,12 @@ import { history } from 'umi'
 
 // Local files
 import { fetchEntryByEntryId, fetchTitle, getAverageTitleRate, fetchOneCategory } from '@/services/api'
-import { API_URL } from '@/../config/constants'
+import { API_URL, Guest } from '@/../config/constants'
 import { TitleResponseData, EntryResponseData } from '@/@types/api'
 import { PageHelmet } from '@/components/PageHelmet'
 import PageLoading from '@/components/PageLoading'
 import NotFoundPage from '../404'
+import AppLayout from '@/layouts/AppLayout'
 
 const Entry = ({ match }): JSX.Element => {
 	const [title, setTitle] = useState<TitleResponseData | undefined>(undefined)
@@ -89,7 +90,7 @@ const Entry = ({ match }): JSX.Element => {
 	)
 
 	return (
-		<>
+		<AppLayout authority={Guest}>
 			<PageHelmet
 				title={`${title?.attributes.name} :${categoryName}`}
 				description={entryData?.attributes.text}
@@ -121,7 +122,7 @@ const Entry = ({ match }): JSX.Element => {
 					content={<p>{entryData?.attributes.text}</p>}
 				/>
 			</PageHeader>
-		</>
+		</AppLayout>
 	)
 }
 

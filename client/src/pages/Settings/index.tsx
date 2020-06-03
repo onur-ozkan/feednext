@@ -9,13 +9,15 @@ import { useSelector } from 'react-redux'
 // Local files
 import { AccountSettings } from './AccountSettings'
 import { PageHelmet } from '@/components/PageHelmet'
+import { User } from '@/../config/constants'
+import AppLayout from '@/layouts/AppLayout'
 
 const Settings = (): JSX.Element => {
 	const user = useSelector((state: any) => state.user?.attributes.user)
 	const accessToken = useSelector((state: any) => state.global.accessToken)
 
 	return (
-		<>
+		<AppLayout authority={User}>
 			<PageHelmet
 				title="Settings"
 				description="Best reviews, comments, feedbacks about anything around the world"
@@ -37,7 +39,7 @@ const Settings = (): JSX.Element => {
 				</Tabs>
 			</Card>
 			<br />
-		</>
+		</AppLayout>
 	)
 }
 

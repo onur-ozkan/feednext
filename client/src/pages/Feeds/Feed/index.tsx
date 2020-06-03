@@ -18,7 +18,7 @@ import {
 	fetchFeaturedEntryByTitleId
 } from '@/services/api'
 import { TitleResponseData, CategoryResponseData } from '@/@types/api'
-import { API_URL } from '@/../config/constants'
+import { API_URL, Guest } from '@/../config/constants'
 import { CategorySelect } from '@/components/CategorySelect'
 import { PageHelmet } from '@/components/PageHelmet'
 import { EntryAttributes } from './types'
@@ -28,6 +28,7 @@ import FeedEntries from './components/FeedEntries'
 import PageLoading from '@/components/PageLoading'
 import ImageUpload from '@/components/ImageUpload'
 import styles from './style.less'
+import AppLayout from '@/layouts/AppLayout'
 
 const Feed: React.FC<any> = (props): JSX.Element => {
 	const globalState = useSelector((state: any) => state.global)
@@ -111,7 +112,7 @@ const Feed: React.FC<any> = (props): JSX.Element => {
 	if (!entryList || !title || !category || (!averageTitleRate && averageTitleRate !== 0)) return <PageLoading />
 
 	return (
-		<>
+		<AppLayout authority={Guest}>
 			<PageHelmet
 				title={title.attributes.name}
 				description={`Best reviews, comments, feedbacks about ${title.attributes.name} around the world`}
@@ -203,7 +204,7 @@ const Feed: React.FC<any> = (props): JSX.Element => {
 				</Form>
 			</Modal>
 			<br/>
-		</>
+		</AppLayout>
 	)
 }
 

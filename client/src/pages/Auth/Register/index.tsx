@@ -12,6 +12,7 @@ import { PageHelmet } from '@/components/PageHelmet'
 import RegisterResult from './Result'
 import styles from './style.less'
 import { Aggrements } from '@/components/Aggrements'
+import AuthLayout from '@/layouts/AuthLayout'
 
 export declare interface FormDataType {
 	fullName: string
@@ -54,7 +55,7 @@ const Register = () => {
 	}
 
 	return (
-		<>
+		<AuthLayout>
 			<PageHelmet
 				title="Sign Up | Feednext"
 				description="Best reviews, comments, feedbacks about anything around the world"
@@ -178,7 +179,7 @@ const Register = () => {
 					</Tabs>
 				</Form>
 			</div>
-		</>
+		</AuthLayout>
 	)
 }
 

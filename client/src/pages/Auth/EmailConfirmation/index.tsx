@@ -11,6 +11,7 @@ import { PageHelmet } from '@/components/PageHelmet'
 import { verifyUpdatedEmail } from '@/services/api'
 import NotFoundPage from '@/pages/404'
 import styles from './style.less'
+import AuthLayout from '@/layouts/AuthLayout'
 
 const EmailConfirmation: React.FunctionComponent = (props: any) => {
 	const [isRequestSucceess, setIsRequestSucceess] = useState<boolean | null>(null)
@@ -36,7 +37,7 @@ const EmailConfirmation: React.FunctionComponent = (props: any) => {
 
 
 	return (
-		<>
+		<AuthLayout>
 			<PageHelmet
 				title="Email Confirmation | Feednext"
 				description="Best reviews, comments, feedbacks about anything around the world"
@@ -59,7 +60,7 @@ const EmailConfirmation: React.FunctionComponent = (props: any) => {
 					)
 			}
 			</div>
-		</>
+		</AuthLayout>
 	)
 }
 

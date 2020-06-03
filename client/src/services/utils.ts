@@ -15,15 +15,6 @@ export const isUrl = (path: string): boolean => reg.test(path)
 
 export const getPageQuery = (): ParsedUrlQuery => parse(window.location.href.split('?')[1])
 
-export const getAuthorityFromRouter = <T>(history: T[] = [], pathname: string): T | undefined => {
-	const authority = history.find(
-		({ routes, path = '/' }) =>
-			(path && pathRegexp(path).exec(pathname)) || (routes && getAuthorityFromRouter(routes, pathname)),
-	)
-	if (authority) return authority
-	return undefined
-}
-
 export const getRouteAuthority = (path: string, routeData): string | string[] | undefined => {
 	let authorities: string[] | string | undefined
 	routeData.forEach(route => {

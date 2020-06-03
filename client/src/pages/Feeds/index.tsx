@@ -20,7 +20,7 @@ import { Link } from 'umi'
 // Local files
 import { fetchAllFeeds, fetchFeaturedEntryByTitleId, fetchTrendingCategories, fetchOneCategory } from '@/services/api'
 import { CategorySelect } from '@/components/CategorySelect'
-import { API_URL } from '@/../config/constants'
+import { API_URL, Guest } from '@/../config/constants'
 import { PageHelmet } from '@/components/PageHelmet'
 import { AdditionalBlock } from './components/AdditionalBlock'
 import { TrendingCategoriesResponseData } from '@/@types/api'
@@ -28,6 +28,7 @@ import { FeedList } from './types'
 import ArticleListContent from './components/ArticleListContent'
 import globalStyles from '@/global.less'
 import FlowHeader from './components/FlowHeader'
+import AppLayout from '@/layouts/AppLayout'
 
 const Feeds = (): JSX.Element => {
 	const [displayFilterModal, setDisplayFilterModal] = useState(false)
@@ -98,9 +99,6 @@ const Feeds = (): JSX.Element => {
 		setIsLoading(false)
 		setIsFetching(false)
 	}
-
-
-
 
 	const handleFeedListView = (): JSX.Element => {
 		if (isLoading) {
@@ -247,7 +245,7 @@ const Feeds = (): JSX.Element => {
 	)
 
 	return (
-		<>
+		<AppLayout authority={Guest}>
 			<PageHelmet
 				title="Feednext: the source of feedbacks"
 				description="Best reviews, comments, feedbacks about anything around the world"
@@ -284,7 +282,7 @@ const Feeds = (): JSX.Element => {
 				</Col>
 			</Row>
 			<br/>
-		</>
+		</AppLayout>
 	)
 }
 

@@ -10,10 +10,12 @@ import { AxiosError, AxiosResponse } from 'axios'
 import { createTitle, createEntry } from '@/services/api'
 import { CreateTitleFormData } from './types'
 import { StepProvider } from './StepContext'
+import { User } from '@/../config/constants'
 import Step1 from './components/Step1'
 import Step2 from './components/Step2'
 import Step3 from './components/Step3'
 import styles from './style.less'
+import AppLayout from '@/layouts/AppLayout'
 
 const CreateFeed: React.FC = () => {
 	const accessToken = useSelector((state: any) => state.global.accessToken)
@@ -112,17 +114,19 @@ const CreateFeed: React.FC = () => {
 	if (!stepComponent) handleStepMovement()
 
 	return (
-		<StepProvider value={{ createTitleFormData, readableCategoryValue, firstEntryForm }}>
-			<Card bordered={false}>
-				<Steps current={currentStep} className={styles.steps}>
-					<Steps.Step title="Create Title" />
-					<Steps.Step title="Enter First Entry" />
-					<Steps.Step title="Feed Status" />
-				</Steps>
-				{stepComponent}
-			</Card>
-			<br/>
-		</StepProvider>
+		<AppLayout authority={User}>
+			<StepProvider value={{ createTitleFormData, readableCategoryValue, firstEntryForm }}>
+				<Card bordered={false}>
+					<Steps current={currentStep} className={styles.steps}>
+						<Steps.Step title="Create Title" />
+						<Steps.Step title="Enter First Entry" />
+						<Steps.Step title="Feed Status" />
+					</Steps>
+					{stepComponent}
+				</Card>
+				<br/>
+			</StepProvider>
+		</AppLayout>
 	)
 }
 

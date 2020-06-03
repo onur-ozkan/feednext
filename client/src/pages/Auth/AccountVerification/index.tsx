@@ -10,6 +10,7 @@ import { PageHelmet } from '@/components/PageHelmet'
 import { verifyAccount } from '@/services/api'
 import NotFoundPage from '@/pages/404'
 import styles from './style.less'
+import AuthLayout from '@/layouts/AuthLayout'
 
 const AccountVerification: React.FunctionComponent = (props: any) => {
 	const [isRequestSucceess, setIsRequestSucceess] = useState<boolean | null>(null)
@@ -34,7 +35,7 @@ const AccountVerification: React.FunctionComponent = (props: any) => {
 
 
 	return (
-		<>
+		<AuthLayout>
 			<PageHelmet
 				title="Account Verification | Feednext"
 				description="Best reviews, comments, feedbacks about anything around the world"
@@ -57,7 +58,7 @@ const AccountVerification: React.FunctionComponent = (props: any) => {
 					)
 			}
 			</div>
-		</>
+		</AuthLayout>
 	)
 }
 

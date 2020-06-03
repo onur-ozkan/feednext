@@ -9,6 +9,7 @@ import React, { useState } from 'react'
 import { PageHelmet } from '@/components/PageHelmet'
 import { generateRecoveryKey } from '@/services/api'
 import styles from './style.less'
+import AuthLayout from '@/layouts/AuthLayout'
 
 const ForgotPassword: React.FunctionComponent = () => {
 	const [requestOnGoing, setRequestOnGoing] = useState(false)
@@ -37,7 +38,7 @@ const ForgotPassword: React.FunctionComponent = () => {
 	)
 
 	return (
-		<>
+		<AuthLayout>
 			<PageHelmet
 				title="Account Recovery | Feednext"
 				description="Best reviews, comments, feedbacks about anything around the world"
@@ -70,7 +71,7 @@ const ForgotPassword: React.FunctionComponent = () => {
 					</Tabs>
 				</Form>
 			</div>
-		</>
+		</AuthLayout>
 	)
 }
 

@@ -18,27 +18,25 @@ const AuthLayout: React.FC = props => {
 	}
 
 	return (
-		<>
-			<div className={styles.container}>
-				<div className={styles.content}>
-					<div className={styles.top}>
-						<div className={styles.header}>
-							<Link to="/">
-								<img alt="logo" className={styles.logo} src={logo} />
-								<span className={styles.title}>Feednext</span>
-							</Link>
-						</div>
-						<div className={styles.desc} />
+		<div className={styles.container}>
+			<div className={styles.content}>
+				<div className={styles.top}>
+					<div className={styles.header}>
+						<Link to="/">
+							<img alt="logo" className={styles.logo} src={logo} />
+							<span className={styles.title}>Feednext</span>
+						</Link>
 					</div>
-					{props.children}
+					<div className={styles.desc} />
 				</div>
-				<Layout.Footer style={{ background: 'transparent', textAlign: 'center' }}>
-					<Typography.Text>
-						Feednext © 2020. All rights reserved
-					</Typography.Text>
-				</Layout.Footer>
+				{props.children}
 			</div>
-		</>
+			<Layout.Footer style={{ background: 'transparent', textAlign: 'center' }}>
+				<Typography.Text>
+					Feednext © 2020. All rights reserved
+				</Typography.Text>
+			</Layout.Footer>
+		</div>
 	)
 }
 

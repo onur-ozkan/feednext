@@ -13,6 +13,8 @@ import { ChatScreen } from './components/ChatScreen/index'
 import { WelcomePage } from './components/WelcomePage'
 import { PageHelmet } from '@/components/PageHelmet'
 import { ConversationAttributes } from './types'
+import { User } from '@/../config/constants'
+import AppLayout from '@/layouts/AppLayout'
 import styles from './index.less'
 
 const Messages = (): JSX.Element => {
@@ -38,7 +40,7 @@ const Messages = (): JSX.Element => {
 	}
 
 	return (
-		<div>
+		<AppLayout authority={User}>
 			<PageHelmet
 				title="Direct Messages"
 				description="Best reviews, comments, feedbacks about anything around the world"
@@ -70,7 +72,7 @@ const Messages = (): JSX.Element => {
 				}
 			</Card>
 			<br/>
-		</div>
+		</AppLayout>
 	)
 }
 
