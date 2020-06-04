@@ -24,7 +24,7 @@ const AvatarDropdown = () => {
 	}
 
 	const menuHeaderDropdown = (
-		<Menu className={'menu'} selectedKeys={[]}>
+		<Menu className={'menu'}>
 			<Menu.Item onClick={() => router.push(`/user/${user.username}`)} key="/">
 				<UserOutlined />
 				Profile

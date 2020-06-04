@@ -12,14 +12,14 @@
 }
 
 .right {
-	float: right;
-	height: @layout-header-height;
+	position: absolute;
+	top: 0;
+	right: 15px;
 	margin-left: auto;
 	overflow: hidden;
 	.action {
 		display: inline-block;
 		height: 100%;
-		padding: 0 12px;
 		cursor: pointer;
 		transition: all 0.3s;
 		> i {
@@ -29,10 +29,8 @@
 	}
 	.account {
 		.avatar {
-			margin: ~'calc((@{layout-header-height} - 24px) / 2)' 0;
-			margin-right: 8px;
+			margin-right: 5px !important;
 			color: @primary-color;
-			vertical-align: top;
 			background: rgba(255, 255, 255, 0.85);
 		}
 	}
@@ -65,11 +63,19 @@
 	.right {
 		position: absolute;
 		top: 0;
-		right: 12px;
+		right: 5px;
 		.account {
 			.avatar {
 				margin-right: 0;
 			}
 		}
+	}
+}
+
+@media only screen and (max-width: 525px) {
+	.right {
+		display: flex;
+		flex-direction: row-reverse;
+		align-items: center;
 	}
 }

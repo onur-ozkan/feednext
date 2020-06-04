@@ -37,12 +37,12 @@ const HeaderSearch: React.FC = (): JSX.Element => {
 				const foundTitles = res.data.attributes.titles.map(title => {
 					return {
 						label:
-							<div
+							<a
 								style={{ width: '100%' }}
-								onClick={(): string => location.href = `/${title.slug}`}
+								href={`/${title.slug}`}
 							>
 								<Typography.Text style={{ fontSize: 15 }}> {title.name} </Typography.Text>
-							</div>,
+							</a>,
 						options: []
 					}
 				})

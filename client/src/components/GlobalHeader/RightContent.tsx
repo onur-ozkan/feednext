@@ -17,15 +17,12 @@ const GlobalHeaderRight: React.SFC = () => {
 	const router = useRouter()
 	const user = useSelector((state: any) => state.user)
 	const globalState = useSelector((state: any) => state.global)
-
-	const className = 'right dark'
-
 	const handleAuthorizedElements = (): JSX.Element => {
 		if (user) {
 			return (
-				<>
+				<span>
 					<Button
-						onClick={() => router.push('/create-feed')}
+						onClick={() => location.href = '/create-feed'}
 						type="primary"
 						shape="round"
 						icon={<PlusCircleOutlined />}
@@ -34,7 +31,7 @@ const GlobalHeaderRight: React.SFC = () => {
 					</Button>
 					<MessageBox count={globalState.unreadMessageInfo.total_unread_value} />
 					<Avatar />
-				</>
+				</span>
 			)
 		}
 
@@ -46,7 +43,7 @@ const GlobalHeaderRight: React.SFC = () => {
 	}
 
 	return (
-		<div className={className} style={{ position: 'absolute', right: 12, top: 0, background: '#016d9b' }}>
+		<div className={'right dark'} style={{ background: '#016d9b' }}>
 			<HeaderSearch />
 			{handleAuthorizedElements()}
 		</div>

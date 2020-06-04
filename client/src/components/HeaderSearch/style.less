@@ -3,8 +3,10 @@
 @pro-header-hover-bg: rgba(0, 0, 0, 0.025);
 
 .headerSearch {
+
 	:global(.anticon-search) {
 		margin-right: 10px;
+		margin-left: 5px;
 		font-size: 16px;
 		cursor: pointer;
 	}
@@ -41,7 +43,7 @@
 			}
 		}
 
-		.ant-select-selection-search > input {
+		input {
 			padding-right: 0;
 			padding-left: 0;
 			border: 0;
@@ -54,8 +56,17 @@
 			border-bottom: 1px solid @border-color-base;
 		}
 		&.show {
-			width: 210px;
-			margin-left: 125px;
+			width: 275px;
+		}
+	}
+}
+
+@media (max-width: 585px) {
+	.headerSearch {
+		.input {
+			&.show {
+				margin-left: 225px;
+			}
 		}
 	}
 }
