@@ -1,0 +1,82 @@
+@import '~antd/es/style/themes/default.less';
+
+@navbar-background: #016d9b !important;
+@navbar-font-color: #eee !important;
+
+html,
+body,
+#root {
+	height: 100%;
+}
+
+.ant-layout {
+	min-height: 100vh !important;
+	background-color: #eee;
+}
+
+.antBtnLink {
+	color: rgba(0, 0, 0, 0.65) !important;
+}
+
+canvas {
+	display: block;
+}
+
+body {
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+ul,
+ol {
+	list-style: none;
+}
+
+:global(.ant-col-xxl-18) {
+	max-width: 1350px;
+}
+
+
+.navBarlogo {
+	height: 40px;
+}
+
+.ant-menu-submenu {
+	display: none !important;
+}
+
+.ant-layout-header {
+	cursor: default;
+	background-color: @navbar-background;
+	color: @navbar-font-color;
+}
+
+.ant-layout-header > ul {
+	background-color: @navbar-background;
+	color: @navbar-font-color;
+}
+
+@media (max-width: @screen-xs) {
+	.ant-table {
+		width: 100%;
+		overflow-x: auto;
+		&-thead > tr,
+		&-tbody > tr {
+			> th,
+			> td {
+				white-space: pre;
+				> span {
+					display: block;
+				}
+			}
+		}
+	}
+}
+
+// Compatible with IE11
+@media screen and(-ms-high-contrast: active), (-ms-high-contrast: none) {
+	body > .ant-layout {
+		min-height: 100vh;
+	}
+}
