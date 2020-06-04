@@ -2,11 +2,11 @@
   "name": "feednext-client",
   "version": "0.1.0-alpha",
   "private": true,
-	"description": "Client side of feednext.io",
+  "description": "Client side of feednext.io",
   "author": "Onur Ozkan",
   "license": "GPLv3",
   "scripts": {
-    "dev": "next",
+    "start:dev": "next",
     "build": "next build",
     "start": "next start"
   },
@@ -15,7 +15,6 @@
     "babel-plugin-import": "^1.13.0",
     "@ant-design/compatible": "^1.0.2",
     "@ant-design/icons": "^4.2.1",
-    "@ant-design/pro-layout": "^5.0.12",
     "@typescript-eslint/eslint-plugin": "^2.20.0",
     "@typescript-eslint/parser": "^2.20.0",
     "antd": "^4.3.1",
