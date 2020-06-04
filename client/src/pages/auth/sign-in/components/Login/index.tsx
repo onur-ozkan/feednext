@@ -9,7 +9,7 @@ import classNames from 'classnames'
 
 // Local files
 import LoginContext from './LoginContext'
-import LoginItem, { LoginItemProps, LoginItemType } from './LoginItem'
+import LoginItem, { LoginItemType } from './LoginItem'
 import LoginSubmit from './LoginSubmit'
 import LoginTab from './LoginTab'
 import '@ant-design/compatible/assets/index.css'
@@ -36,14 +36,6 @@ class Login extends Component<LoginProps, LoginState> {
 	public static Tab = LoginTab
 
 	public static Submit = LoginSubmit
-
-	public static UserName: React.FunctionComponent<LoginItemProps>
-
-	public static Password: React.FunctionComponent<LoginItemProps>
-
-	public static Mobile: React.FunctionComponent<LoginItemProps>
-
-	public static Captcha: React.FunctionComponent<LoginItemProps>
 
 	static defaultProps = {
 		className: '',
@@ -172,4 +164,4 @@ class Login extends Component<LoginProps, LoginState> {
 	Login[item] = LoginItem[item]
 })
 
-export default Form.create<LoginProps>()(Login)
+export default Form.create()(Login)

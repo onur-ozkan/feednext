@@ -7,8 +7,6 @@ import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { format, parseISO } from 'date-fns'
 import { useRouter } from 'next/router'
-import dynamic from 'next/dynamic'
-
 
 // Local files
 import { fetchUserByUsername } from '@/services/api'
@@ -64,7 +62,7 @@ const User: React.FC = (): JSX.Element => {
 				mediaDescription={`${user.full_name}'s profile page on Feednext`}
 			/>
 				<Row gutter={24}>
-					<Col lg={10} md={24}>
+					<Col lg={10} md={24} sm={24} xs={24}>
 						<Card bordered={false}>
 							<div style={{ textAlign: 'right', margin: '-4px 0px 5px 0px'}}>
 								{userState && (userState.username === router.query.username) &&
@@ -142,7 +140,7 @@ const User: React.FC = (): JSX.Element => {
 							</Divider>
 						</Card>
 					</Col>
-					<Col lg={14} md={24}>
+					<Col lg={14} md={24} sm={24}>
 						<UserTabs username={router.query.username} />
 					</Col>
 				</Row>

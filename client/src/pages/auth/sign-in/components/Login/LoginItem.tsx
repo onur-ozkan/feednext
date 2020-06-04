@@ -8,14 +8,12 @@ import React, { Component } from 'react'
 
 // Local files
 import LoginContext, { LoginContextProps } from './LoginContext'
-import ItemMap from './map'
 import '@ant-design/compatible/assets/index.css'
 import './index.less'
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 
 export type WrappedLoginItemProps = Omit<LoginItemProps, 'form' | 'type' | 'updateActive'>
-export type LoginItemKeyType = keyof typeof ItemMap
 export declare interface LoginItemType {
 	UserName: React.FC<WrappedLoginItemProps>
 	Password: React.FC<WrappedLoginItemProps>
@@ -164,23 +162,5 @@ class WrapFormItem extends Component<LoginItemProps, LoginItemState> {
 }
 
 const LoginItem: Partial<LoginItemType> = {}
-
-Object.keys(ItemMap).forEach(key => {
-	const item = ItemMap[key]
-	LoginItem[key] = (props: LoginItemProps): JSX.Element => (
-		<LoginContext.Consumer>
-			{(context): JSX.Element => (
-				<WrapFormItem
-					customProps={item.props}
-					rules={item.rules}
-					{...props}
-					type={key}
-					{...context}
-					updateActive={context.updateActive}
-				/>
-			)}
-		</LoginContext.Consumer>
-	)
-})
 
 export default LoginItem as LoginItemType

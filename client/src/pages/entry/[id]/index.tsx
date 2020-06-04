@@ -12,10 +12,10 @@ import { API_URL, Guest } from '@/../config/constants'
 import { TitleResponseData, EntryResponseData } from '@/@types/api'
 import { PageHelmet } from '@/components/PageHelmet'
 import PageLoading from '@/components/PageLoading'
-import NotFoundPage from '../404'
+import NotFoundPage from '../../404'
 import AppLayout from '@/layouts/AppLayout'
 
-const Entry = ({ match }): JSX.Element => {
+const Entry = (): JSX.Element => {
 	const router = useRouter()
 
 	const [title, setTitle] = useState<TitleResponseData | undefined>(undefined)
@@ -29,27 +29,29 @@ const Entry = ({ match }): JSX.Element => {
 	}, [averageTitleRate, title, entryData, categoryName])
 
 	useEffect(() => {
-		// Fetch entry Data
-		fetchEntryByEntryId(match.params.entryId)
-			.then(fRes => {
-				setEntryData(fRes.data)
-				// Fetch title Data
-				fetchTitle(fRes.data.attributes.title_id, 'id')
-					.then(sRes => {
-						setTitle(sRes.data)
-						// Get category
-						fetchOneCategory(sRes.data.attributes.category_id).then(({ data }) => {
-							setCategoryName(data.attributes.name)
+		if (router.query.id) {
+			// Fetch entry Data
+			fetchEntryByEntryId(router.query.id)
+				.then(fRes => {
+					setEntryData(fRes.data)
+					// Fetch title Data
+					fetchTitle(fRes.data.attributes.title_id, 'id')
+						.then(sRes => {
+							setTitle(sRes.data)
+							// Get category
+							fetchOneCategory(sRes.data.attributes.category_id).then(({ data }) => {
+								setCategoryName(data.attributes.name)
+							})
+							// Fetch average rate of title
+							getAverageTitleRate(sRes.data.attributes.id)
+								.then(trRes => setAverageTitleRate(trRes.data.attributes.rate || 0))
+								.catch(error => setIsFetchingSuccess(false))
 						})
-						// Fetch average rate of title
-						getAverageTitleRate(sRes.data.attributes.id)
-							.then(trRes => setAverageTitleRate(trRes.data.attributes.rate || 0))
-							.catch(error => setIsFetchingSuccess(false))
-					})
-					.catch(error => setIsFetchingSuccess(false))
-			})
-			.catch(error => setIsFetchingSuccess(false))
-	}, [])
+						.catch(error => setIsFetchingSuccess(false))
+				})
+				.catch(error => setIsFetchingSuccess(false))
+		}
+	}, [router.query.id])
 
 	if (isFetchingSuccess === undefined) return <PageLoading />
 

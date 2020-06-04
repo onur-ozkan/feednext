@@ -103,7 +103,7 @@ export const AccountSettings = (params: AccountSettingsParams): JSX.Element => {
 	}
 	return (
 		<Row className={'settings'}>
-			<Col lg={9} md={11} sm={14}>
+			<Col lg={9} md={11} sm={13} xs={24}>
 				<Form
 					initialValues={{
 						fullName: params.user.full_name,
@@ -212,7 +212,7 @@ export const AccountSettings = (params: AccountSettingsParams): JSX.Element => {
 				</Form>
 			</Col>
 			<Col span={2} />
-			<Col sm={4} style={{ textAlign: 'center' }}>
+			<Col sm={5} xs={24} style={{ textAlign: 'center' }}>
 				<Avatar style={{ marginBottom: 12 }} size={200} src={imageUri} />
 				<br />
 				<Upload

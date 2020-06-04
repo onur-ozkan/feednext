@@ -15,7 +15,6 @@ import { LoadingOutlined, ArrowUpOutlined } from '@ant-design/icons'
 // Other dependencies
 import React, { useEffect, useState } from 'react'
 import { AxiosError, AxiosResponse } from 'axios'
-import Link from 'next/link'
 
 // Local files
 import { fetchAllFeeds, fetchFeaturedEntryByTitleId, fetchTrendingCategories, fetchOneCategory } from '@/services/api'
@@ -134,14 +133,14 @@ const Feeds = (): JSX.Element => {
 							title={
 								<Row>
 									<Col>
-										<Link
+										<a
 											href={item.href}
 											style={{ cursor: 'pointer' }}
 										>
 											<Typography.Text style={{ fontSize: 17 }}>
 												{item.name}
 											</Typography.Text>
-										</Link>
+										</a>
 
 									</Col>
 								</Row>
