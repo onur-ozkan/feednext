@@ -4,7 +4,6 @@ import { Layout, Typography } from 'antd'
 // Other dependencies
 import React from 'react'
 import { useSelector } from 'react-redux'
-import Link from 'next/link'
 
 // Local files
 import logo from '../assets/logo-square.svg'

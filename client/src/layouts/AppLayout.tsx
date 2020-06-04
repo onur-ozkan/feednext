@@ -9,7 +9,6 @@ import RightContent from '@/components/GlobalHeader/RightContent'
 import RouteHandler from '@/middleware/RouteHandler'
 import logoWide from '../assets/logo-wide.svg'
 import logoSquare from '../assets/logo-square.svg'
-import '../global.less'
 
 const AppLayout: React.FC = props => {
 	return (
@@ -31,7 +30,7 @@ const AppLayout: React.FC = props => {
 				</Layout.Header>
 				<Layout.Content>
 					<Row style={{ backgroundColor: 'transparent', justifyContent: 'center', marginTop: 75 }}>
-						<Col xxl={16} xl={20} lg={22} md={22} sm={24}>
+						<Col xxl={16} xl={20} lg={22} md={22} sm={24} xs={24}>
 							{props.children}
 						</Col>
 					</Row>

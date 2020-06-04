@@ -31,7 +31,7 @@ const RouteHandler = (props: { authority: number, children: React.ReactNode }) =
 						type: SET_ACCESS_TOKEN,
 						token: res.data.attributes.access_token
 					})
-				}).catch(_e => {})
+				}).catch(_e => handleSessionExpiration())
 			})
 	}
 

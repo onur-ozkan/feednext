@@ -10,7 +10,7 @@ body,
 }
 
 .ant-layout {
-	min-height: 100vh;
+	min-height: 100vh !important;
 	background-color: #eee;
 }
 
@@ -37,21 +37,13 @@ ol {
 	max-width: 1350px;
 }
 
+
 .navBarlogo {
 	height: 40px;
 }
 
 .ant-menu-submenu {
 	display: none !important;
-}
-
-.ant-menu-dark.ant-menu-horizontal {
-	background-color: @navbar-background;
-}
-
-.ant-layout-header {
-	background-color: @navbar-background;
-	color: @navbar-font-color;
 }
 
 .ant-layout-header {
@@ -84,7 +76,7 @@ ol {
 
 // Compatible with IE11
 @media screen and(-ms-high-contrast: active), (-ms-high-contrast: none) {
-	body .ant-design-pro > .ant-layout {
+	body > .ant-layout {
 		min-height: 100vh;
 	}
 }
