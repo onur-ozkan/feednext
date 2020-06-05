@@ -1,6 +1,6 @@
 // APP
-export const API_URL = process.env.NODE_ENV === 'production' ? 'https://server.feednext.io/api' : 'http://localhost/api'
-export const SOCKET_URL = process.env.NODE_ENV === 'production' ? 'https://server.feednext.io' : 'http://localhost'
+export const API_URL = process.env.API_ADDRESS
+export const SOCKET_URL = process.env.SOCKET_ADDRESS
 
 // ROLES
 export const Guest = -1
