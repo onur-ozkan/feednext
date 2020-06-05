@@ -1,0 +1,16 @@
+@import '~antd/es/style/themes/default.less';
+
+.profile-dropdown > * {
+	background-color: @popover-bg;
+	border-radius: 4px;
+	box-shadow: @shadow-1-down;
+}
+
+@media screen and (max-width: @screen-xs) {
+	.profile-dropdown {
+		width: 100% !important;
+	}
+	.profile-dropdown > * {
+		border-radius: 0 !important;
+	}
+}

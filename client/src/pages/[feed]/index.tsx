@@ -6,62 +6,48 @@ import { InfoCircleOutlined } from '@ant-design/icons'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
+import { NextPage } from 'next'
 
 // Local files
-import {
-	fetchEntriesByTitleId,
-	fetchTitle,
-	getAverageTitleRate,
-	updateTitle,
-	deleteTitleImage,
-	updateTitleImage,
-	fetchOneCategory,
-	fetchFeaturedEntryByTitleId
-} from '@/services/api'
+import { fetchEntriesByTitleId, getAverageTitleRate, updateTitle, deleteTitleImage, updateTitleImage } from '@/services/api'
 import { TitleResponseData, CategoryResponseData } from '@/@types/api'
 import { API_URL, Guest } from '@/../config/constants'
-import { CategorySelect } from '@/components/CategorySelect'
-import { PageHelmet } from '@/components/PageHelmet'
-import { EntryAttributes } from './types'
+import { CategorySelect } from '@/components/global/CategorySelect'
+import { PageHelmet } from '@/components/global/PageHelmet'
+import { EntryAttributes } from '@/@types/pages/[feed]'
+import { getFeedPageInitialValues } from '@/services/initializations'
+import { FeedPageInitials } from '@/@types/initializations'
 import NotFoundPage from '@/pages/404'
-import FeedHeader from './components/FeedHeader'
-import FeedEntries from './components/FeedEntries'
-import PageLoading from '@/components/PageLoading'
-import ImageUpload from '@/components/ImageUpload'
+import FeedHeader from '@/components/pages/[feed]/FeedHeader'
+import FeedEntries from '@/components/pages/[feed]/FeedEntries'
+import PageLoading from '@/components/global/PageLoading'
+import ImageUpload from '@/components/global/ImageUpload'
 import AppLayout from '@/layouts/AppLayout'
 
-const Feed: React.FC<any> = (): JSX.Element => {
-	const { feed, page } = useRouter().query
+const Feed: NextPage<FeedPageInitials> = (props): JSX.Element => {
+	const { page } = useRouter().query
 	const globalState = useSelector((state: any) => state.global)
 	const userRole = useSelector((state: any) => state.user?.attributes.user.role)
 
-	const [title, setTitle]: any = useState<TitleResponseData | null>(null)
-	const [category, setCategory]: any = useState<CategoryResponseData | null>(null)
-	const [keywords, setKeywords] = useState('')
-	const [featuredEntry, setFeaturedEntry] = useState<string | undefined>(undefined)
-	const [averageTitleRate, setAverageTitleRate] = useState<number | null>(null)
+	const [title, setTitle]: any = useState<TitleResponseData>(props.titleData)
+	const [category, setCategory]: any = useState<CategoryResponseData>(props.categoryData)
+	const [featuredEntry, setFeaturedEntry] = useState<string>(props.featuredEntry)
+	const [keywords, setKeywords] = useState(props.keywords)
+	const [averageTitleRate, setAverageTitleRate] = useState<number | null>(props.averageTitleRate)
 	const [updateCategoryId, setUpdateCategoryId] = useState<string | string[] | null>(null)
 	const [entryList, setEntryList] = useState<{
 		entries: EntryAttributes[],
 		count: number
-	}| null>(null)
+	}| null>(props.entryList)
 	const [sortEntriesBy, setSortEntriesBy] = useState<'newest' | 'top' | null>(null)
 	const [updateModalVisibility, setUpdateModalVisibility] = useState(false)
 	const [titleImageBlob, setTitleImageBlob] = useState<Blob | null>(null)
-	const [titleNotFound, setTitleNotFound] = useState(false)
+	const [titleNotFound, setTitleNotFound] = useState(props.error)
 
 	const [form] = Form.useForm()
 
 	const handleEntryFetching = (page: number): void => {
-		fetchEntriesByTitleId(title.attributes.id, page, sortEntriesBy).then(async ({ data }) => {
-			const entriesAsKeywords: any[] = []
-			await data.attributes.entries.map((entry: { text: string }) => {
-				const keywordsArray = entry.text.split(' ')
-				keywordsArray.map((keyword: string) => entriesAsKeywords.push(keyword))
-			})
-			setKeywords(entriesAsKeywords.join(', '))
-			setEntryList(data.attributes)
-		})
+		fetchEntriesByTitleId(title.attributes.id, page, sortEntriesBy).then(async ({ data }) => setEntryList(data.attributes))
 	}
 
 	useEffect(() => {
@@ -97,19 +83,6 @@ const Feed: React.FC<any> = (): JSX.Element => {
 			})
 			.catch((error: any) => message.error(error.response.data.message))
 	}
-
-	useEffect(() => {
-		if (feed) {
-			fetchTitle(feed, 'slug').then(async res => {
-				await fetchOneCategory(res.data.attributes.category_id).then(({ data }) => setCategory(data))
-				await fetchFeaturedEntryByTitleId(res.data.attributes.id).then(({ data }) => setFeaturedEntry(data.attributes.text)).catch(_error => {})
-				getTitleRate(res.data.attributes.id)
-				await setTitle(res.data)
-			}).catch(_error => {
-				setTitleNotFound(true)
-			})
-		}
-	}, [feed])
 
 	if (titleNotFound) return <NotFoundPage />
 	if (!entryList || !title || !category || (!averageTitleRate && averageTitleRate !== 0)) return <PageLoading />
@@ -209,5 +182,7 @@ const Feed: React.FC<any> = (): JSX.Element => {
 		</AppLayout>
 	)
 }
+
+Feed.getInitialProps = async (context: any) => await getFeedPageInitialValues(context.query.feed, context.query.page)
 
 export default Feed

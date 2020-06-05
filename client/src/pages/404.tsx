@@ -6,7 +6,7 @@ import React from 'react'
 import { useRouter } from 'next/router'
 
 // Local files
-import { PageHelmet } from '@/components/PageHelmet'
+import { PageHelmet } from '@/components/global/PageHelmet'
 import { Guest } from '@/../config/constants'
 import AppLayout from '@/layouts/AppLayout'
 

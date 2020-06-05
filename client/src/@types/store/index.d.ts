@@ -11,23 +11,6 @@ export interface GlobalState {
 	}
 }
 
-export interface SettingsState {
-	navTheme: MenuTheme
-	theme: IAppTheme,
-	layout: 'sidemenu' | 'topmenu'
-	contentWidth: ContentWidth
-	fixedHeader: boolean
-	autoHideHeader: boolean
-	fixSiderbar: boolean
-	menu: {
-		locale: boolean
-	}
-	title: string | null
-	pwa: boolean
-	iconfontUrl: string
-	colorWeak: boolean
-}
-
 export interface UserState {
 	type: 'user_information',
 	id: string,

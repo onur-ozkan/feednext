@@ -6,10 +6,10 @@ import { LoadingOutlined } from '@ant-design/icons'
 import React, { useState } from 'react'
 
 // Local files
-import { PageHelmet } from '@/components/PageHelmet'
+import { PageHelmet } from '@/components/global/PageHelmet'
 import { generateRecoveryKey } from '@/services/api'
 import AuthLayout from '@/layouts/AuthLayout'
-import './style.less'
+import '@/styles/pages/auth/sign-in/forgot-password/style.less'
 
 const ForgotPassword: React.FunctionComponent = () => {
 	const [requestOnGoing, setRequestOnGoing] = useState(false)

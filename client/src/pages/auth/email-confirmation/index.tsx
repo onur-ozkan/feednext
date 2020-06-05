@@ -5,24 +5,26 @@ import { LoadingOutlined } from '@ant-design/icons'
 // Other dependencies
 import React, { useState, useEffect } from 'react'
 import { persistor } from '@/redux/store'
+import { useRouter } from 'next/router'
 
 // Local files
-import { PageHelmet } from '@/components/PageHelmet'
+import { PageHelmet } from '@/components/global/PageHelmet'
 import { verifyUpdatedEmail } from '@/services/api'
 import NotFoundPage from '@/pages/404'
-import './style.less'
+import '@/styles/pages/auth/email-confirmation/style.less'
 import AuthLayout from '@/layouts/AuthLayout'
 
-const EmailConfirmation: React.FunctionComponent = (props: any) => {
+const EmailConfirmation: React.FunctionComponent = () => {
+	const router = useRouter()
 	const [isRequestSucceess, setIsRequestSucceess] = useState<boolean | null>(null)
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-	if (!props.location.query?.token) return <NotFoundPage />
+	if (!router.query?.token) return <NotFoundPage />
 
 	useEffect(() => {
-		verifyUpdatedEmail(props.location.query?.token).then(async () => {
+		verifyUpdatedEmail(router.query.token).then(async () => {
 			setIsRequestSucceess(true)
-			await persistor.purge()
+			// await persistor.purge()
 			setTimeout(() => {
 				location.href = '/auth/sign-in'
 			}, 2000)

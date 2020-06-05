@@ -7,25 +7,25 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 
 // Local files
-import { PageHelmet } from '@/components/PageHelmet'
+import { PageHelmet } from '@/components/global/PageHelmet'
 import { recoverAccountWithKey } from '@/services/api'
 import NotFoundPage from '@/pages/404'
-import './style.less'
 import AuthLayout from '@/layouts/AuthLayout'
+import '@/styles/pages/auth/sign-in/account-recover/style.less'
 
-const AccountRecover: React.FunctionComponent = (props: any) => {
+const AccountRecover: React.FunctionComponent = () => {
 	const router = useRouter()
 	const [requestOnGoing, setRequestOnGoing] = useState(false)
 	const [form] = Form.useForm()
 
-	if (!props.location.query?.email || !props.location?.query?.recoveryKey) return <NotFoundPage />
+	if (!router.query.email || !router.query.recoveryKey) return <NotFoundPage />
 
 	const onSubmit = ({ password }: { password: string}) => {
 		setRequestOnGoing(true)
 
 		recoverAccountWithKey({
-			email: props.location.query?.email,
-			recoveryKey: props.location.query?.recoveryKey,
+			email: router.query.email,
+			recoveryKey: router.query.recoveryKey,
 			password
 		}).then(() => {
 			message.success('Password updated successfully')

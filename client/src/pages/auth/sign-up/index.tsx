@@ -8,12 +8,11 @@ import Link from 'next/link'
 
 // Local files
 import { signUp } from '@/services/api'
-import { PageHelmet } from '@/components/PageHelmet'
-import RegisterResult from './Result'
-import { Aggrements } from '@/components/Aggrements'
+import { PageHelmet } from '@/components/global/PageHelmet'
+import RegisterResult from './result'
+import { Aggrements } from '@/components/global/Aggrements'
 import AuthLayout from '@/layouts/AuthLayout'
-import './style.less'
-
+import '@/styles/pages/auth/sign-up/style.less'
 
 export declare interface FormDataType {
 	fullName: string

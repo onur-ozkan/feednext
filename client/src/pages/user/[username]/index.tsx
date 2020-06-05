@@ -11,9 +11,9 @@ import { useRouter } from 'next/router'
 // Local files
 import { fetchUserByUsername } from '@/services/api'
 import { API_URL, Guest } from '@/../config/constants'
-import { PageHelmet } from '@/components/PageHelmet'
-import PageLoading from '@/components/PageLoading'
-import { UserTabs } from './UserTabs'
+import { PageHelmet } from '@/components/global/PageHelmet'
+import { UserTabs } from '@/components/pages/user/[username]'
+import PageLoading from '@/components/global/PageLoading'
 import AppLayout from '@/layouts/AppLayout'
 import NotFoundPage from '@/pages/404'
 

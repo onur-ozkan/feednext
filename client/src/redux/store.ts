@@ -1,29 +1,48 @@
 // Other dependencies
-import thunk, { ThunkMiddleware } from 'redux-thunk'
-import { persistStore, persistReducer } from 'redux-persist'
 import { createStore, combineReducers, applyMiddleware } from 'redux'
-import storage from 'redux-persist/lib/storage'
+import { persistReducer, persistStore } from 'redux-persist'
+import { createWrapper } from 'next-redux-wrapper'
+import { composeWithDevTools } from 'redux-devtools-extension'
+import thunkMiddleware from 'redux-thunk'
 
 // Local files
-import { userReducer, settingsReducer, globalReducer } from './Reducers'
-import { AppActions } from './Actions'
-
-const persistConfig = {
-	key: 'root',
-	storage,
-}
+import { userReducer, globalReducer } from './Reducers'
 
 const rootReducer = combineReducers({
 	user: userReducer,
-	settings: settingsReducer,
 	global: globalReducer
 })
 
-const persistedReducer = persistReducer(persistConfig, rootReducer)
+// BINDING MIDDLEWARE
+const bindMiddleware = (middleware) => {
+	if (process.env.NODE_ENV !== 'production') {
+		return composeWithDevTools(applyMiddleware(...middleware))
+	}
+	return applyMiddleware(...middleware)
+}
 
-type AppState = ReturnType<typeof rootReducer>
 
-const store = createStore(persistedReducer, applyMiddleware(thunk as ThunkMiddleware<AppState, AppActions>))
-const persistor = persistStore(store)
+const makeStore = ({ isServer }) => {
+	if (isServer) {
+		//If it's on server side, create a store simply
+		return createStore(rootReducer, bindMiddleware([thunkMiddleware]))
+	} else {
+		//If it's on client side, create a store with a persistability feature
+		const storage = require('redux-persist/lib/storage').default
 
-export { store, persistor }
+		const persistConfig = {
+			key: 'root',
+			storage,
+		}
+
+		const persistedReducer = persistReducer(persistConfig, rootReducer)
+		const store = createStore(
+			persistedReducer,
+			bindMiddleware([thunkMiddleware])
+		)
+		store.__persistor = persistStore(store)
+		return store
+	}
+}
+
+export const wrapper = createWrapper(makeStore)

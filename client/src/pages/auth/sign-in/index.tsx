@@ -10,10 +10,11 @@ import { useRouter } from 'next/router'
 // Local files
 import { SIGN_IN } from '@/redux/Actions/User'
 import { SET_ACCESS_TOKEN } from '@/redux/Actions/Global'
-import { PageHelmet } from '@/components/PageHelmet'
+import { PageHelmet } from '@/components/global/PageHelmet'
 import { signIn } from '@/services/api'
 import AuthLayout from '@/layouts/AuthLayout'
-import './style.less'
+import '@/styles/pages/auth/sign-in/style.less'
+
 
 export declare interface FormDataType {
 	usernameOrEmail: string

@@ -1,5 +1,5 @@
 // Local files
 import { UserActions } from './User'
-import { SettingsActions } from './Settings'
+import { GlobalActions } from './Global'
 
-export type AppActions = UserActions | SettingsActions
+export type AppActions = UserActions | GlobalActions

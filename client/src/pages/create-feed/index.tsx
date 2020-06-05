@@ -8,14 +8,14 @@ import { AxiosError, AxiosResponse } from 'axios'
 
 // Local files
 import { createTitle, createEntry } from '@/services/api'
-import { CreateTitleFormData } from './types'
-import { StepProvider } from './StepContext'
+import { CreateTitleFormData } from '../../@types/pages/create-feed'
+import { StepProvider } from '../../services/step.context.service'
 import { User } from '@/../config/constants'
-import Step1 from './components/Step1'
-import Step2 from './components/Step2'
-import Step3 from './components/Step3'
+import Step1 from '../../components/pages/create-feed/Step1'
+import Step2 from '../../components/pages/create-feed/Step2'
+import Step3 from '../../components/pages/create-feed/Step3'
 import AppLayout from '@/layouts/AppLayout'
-import './style.less'
+import '@/styles/pages/create-feed/style.less'
 
 const CreateFeed: React.FC = () => {
 	const accessToken = useSelector((state: any) => state.global.accessToken)

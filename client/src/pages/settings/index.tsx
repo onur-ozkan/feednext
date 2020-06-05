@@ -7,10 +7,11 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 
 // Local files
-import { AccountSettings } from './account-settings'
-import { PageHelmet } from '@/components/PageHelmet'
+import { AccountSettings } from '../../components/pages/settings/account-settings'
+import { PageHelmet } from '@/components/global/PageHelmet'
 import { User } from '@/../config/constants'
 import AppLayout from '@/layouts/AppLayout'
+import '@/styles/pages/settings/style.less'
 
 const Settings = (): JSX.Element => {
 	const user = useSelector((state: any) => state.user?.attributes.user)

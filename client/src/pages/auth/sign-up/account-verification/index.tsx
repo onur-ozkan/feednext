@@ -4,22 +4,24 @@ import { LoadingOutlined } from '@ant-design/icons'
 
 // Other dependencies
 import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 
 // Local files
-import { PageHelmet } from '@/components/PageHelmet'
+import { PageHelmet } from '@/components/global/PageHelmet'
 import { verifyAccount } from '@/services/api'
 import NotFoundPage from '@/pages/404'
-import './style.less'
 import AuthLayout from '@/layouts/AuthLayout'
+import '@/styles/pages/auth/sign-up/account-verification/style.less'
 
-const AccountVerification: React.FunctionComponent = (props: any) => {
+const AccountVerification: React.FunctionComponent = () => {
+	const router = useRouter()
 	const [isRequestSucceess, setIsRequestSucceess] = useState<boolean | null>(null)
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-	if (!props.location.query?.token) return <NotFoundPage />
+	if (!router.query.token) return <NotFoundPage />
 
 	useEffect(() => {
-		verifyAccount(props.location.query?.token).then(() => {
+		verifyAccount(router.query.token).then(() => {
 			setIsRequestSucceess(true)
 			setTimeout(() => {
 				location.href = '/auth/sign-in'
