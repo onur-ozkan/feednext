@@ -53,4 +53,4 @@ This policy is effective as of 2020-05-27
 
 **Contact Us**
 
-If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact me at contact@feednext.io
+If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact me at admin@feednext.io

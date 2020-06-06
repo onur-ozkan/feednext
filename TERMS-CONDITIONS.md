@@ -24,4 +24,4 @@ These terms and conditions are effective as of 2020-05-27
 
 **Contact Us**
 
-If you have any questions or suggestions about my Terms and Conditions, do not hesitate to contact me at contact@feednext.io
+If you have any questions or suggestions about my Terms and Conditions, do not hesitate to contact me at admin@feednext.io

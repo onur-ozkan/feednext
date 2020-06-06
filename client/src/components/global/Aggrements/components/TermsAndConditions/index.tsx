@@ -76,7 +76,7 @@ export const TermsAndConditions = () => (
 			<strong>Contact Us</strong>
 		</p>
 		<p>
-			If you have any questions or suggestions about my Terms and Conditions, do not hesitate to contact me at <a href="mailto:contact@feednext.io">contact@feednext.io</a>
+			If you have any questions or suggestions about my Terms and Conditions, do not hesitate to contact me at <a href="mailto:admin@feednext.io">admin@feednext.io</a>
 		</p>
 	</div>
 )
