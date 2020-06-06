@@ -97,6 +97,7 @@ const Entry: NextPage<EntryPageInitials> = (props): JSX.Element => {
 						<Avatar
 							onClick={() => router.push('/user/[username]', `/user/${entryData?.attributes.written_by}`)}
 							src={`${API_URL}/v1/user/pp?username=${entryData?.attributes.written_by}`}
+							alt="Author Image"
 						/>
 					}
 					content={<p>{entryData?.attributes.text}</p>}

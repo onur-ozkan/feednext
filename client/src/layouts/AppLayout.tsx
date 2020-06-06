@@ -22,7 +22,7 @@ const AppLayout: React.FC = props => {
 								<picture>
 									<source media="(max-width: 768px)" srcSet={logoSquare} />
 									<source style={{ marginLeft: 15 }} media="(min-width: 767px)" srcSet={logoWide} />
-									<img className="navBarlogo" src={logoWide} />
+									<img className="navBarlogo" src={logoWide} alt="App Logo"/>
 								</picture>
 							</a>
 						</Link>

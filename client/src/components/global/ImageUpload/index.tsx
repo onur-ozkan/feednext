@@ -77,7 +77,7 @@ const ImageUpload = ({ onImageTake, onRemoveImage, defaultUrl }: ComponentProps)
 							alignItems: 'center'
 						}}
 					>
-						<img src={base64} style={{ width: '100%' }} />
+						<img src={base64} style={{ width: '100%' }} alt="Image"/>
 						<Button
 							style={{
 								position: 'absolute',

@@ -117,6 +117,7 @@ export const ConversationList: React.FC<ConversationListProps> = (props): JSX.El
 									shape="circle"
 									size="large"
 									src={`${API_URL}/v1/user/pp?username=${recipientUsername}`}
+									alt="Receiver Image"
 								/>
 							</Badge>
 						}
@@ -134,7 +135,9 @@ export const ConversationList: React.FC<ConversationListProps> = (props): JSX.El
 				<Avatar
 					onClick={() => router.push('/messages/compose')}
 					style={{ cursor: 'pointer' }}
-					shape="square" size="large" src={newMessagePng}
+					shape="square" size="large"
+					src={newMessagePng}
+					alt="New Message Icon"
 				/>
 			</div>
 			<Row className={'people'}>

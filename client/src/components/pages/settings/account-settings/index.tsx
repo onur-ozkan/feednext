@@ -213,7 +213,12 @@ export const AccountSettings = (params: AccountSettingsParams): JSX.Element => {
 			</Col>
 			<Col span={2} />
 			<Col sm={5} xs={24} style={{ textAlign: 'center' }}>
-				<Avatar style={{ marginBottom: 12 }} size={200} src={imageUri} />
+				<Avatar
+					style={{ marginBottom: 12 }}
+					size={200}
+					src={imageUri}
+					alt="User Image"
+				/>
 				<br />
 				<Upload
 					beforeUpload={fileValidation}

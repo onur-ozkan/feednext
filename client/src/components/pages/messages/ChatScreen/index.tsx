@@ -120,7 +120,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = (props): JSX.Element => {
 			return (
 				<List.Item.Meta
 					style={{ marginTop: -25 }}
-					avatar={<Avatar style={{ visibility: 'hidden' }} />}
+					avatar={<Avatar style={{ visibility: 'hidden' }} alt="Sender Image" />}
 					description={<span style={{ color: '#333' }}> {item.text} </span>}
 				/>
 			)
@@ -128,7 +128,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = (props): JSX.Element => {
 
 		return (
 			<List.Item.Meta
-				avatar={<Avatar src={`${API_URL}/v1/user/pp?username=${item.send_by}`} />}
+				avatar={<Avatar src={`${API_URL}/v1/user/pp?username=${item.send_by}`} alt="Sender Image" />}
 				title={
 					<>
 						<Link href={'user/[username]'} as={`user/${item.send_by}`} style={{ fontWeight: 'bold', color: '#212121' }}>

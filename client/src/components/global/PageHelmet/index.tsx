@@ -10,16 +10,9 @@ export const PageHelmet = (props: ComponentProps): JSX.Element => {
 		<>
 			<Head>
 				<title> {props.title} </title>
-				<link rel="icon" type="image/png" href="/static/favicon.ico" />
-				<meta name="application-name" content="Feednext" />
 				<meta name="description" content={props.description} />
-				<meta property="twitter:card" content="summary" />
 				{props.keywords && <meta name="keywords" content={props.keywords} /> }
 				{props.author && <meta name="author" content={props.author} /> }
-				<meta property="twitter:site" content="@feednext" />
-				<meta property="og:type" content="article" />
-				<meta property="og:site_name" content="Feednext" />
-				<meta property="og:locale" content="en_EN" />
 			</Head>
 
 			{props.mediaTitle &&

@@ -66,6 +66,7 @@ const User: NextPage<UserPageInitials> = (props): JSX.Element => {
 								style={{ marginBottom: 10 }}
 								size={115}
 								src={`${API_URL}/v1/user/pp?username=${router.query.username}`}
+								alt="User Image"
 							/>
 							<Typography.Title level={3}> {user.attributes.full_name} </Typography.Title>
 						</div>
