@@ -7,7 +7,7 @@
   "license": "GPLv3",
   "scripts": {
     "start:dev": "next -p 8000",
-    "build": "next build && next export",
+    "build": "next build",
     "start": "next start -p 8000"
   },
   "dependencies": {
