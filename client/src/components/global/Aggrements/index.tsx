@@ -1,13 +1,13 @@
 // Antd dependencies
-import { Modal } from "antd"
+import { Modal } from 'antd'
 
 // Other dependencies
-import React from "react"
+import React from 'react'
 
 // Local files
-import { PrivacyPolicy } from "./components/PrivacyPolicy"
-import { TermsAndConditions } from "./components/TermsAndConditions"
-import { ComponentProps } from "@/@types/components/Aggrements"
+import { PrivacyPolicy } from './components/PrivacyPolicy'
+import { TermsAndConditions } from './components/TermsAndConditions'
+import { ComponentProps } from '@/@types/components'
 
 export const Aggrements: React.FC<ComponentProps> = (props): JSX.Element => (
 	<div style={{ position: 'absolute' }}>

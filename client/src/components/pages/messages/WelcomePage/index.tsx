@@ -1,5 +1,5 @@
 // Antd dependencies
-import { Typography } from "antd"
+import { Typography } from 'antd'
 
 // Other dependencies
 import React from 'react'

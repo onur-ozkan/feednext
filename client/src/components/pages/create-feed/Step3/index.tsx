@@ -7,7 +7,7 @@ import { useRouter } from 'next/router'
 
 // Local files
 import { PageHelmet } from '@/components/global/PageHelmet'
-import { Step3Props } from '@/@types/pages/create-feed'
+import { Step3Props } from '@/@types/pages'
 import StepContext from '@/services/step.context.service'
 import '@/styles/components/StepForm/style.less'
 
@@ -15,8 +15,8 @@ const Step3 = ({ titleSlugForRouting, feedCreatedSuccessfully }: Step3Props): JS
 	const router = useRouter()
 	const { createTitleFormData, readableCategoryValue, firstEntryForm } = useContext(StepContext)
 
-	const onFinish = () => router.push('/')
-	const handleOnPostRoute = () => router.push(`/${titleSlugForRouting}`)
+	const onFinish = () => location.href = '/'
+	const handleOnPostRoute = () => location.href = `/${titleSlugForRouting}`
 
 	const information = (
 		<div className={'information'}>

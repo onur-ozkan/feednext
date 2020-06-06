@@ -7,7 +7,7 @@ import React, { useContext } from 'react'
 // Local files
 import { CategorySelect } from '@/components/global/CategorySelect'
 import { PageHelmet } from '@/components/global/PageHelmet'
-import { Step1Props } from '@/@types/pages/create-feed'
+import { Step1Props } from '@/@types/pages'
 import ImageUpload from '@/components/global/ImageUpload'
 import StepContext from '@/services/step.context.service'
 import '@/styles/components/StepForm/style.less'

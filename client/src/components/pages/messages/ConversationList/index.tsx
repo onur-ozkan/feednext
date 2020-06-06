@@ -132,7 +132,7 @@ export const ConversationList: React.FC<ConversationListProps> = (props): JSX.El
 		<div className={'left'}>
 			<div style={{ textAlign: 'center' }} className={'top'}>
 				<Avatar
-					onClick={() => router.push('/messages/compose')}
+					onClick={() => location.href = '/messages/compose'}
 					style={{ cursor: 'pointer' }}
 					shape="square" size="large" src={newMessagePng}
 				/>

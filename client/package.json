@@ -1,14 +1,14 @@
 {
   "name": "feednext-client",
-  "version": "0.1.0-alpha",
+  "version": "0.2.0-alpha",
   "private": true,
   "description": "Client side of feednext.io",
   "author": "Onur Ozkan",
   "license": "GPLv3",
   "scripts": {
-    "start:dev": "next",
+    "start:dev": "next -p 8000",
     "build": "next build",
-    "start": "next start"
+    "start": "next start -p 8000"
   },
   "dependencies": {
     "@ant-design/compatible": "^1.0.2",

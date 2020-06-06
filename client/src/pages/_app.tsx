@@ -1,6 +1,11 @@
-import { wrapper } from '../redux/store'
+// Other dependencies
+import { Provider } from 'react-redux'
+import { PersistGate } from 'redux-persist/integration/react'
 import App from 'next/app'
 import ReactGA from 'react-ga'
+
+// Local files
+import { store, persistor } from '@/redux/store'
 import '@/styles/antd/global.less'
 
 const AppBase = ({ Component, pageProps }) => {
@@ -9,7 +14,13 @@ const AppBase = ({ Component, pageProps }) => {
 		ReactGA.pageview(window.location.pathname + window.location.search)
 	}
 
-	return <Component {...pageProps} />
+	return (
+		<Provider store={store}>
+			<PersistGate loading={<Component {...pageProps} />} persistor={persistor}>
+				<Component {...pageProps} />
+			</PersistGate>
+		</Provider>
+	)
 }
 
 AppBase.getInitialProps = async (appContext) => {
@@ -17,4 +28,4 @@ AppBase.getInitialProps = async (appContext) => {
 	return { ...appProps }
 }
 
-export default wrapper.withRedux(AppBase)
+export default AppBase

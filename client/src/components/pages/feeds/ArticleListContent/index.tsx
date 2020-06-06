@@ -27,7 +27,7 @@ const ArticleListContent: React.FC<ArticleListContentProps> = ({
 			</div>
 			<div className={'extra'}>
 				<Avatar src={avatar} size="small" />
-				<a style={{ zIndex: 10 }} onClick={() => router.push(`/user/${writtenBy}`)}>
+				<a style={{ zIndex: 10 }} onClick={() => location.href = `/user/${writtenBy}`}>
 					{writtenBy}
 				</a> posted at  {format(parseISO(createdAt), 'dd LLL yyyy (p O)')}
 			</div>

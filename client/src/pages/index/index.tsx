@@ -1,15 +1,5 @@
 // Antd dependencies
-import {
-	Button,
-	Card,
-	List,
-	message,
-	BackTop,
-	Row,
-	Col,
-	Typography,
-	Modal
-} from 'antd'
+import { Button, Card, List, message, BackTop, Row, Col, Typography, Modal } from 'antd'
 import { LoadingOutlined, ArrowUpOutlined } from '@ant-design/icons'
 
 // Other dependencies
@@ -25,25 +15,37 @@ import { PageHelmet } from '@/components/global/PageHelmet'
 import { AdditionalBlock } from '@/components/pages/feeds/AdditionalBlock'
 import { TrendingCategoriesResponseData } from '@/@types/api'
 import { FeedList } from '@/@types/pages/feeds'
+import { getFeedsPageInitialValues } from '@/services/initializations'
+import { FeedsPageInitials } from '@/@types/initializations'
 import ArticleListContent from '@/components/pages/feeds/ArticleListContent'
 import FlowHeader from '@/components/pages/feeds/FlowHeader'
 import AppLayout from '@/layouts/AppLayout'
 
-const Feeds: NextPage = (): JSX.Element => {
+const Feeds: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 	const [displayFilterModal, setDisplayFilterModal] = useState(false)
-	const [trendingCategories, setTrendingCategories] = useState<TrendingCategoriesResponseData[] | undefined>(undefined)
+	const [trendingCategories, setTrendingCategories] = useState<TrendingCategoriesResponseData[]>(props.trendingCategories)
 	const [categoryFilter, setCategoryFilter] = useState<string | undefined>(undefined)
-	const [feedList, setFeed] = useState<FeedList[]>([])
+	const [feedList, setFeed] = useState<FeedList[]>(props.feedList)
 	const [sortBy, setSortBy] = useState<'hot' | 'top' | undefined>(undefined)
 	const [skipValueForPagination, setSkipValueForPagination] = useState(0)
-	const [canLoadMore, setCanLoadMore] = useState(false)
-	const [isLoading, setIsLoading] = useState(true)
+	const [canLoadMore, setCanLoadMore] = useState(props.canLoadMore)
+	const [isJustInitialized, setIsJustInitialized] = useState(true)
+	const [isLoading, setIsLoading] = useState(false)
 	const [isFetching, setIsFetching] = useState(false)
 
-	useEffect(() => {
+	const handleCategoryFilterSet = (id) => {
 		setFeed([])
 		setSkipValueForPagination(0)
-	}, [categoryFilter, sortBy])
+		setIsJustInitialized(false)
+		setCategoryFilter(id)
+	}
+
+	const handleSortBySet = (val) => {
+		setFeed([])
+		setSkipValueForPagination(0)
+		setIsJustInitialized(false)
+		setSortBy(val)
+	}
 
 	const handleDataFetching = async (): Promise<void> => {
 		if (!trendingCategories) {
@@ -138,9 +140,9 @@ const Feeds: NextPage = (): JSX.Element => {
 											href={item.href}
 											style={{ cursor: 'pointer' }}
 										>
-											<Typography.Text style={{ fontSize: 17 }}>
+											<h3>
 												{item.name}
-											</Typography.Text>
+											</h3>
 										</a>
 
 									</Col>
@@ -153,7 +155,7 @@ const Feeds: NextPage = (): JSX.Element => {
 									alt="Title Image"
 								/>
 							}
-							description={item.categoryName.toUpperCase()}
+							description={<p className={'custom-tag'}>{item.categoryName.toUpperCase()}</p>}
 						/>
 						{item.featuredEntry ?
 							<ArticleListContent data={item.featuredEntry} />
@@ -186,7 +188,7 @@ const Feeds: NextPage = (): JSX.Element => {
 									{category.name.length > 17 ? `${category.name.substring(0, 15).toUpperCase()}..` : category.name.toUpperCase()}
 								</Typography.Text>
 							</Col>
-							<Button style={{ position: 'absolute', right: 15 }} onClick={(): void => setCategoryFilter(category.id)} type="primary" key={category.id}>
+							<Button style={{ position: 'absolute', right: 15 }} onClick={(): void => handleCategoryFilterSet(category.id)} type="primary" key={category.id}>
 								<Typography.Text
 									style={{ color: 'white' }}
 									strong
@@ -202,12 +204,13 @@ const Feeds: NextPage = (): JSX.Element => {
 	}
 
 	useEffect(() => {
-		handleDataFetching()
-	}, [skipValueForPagination, categoryFilter, sortBy])
+		if (!isJustInitialized) handleDataFetching()
+	}, [skipValueForPagination, categoryFilter, sortBy, isJustInitialized])
 
 	const handleFetchMore = (): void => {
 		setIsFetching(true)
 		setSkipValueForPagination(skipValueForPagination + 10)
+		setIsJustInitialized(false)
 	}
 
 	const loadMore = canLoadMore && (
@@ -235,7 +238,7 @@ const Feeds: NextPage = (): JSX.Element => {
 		>
 			<CategorySelect
 				multiple
-				onSelect={(id): void => setCategoryFilter(String(id))}
+				onSelect={(id): void => handleCategoryFilterSet(String(id))}
 				style={{ width: '100%' }}
 				placeHolder="All Categories"
 				allowClear
@@ -264,8 +267,8 @@ const Feeds: NextPage = (): JSX.Element => {
 					>
 						<FlowHeader
 							openFilterModal={(): void => setDisplayFilterModal(true)}
-							setSortBy={(val: 'top' | 'hot' | undefined): void => setSortBy(val)}
-							resetCategoryFilter={(): void => setCategoryFilter(undefined)}
+							setSortBy={(val: 'top' | 'hot' | undefined): void => handleSortBySet(val)}
+							resetCategoryFilter={(): void => handleCategoryFilterSet(undefined)}
 							sortBy={sortBy}
 						/>
 						{handleModalScreen()}
@@ -283,5 +286,7 @@ const Feeds: NextPage = (): JSX.Element => {
 		</AppLayout>
 	)
 }
+
+Feeds.getInitialProps = async () => await getFeedsPageInitialValues()
 
 export default Feeds

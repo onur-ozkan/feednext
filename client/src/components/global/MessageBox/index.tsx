@@ -4,14 +4,12 @@ import { InboxOutlined } from '@ant-design/icons'
 
 // Other dependencies
 import React from 'react'
-import { useRouter } from 'next/router'
 
 // Local files
 import './style.less'
 
 const MessageBox = ({ count }: { count: number }): JSX.Element => {
-	const router = useRouter()
-	const handleOnClick = () => router.push('/messages')
+	const handleOnClick = () => location.href = '/messages'
 	return (
 		<div className={'messageButton'}>
 			<Badge

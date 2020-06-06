@@ -1,6 +1,6 @@
 // Local files
-import { TitleResponseData, CategoryResponseData } from "@/@types/api"
-import { EntryAttributes } from "@/@types/pages"
+import { TitleResponseData, CategoryResponseData } from '@/@types/api'
+import { EntryAttributes } from '@/@types/pages'
 
 export interface FeedPageInitials {
     titleData: TitleResponseData,

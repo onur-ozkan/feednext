@@ -10,8 +10,8 @@ import { useRouter } from 'next/router'
 // Local files
 import { SET_ACCESS_TOKEN, SET_UNREAD_MESSAGES_INFO, INCREASE_UNREAD_MESSAGE_VALUE, ADD_ITEM_TO_MESSAGES_INFO } from '@/redux/Actions/Global'
 import { checkAccessToken, refreshToken, fetchUnreadMessageInfo } from '@/services/api'
-import { handleSessionExpiration } from '@/services/utils'
-import { socketConnection } from '@/services/socket'
+import { handleSessionExpiration } from '@/services/utils.service'
+import { socketConnection } from '@/services/socket.service'
 import { User } from '@/../config/constants'
 
 const RouteHandler = (props: { authority: number, children: React.ReactNode }) => {
@@ -99,17 +99,17 @@ const RouteHandler = (props: { authority: number, children: React.ReactNode }) =
 	}, [lastMessageFromSocket])
 
 	if (process.browser && !user && props.authority >= User && router.route !== '/') {
-		router.push('/auth/sign-in')
+		router.replace('/auth/sign-in')
 	}
 
-	if (user && props.authority > user.attributes.user.role) {
+	else if (user && props.authority > user.attributes.user.role) {
 		return (
 			<Result
 				status="403"
 				title="403"
 				subTitle="Sorry, your account role doesnt have access to this page"
 				extra={
-					<Button type="primary" onClick={() => router.push('/')}>
+					<Button type="primary" onClick={() => location.href = '/'}>
 						Back Home
 					</Button>
 				}

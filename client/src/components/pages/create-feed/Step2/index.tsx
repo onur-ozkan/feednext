@@ -8,7 +8,7 @@ import React, { useContext } from 'react'
 
 // Local files
 import { PageHelmet } from '@/components/global/PageHelmet'
-import { Step2Props } from '@/@types/pages/create-feed'
+import { Step2Props } from '@/@types/pages'
 import StepContext from '@/services/step.context.service'
 import '@/styles/components/StepForm/style.less'
 

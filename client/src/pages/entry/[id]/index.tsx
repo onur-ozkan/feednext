@@ -3,71 +3,42 @@ import { Comment, Tag, Avatar, Tooltip, PageHeader, Row, Col, Rate, Divider, Typ
 import { ArrowUpOutlined } from '@ant-design/icons'
 
 // Other dependencies
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 
 // Local files
-import { fetchEntryByEntryId, fetchTitle, getAverageTitleRate, fetchOneCategory } from '@/services/api'
 import { API_URL, Guest } from '@/../config/constants'
 import { TitleResponseData, EntryResponseData } from '@/@types/api'
 import { PageHelmet } from '@/components/global/PageHelmet'
-import PageLoading from '@/components/global/PageLoading'
+import { getEntryPageInitialValues } from '@/services/initializations/[entry]'
+import { NextPage } from 'next'
+import { EntryPageInitials } from '@/@types/initializations'
 import NotFoundPage from '../../404'
 import AppLayout from '@/layouts/AppLayout'
 
-const Entry = (): JSX.Element => {
+const Entry: NextPage<EntryPageInitials> = (props): JSX.Element => {
 	const router = useRouter()
 
-	const [title, setTitle] = useState<TitleResponseData | undefined>(undefined)
-	const [categoryName, setCategoryName] = useState<string | undefined>(undefined)
-	const [averageTitleRate, setAverageTitleRate] = useState<number | undefined>(undefined)
-	const [entryData, setEntryData] = useState<EntryResponseData | undefined>(undefined)
-	const [isFetchingSuccess, setIsFetchingSuccess] = useState<boolean | undefined>(undefined)
+	const [title, setTitle] = useState<TitleResponseData>(props.title)
+	const [categoryName, setCategoryName] = useState<string>(props.categoryName)
+	const [averageTitleRate, setAverageTitleRate] = useState<number>(props.averageTitleRate)
+	const [entryData, setEntryData] = useState<EntryResponseData>(props.entryData)
 
-	useEffect(() => {
-		if (title && entryData && categoryName) setIsFetchingSuccess(true)
-	}, [averageTitleRate, title, entryData, categoryName])
 
-	useEffect(() => {
-		if (router.query.id) {
-			// Fetch entry Data
-			fetchEntryByEntryId(router.query.id)
-				.then(fRes => {
-					setEntryData(fRes.data)
-					// Fetch title Data
-					fetchTitle(fRes.data.attributes.title_id, 'id')
-						.then(sRes => {
-							setTitle(sRes.data)
-							// Get category
-							fetchOneCategory(sRes.data.attributes.category_id).then(({ data }) => {
-								setCategoryName(data.attributes.name)
-							})
-							// Fetch average rate of title
-							getAverageTitleRate(sRes.data.attributes.id)
-								.then(trRes => setAverageTitleRate(trRes.data.attributes.rate || 0))
-								.catch(error => setIsFetchingSuccess(false))
-						})
-						.catch(error => setIsFetchingSuccess(false))
-				})
-				.catch(error => setIsFetchingSuccess(false))
-		}
-	}, [router.query.id])
-
-	if (isFetchingSuccess === undefined) return <PageLoading />
-
-	if (!!!isFetchingSuccess) return <NotFoundPage />
+	if (!title) return <NotFoundPage />
 
 	const handleHeaderTitleSection = (): JSX.Element => (
 		<>
-			<Tag color="blue"> {categoryName} </Tag>
+			<Tag color="#6ec49a"> {categoryName} </Tag>
 			<Row>
 				<Col style={{ margin: '0px 5px -15px 0px' }}>
-					<h1
-						style={{ cursor: 'pointer' }}
-						onClick={() => router.push(`/${title?.attributes.slug}`)}
+					<Typography.Title
+						level={2}
+						style={{ cursor: 'pointer', whiteSpace: 'pre-wrap' }}
+						onClick={() => location.href = `/${title?.attributes.slug}`}
 					>
 						{title?.attributes.name}
-					</h1>
+					</Typography.Title>
 				</Col>
 				<Col>
 					<Rate disabled value={averageTitleRate} />
@@ -78,7 +49,7 @@ const Entry = (): JSX.Element => {
 
 	const handleCommentVotes = (): JSX.Element[] => [
 		<span style={{ padding: '2px 5px 2px 5px', fontSize: 14, opacity: 1, cursor: 'default' }} key="comment-basic-like">
-			<Tooltip title="Up Vote">
+			<Tooltip title="Votes">
 				<ArrowUpOutlined />
 			</Tooltip>
 			<span style={{ color: '#818181', fontSize: 15, marginLeft: 2 }} className="comment-action">
@@ -105,13 +76,18 @@ const Entry = (): JSX.Element => {
 				keywords={entryData?.attributes.text.split(' ').join(', ')}
 			/>
 			<PageHeader title={handleHeaderTitleSection()} style={{ backgroundColor: 'white' }} className="site-page-header">
+				<img
+					src={`${API_URL}/v1/title/${title.attributes.id}/image`}
+					width={150}
+					alt="Title Image"
+				/>
 				<Divider />
 				<Comment
 					actions={handleCommentVotes()}
 					datetime={handleCommentTime()}
 					author={
 						<Typography.Text
-							onClick={() => router.push(`/user/${entryData?.attributes.written_by}`)}
+							onClick={() => location.href = `/user/${entryData?.attributes.written_by}`}
 							style={{ cursor: 'pointer', fontSize: 15, color: '#414141' }}
 						>
 							{entryData?.attributes.written_by}
@@ -119,7 +95,7 @@ const Entry = (): JSX.Element => {
 					}
 					avatar={
 						<Avatar
-							onClick={() => router.push(`/user/${entryData?.attributes.written_by}`)}
+							onClick={() => location.href = `/user/${entryData?.attributes.written_by}`}
 							src={`${API_URL}/v1/user/pp?username=${entryData?.attributes.written_by}`}
 						/>
 					}
@@ -129,5 +105,7 @@ const Entry = (): JSX.Element => {
 		</AppLayout>
 	)
 }
+
+Entry.getInitialProps = async (context: any) => await getEntryPageInitialValues(context.query.id)
 
 export default Entry

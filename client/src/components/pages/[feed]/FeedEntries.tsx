@@ -33,7 +33,7 @@ import { useRouter } from 'next/router'
 import { voteEntry, undoEntryVote, updateEntry, deleteEntry } from '@/services/api'
 import { SignModal } from '@/components/global/SignModal'
 import { SuperAdmin, API_URL } from '@/../config/constants'
-import { FeedEntriesProps } from '@/@types/pages/[feed]'
+import { FeedEntriesProps } from '@/@types/pages'
 import AddEntry from './AddEntry'
 
 const FeedEntries: React.FC<FeedEntriesProps> = (props): JSX.Element => {
@@ -65,7 +65,7 @@ const FeedEntries: React.FC<FeedEntriesProps> = (props): JSX.Element => {
 		},
 	}
 
-	const handleEntryRouting = (entryId: string) => router.push(`/entry/${entryId}`)
+	const handleEntryRouting = (entryId: string) => location.href = `/entry/${entryId}`
 
 	const isEntryAlreadyVoted = (votes: any, from: 'up' | 'down'): boolean => {
 		if (!userState) return false
@@ -254,7 +254,7 @@ const FeedEntries: React.FC<FeedEntriesProps> = (props): JSX.Element => {
 							actions={handleEntryActions(item)}
 							author={
 								<Typography.Text
-									onClick={() => router.push(`/user/${item.written_by}`)}
+									onClick={() => location.href = `/user/${item.written_by}`}
 									style={{ cursor: 'pointer', fontSize: 15, color: '#414141' }}
 								>
 									{item.written_by}
@@ -262,7 +262,7 @@ const FeedEntries: React.FC<FeedEntriesProps> = (props): JSX.Element => {
 							}
 							avatar={
 								<Avatar
-									onClick={() => router.push(`/user/${item.written_by}`)}
+									onClick={() => location.href = `/user/${item.written_by}`}
 									src={`${API_URL}/v1/user/pp?username=${item.written_by}`}
 								/>
 							}

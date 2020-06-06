@@ -24,7 +24,7 @@ const EmailConfirmation: React.FunctionComponent = () => {
 	useEffect(() => {
 		verifyUpdatedEmail(router.query.token).then(async () => {
 			setIsRequestSucceess(true)
-			// await persistor.purge()
+			await persistor.purge()
 			setTimeout(() => {
 				location.href = '/auth/sign-in'
 			}, 2000)

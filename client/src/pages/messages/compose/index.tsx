@@ -11,19 +11,19 @@ import { useRouter } from 'next/router'
 import { searchUser, fetchUserByUsername } from '@/services/api'
 import { socketConnection } from '@/services/socket.service'
 import { PageHelmet } from '@/components/global/PageHelmet'
-import { ComponentProps, FormDataType } from '@/@types/pages/messages/compose'
+import { ComponentProps, FormDataType } from '@/@types/pages'
 import { API_URL, User } from '@/../config/constants'
 import AppLayout from '@/layouts/AppLayout'
 
 
-const Compose: React.FC<ComponentProps> = (): JSX.Element => {
+const Compose: React.FC<ComponentProps> = (props): JSX.Element => {
 	const globalState = useSelector((state: any) => state.global)
 	const router = useRouter()
 
 	const wss = socketConnection(globalState.accessToken)
 	const [form] = Form.useForm()
 
-	const [userFilterInput, setUserFilterInput] = useState<string>('')
+	const [userFilterInput, setUserFilterInput] = useState<string>(router.query.username || '')
 	const [autoCompleteData, setAutoCompleteData] = useState(undefined)
 	const [messageForm, setMessageForm] = useState<{ to: string | null, body: string | null }>({
 		to: null,

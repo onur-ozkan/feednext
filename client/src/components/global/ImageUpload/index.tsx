@@ -4,7 +4,7 @@ import { LoadingOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons
 
 // Other dependencies
 import React, { useState } from 'react'
-import { ComponentProps } from '@/@types/components/ImageUpload'
+import { ComponentProps } from '@/@types/components'
 
 const ImageUpload = ({ onImageTake, onRemoveImage, defaultUrl }: ComponentProps): JSX.Element => {
 	const [isImageLoading, setIsImageLoading] = useState(false)

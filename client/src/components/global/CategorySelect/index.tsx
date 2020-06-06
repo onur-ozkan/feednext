@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react'
 
 // Local files
 import { fetchMainCategories, fetchChildCategories } from '@/services/api'
-import { CategoryData, ComponentProps } from '@/@types/components/CategorySelect'
+import { CategoryData, ComponentProps } from '@/@types/components'
 import './style.less'
 
 export const CategorySelect = (props: ComponentProps): JSX.Element => {

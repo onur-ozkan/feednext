@@ -1,48 +1,28 @@
 // Other dependencies
+import thunk, { ThunkMiddleware } from 'redux-thunk'
+import { persistStore, persistReducer } from 'redux-persist'
 import { createStore, combineReducers, applyMiddleware } from 'redux'
-import { persistReducer, persistStore } from 'redux-persist'
-import { createWrapper } from 'next-redux-wrapper'
-import { composeWithDevTools } from 'redux-devtools-extension'
-import thunkMiddleware from 'redux-thunk'
+import storage from 'redux-persist/lib/storage'
 
 // Local files
 import { userReducer, globalReducer } from './Reducers'
+import { AppActions } from './Actions'
+
+const persistConfig = {
+	key: 'root',
+	storage,
+}
 
 const rootReducer = combineReducers({
 	user: userReducer,
 	global: globalReducer
 })
 
-// BINDING MIDDLEWARE
-const bindMiddleware = (middleware) => {
-	if (process.env.NODE_ENV !== 'production') {
-		return composeWithDevTools(applyMiddleware(...middleware))
-	}
-	return applyMiddleware(...middleware)
-}
+const persistedReducer = persistReducer(persistConfig, rootReducer)
 
+type AppState = ReturnType<typeof rootReducer>
 
-const makeStore = ({ isServer }) => {
-	if (isServer) {
-		//If it's on server side, create a store simply
-		return createStore(rootReducer, bindMiddleware([thunkMiddleware]))
-	} else {
-		//If it's on client side, create a store with a persistability feature
-		const storage = require('redux-persist/lib/storage').default
+const store = createStore(persistedReducer, applyMiddleware(thunk as ThunkMiddleware<AppState, AppActions>))
+const persistor = persistStore(store)
 
-		const persistConfig = {
-			key: 'root',
-			storage,
-		}
-
-		const persistedReducer = persistReducer(persistConfig, rootReducer)
-		const store = createStore(
-			persistedReducer,
-			bindMiddleware([thunkMiddleware])
-		)
-		store.__persistor = persistStore(store)
-		return store
-	}
-}
-
-export const wrapper = createWrapper(makeStore)
+export { store, persistor }

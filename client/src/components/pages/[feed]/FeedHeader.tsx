@@ -31,7 +31,7 @@ import { useRouter } from 'next/router'
 import { getUserRateOfTitle, rateTitle, deleteTitle } from '@/services/api'
 import { SignModal } from '@/components/global/SignModal'
 import { API_URL } from '@/../config/constants'
-import { FeedHeaderProps } from '@/@types/pages/[feed]'
+import { FeedHeaderProps } from '@/@types/pages'
 import '@/styles/components/[feed]/style.less'
 
 const FeedHeader: React.FC<FeedHeaderProps> = (props): JSX.Element => {
@@ -151,7 +151,7 @@ const FeedHeader: React.FC<FeedHeaderProps> = (props): JSX.Element => {
 									cursor: item.href ? 'pointer' : 'normal'
 								}}
 								onClick={()  => {
-									if (item.href) router.push(item.href)
+									if (item.href) location.href = item.href
 								}}
 							>
 								<Statistic
@@ -171,7 +171,7 @@ const FeedHeader: React.FC<FeedHeaderProps> = (props): JSX.Element => {
 		deleteTitle(accessToken, titleData.attributes.id)
 			.then(_res => {
 				message.success('Title successfully deleted')
-				router.push('/')
+				location.href = '/'
 			})
 			.catch(error => message.error(error.response.data.message))
 	}
@@ -185,7 +185,7 @@ const FeedHeader: React.FC<FeedHeaderProps> = (props): JSX.Element => {
 			<PageHeader
 				title={
 					<>
-						<Tag color="blue">{categoryData.attributes.name}</Tag>
+						<Tag color="#6ec49a">{categoryData.attributes.name}</Tag>
 						<Row>
 							<Col style={{ margin: '0px 5px -15px 0px' }}>
 								<Typography.Title level={2} style={{ whiteSpace: 'pre-wrap' }}>

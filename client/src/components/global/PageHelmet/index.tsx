@@ -3,7 +3,7 @@ import React from 'react'
 import Head from 'next/head'
 
 // Local files
-import { ComponentProps } from '@/@types/components/PageHelmet'
+import { ComponentProps } from '@/@types/components'
 
 export const PageHelmet = (props: ComponentProps): JSX.Element => {
 	return (

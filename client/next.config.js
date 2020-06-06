@@ -1,34 +1,38 @@
-/* eslint-disable */
+const webpack = require('webpack')
+const withCSS = require('@zeit/next-css')
 const withLess = require('@zeit/next-less')
 const lessToJS = require('less-vars-to-js')
 const fs = require('fs')
 const path = require('path')
+const themeVariables = lessToJS(fs.readFileSync(path.resolve(__dirname, './src/styles/antd/override.less'), 'utf8'))
+require('dotenv').config()
 
-const themeVariables = lessToJS(fs.readFileSync(path.resolve(__dirname, './src/override.less'), 'utf8'))
-
-module.exports = withLess({
+module.exports = withCSS(withLess({
+	typescript: {
+		ignoreBuildErrors: true
+	},
 	lessLoaderOptions: {
 		javascriptEnabled: true,
 		modifyVars: themeVariables // make your antd custom effective
 	},
-	experimental: {
-		css: true
-	},
 	webpack: (config, { isServer }) => {
+		config.plugins.push(
+			new webpack.EnvironmentPlugin(process.env)
+		)
 
 		config.module.rules.push({
-            test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
-            use: {
-                loader: 'url-loader',
-                options: {
-                    limit: 100000
-                }
-            }
+			test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
+			use: {
+				loader: 'url-loader',
+				options: {
+					limit: 100000
+				}
+			}
 		})
 
 		if (isServer) {
 			const antStyles = /antd\/.*?\/style.*?/
-			const origExternals = [ ...config.externals ]
+			const origExternals = [...config.externals]
 			config.externals = [
 				(context, request, callback) => {
 					if (request.match(antStyles)) return callback()
@@ -48,4 +52,4 @@ module.exports = withLess({
 		}
 		return config
 	}
-})
+}))

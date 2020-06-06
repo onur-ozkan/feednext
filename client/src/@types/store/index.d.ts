@@ -1,5 +1,3 @@
-import { IAppTheme } from '@/../config/themes'
-
 export interface GlobalState {
 	accessToken: string,
 	unreadMessageInfo: {

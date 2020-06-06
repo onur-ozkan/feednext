@@ -6,7 +6,7 @@ import { FilterFilled, StarFilled, RiseOutlined, FireFilled, UndoOutlined } from
 import React from 'react'
 
 // Local files
-import { FlowHeaderProps } from '../../../../@types/pages/feeds'
+import { FlowHeaderProps } from '@/@types/pages'
 
 const FlowHeader: React.FC<FlowHeaderProps> = (props): JSX.Element => {
 

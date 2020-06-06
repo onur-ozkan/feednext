@@ -5,10 +5,10 @@ import { Row, Col, Layout, Menu } from 'antd'
 import React from 'react'
 
 // Local files
-import RightContent from '@/components/GlobalHeader/RightContent'
+import RightContent from '@/components/global/GlobalHeader/RightContent'
 import RouteHandler from '@/middleware/RouteHandler'
-import logoWide from '../assets/logo-wide.svg'
-import logoSquare from '../assets/logo-square.svg'
+import logoWide from '@/assets/logo-wide.svg'
+import logoSquare from '@/assets/logo-square.svg'
 
 const AppLayout: React.FC = props => {
 	return (

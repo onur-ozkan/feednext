@@ -4,13 +4,11 @@ import { CopyOutlined, EditOutlined, LoadingOutlined, UpOutlined, DownOutlined }
 
 // Other dependencies
 import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
 
 // Local files
 import { fetchAllFeeds, fetchAllEntriesByAuthor, fetchUserVotes } from '@/services/api'
 
 export const UserTabs: React.FC<{username: string}> = (props) => {
-	const router = useRouter()
 	const [currentTab, setCurrentTab] = useState('feeds')
 	const [totalItems, setTotalItems] = useState<number>(0)
 	const [tabView, setTabView] = useState<JSX.Element>(
@@ -99,7 +97,7 @@ export const UserTabs: React.FC<{username: string}> = (props) => {
 						</Typography.Text>
 					}
 					avatar={
-						<Button onClick={() => router.push(`/${title.slug}`)} size="small" type="primary">
+						<Button onClick={() => location.href = `/${title.slug}`} size="small" type="primary">
 							Open
 						</Button>
 					}
@@ -139,7 +137,7 @@ export const UserTabs: React.FC<{username: string}> = (props) => {
 						</Typography.Text>
 					}
 					avatar={
-						<Button onClick={() => router.push(`/entry/${entry.id}`)} size="small" type="primary">
+						<Button onClick={() => location.href = `/entry/${entry.id}`} size="small" type="primary">
 							Open
 						</Button>
 					}
@@ -182,7 +180,7 @@ export const UserTabs: React.FC<{username: string}> = (props) => {
 						</Typography.Text>
 					}
 					avatar={
-						<Button onClick={() => router.push(`/entry/${entry.id}`)} size="small" type="primary">
+						<Button onClick={() => location.href = `/entry/${entry.id}`} size="small" type="primary">
 							Open
 						</Button>
 					}

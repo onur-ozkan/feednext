@@ -19,18 +19,18 @@ const AvatarDropdown = () => {
 	const user = useSelector((state: any) => state.user?.attributes.user)
 
 	const handleSignOut = async (): Promise<void> => {
-		// await persistor.purge()
+		await persistor.purge()
 		location.reload()
 	}
 
 	const menuHeaderDropdown = (
 		<Menu className={'menu'}>
-			<Menu.Item onClick={() => router.push(`/user/${user.username}`)} key="/">
+			<Menu.Item onClick={() => location.href = `/user/${user.username}`} key="/">
 				<UserOutlined />
 				Profile
 			</Menu.Item>
 
-			<Menu.Item onClick={() => router.push('/settings')} key="/settings">
+			<Menu.Item onClick={() => location.href = '/settings'} key="/settings">
 				<SettingOutlined />
 				Settings
 			</Menu.Item>

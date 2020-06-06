@@ -6,7 +6,7 @@ import React from 'react'
 
 // Local files
 import { LoginForm } from './components/LoginForm'
-import { ComponentProps } from '@/@types/components/SignModal'
+import { ComponentProps } from '@/@types/components'
 import './style.less'
 
 export const SignModal = (props: ComponentProps) => (
