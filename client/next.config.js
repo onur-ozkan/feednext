@@ -5,7 +5,6 @@ const lessToJS = require('less-vars-to-js')
 const fs = require('fs')
 const path = require('path')
 const themeVariables = lessToJS(fs.readFileSync(path.resolve(__dirname, './src/styles/antd/override.less'), 'utf8'))
-require('dotenv').config()
 
 module.exports = withCSS(withLess({
 	typescript: {
