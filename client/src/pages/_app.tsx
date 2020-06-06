@@ -3,10 +3,18 @@ import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import App from 'next/app'
 import ReactGA from 'react-ga'
+import Router from 'next/router'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 
 // Local files
 import { store, persistor } from '@/redux/store'
 import '@/styles/antd/global.less'
+
+NProgress.configure({ showSpinner: false })
+Router.events.on('routeChangeStart', () => NProgress.start())
+Router.events.on('routeChangeComplete', () => NProgress.done())
+Router.events.on('routeChangeError', () => NProgress.done())
 
 const AppBase = ({ Component, pageProps }) => {
 	if (process.browser) {
