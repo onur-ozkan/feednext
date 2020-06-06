@@ -100,7 +100,7 @@ export const UserTabs: React.FC<{username: string}> = (props) => {
 						</Typography.Text>
 					}
 					avatar={
-						<Button onClick={() => router.push(`/${title.slug}`, `/${title.slug}`)} size="small" type="primary">
+						<Button onClick={() => router.push('/[feed]', `/${title.slug}`)} size="small" type="primary">
 							Open
 						</Button>
 					}
@@ -140,7 +140,7 @@ export const UserTabs: React.FC<{username: string}> = (props) => {
 						</Typography.Text>
 					}
 					avatar={
-						<Button onClick={() => router.push(`/entry/${entry.id}`, `/entry/${entry.id}`)} size="small" type="primary">
+						<Button onClick={() => router.push('/entry/[id]', `/entry/${entry.id}`)} size="small" type="primary">
 							Open
 						</Button>
 					}
@@ -183,7 +183,7 @@ export const UserTabs: React.FC<{username: string}> = (props) => {
 						</Typography.Text>
 					}
 					avatar={
-						<Button onClick={() => router.push(`/entry/${entry.id}`, `/entry/${entry.id}`)} size="small" type="primary">
+						<Button onClick={() => router.push('/entry/[id]', `/entry/${entry.id}`)} size="small" type="primary">
 							Open
 						</Button>
 					}

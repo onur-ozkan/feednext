@@ -65,7 +65,7 @@ const FeedEntries: React.FC<FeedEntriesProps> = (props): JSX.Element => {
 		},
 	}
 
-	const handleEntryRouting = (entryId: string) => router.push(`/entry/${entryId}`, `/entry/${entryId}`)
+	const handleEntryRouting = (entryId: string) => router.push(`/entry/[id]`, `/entry/${entryId}`)
 
 	const isEntryAlreadyVoted = (votes: any, from: 'up' | 'down'): boolean => {
 		if (!userState) return false
@@ -254,7 +254,7 @@ const FeedEntries: React.FC<FeedEntriesProps> = (props): JSX.Element => {
 							actions={handleEntryActions(item)}
 							author={
 								<Typography.Text
-									onClick={() => router.push(`/user/${item.written_by}`, `/user/${item.written_by}`)}
+									onClick={() => router.push('/user/[username]', `/user/${item.written_by}`)}
 									style={{ cursor: 'pointer', fontSize: 15, color: '#414141' }}
 								>
 									{item.written_by}
@@ -262,7 +262,7 @@ const FeedEntries: React.FC<FeedEntriesProps> = (props): JSX.Element => {
 							}
 							avatar={
 								<Avatar
-									onClick={() => router.push(`/user/${item.written_by}`, `/user/${item.written_by}`)}
+									onClick={() => router.push('/user/[username]', `/user/${item.written_by}`)}
 									src={`${API_URL}/v1/user/pp?username=${item.written_by}`}
 								/>
 							}

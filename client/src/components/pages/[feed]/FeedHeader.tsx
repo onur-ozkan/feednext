@@ -151,7 +151,7 @@ const FeedHeader: React.FC<FeedHeaderProps> = (props): JSX.Element => {
 									cursor: item.href ? 'pointer' : 'normal'
 								}}
 								onClick={()  => {
-									if (item.href) router.push(item.href, item.href)
+									if (item.href) router.replace('/user/[username]', item.href)
 								}}
 							>
 								<Statistic

@@ -79,7 +79,7 @@ const Feed: NextPage<FeedPageInitials> = (props): JSX.Element => {
 
 		await updateTitle(globalState.accessToken, title.attributes.id, updatePayload)
 			.then((_res: { data: { attributes: { slug: any } } }) => {
-				router.push(`/${_res.data.attributes.slug}`, `/${_res.data.attributes.slug}`)
+				router.push('/[feed]', `/${_res.data.attributes.slug}`)
 			})
 			.catch((error: any) => message.error(error.response.data.message))
 	}

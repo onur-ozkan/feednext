@@ -6,6 +6,7 @@ import { LoadingOutlined, ArrowUpOutlined } from '@ant-design/icons'
 import React, { useEffect, useState } from 'react'
 import { AxiosError, AxiosResponse } from 'axios'
 import { NextPage } from 'next'
+import Link from 'next/link'
 
 // Local files
 import { fetchAllFeeds, fetchFeaturedEntryByTitleId, fetchTrendingCategories, fetchOneCategory } from '@/services/api'
@@ -136,15 +137,13 @@ const Feeds: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 							title={
 								<Row>
 									<Col>
-										<a
-											href={item.href}
-											style={{ cursor: 'pointer' }}
-										>
-											<h3>
-												{item.name}
-											</h3>
-										</a>
-
+										<Link href={'/[feed]'} as={item.href}>
+											<a style={{ cursor: 'pointer' }} >
+												<h3>
+													{item.name}
+												</h3>
+											</a>
+										</Link>
 									</Col>
 								</Row>
 							}
