@@ -105,10 +105,10 @@
   npm run start:dev
   ```
 
-  If you follow the Osx & Windows way for running API, then apply following changes in .env.development:
+  If you follow the Osx & Windows way for running API, then apply following changes in config/constants.ts:
   ```
-  API_ADDRESS=http://localhost:3000/api
-  SOCKET_ADDRESS=http://localhost:4001
+  'http://localhost/api' TO 'http://localhost:3000/api'
+  'http://localhost' TO 'http://localhost:4001'
   ```
 
   ## API Documentation
