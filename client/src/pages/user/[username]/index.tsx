@@ -50,13 +50,13 @@ const User: NextPage<UserPageInitials> = (props): JSX.Element => {
 						<div style={{ textAlign: 'right', margin: '-4px 0px 5px 0px' }}>
 							{userState && (userState.username === router.query.username) &&
 								<SettingOutlined
-									onClick={() => location.href = '/settings'}
+									onClick={() => router.push('/settings')}
 									style={{ fontSize: 18, cursor: 'pointer', color: '#ff2d20' }}
 								/>
 							}
 							{userState && (userState.username !== router.query.username) &&
 								<MessageOutlined
-									onClick={() => location.href = `/messages/compose?username=${user.attributes.username}`}
+									onClick={() => router.push(`/messages/compose?username=${user.attributes.username}`)}
 									style={{ fontSize: 18, cursor: 'pointer', color: '#ff2d20' }}
 								/>
 							}

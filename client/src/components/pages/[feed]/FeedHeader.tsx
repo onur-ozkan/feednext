@@ -151,7 +151,7 @@ const FeedHeader: React.FC<FeedHeaderProps> = (props): JSX.Element => {
 									cursor: item.href ? 'pointer' : 'normal'
 								}}
 								onClick={()  => {
-									if (item.href) location.href = item.href
+									if (item.href) router.push(item.href, item.href)
 								}}
 							>
 								<Statistic
@@ -171,7 +171,7 @@ const FeedHeader: React.FC<FeedHeaderProps> = (props): JSX.Element => {
 		deleteTitle(accessToken, titleData.attributes.id)
 			.then(_res => {
 				message.success('Title successfully deleted')
-				location.href = '/'
+				router.push('/')
 			})
 			.catch(error => message.error(error.response.data.message))
 	}

@@ -35,7 +35,7 @@ const Entry: NextPage<EntryPageInitials> = (props): JSX.Element => {
 					<Typography.Title
 						level={2}
 						style={{ cursor: 'pointer', whiteSpace: 'pre-wrap' }}
-						onClick={() => location.href = `/${title?.attributes.slug}`}
+						onClick={() => router.push(`/${title?.attributes.slug}`, `/${title?.attributes.slug}`)}
 					>
 						{title?.attributes.name}
 					</Typography.Title>
@@ -87,7 +87,7 @@ const Entry: NextPage<EntryPageInitials> = (props): JSX.Element => {
 					datetime={handleCommentTime()}
 					author={
 						<Typography.Text
-							onClick={() => location.href = `/user/${entryData?.attributes.written_by}`}
+							onClick={() => router.push(`/user/${entryData?.attributes.written_by}`, `/user/${entryData?.attributes.written_by}`)}
 							style={{ cursor: 'pointer', fontSize: 15, color: '#414141' }}
 						>
 							{entryData?.attributes.written_by}
@@ -95,7 +95,7 @@ const Entry: NextPage<EntryPageInitials> = (props): JSX.Element => {
 					}
 					avatar={
 						<Avatar
-							onClick={() => location.href = `/user/${entryData?.attributes.written_by}`}
+							onClick={() => router.push(`/user/${entryData?.attributes.written_by}`, `/user/${entryData?.attributes.written_by}`)}
 							src={`${API_URL}/v1/user/pp?username=${entryData?.attributes.written_by}`}
 						/>
 					}

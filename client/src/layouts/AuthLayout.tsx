@@ -15,7 +15,7 @@ const AuthLayout: React.FC = props => {
 	const user = useSelector((state: any) => state.user)
 
 	if (user && (router.route === '/auth/sign-in' || router.route === '/auth/sign-up')) {
-		location.href = '/'
+		router.push('/')
 		return null
 	} else {
 		return (

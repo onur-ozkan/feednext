@@ -25,12 +25,12 @@ const AvatarDropdown = () => {
 
 	const menuHeaderDropdown = (
 		<Menu className={'menu'}>
-			<Menu.Item onClick={() => location.href = `/user/${user.username}`} key="/">
+			<Menu.Item onClick={() => router.push(`/user/${user.username}`, `/user/${user.username}`)} key="/">
 				<UserOutlined />
 				Profile
 			</Menu.Item>
 
-			<Menu.Item onClick={() => location.href = '/settings'} key="/settings">
+			<Menu.Item onClick={() => router.push('/settings')} key="/settings">
 				<SettingOutlined />
 				Settings
 			</Menu.Item>

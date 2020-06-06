@@ -34,7 +34,7 @@ const Compose: React.FC<ComponentProps> = (props): JSX.Element => {
 		await form.validateFields()
 		await fetchUserByUsername(formValues.recipient).then(() => {
 			wss.emit('sendMessage', formValues)
-			location.href = '/messages'
+			router.push('/messages')
 		})
 		.catch(_error => message.error('User not found'))
 	}

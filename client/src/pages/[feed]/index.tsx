@@ -25,7 +25,7 @@ import ImageUpload from '@/components/global/ImageUpload'
 import AppLayout from '@/layouts/AppLayout'
 
 const Feed: NextPage<FeedPageInitials> = (props): JSX.Element => {
-	const { page } = useRouter().query
+	const router = useRouter()
 	const globalState = useSelector((state: any) => state.global)
 	const userRole = useSelector((state: any) => state.user?.attributes.user.role)
 
@@ -51,7 +51,7 @@ const Feed: NextPage<FeedPageInitials> = (props): JSX.Element => {
 	}
 
 	useEffect(() => {
-		if (title) handleEntryFetching(10 * (Number(page) - 1) || 0)
+		if (title) handleEntryFetching(10 * (Number(router.query.page) - 1) || 0)
 	}, [title, sortEntriesBy])
 
 	const getTitleRate = async (titleId: string): Promise<void> => {
@@ -79,7 +79,7 @@ const Feed: NextPage<FeedPageInitials> = (props): JSX.Element => {
 
 		await updateTitle(globalState.accessToken, title.attributes.id, updatePayload)
 			.then((_res: { data: { attributes: { slug: any } } }) => {
-				location.href = `/${_res.data.attributes.slug}`
+				router.push(`/${_res.data.attributes.slug}`, `/${_res.data.attributes.slug}`)
 			})
 			.catch((error: any) => message.error(error.response.data.message))
 	}
@@ -108,7 +108,7 @@ const Feed: NextPage<FeedPageInitials> = (props): JSX.Element => {
 				refreshTitleRate={getTitleRate}
 			/>
 			<FeedEntries
-				defaultPage={page}
+				defaultPage={router.query.page}
 				sortEntriesBy={sortEntriesBy}
 				setSortEntriesBy={setSortEntriesBy}
 				setEntryList={setEntryList}

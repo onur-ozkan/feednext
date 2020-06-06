@@ -29,7 +29,7 @@ const AccountRecover: React.FunctionComponent = () => {
 			password
 		}).then(() => {
 			message.success('Password updated successfully')
-			location.href = '/auth/sign-in'
+			router.push('/auth/sign-in')
 		}).catch(({ response }) => {
 			notification.error({
 				message: 'Error',

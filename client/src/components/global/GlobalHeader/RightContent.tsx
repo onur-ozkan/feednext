@@ -22,7 +22,7 @@ const GlobalHeaderRight: React.SFC = () => {
 			return (
 				<span>
 					<Button
-						onClick={() => location.href = '/create-feed'}
+						onClick={() => router.push('/create-feed')}
 						type="primary"
 						shape="round"
 						icon={<PlusCircleOutlined />}

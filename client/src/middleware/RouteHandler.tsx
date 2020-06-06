@@ -109,7 +109,7 @@ const RouteHandler = (props: { authority: number, children: React.ReactNode }) =
 				title="403"
 				subTitle="Sorry, your account role doesnt have access to this page"
 				extra={
-					<Button type="primary" onClick={() => location.href = '/'}>
+					<Button type="primary" onClick={() => router.push('/')}>
 						Back Home
 					</Button>
 				}

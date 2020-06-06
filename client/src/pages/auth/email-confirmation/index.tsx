@@ -26,13 +26,13 @@ const EmailConfirmation: React.FunctionComponent = () => {
 			setIsRequestSucceess(true)
 			await persistor.purge()
 			setTimeout(() => {
-				location.href = '/auth/sign-in'
+				router.push('/auth/sign-in')
 			}, 2000)
 		}).catch(({ response }) => {
 			setIsRequestSucceess(false)
 			setErrorMessage(response.data.message)
 			setTimeout(() => {
-				location.href = '/auth/sign-in'
+				router.push('/auth/sign-in')
 			}, 2000)
 		})
 	}, [])

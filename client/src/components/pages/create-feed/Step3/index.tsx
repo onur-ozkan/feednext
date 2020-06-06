@@ -15,8 +15,8 @@ const Step3 = ({ titleSlugForRouting, feedCreatedSuccessfully }: Step3Props): JS
 	const router = useRouter()
 	const { createTitleFormData, readableCategoryValue, firstEntryForm } = useContext(StepContext)
 
-	const onFinish = () => location.href = '/'
-	const handleOnPostRoute = () => location.href = `/${titleSlugForRouting}`
+	const onFinish = () => router.push('/')
+	const handleOnPostRoute = () => router.push(`/${titleSlugForRouting}`, `/${titleSlugForRouting}`)
 
 	const information = (
 		<div className={'information'}>

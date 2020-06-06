@@ -16,8 +16,8 @@ import newMessagePng from '@/assets/newMessage.png'
 import '@/styles/pages/messages/style.less'
 
 export const ConversationList: React.FC<ConversationListProps> = (props): JSX.Element => {
-	const userState = useSelector((state: any) => state.user.attributes.user)
 	const router = useRouter()
+	const userState = useSelector((state: any) => state.user.attributes.user)
 
 	const [paginationValue, setPaginationValue] = useState(0)
 	const [isLoading, setIsLoading] = useState(true)
@@ -132,7 +132,7 @@ export const ConversationList: React.FC<ConversationListProps> = (props): JSX.El
 		<div className={'left'}>
 			<div style={{ textAlign: 'center' }} className={'top'}>
 				<Avatar
-					onClick={() => location.href = '/messages/compose'}
+					onClick={() => router.push('/messages/compose')}
 					style={{ cursor: 'pointer' }}
 					shape="square" size="large" src={newMessagePng}
 				/>

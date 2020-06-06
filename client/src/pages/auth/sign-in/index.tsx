@@ -5,6 +5,7 @@ import { UserOutlined, LockOutlined, LoadingOutlined } from '@ant-design/icons'
 // Other dependencies
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { useRouter } from 'next/router'
 
 // Local files
 import { SIGN_IN } from '@/redux/Actions/User'
@@ -14,7 +15,6 @@ import { signIn } from '@/services/api'
 import AuthLayout from '@/layouts/AuthLayout'
 import '@/styles/pages/auth/sign-in/style.less'
 
-
 export declare interface FormDataType {
 	usernameOrEmail: string
 	password: string
@@ -22,6 +22,8 @@ export declare interface FormDataType {
 }
 
 const Login: React.FunctionComponent = () => {
+	const router = useRouter()
+
 	const [form] = Form.useForm()
 	const dispatch = useDispatch()
 
@@ -48,7 +50,7 @@ const Login: React.FunctionComponent = () => {
 					user: res.data,
 				})
 
-				location.href = '/'
+				router.push('/')
 			})
 			.catch(error => {
 				setIsSigning(false)
