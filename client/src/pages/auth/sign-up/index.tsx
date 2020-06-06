@@ -171,9 +171,11 @@ const Register = () => {
 							</Form.Item>
 							<Form.Item>
 								{handleSubmitButtonView()}
-								<a className={'login'} href="/auth/sign-in">
-									Already have an Account?
-								</a>
+								<Link href="/auth/sign-in">
+									<a className={'login'}>
+										Already have an Account?
+									</a>
+								</Link>
 							</Form.Item>
 						</Tabs.TabPane>
 					</Tabs>

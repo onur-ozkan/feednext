@@ -6,6 +6,7 @@ import { UserOutlined, LockOutlined, LoadingOutlined } from '@ant-design/icons'
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 // Local files
 import { SIGN_IN } from '@/redux/Actions/User'
@@ -93,9 +94,11 @@ const Login: React.FunctionComponent = () => {
 								</Col>
 								<Col span={12}>
 									<Form.Item style={{ float: 'right'}}>
-										<a style={{ color: '#d60d17' }} href="/auth/sign-in/forgot-password">
-												Forgot Password
-										</a>
+										<Link href="/auth/sign-in/forgot-password">
+											<a style={{ color: '#d60d17' }}>
+													Forgot Password
+											</a>
+										</Link>
 									</Form.Item>
 								</Col>
 							</Row>
@@ -104,9 +107,11 @@ const Login: React.FunctionComponent = () => {
 								<Button className={'submit'} size="large" type="primary" htmlType="submit">
 									{isSigning ? <LoadingOutlined /> : 'Sign In'}
 								</Button>
-								<a className={'register'} href="/auth/sign-up">
-									Create an Account
-								</a>
+								<Link href="/auth/sign-up">
+									<a className={'register'}>
+										Create an Account
+									</a>
+								</Link>
 							</Form.Item>
 						</Tabs.TabPane>
 					</Tabs>

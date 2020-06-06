@@ -9,8 +9,6 @@ import classNames from 'classnames'
 // Local files
 import { searchTitle } from '@/services/api'
 import './style.less'
-import Link from 'next/link'
-
 
 const HeaderSearch: React.FC = (): JSX.Element => {
 	const inputEl = useRef(null)
@@ -38,11 +36,9 @@ const HeaderSearch: React.FC = (): JSX.Element => {
 				const foundTitles = res.data.attributes.titles.map(title => {
 					return {
 						label:
-							<Link href={'/[feed]'} as={`/${title.slug}`}>
-								<a style={{ width: '100%' }} >
-									<Typography.Text style={{ fontSize: 15 }}> {title.name} </Typography.Text>
-								</a>
-							</Link>,
+							<a style={{ width: '100%' }} href={`/${title.slug}`}>
+								<Typography.Text style={{ fontSize: 15 }}> {title.name} </Typography.Text>
+							</a>,
 						options: []
 					}
 				})

@@ -5,6 +5,7 @@ import { Layout, Typography } from 'antd'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 // Local files
 import logo from '@/assets/logo-square.svg'
@@ -23,10 +24,12 @@ const AuthLayout: React.FC = props => {
 				<div className={'content'}>
 					<div className={'top'}>
 						<div className={'header'}>
-							<a href="/">
-								<img alt="logo" className={'logo'} src={logo} />
-								<span className={'title'}>Feednext</span>
-							</a>
+							<Link href="/">
+								<a>
+									<img alt="logo" className={'logo'} src={logo} />
+									<span className={'title'}>Feednext</span>
+								</a>
+							</Link>
 						</div>
 						<div className={'desc'} />
 					</div>

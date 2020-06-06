@@ -99,7 +99,8 @@ const RouteHandler = (props: { authority: number, children: React.ReactNode }) =
 	}, [lastMessageFromSocket])
 
 	if (process.browser && !user && props.authority >= User && router.route !== '/') {
-		router.replace('/auth/sign-in')
+		router.push('/auth/sign-in')
+		return null
 	}
 
 	else if (user && props.authority > user.attributes.user.role) {

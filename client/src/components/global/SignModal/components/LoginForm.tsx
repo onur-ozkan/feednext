@@ -73,9 +73,11 @@ export const LoginForm: React.FC = (): JSX.Element => {
 				</Col>
 
 				<Form.Item>
-					<a style={{ float: "right", color: "#d60d17" }} href="/auth/sign-in/forgot-password">
-						Forgot Password
-					</a>
+					<Link href="/auth/sign-in/forgot-password">
+						<a style={{ float: "right", color: "#d60d17" }}>
+							Forgot Password
+						</a>
+					</Link>
 				</Form.Item>
 			</Row>
 
