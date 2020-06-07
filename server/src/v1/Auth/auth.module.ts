@@ -1,12 +1,9 @@
 // Nest dependencies
-import { APP_INTERCEPTOR, APP_GUARD } from '@nestjs/core'
+import { APP_GUARD } from '@nestjs/core'
 import { Module } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { PassportModule } from '@nestjs/passport'
-
-// Other dependencies
-import { RateLimiterModule, RateLimiterInterceptor } from 'nestjs-fastify-rate-limiter'
 
 // Local files
 import { UsersEntity } from 'src/shared/Entities/users.entity'
@@ -24,7 +21,6 @@ import { RolesGuard } from 'src/shared/Guards/roles.guard'
     imports: [
         TypeOrmModule.forFeature([UsersEntity, UsersRepository]),
         UserModule,
-        RateLimiterModule.register(configService.getGlobalRateLimitations()),
         PassportModule.register({ defaultStrategy: 'jwt' }),
         JwtModule.registerAsync({
             useFactory: () => {
@@ -43,10 +39,6 @@ import { RolesGuard } from 'src/shared/Guards/roles.guard'
         RedisService,
         MailService,
         JwtStrategy,
-        {
-            provide: APP_INTERCEPTOR,
-            useClass: RateLimiterInterceptor,
-        },
         {
             provide: APP_GUARD,
             useClass: RolesGuard

@@ -27,9 +27,8 @@ export class ConfigService {
     public getGlobalRateLimitations() {
         return {
             type: 'Memory',
-            points: this.getEnv('RATE_LIMIT_PER_MIN'),
-            duration: 60,
-            errorMessage: 'Rate limit exceeded, you have to wait 60 seconds before trying again',
+            points: undefined,
+            duration: undefined,
             keyPrefix: 'global',
         }
     }
