@@ -60,7 +60,7 @@ export class SitemapManipulationService {
             readFile(`${__dirname}/../../../public/sitemaps/sitemap-${latestSitemapIndex}.xml`, (_err, data: any) => {
                 if (data) {
                     const existingSitemapList = JSON.parse(convert.xml2json(data, { compact: true, ignoreComment: true, spaces: 4 }))
-                    if (existingSitemapList.urlset.url.length > 5) {
+                    if (existingSitemapList.urlset.url.length > 5000) {
                         // @ts-ignore
                         const newXml = convert.json2xml({
                             _declaration: { _attributes: { version: '1.0', encoding: 'UTF-8' } },
