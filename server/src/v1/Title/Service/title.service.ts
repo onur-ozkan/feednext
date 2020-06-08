@@ -95,7 +95,7 @@ export class TitleService {
             const newTitle: TitlesEntity = await this.titlesRepository.createTitle(openedBy, dto, category.ancestors)
             if (buffer) this.awsService.uploadImage(String(newTitle.id), 'titles', buffer)
 
-            if (!configService.isProduction()) sitemapManipulationService.addToIndexedSitemap(newTitle.slug)
+            if (configService.isProduction()) sitemapManipulationService.addToIndexedSitemap(newTitle.slug)
             return serializerService.serializeResponse('title_detail', newTitle)
         })
     }
