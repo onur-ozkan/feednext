@@ -27,8 +27,8 @@ export class ConfigService {
     public getGlobalRateLimitations() {
         return {
             type: 'Memory',
-            points: undefined,
-            duration: undefined,
+            points: Number.MAX_SAFE_INTEGER,
+            duration: 1,
             keyPrefix: 'global',
         }
     }
