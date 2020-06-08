@@ -26,7 +26,7 @@ const AuthLayout: React.FC = props => {
 						<div className={'header'}>
 							<Link href="/">
 								<a>
-									<img alt="logo" className={'logo'} src={logo} />
+									<img className={'logo'} src={logo} alt="App Logo" />
 									<span className={'title'}>Feednext</span>
 								</a>
 							</Link>

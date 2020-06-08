@@ -70,6 +70,7 @@ const Step2 = (props: Step2Props): JSX.Element => {
 							src={createTitleFormData.imageBase64}
 							size="large"
 							shape="square"
+							alt="Title Image"
 						/>
 					</Descriptions.Item>
 					<Descriptions.Item label="Category">

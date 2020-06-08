@@ -60,6 +60,7 @@ const Compose: React.FC<ComponentProps> = (props): JSX.Element => {
 										style={{ marginRight: 5 }}
 										size="small"
 										src={`${API_URL}/v1/user/pp?username=${user.username}`}
+										alt="User Image"
 									/>
 									<Typography.Text> {user.full_name} </Typography.Text>
 									<Typography.Text strong> @{user.username}</Typography.Text>

@@ -45,7 +45,7 @@ const AvatarDropdown = () => {
 	return (
 		<HeaderDropdown trigger={['click']} overlay={menuHeaderDropdown}>
 			<span className={'action account'}>
-				<Avatar size="small" className={'avatar'} src={`${API_URL}/v1/user/pp?username=${user.username}`} />
+				<Avatar size="small" className={'avatar'} src={`${API_URL}/v1/user/pp?username=${user.username}`} alt="User Image" />
 				<span className={'name'}>{user.full_name.split(' ')[0]}</span>
 			</span>
 		</HeaderDropdown>

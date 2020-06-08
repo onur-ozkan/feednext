@@ -56,7 +56,7 @@ const HeaderSearch: React.FC = (): JSX.Element => {
 	})
 
 	return (
-		<span className={inputClass} onClick={enterSearchMode}>
+		<div className={inputClass} onClick={enterSearchMode}>
 			<AutoComplete
 				className={inputClass}
 				value={value}
@@ -72,7 +72,7 @@ const HeaderSearch: React.FC = (): JSX.Element => {
 			<SearchOutlined
 				key="Icon"
 			/>
-		</span>
+		</div>
 	)
 }
 

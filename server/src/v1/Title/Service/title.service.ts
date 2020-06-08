@@ -16,6 +16,8 @@ import { EntriesRepository } from 'src/shared/Repositories/entries.repository'
 import { UsersRepository } from 'src/shared/Repositories/users.repository'
 import { CategoriesEntity } from 'src/shared/Entities/categories.entity'
 import { AwsService } from 'src/shared/Services/aws.service'
+import { configService } from 'src/shared/Services/config.service'
+import { sitemapManipulationService } from 'src/shared/Services/sitemap.manipulation.service'
 
 @Injectable()
 export class TitleService {
@@ -48,7 +50,7 @@ export class TitleService {
         return serializerService.serializeResponse('title_detail', title)
     }
 
-    async searchTitle({ searchValue } : { searchValue: string }): Promise<ISerializeResponse> {
+    async searchTitle({ searchValue }: { searchValue: string }): Promise<ISerializeResponse> {
         const result = await this.titlesRepository.searchTitle({ searchValue })
         return serializerService.serializeResponse('searched_title_list', result)
     }
@@ -93,6 +95,7 @@ export class TitleService {
             const newTitle: TitlesEntity = await this.titlesRepository.createTitle(openedBy, dto, category.ancestors)
             if (buffer) this.awsService.uploadImage(String(newTitle.id), 'titles', buffer)
 
+            if (!configService.isProduction()) sitemapManipulationService.addToIndexedSitemap(newTitle.slug)
             return serializerService.serializeResponse('title_detail', newTitle)
         })
     }

@@ -13,12 +13,14 @@ import { versionRoutes } from 'src/version.routes'
 import { configService } from 'src/shared/Services/config.service'
 import { RedisService } from 'src/shared/Services/redis.service'
 import { V1Module } from './v1/v1.module'
+import { SitemapModule } from './sitemap/sitemap.module'
 
 @Module({
     imports: [
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         RouterModule.forRoutes(versionRoutes),
         RateLimiterModule.register(configService.getGlobalRateLimitations()),
+        SitemapModule,
         V1Module,
     ],
     providers: [

@@ -264,6 +264,7 @@ const FeedEntries: React.FC<FeedEntriesProps> = (props): JSX.Element => {
 								<Avatar
 									onClick={() => router.push('/user/[username]', `/user/${item.written_by}`)}
 									src={`${API_URL}/v1/user/pp?username=${item.written_by}`}
+									alt="Author Image"
 								/>
 							}
 							content={

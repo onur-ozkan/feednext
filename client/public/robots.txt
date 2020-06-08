@@ -1,0 +1,4 @@
+Sitemap: https://server.feednext.io/api/sitemap/sitemap.xml
+
+User-agent: *
+Allow: /*

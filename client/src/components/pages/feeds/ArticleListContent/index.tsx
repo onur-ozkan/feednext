@@ -24,7 +24,7 @@ const ArticleListContent: React.FC<ArticleListContentProps> = ({
 				</Typography.Paragraph>
 			</div>
 			<div className={'extra'}>
-				<Avatar src={avatar} size="small" />
+				<Avatar src={avatar} size="small" alt="Author Image" />
 
 				<Link href="/user/[username]" as={`/user/${writtenBy}`}>
 					<a style={{ zIndex: 10 }}>
