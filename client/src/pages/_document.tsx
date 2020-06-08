@@ -11,7 +11,7 @@ class MyDocument extends Document {
         return (
             <Html lang="en">
                 <Head>
-                    <link rel="icon" type="image/png" href="/static/favicon.ico" />
+                    <link rel="icon" type="image/png" href="/favicon.ico" />
                     <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
                     <meta name="viewport" content="width=device-width, initial-scale=1" />
                     <meta name="application-name" content="Feednext" />
