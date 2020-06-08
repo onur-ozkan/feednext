@@ -2,7 +2,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 
 // Other dependencies
-import { IsNotEmpty, IsMongoId, MaxLength } from 'class-validator'
+import { IsNotEmpty, IsMongoId, Length } from 'class-validator'
 
 export class CreateTitleDto {
     @ApiProperty({
@@ -10,7 +10,7 @@ export class CreateTitleDto {
         example: 'Phone X',
     })
     @IsNotEmpty()
-    @MaxLength(60)
+    @Length(3 ,75)
     name: string
 
     @ApiProperty({
