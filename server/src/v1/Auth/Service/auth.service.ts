@@ -19,6 +19,7 @@ import { GenerateRecoveryKeyDto } from '../Dto/generate-recovery-key.dto'
 import { serializerService, ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.service'
 import { RecoverAccountDto } from '../Dto/recover-account.dto'
+import { sitemapManipulationService } from 'src/shared/Services/sitemap.manipulation.service'
 
 @Injectable()
 export class AuthService {
@@ -180,8 +181,9 @@ export class AuthService {
             if (!accountInformation) throw new BadRequestException('Could not found an account to verify')
 
             await this.usersRepository.createUser(JSON.parse(accountInformation))
-
             await this.redisService.deleteData(decodedToken.username)
+            sitemapManipulationService.addToIndexedSitemap(`user/${decodedToken.username}`)
+
             throw new HttpException('Account has been verified.', HttpStatus.OK)
         }
 
