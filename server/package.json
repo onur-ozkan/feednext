@@ -55,6 +55,8 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4",
+    "xml-js": "^1.6.11",
+    "glob": "^7.1.6",
     "slugify": "^1.4.0",
     "typeorm": "^0.2.24"
   },
