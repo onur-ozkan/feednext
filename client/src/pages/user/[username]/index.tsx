@@ -44,9 +44,9 @@ const User: NextPage<UserPageInitials> = (props): JSX.Element => {
 				mediaImage={`${API_URL}/v1/user/pp?username=${user.attributes.username}`}
 				mediaDescription={`${user.attributes.full_name}'s profile page on Feednext`}
 			/>
-			<Row gutter={24}>
+			<Row gutter={[5, 10]} style={{ padding: 5 }}>
 				<Col lg={10} md={24} sm={24} xs={24}>
-					<Card bordered={false}>
+					<Card className="blockEdges" bordered={false}>
 						<div style={{ textAlign: 'right', margin: '-4px 0px 5px 0px' }}>
 							{userState && (userState.username === router.query.username) &&
 								<SettingOutlined

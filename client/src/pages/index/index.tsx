@@ -273,13 +273,12 @@ const Feeds: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 					</Card>
 				</Col>
 				<Col xl={8} lg={10} md={24} sm={24} xs={24} style={{ padding: 4 }}>
-					<Card style={{ marginBottom: 8 }} bordered={false} title="Trending Categories">
+					<Card className="blockEdges" style={{ marginBottom: 5 }} bordered={false} title="Trending Categories">
 						{handleTrendingCategoriesRender()}
 					</Card>
 					<AdditionalBlock />
 				</Col>
 			</Row>
-			<br />
 		</AppLayout>
 	)
 }

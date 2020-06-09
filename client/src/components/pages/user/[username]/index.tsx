@@ -1,6 +1,6 @@
 // Ant dependencies
-import { Card, Tabs, Typography, Divider, Pagination, Empty, Button, List } from 'antd'
-import { CopyOutlined, EditOutlined, LoadingOutlined, UpOutlined, DownOutlined } from '@ant-design/icons'
+import { Card, Tabs, Typography, Divider, Pagination, Empty, Button, Row } from 'antd'
+import { CopyOutlined, EditOutlined, LoadingOutlined, UpOutlined, DownOutlined, ArrowRightOutlined } from '@ant-design/icons'
 
 // Other dependencies
 import React, { useState, useEffect } from 'react'
@@ -93,18 +93,18 @@ export const UserTabs: React.FC<{username: string}> = (props) => {
 			}
 
 			const feedList = await res.data.attributes.titles.map((title: any) =>
-				<List.Item.Meta
-					title={
-						<Typography.Text ellipsis>
-							{title.name}
-						</Typography.Text>
-					}
-					avatar={
-						<Button onClick={() => router.push('/[feed]', `/${title.slug}`)} size="small" type="primary">
-							Open
-						</Button>
-					}
-				/>
+				<Row style={{ alignItems: 'center' }}>
+					<Typography.Text style={{ width: 'calc(100% - 30px)' }} ellipsis strong>
+						{title.name}
+					</Typography.Text>
+					<Button
+						onClick={() => router.push('/[feed]', `/${title.slug}`)}
+						style={{ width: 25, marginLeft: 5 }}
+						size="large"
+						type="link"
+						icon={<ArrowRightOutlined style={{ color: '#6ec49a' }} />}
+					/>
+				</Row>
 			)
 			setTabView(
 				<div style={{ minHeight: 460 }}>
@@ -133,18 +133,18 @@ export const UserTabs: React.FC<{username: string}> = (props) => {
 			}
 
 			const entryList = await res.data.attributes.entries.map((entry: any) =>
-				<List.Item.Meta
-					title={
-						<Typography.Text ellipsis>
-							{entry.text}
-						</Typography.Text>
-					}
-					avatar={
-						<Button onClick={() => router.push('/entry/[id]', `/entry/${entry.id}`)} size="small" type="primary">
-							Open
-						</Button>
-					}
-				/>
+				<Row style={{ alignItems: 'center' }}>
+					<Typography.Text style={{ width: 'calc(100% - 30px)' }} ellipsis strong>
+						{entry.text}
+					</Typography.Text>
+					<Button
+						onClick={() => router.push('/entry/[id]', `/entry/${entry.id}`)}
+						style={{ width: 25, marginLeft: 5 }}
+						size="large"
+						type="link"
+						icon={<ArrowRightOutlined style={{ color: '#6ec49a' }} />}
+					/>
+				</Row>
 			)
 			setTabView(
 				<div style={{ minHeight: 460 }}>
@@ -176,18 +176,18 @@ export const UserTabs: React.FC<{username: string}> = (props) => {
 			}
 
 			const entryList = await res.data.attributes.entries.map((entry: any) =>
-				<List.Item.Meta
-					title={
-						<Typography.Text ellipsis>
-							{entry.text}
-						</Typography.Text>
-					}
-					avatar={
-						<Button onClick={() => router.push('/entry/[id]', `/entry/${entry.id}`)} size="small" type="primary">
-							Open
-						</Button>
-					}
-				/>
+				<Row style={{ alignItems: 'center' }}>
+					<Typography.Text style={{ width: 'calc(100% - 30px)' }} ellipsis strong>
+						{entry.text}
+					</Typography.Text>
+					<Button
+						onClick={() => router.push('/entry/[id]', `/entry/${entry.id}`)}
+						style={{ width: 25, marginLeft: 5 }}
+						size="large"
+						type="link"
+						icon={<ArrowRightOutlined style={{ color: '#6ec49a' }} />}
+					/>
+				</Row>
 			)
 			setTabView(
 				<div style={{ minHeight: 460 }}>
@@ -200,12 +200,12 @@ export const UserTabs: React.FC<{username: string}> = (props) => {
 	const handleTabChange = (key: string): void => setCurrentTab(key)
 
 	return (
-		<Card bordered={false}>
+		<Card className="blockEdges" bordered={false}>
 			<Tabs size="small" animated={false} onChange={handleTabChange} defaultActiveKey={currentTab}>
 				<Tabs.TabPane
 					tab={
-						<Typography.Text strong>
-							<CopyOutlined style={{ marginRight: 0 }} /> Created Feeds
+						<Typography.Text style={{ color: 'gray' }} strong>
+							<CopyOutlined style={{ marginRight: 0 }} /> FEEDS
 						</Typography.Text>
 					}
 					key="feeds"
@@ -220,8 +220,8 @@ export const UserTabs: React.FC<{username: string}> = (props) => {
 				</Tabs.TabPane>
 				<Tabs.TabPane
 					tab={
-						<Typography.Text strong>
-							<EditOutlined style={{ marginRight: 0 }} /> Created Entries
+						<Typography.Text style={{ color: 'gray' }} strong>
+							<EditOutlined style={{ marginRight: 0 }} /> ENTRIES
 						</Typography.Text>
 					}
 					key="entries"
@@ -236,8 +236,8 @@ export const UserTabs: React.FC<{username: string}> = (props) => {
 				</Tabs.TabPane>
 				<Tabs.TabPane
 					tab={
-						<Typography.Text strong>
-							<UpOutlined style={{ marginRight: 0 }} /> Up Voted Entries
+						<Typography.Text style={{ color: 'gray' }} strong>
+							<UpOutlined style={{ marginRight: 0 }} /> UP VOTED
 						</Typography.Text>
 					}
 					key="up-votes"
@@ -252,8 +252,8 @@ export const UserTabs: React.FC<{username: string}> = (props) => {
 				</Tabs.TabPane>
 				<Tabs.TabPane
 					tab={
-						<Typography.Text strong>
-							<DownOutlined style={{ marginRight: 0 }} /> Down Voted Entries
+						<Typography.Text style={{ color: 'gray' }} strong>
+							<DownOutlined style={{ marginRight: 0 }} /> DOWN VOTED
 						</Typography.Text>
 					}
 					key="down-votes"

@@ -12,7 +12,7 @@ export const AdditionalBlock = (): JSX.Element => {
 	const [aggrementModalVisibility, setAggrementModalVisibilit] = useState<null | 'policy' | 'terms'>(null)
 
 	return (
-		<Card>
+		<Card className="blockEdges" bordered={false}>
 			<Aggrements
 				aggrementModalVisibility={aggrementModalVisibility}
 				closeAggrementWindow={(): void => setAggrementModalVisibilit(null)}
@@ -51,8 +51,8 @@ export const AdditionalBlock = (): JSX.Element => {
 				<Typography.Text>
 					Feednext © 2020. All rights reserved
 				</Typography.Text>
-				<Divider style={{ marginBottom: -15 }} orientation="right">
-					<Typography.Text style={{ fontSize: 13, opacity: 0.65, color: '#016d9b' }}>
+				<Divider style={{ marginBottom: -15, marginTop: 3 }} orientation="right">
+					<Typography.Text style={{ fontSize: 13, color: '#6ec49a' }}>
 						v{packageJson.version}
 					</Typography.Text>
 				</Divider>
