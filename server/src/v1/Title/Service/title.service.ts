@@ -174,6 +174,8 @@ export class TitleService {
         }
 
         const updatedTitle: TitlesEntity = await this.titlesRepository.updateTitle(updatedBy, title, dto, category?.ancestors)
+        if (configService.isProduction()) sitemapManipulationService.addToIndexedSitemap(updatedTitle.slug)
+
         return serializerService.serializeResponse('title_detail', updatedTitle)
     }
 
