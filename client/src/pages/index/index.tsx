@@ -1,6 +1,6 @@
 // Antd dependencies
 import { Button, Card, List, message, BackTop, Row, Col, Typography, Modal } from 'antd'
-import { LoadingOutlined, ArrowUpOutlined } from '@ant-design/icons'
+import { LoadingOutlined, ArrowUpOutlined, EyeOutlined } from '@ant-design/icons'
 
 // Other dependencies
 import React, { useEffect, useState } from 'react'
@@ -181,20 +181,18 @@ const Feeds: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 			<div style={{ marginTop: -20 }}>
 				{trendingCategories.map(category => {
 					return (
-						<Row key={category.id} style={{ marginBottom: 15, marginTop: 15, alignItems: 'center' }}>
-							<Col>
-								<Typography.Text strong>
-									{category.name.length > 17 ? `${category.name.substring(0, 15).toUpperCase()}..` : category.name.toUpperCase()}
-								</Typography.Text>
-							</Col>
-							<Button style={{ position: 'absolute', right: 15 }} onClick={(): void => handleCategoryFilterSet(category.id)} type="primary" key={category.id}>
-								<Typography.Text
-									style={{ color: 'white' }}
-									strong
-								>
-									Display
-								</Typography.Text>
-							</Button>
+						<Row key={category.id} style={{ alignItems: 'center' }}>
+							<Typography.Text style={{ width: 'calc(100% - 30px)' }} ellipsis strong>
+								{category.name.toUpperCase()}
+							</Typography.Text>
+							<Button
+								onClick={(): void => handleCategoryFilterSet(category.id)}
+								style={{ width: 25, marginLeft: 5 }}
+								size="large"
+								type="link"
+								key={category.id}
+								icon={<EyeOutlined style={{ color: '#6ec49a' }} />}
+							/>
 						</Row>
 					)
 				})}
