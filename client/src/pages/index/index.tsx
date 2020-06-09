@@ -279,6 +279,7 @@ const Feeds: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 					<AdditionalBlock />
 				</Col>
 			</Row>
+			<br/>
 		</AppLayout>
 	)
 }
