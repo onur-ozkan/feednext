@@ -39,6 +39,7 @@ export class UserService {
     }
 
     async searchUserByUsername({ searchValue } : { searchValue: string }): Promise<ISerializeResponse> {
+        if (searchValue.length < 3) throw new BadRequestException('Search value must be at least 3 characters')
         const result = await this.usersRepository.searchUserByUsername({ searchValue })
         return serializerService.serializeResponse('searched_user_list', result)
     }
