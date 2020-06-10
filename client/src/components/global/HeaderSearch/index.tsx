@@ -38,8 +38,8 @@ const HeaderSearch: React.FC = (): JSX.Element => {
 			searchTitle(value).then(res => {
 				const foundTitles = res.data.attributes.titles.map(title => {
 					return {
-						label: <Typography.Text style={{ fontSize: 15.7, width: '100%' }}> {title.name} </Typography.Text>,
-						value: title.slug
+						value: title.slug,
+						label: <Typography.Text style={{ fontSize: 15.7, width: '100%' }}> {title.name} </Typography.Text>
 					}
 				})
 				if (foundTitles.length === 0) setAutoCompleteData(null)
@@ -50,6 +50,7 @@ const HeaderSearch: React.FC = (): JSX.Element => {
 	}, [value])
 
 	const handleOnSelect = (titleSlug: string): void => {
+		if (!titleSlug) return
 		router.replace(`/${titleSlug}`)
 		router.reload()
 	}
@@ -64,10 +65,10 @@ const HeaderSearch: React.FC = (): JSX.Element => {
 	return (
 		<div className={inputClass} onClick={enterSearchMode}>
 			<AutoComplete
+				defaultActiveFirstOption
 				notFoundContent={
 					<Typography.Text strong style={{ width: '100%' }}>{noDataMessage}</Typography.Text>
 				}
-				backfill
 				className={inputClass}
 				value={value}
 				onChange={(value: string): void => setValue(value)}
@@ -77,7 +78,6 @@ const HeaderSearch: React.FC = (): JSX.Element => {
 			>
 				<Input
 					ref={inputEl} placeholder="Search Feeds.."
-					onPressEnter={(): void => handleOnSelect(autoCompleteData[0].value)}
 					onBlur={leaveSearchMode}
 				/>
 			</AutoComplete>

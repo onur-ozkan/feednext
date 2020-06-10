@@ -29,6 +29,7 @@ const Compose: React.FC<ComponentProps> = (props): JSX.Element => {
 		to: null,
 		body: null,
 	})
+	const [noDataMessage, setNoDataMessage] = useState('')
 
 	const handleMessageSending = async (formValues: FormDataType): Promise<void> => {
 		await form.validateFields()
@@ -44,28 +45,23 @@ const Compose: React.FC<ComponentProps> = (props): JSX.Element => {
 			setAutoCompleteData(undefined)
 			setMessageForm({ ...messageForm, to: null })
 		}
-		if (userFilterInput.length > 2) {
+		if (userFilterInput.length < 3) setNoDataMessage('Enter at least 3 characters to search')
+		else {
 			searchUser(userFilterInput).then(({ data }) => {
 				const foundUsers = data.attributes.users.map((user: any) => {
 					return {
 						value: user.username,
 						label: (
-							<div
-								onClick={(): void => {
-									setMessageForm({ ...messageForm, to: user.username })
-								}}
-							>
-								<Typography.Text ellipsis style={{ fontSize: 16 }}>
-									<Avatar
-										style={{ marginRight: 5 }}
-										size="small"
-										src={`${API_URL}/v1/user/pp?username=${user.username}`}
-										alt="User Image"
-									/>
-									<Typography.Text> {user.full_name} </Typography.Text>
-									<Typography.Text strong> @{user.username}</Typography.Text>
-								</Typography.Text>
-							</div>
+							<Typography.Text ellipsis style={{ fontSize: 16 }}>
+								<Avatar
+									style={{ marginRight: 5 }}
+									size="small"
+									src={`${API_URL}/v1/user/pp?username=${user.username}`}
+									alt="User Image"
+								/>
+								<Typography.Text> {user.full_name} </Typography.Text>
+								<Typography.Text strong> @{user.username}</Typography.Text>
+							</Typography.Text>
 						),
 					}
 				})
@@ -73,9 +69,12 @@ const Compose: React.FC<ComponentProps> = (props): JSX.Element => {
 					setAutoCompleteData(undefined)
 					setMessageForm({ ...messageForm, to: null })
 				} else setAutoCompleteData(foundUsers)
-			})
+				setNoDataMessage('Could not match anything')
+			}).catch(_error => {})
 		}
 	}, [userFilterInput])
+
+	const handleOnSelect = (username: string): void => setMessageForm({ ...messageForm, to: username })
 
 	return (
 		<AppLayout authority={User}>
@@ -105,15 +104,20 @@ const Compose: React.FC<ComponentProps> = (props): JSX.Element => {
 						]}
 					>
 						<AutoComplete
+							defaultActiveFirstOption
 							dropdownClassName="certain-category-search-dropdown"
+							notFoundContent={
+								<Typography.Text strong style={{ width: '100%' }}>{noDataMessage}</Typography.Text>
+							}
 							value={userFilterInput}
-							onChange={(value: string): void => {
-								setUserFilterInput(value)
-								setMessageForm({ ...messageForm, to: value })
-							}}
+							onChange={(value: string): void => setUserFilterInput(value)}
+							onSelect={handleOnSelect}
 							options={autoCompleteData}
 						>
-							<Input.Search size="large" placeholder="Enter username" />
+							<Input.Search
+								size="large"
+								placeholder="Enter username"
+							/>
 						</AutoComplete>
 					</Form.Item>
 					<Form.Item
