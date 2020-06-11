@@ -5,6 +5,7 @@ import App from 'next/app'
 import ReactGA from 'react-ga'
 import Router from 'next/router'
 import NProgress from 'nprogress'
+import * as kmachine from 'keymachine'
 import 'nprogress/nprogress.css'
 
 // Local files
@@ -15,6 +16,7 @@ NProgress.configure({ showSpinner: false })
 Router.events.on('routeChangeStart', () => NProgress.start())
 Router.events.on('routeChangeComplete', () => NProgress.done())
 Router.events.on('routeChangeError', () => NProgress.done())
+kmachine.configuration.lenght = 16
 
 const AppBase = ({ Component, pageProps }) => {
 	if (process.browser) {
@@ -25,7 +27,7 @@ const AppBase = ({ Component, pageProps }) => {
 	return (
 		<Provider store={store}>
 			<PersistGate loading={<Component {...pageProps} />} persistor={persistor}>
-				<Component {...pageProps} />
+				<Component key={kmachine.keymachine()} {...pageProps} />
 			</PersistGate>
 		</Provider>
 	)

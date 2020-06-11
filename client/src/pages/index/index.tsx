@@ -32,9 +32,10 @@ const Feeds: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 	const [canLoadMore, setCanLoadMore] = useState(props.canLoadMore)
 	const [isJustInitialized, setIsJustInitialized] = useState(true)
 	const [isLoading, setIsLoading] = useState(false)
-	const [isFetching, setIsFetching] = useState(false)
+	const [isLoadMoreTriggered, setIsLoadMoreTriggered] = useState(false)
 
 	const handleCategoryFilterSet = (id) => {
+		setIsLoading(true)
 		setFeed([])
 		setSkipValueForPagination(0)
 		setIsJustInitialized(false)
@@ -42,6 +43,7 @@ const Feeds: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 	}
 
 	const handleSortBySet = (val) => {
+		setIsLoading(true)
 		setFeed([])
 		setSkipValueForPagination(0)
 		setIsJustInitialized(false)
@@ -56,9 +58,6 @@ const Feeds: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 
 		await fetchAllFeeds(skipValueForPagination, undefined, categoryFilter, sortBy)
 			.then(async (feedsResponse: AxiosResponse) => {
-				if (feedsResponse.data.attributes.count > feedList.length) setCanLoadMore(true)
-				else setCanLoadMore(false)
-
 				const promises = await feedsResponse.data.attributes.titles.map(async (title: any) => {
 					const categoryName = await fetchOneCategory(title.category_id).then(({ data }) => data.attributes.name)
 					const featuredEntry: any = await fetchFeaturedEntryByTitleId(title.id).then(featuredEntryResponse => featuredEntryResponse.data.attributes)
@@ -96,10 +95,12 @@ const Feeds: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 				*/
 				result.map(item => setFeed((feedList: FeedList[]) => [...feedList, item]))
 
+				if (feedsResponse.data.attributes.count > (feedsResponse.data.attributes.titles.length + skipValueForPagination)) setCanLoadMore(true)
+				else setCanLoadMore(false)
 			})
 			.catch((error: AxiosError) => message.error(error.response?.data.message))
 		setIsLoading(false)
-		setIsFetching(false)
+		setIsLoadMoreTriggered(false)
 	}
 
 	const handleFeedListView = (): JSX.Element => {
@@ -118,6 +119,15 @@ const Feeds: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 				size="large"
 				itemLayout="vertical"
 				loadMore={loadMore}
+				loading={{
+					spinning: isLoading,
+					indicator: <LoadingOutlined />,
+					style: {
+						color: '#212121',
+						fontSize: 20,
+						fontWeight: 'lighter'
+					}
+				}}
 				dataSource={feedList}
 				renderItem={(item): JSX.Element => (
 					<List.Item
@@ -205,7 +215,7 @@ const Feeds: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 	}, [skipValueForPagination, categoryFilter, sortBy, isJustInitialized])
 
 	const handleFetchMore = (): void => {
-		setIsFetching(true)
+		setIsLoadMoreTriggered(true)
 		setSkipValueForPagination(skipValueForPagination + 10)
 		setIsJustInitialized(false)
 	}
@@ -219,7 +229,7 @@ const Feeds: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 					paddingRight: 48,
 				}}
 			>
-				{isFetching ? <LoadingOutlined /> : 'More'}
+				{isLoadMoreTriggered ? <LoadingOutlined /> : 'More'}
 			</Button>
 		</div>
 	)
