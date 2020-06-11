@@ -49,11 +49,7 @@ const HeaderSearch: React.FC = (): JSX.Element => {
 		}
 	}, [value])
 
-	const handleOnSelect = (titleSlug: string): void => {
-		if (!titleSlug) return
-		router.replace(`/${titleSlug}`)
-		router.reload()
-	}
+	const handleOnSelect = (titleSlug: string): Promise<boolean> => router.push('/[feed]', `/${titleSlug}`, { shallow: false })
 
 	const inputClass = classNames('input', {
 		'show': searchMode,
