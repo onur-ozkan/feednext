@@ -3,7 +3,7 @@ import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import App from 'next/app'
 import ReactGA from 'react-ga'
-import Router from 'next/router'
+import Router, { useRouter } from 'next/router'
 import NProgress from 'nprogress'
 import * as kmachine from 'keymachine'
 import 'nprogress/nprogress.css'
@@ -19,6 +19,8 @@ Router.events.on('routeChangeError', () => NProgress.done())
 kmachine.configuration.lenght = 16
 
 const AppBase = ({ Component, pageProps }) => {
+	const pathname = useRouter().pathname
+
 	if (process.browser) {
 		ReactGA.initialize('UA-168030814-1')
 		ReactGA.pageview(window.location.pathname + window.location.search)
@@ -27,7 +29,13 @@ const AppBase = ({ Component, pageProps }) => {
 	return (
 		<Provider store={store}>
 			<PersistGate loading={<Component {...pageProps} />} persistor={persistor}>
-				<Component key={kmachine.keymachine()} {...pageProps} />
+				<Component
+					// Following condition is for the not calling useEffect twice on account verification
+					{...pathname !== '/auth/sign-up/account-verification' && {
+						key: kmachine.keymachine()
+					}}
+					{...pageProps}
+				/>
 			</PersistGate>
 		</Provider>
 	)
