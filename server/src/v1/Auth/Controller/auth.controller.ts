@@ -60,9 +60,9 @@ export class AuthController {
     }
 
     @RateLimit({
-        points: 1,
-        duration: 60,
-        errorMessage: 'You can only create 1 account in 60 seconds'
+        points: 5,
+        duration: 120,
+        errorMessage: 'You have reached the limit. You have to wait 2 minutes before trying again.'
     })
     @Post('signup')
     signUp(@Body() dto: CreateAccountDto): Promise<HttpException> {
