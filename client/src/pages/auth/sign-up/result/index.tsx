@@ -1,5 +1,6 @@
 // Antd dependencies
-import { Result, Typography } from 'antd'
+import { Result, Typography, Button } from 'antd'
+import { LoginOutlined } from '@ant-design/icons'
 
 // Other dependencies
 import React from 'react'
@@ -29,6 +30,11 @@ const RegisterResult = props => {
 						verification to sign in. It may take up to 5 minutes for the mail to arrive.
 					</Typography.Text>
 				</Typography.Paragraph>
+			}
+			extra={
+				<Button onClick={() => router.push('/create-feed')} shape="round" icon={<LoginOutlined />}>
+					Sign In
+				</Button>
 			}
 		/>
 	)
