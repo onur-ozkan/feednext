@@ -4,13 +4,14 @@ import { LoginOutlined } from '@ant-design/icons'
 
 // Other dependencies
 import React from 'react'
+import { useRouter } from 'next/router'
 
 // Local files
 import NotFoundPage from '@/pages/404'
 
 const RegisterResult = props => {
+	const router = useRouter()
 	const signedAccount = props.signedAccount
-
 	if (!signedAccount) return <NotFoundPage />
 
 	return (
@@ -32,7 +33,7 @@ const RegisterResult = props => {
 				</Typography.Paragraph>
 			}
 			extra={
-				<Button onClick={() => router.push('/create-feed')} shape="round" icon={<LoginOutlined />}>
+				<Button onClick={() => router.push('/auth/sign-in')} shape="round" icon={<LoginOutlined />}>
 					Sign In
 				</Button>
 			}
