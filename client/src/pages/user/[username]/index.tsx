@@ -51,13 +51,13 @@ const User: NextPage<UserPageInitials> = (props): JSX.Element => {
 							{userState && (userState.username === router.query.username) &&
 								<SettingOutlined
 									onClick={() => router.push('/settings')}
-									style={{ fontSize: 18, cursor: 'pointer', color: '#ff2d20' }}
+									style={{ fontSize: 18, cursor: 'pointer', color: '#6ec49a' }}
 								/>
 							}
 							{userState && (userState.username !== router.query.username) &&
 								<MessageOutlined
 									onClick={() => router.push(`/messages/compose?username=${user.attributes.username}`)}
-									style={{ fontSize: 18, cursor: 'pointer', color: '#ff2d20' }}
+									style={{ fontSize: 18, cursor: 'pointer', color: '#6ec49a' }}
 								/>
 							}
 						</div>
@@ -75,20 +75,20 @@ const User: NextPage<UserPageInitials> = (props): JSX.Element => {
 							<Col span={24} style={{ fontSize: 16 }}>
 								<Tooltip placement="bottom" title="Username">
 									<Typography.Text>
-										<IdcardOutlined style={{ marginRight: 3, color: '#ff2d20' }} /> {user.attributes.username}
+										<IdcardOutlined style={{ marginRight: 3, color: '#6ec49a' }} /> {user.attributes.username}
 									</Typography.Text>
 								</Tooltip>
 							</Col>
 							<Col span={24} style={{ fontSize: 16 }}>
 								<Tooltip placement="bottom" title="Role">
 									<Typography.Text>
-										<UpSquareOutlined style={{ marginRight: 3, color: '#ff2d20' }} /> {readableRoles[user.attributes.role]}
+										<UpSquareOutlined style={{ marginRight: 3, color: '#6ec49a' }} /> {readableRoles[user.attributes.role]}
 									</Typography.Text>
 								</Tooltip>
 							</Col>
 							<Col span={24} style={{ fontSize: 16 }}>
 								<Tooltip placement="bottom" title="Link">
-									<LinkOutlined style={{ marginRight: 3, color: '#ff2d20' }} />
+									<LinkOutlined style={{ marginRight: 3, color: '#6ec49a' }} />
 									{user.attributes.link ?
 										(
 											<a
