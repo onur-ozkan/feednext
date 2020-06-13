@@ -96,7 +96,7 @@ export class TitleService {
             const newTitle: TitlesEntity = await this.titlesRepository.createTitle(openedBy, dto, category.ancestors)
             if (buffer) this.awsService.uploadImage(String(newTitle.id), 'titles', buffer)
 
-            if (configService.isProduction()) sitemapManipulationService.addToIndexedSitemap(newTitle.slug)
+            if (configService.isProduction()) sitemapManipulationService.addToIndexedSitemap(newTitle.slug, new Date().toJSON().slice(0,10))
             return serializerService.serializeResponse('title_detail', newTitle)
         })
     }
@@ -175,7 +175,7 @@ export class TitleService {
         }
 
         const updatedTitle: TitlesEntity = await this.titlesRepository.updateTitle(updatedBy, title, dto, category?.ancestors)
-        if (configService.isProduction()) sitemapManipulationService.addToIndexedSitemap(updatedTitle.slug)
+        if (configService.isProduction()) sitemapManipulationService.addToIndexedSitemap(updatedTitle.slug, new Date().toJSON().slice(0,10))
 
         return serializerService.serializeResponse('title_detail', updatedTitle)
     }

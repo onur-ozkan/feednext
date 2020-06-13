@@ -14,9 +14,6 @@ export class SitemapManipulationService {
                 const currentMap = {
                     loc: {
                         _text: `https://server.feednext.io/api/sitemap/sitemap-${mapIndex}.xml`,
-                    },
-                    lastmod: {
-                        _text: new Date().toJSON().slice(0,10)
                     }
                 }
                 existingSitemapList.urlset.url.push(currentMap)
@@ -26,14 +23,16 @@ export class SitemapManipulationService {
         })
     }
 
-    addToIndexedSitemap(url: string): void {
+    addToIndexedSitemap(url: string, date?: string): void {
         glob(`${__dirname}/../../../public/sitemaps/sitemap-*.xml`, {}, (_error, files) => {
             const currentMap = {
                 loc: {
                     _text: `https://www.feednext.io/${url}`,
                 },
-                lastmod: {
-                    _text: new Date().toJSON().slice(0,10)
+                ...date && {
+                    lastmod: {
+                        _text: date
+                    }
                 }
             }
 
