@@ -200,8 +200,8 @@ export const UserTabs: React.FC<{username: string}> = (props) => {
 	const handleTabChange = (key: string): void => setCurrentTab(key)
 
 	return (
-		<Card className="blockEdges" bordered={false}>
-			<Tabs size="small" animated={false} onChange={handleTabChange} defaultActiveKey={currentTab}>
+		<Card style={{ borderRadius: 5 }}>
+			<Tabs size="small" hideAdd animated={false} onChange={handleTabChange} defaultActiveKey={currentTab}>
 				<Tabs.TabPane
 					tab={
 						<Typography.Text style={{ color: 'gray' }} strong>

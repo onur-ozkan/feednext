@@ -46,7 +46,7 @@ const User: NextPage<UserPageInitials> = (props): JSX.Element => {
 			/>
 			<Row gutter={[5, 10]} style={{ padding: 5 }}>
 				<Col lg={10} md={24} sm={24} xs={24}>
-					<Card className="blockEdges" bordered={false}>
+					<Card style={{ borderRadius: 5 }}>
 						<div style={{ textAlign: 'right', margin: '-4px 0px 5px 0px' }}>
 							{userState && (userState.username === router.query.username) &&
 								<SettingOutlined
