@@ -77,9 +77,9 @@ export class AuthController {
     }
 
     @RateLimit({
-        points: 1,
+        points: 3,
         duration: 300,
-        errorMessage: 'You can only generate 1 key in 5 minutes'
+        errorMessage: 'You have reached the limit. You have to wait 5 minutes before trying again.'
     })
     @Patch('generate-recovery-key')
     generateRecoveryKey(@Body() dto: GenerateRecoveryKeyDto): Promise<HttpException> {
