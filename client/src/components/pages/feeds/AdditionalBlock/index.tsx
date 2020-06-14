@@ -3,6 +3,7 @@ import { Card, Row, Typography, Col, Divider } from 'antd'
 
 // Other dependencies
 import React, { useState } from 'react'
+import Link from 'next/link'
 
 // Local files
 import { Aggrements } from '@/components/global/Aggrements'
@@ -18,6 +19,15 @@ export const AdditionalBlock = (): JSX.Element => {
 				closeAggrementWindow={(): void => setAggrementModalVisibilit(null)}
 			/>
 			<Row style={{ marginBottom: 15 }}>
+				<Col span={12}>
+					<a>
+						<Link href="/help">
+							<Typography.Text strong>
+								Help
+							</Typography.Text>
+						</Link>
+					</a>
+				</Col>
 				<Col span={12}>
 					<a href="https://github.com/feednext/feednext" target="_api">
 						<Typography.Text strong>
