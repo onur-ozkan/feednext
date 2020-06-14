@@ -9,7 +9,7 @@ import Link from 'next/link'
 // Local files
 import { signUp } from '@/services/api'
 import { PageHelmet } from '@/components/global/PageHelmet'
-import RegisterResult from './result'
+import RegisterResult from '@/components/pages/result'
 import { Aggrements } from '@/components/global/Aggrements'
 import AuthLayout from '@/layouts/AuthLayout'
 import '@/styles/pages/auth/sign-up/style.less'
