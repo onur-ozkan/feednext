@@ -14,16 +14,16 @@ import content from './content.json'
 import '@/styles/pages/help/style.less'
 
 const helpMenus = [
-    { title: 'F.A.Q', logo: faqPng, content: content["f.a.q"] },
-    { title: 'Using Feednext', logo: guidePng, content: content.usingFeednext },
-    { title: 'Rules & Reporting', logo: rulesPng, content: content.rulesAndReporting },
-    { title: 'Privacy & Security', logo: securityPng, content: content.privacyAndSecurity }
+    { titleReadable: 'F.A.Q', title: 'f.a.q', logo: faqPng },
+    { titleReadable: 'Using Feednext', title: 'usingFeednext', logo: guidePng },
+    { titleReadable: 'Rules & Reporting', title: 'rulesAndReporting', logo: rulesPng },
+    { titleReadable: 'Privacy & Security', title: 'privacyAndSecurity', logo: securityPng }
 ]
 
-const handleTopTitleRendering = (titleList: any[]) => {
-    return titleList.map(({ title }) => (
+const handleTopTitleRendering = (titleList: any[], field: string) => {
+    return titleList.map(({ title, slug }) => (
         <li style={{ listStyleType: 'circle', marginBottom: 15 }} key={title}>
-            <Link href="#">
+            <Link href={`help/[topic-slug]?f=${field}`} as={`help/${slug}?f=${field}`}>
                 <a style={{ fontSize: 17 }}>
                     {title}
                 </a>
@@ -42,14 +42,14 @@ export const HelpMenus = (): JSX.Element => {
                             <Row style={{ alignItems: 'center' }}>
                                 <img style={{ marginRight: 10 }} src={menu.logo} width="50" alt="Frequently Asked Questions" />
                                 <Typography.Title level={3} ellipsis>
-                                    {menu.title}
+                                    {menu.titleReadable}
                                 </Typography.Title>
                             </Row>
                         }
                         bordered={false}
                     >
                         <ul>
-                            {handleTopTitleRendering(menu.content)}
+                            {handleTopTitleRendering(content[menu.title], menu.title)}
                         </ul>
                     </Card>
                 </Col>
