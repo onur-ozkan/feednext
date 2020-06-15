@@ -200,7 +200,7 @@ export class EntriesRepository extends Repository<EntriesEntity> {
             throw new BadRequestException('Entry could not found by given id')
         }
 
-        if (role !== Role.SuperAdmin && entry.written_by !== username) {
+        if (role < Role.Admin && entry.written_by !== username) {
             throw new ForbiddenException('You have no permission to do this action')
         }
 
