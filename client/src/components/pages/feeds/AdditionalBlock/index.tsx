@@ -23,7 +23,7 @@ export const AdditionalBlock = (): JSX.Element => {
 					<a>
 						<Link href="/help">
 							<Typography.Text strong>
-								Help
+								Help <span style={{ color: '#6ec49a' }}> (new) </span>
 							</Typography.Text>
 						</Link>
 					</a>

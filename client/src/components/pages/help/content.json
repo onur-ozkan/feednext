@@ -1,0 +1,102 @@
+{
+    "f.a.q": [
+        {
+            "title": "What is Feednext?",
+            "content": ""
+        },
+        {
+            "title": "Is Feednext available in languages other than English?",
+            "content": ""
+        },
+        {
+            "title": "What if I can't find the category that I want?",
+            "content": ""
+        },
+        {
+            "title": "How does the role system works?",
+            "content": ""
+        },
+        {
+            "title": "What if I get banned unjustly?",
+            "content": ""
+        },
+        {
+            "title": "Can I change my username?",
+            "content": ""
+        },
+        {
+            "title": "How can I suggest a feature to make Feednext better?",
+            "content": ""
+        },
+        {
+            "title": "How can I support this project?",
+            "content": ""
+        }
+    ],
+    "usingFeednext": [
+        {
+            "title": "I don't get verification mails!",
+            "content": ""
+        },
+        {
+            "title": "How does chatting works?",
+            "content": ""
+        },
+        {
+            "title": "How does entry voting works?",
+            "content": ""
+        },
+        {
+            "title": "How does TODO works?",
+            "content": ""
+        },
+        {
+            "title": "How to create a feed?",
+            "content": ""
+        },
+        {
+            "title": "How to edit the feed that I created?",
+            "content": ""
+        },
+        {
+            "title": "How can I get promoted to upper role?",
+            "content": ""
+        }
+    ],
+    "rulesAndReporting": [
+        {
+            "title": "What are the rules for creating a feed?",
+            "content": ""
+        },
+        {
+            "title": "What should I do on an inappropriate Feed/Profile?",
+            "content": ""
+        },
+        {
+            "title": "How does reporting works?",
+            "content": ""
+        },
+        {
+            "title": "I accidentally posted an inappropriate Feed/Entry, will I be banned?",
+            "content": ""
+        }
+    ],
+    "privacyAndSecurity": [
+        {
+            "title": "Can account passwords be manipulated?",
+            "content": ""
+        },
+        {
+            "title": "Can private messages be manipulated?",
+            "content": ""
+        },
+        {
+            "title": "Can user entries be manipulated?",
+            "content": ""
+        },
+        {
+            "title": "Can Feednext administrators access to user passwords or messages?",
+            "content": ""
+        }
+    ]
+}
