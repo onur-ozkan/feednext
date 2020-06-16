@@ -26,12 +26,12 @@ const Feeds: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 	const [displayFilterModal, setDisplayFilterModal] = useState(false)
 	const [trendingCategories, setTrendingCategories] = useState<TrendingCategoriesResponseData[]>(props.trendingCategories)
 	const [categoryFilter, setCategoryFilter] = useState<string | undefined>(undefined)
-	const [feedList, setFeed] = useState<FeedList[]>(props.feedList)
+	const [feedList, setFeed] = useState<FeedList[]>([])
 	const [sortBy, setSortBy] = useState<'hot' | 'top' | undefined>(undefined)
 	const [skipValueForPagination, setSkipValueForPagination] = useState(0)
-	const [canLoadMore, setCanLoadMore] = useState(props.canLoadMore)
+	const [canLoadMore, setCanLoadMore] = useState(null)
 	const [isJustInitialized, setIsJustInitialized] = useState(true)
-	const [isLoading, setIsLoading] = useState(false)
+	const [isLoading, setIsLoading] = useState(true)
 	const [isLoadMoreTriggered, setIsLoadMoreTriggered] = useState(false)
 
 	const handleCategoryFilterSet = (id) => {
@@ -211,7 +211,7 @@ const Feeds: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 	}
 
 	useEffect(() => {
-		if (!isJustInitialized) handleDataFetching()
+		handleDataFetching()
 	}, [skipValueForPagination, categoryFilter, sortBy, isJustInitialized])
 
 	const handleFetchMore = (): void => {

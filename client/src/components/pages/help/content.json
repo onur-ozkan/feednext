@@ -1,0 +1,367 @@
+{
+    "f.a.q": [
+        {
+            "title": "What is Feednext?",
+            "slug": "what-is-feednext",
+            "content": [
+                {
+                    "subTitle": "Preliminary Information",
+                    "text": [
+                        "Feednext is an open source social media platform developed by one single engineer until Alpha version."
+                    ]
+                },
+                {
+                    "subTitle": "Purpose",
+                    "text": [
+                        "To provide feedback informations from a single source. Thus, people no longer needs to research on multiple websites to have idea of any object."
+                    ]
+                },
+                {
+                    "subTitle": "Release Date",
+                    "text": [
+                        "The development progress is started at October 2019, and the Alpha version is released at June 2020."
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Why is this project an open-source?",
+            "slug": "why-is-this-project-an-open-source",
+            "content": [
+                {
+                    "subTitle": "Reasons",
+                    "text": [
+                        "In our opinion, any existing software has to add something to the software world. Open Source projects are the main factor which grows Software Science. Without open-source power, %90 of the current Software technologies would not exists.",
+                        "Getting support from open source communities.",
+                        "Supporting open source."
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Is Feednext available in languages other than English?",
+            "slug": "is-feednext-available-in-languages-other-than-english",
+            "content": [
+                {
+                    "subTitle": "Answer",
+                    "text": [
+                        "No, currently not. But would be support in the future."
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "What if I can't find the category that I want?",
+            "slug": "what-if-i-cant-find-the-category-that-i-want",
+            "content": [
+                {
+                    "subTitle": "Preliminary Information",
+                    "text": [
+                        "There will be some missing categories until v1.0.0."
+                    ]
+                },
+                {
+                    "subTitle": "Suggestion",
+                    "text": [
+                        "If the main category exists, find 'Other' category below that main one. Administrators will update the feed when that missing category will be added.",
+                        "If even the main category does not exists, make a request on Requests page with the missing category name."
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "How does the role system works?",
+            "slug": "how-does-the-role-system-works",
+            "content": [
+                {
+                    "subTitle": "Role Privileges",
+                    "text": [
+                        "User: Can create-vote feed, create-vote-edit&delete(only its own) entry, chat with other people.",
+                        "Junior Author: User permissions + NOT DECIDED YET",
+                        "Mid-Level Author: Junior Author permissions + NOT DECIDED YET",
+                        "Senior Author: Mid-Level Author permissions + NOT DECIDED YET",
+                        "Admin: Senior Author permissions + Can update feed informations, delete user entries, ban user accounts, promote-demote account roles that are lower than this role.",
+                        "Super Admin: Admin permissions + Can create-update-delete category, delete feed, delete all entries belongs to user ."
+                    ]
+                },
+                {
+                    "subTitle": "When I get promoted?",
+                    "text": [
+                        "The promote system will be automated with an algorithm which will be depend on created entry count, created feed count, rate of created feeds, votes of created entries.",
+                        "Apart of the system, Admin or Super Admin can also promote the roles manually."
+                    ]
+                },
+                {
+                    "subTitle": "When I get demoted?",
+                    "text": [
+                        "System can demote the user role automatically because roles are dependent on latest account values of user.",
+                        "Apart of the system, Admin or Super Admin can also demote the roles manually with a decent reason(like breaking the rules)."
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "What if I get banned unjustly?",
+            "slug": "what-if-i-get-banned-unjustly",
+            "content": [
+                {
+                    "subTitle": "Preliminary Information",
+                    "text": [
+                        "Admins or Super Admin gives a reason when banning a user. When you contact about the banned account, the ban reason for that account will be examined."
+                    ]
+                },
+                {
+                    "subTitle": "Suggestion",
+                    "text": [
+                        "Contact with admins or directly mail to admin@feednext.io. If the ban reason does not match with the account, ban can be removed from the user account."
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Can I change my username?",
+            "slug": "can-i-change-my-username",
+            "content": [
+                {
+                    "subTitle": "Answer",
+                    "text": [
+                        "No, usernames are one time settable values on sign-up section."
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "How can I suggest a feature to make Feednext better?",
+            "slug": "how-can-i-suggest-a-feature-to-make-feednext-better",
+            "content": [
+                {
+                    "subTitle": "Answer",
+                    "text": [
+                        "You can create a request on Requests page."
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "How can I support this project?",
+            "slug": "how-can-i-support-this-project",
+            "content": [
+                {
+                    "subTitle": "Development Way",
+                    "text": [
+                        "You can contribute to source repository by working parallely with issue tracker.",
+                        "You can give a star to source repository."
+                    ]
+                },
+                {
+                    "subTitle": "Usage Way",
+                    "text": [
+                        "You can create feeds, create entries, vote & rate feeds and entries. This will help a lot to serve the purpose of the project.",
+                        "You can share/show this project to your friends.",
+                        "You can report the users who are breaking the rules."
+                    ]
+                },
+                {
+                    "subTitle": "Financial Way",
+                    "text": [
+                        "NOT DECIDED YET"
+                    ]
+                }
+            ]
+        }
+    ],
+    "usingFeednext": [
+        {
+            "title": "I don't get verification mails!",
+            "slug": "i-dont-get-verification-mails",
+            "content": [
+                {
+                    "subTitle": "Preliminary Information",
+                    "text": [
+                        "Mail sending processes can take up to 5 minutes.",
+                        "Mail might be in your spams."
+                    ]
+                },
+                {
+                    "subTitle": "I can't click buttons in mail",
+                    "text": [
+                        "Some mail services like Gmail, blocks the button events if the mail is in the spam box. To get rid of that, you need to move the mail out of the spam box."
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "How does chatting works?",
+            "slug": "how-does-chatting-works",
+            "content": [
+                {
+                    "subTitle": "Encryption",
+                    "text": [
+                        "All messages on the feednext are encrypted end-to-end."
+                    ]
+                },
+                {
+                    "subTitle": "When the conversation data gets permamently deleted?",
+                    "text": [
+                        "The conversation data stays in database unless 'both' conversation users deletes the conversations."
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "How does entry voting works?",
+            "slug": "how-does-entry-voting-works",
+            "content": [
+                {
+                    "subTitle": "Answer",
+                    "text": [
+                        "Each vote counts as either '-1' or '+1'. The total result is considered as the entry value."
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "How does Requests page works?",
+            "slug": "how-does-requests-page-works",
+            "content": [
+                {
+                    "subTitle": "Preliminary Information",
+                    "text": [
+                        "This feature has not implemented yet."
+                    ]
+                },
+                {
+                    "subTitle": "Logic",
+                    "text": [
+                        "The Requests will be listed by their vote value.",
+                        "Every week, the top 10 items of the list will be reviewed and discussed by Feednext developers. As a result, these items will be treat as TODO tasks."
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "How to edit the feed that I created?",
+            "slug": "how-to-edit-the-feed-that-i-created",
+            "content": [
+                {
+                    "subTitle": "Preliminary Information",
+                    "text": [
+                        "This feature has not implemented completely yet."
+                    ]
+                },
+                {
+                    "subTitle": "Answer",
+                    "text": [
+                        "Editing can be done within 45 minutes after the title has been created, if the number of entries has not exceeded 3. Otherwise, only Admin accounts can edit the feeds."
+                    ]
+                }
+            ]
+        }
+    ],
+    "rulesAndReporting": [
+        {
+            "title": "What are the rules for creating a feed?",
+            "slug": "what-are-the-rules-for-creating-a-feed",
+            "content": [
+                {
+                    "subTitle": "Rules",
+                    "text": [
+                        "You must have user account to create a feed.",
+                        "The title name must exactly match the name of the target object.",
+                        "The title image an optional and should not display pornographic content."
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "What should I do on an inappropriate Feed/Profile?",
+            "slug": "what-should-i-do-on-an-inappropriate-feed-profile",
+            "content": [
+                {
+                    "subTitle": "Preliminary Information",
+                    "text": [
+                        "The report system has not implemented yet."
+                    ]
+                },
+                {
+                    "subTitle": "Answer",
+                    "text": [
+                        "Simply, report the feed or user account.",
+                        "When a certain number of reports is reached, Admins will review these reports."
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "I accidentally posted an inappropriate Feed/Entry, will I be banned?",
+            "slug": "i-accidentally-posted-an-inappropriate-feed-entry-will-i-be-banned",
+            "content": [
+                {
+                    "subTitle": "What you can do is:",
+                    "text": [
+                        "Delete the inappropriate entry.",
+                        "Delete the inappropriate feed within 45 minutes after the title has been created before it gets more than 3 entries, otherwise you can not delete it."
+                    ]
+                },
+                {
+                    "subTitle": "Answer",
+                    "text": [
+                        "It depends on the situation. Admins will review inappropriate content and make decisions based on the content's inappropriateness and people's reactions."
+                    ]
+                }
+            ]
+        }
+    ],
+    "privacyAndSecurity": [
+        {
+            "title": "Can account passwords be manipulated?",
+            "slug": "can-account-passwords-be-manipulated",
+            "content": [
+                {
+                    "subTitle": "Answer",
+                    "text": [
+                        "No, on Feednext passwords are one way encrypted values which can not be decrypt and can only be accessed by its account."
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Can private messages be manipulated?",
+            "slug": "can-private-messages-be-manipulated",
+            "content": [
+                {
+                    "subTitle": "Answer",
+                    "text": [
+                        "No, conversation messages are end-to-end encrypted values ​​and can only be accessed by conversation users."
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Can user entries be manipulated?",
+            "slug": "can-user-entries-be-manipulated",
+            "content": [
+                {
+                    "subTitle": "Answer",
+                    "text": [
+                        "Entries can be deleted by Admin accounts.",
+                        "Entries can only be edited by the account that wrote that entry. Not even Super Admin can change the user entries but can delete it."
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Can Feednext administrators access to user passwords or messages?",
+            "slug": "can-feednext-administrators-access-to-user-passwords-or-messages",
+            "content": [
+                {
+                    "subTitle": "Answer",
+                    "text": [
+                        "No, they can not.",
+                        "Even the person who can access the database only sees encrypted values ​​that cannot be broken."
+                    ]
+                }
+            ]
+        }
+    ]
+}
