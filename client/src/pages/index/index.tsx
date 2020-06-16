@@ -1,11 +1,12 @@
 // Antd dependencies
-import { Button, Card, List, message, BackTop, Row, Col, Typography, Modal } from 'antd'
+import { Button, Card, List, message, BackTop, Row, Col, Typography, Modal, Skeleton } from 'antd'
 import { LoadingOutlined, ArrowUpOutlined, EyeOutlined } from '@ant-design/icons'
 
 // Other dependencies
 import React, { useEffect, useState } from 'react'
 import { AxiosError, AxiosResponse } from 'axios'
 import { NextPage } from 'next'
+import { Img } from 'react-image'
 import Link from 'next/link'
 
 // Local files
@@ -158,8 +159,9 @@ const Feeds: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 								</Row>
 							}
 							avatar={
-								<img
+								<Img
 									width={100}
+									loader={<Skeleton.Avatar size={100} shape="square" active />}
 									src={`${API_URL}/v1/title/${item.id}/image`}
 									alt="Title Image"
 								/>
