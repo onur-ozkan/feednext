@@ -26,8 +26,6 @@ const topicData = {
 const HelpTopic = (props): JSX.Element => {
     if (!props.topic) return <NotFoundPage />
 
-    console.log(props)
-
     const handleTopicBodyView = () => {
         return props.topic.content.map(item => {
             return (
