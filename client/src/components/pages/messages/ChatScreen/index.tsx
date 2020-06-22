@@ -9,7 +9,7 @@ import Link from 'next/link'
 
 // Local files
 import { fetchMessagesByConversationId, fetchUserByUsername } from '@/services/api'
-import { ChatScreenProps, MessageAttributes } from '../../types'
+import { ChatScreenProps, MessageAttributes } from '@/@types/pages'
 import { DECREASE_UNREAD_MESSAGE_VALUE } from '@/redux/Actions/Global'
 import { GetUserDataResponse } from '@/@types/api'
 import { MessageHeader } from '../MessageHeader'
@@ -20,7 +20,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = (props): JSX.Element => {
 	const [messageList, setMessageList] = useState<any[]>([])
 	const [paginationValue, setPaginationValue] = useState(0)
 	const [recipientProfile, setRecipientProfile] = useState<GetUserDataResponse | null>(null)
-	const [canPaginate, setCanPaginate] = useState(false)
+	const [canLoadMore, setCanLoadMore] = useState(false)
 
 	const dispatch = useDispatch()
 	const [form] = Form.useForm()
@@ -44,7 +44,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = (props): JSX.Element => {
 				setMessageList((messageList: any) => [...messageList, {
 					send_by: incMessage.from,
 					text: incMessage.body,
-					created_at: formatISO(new Date)
+					created_at: formatISO(new Date())
 				}])
 				bottomEl.current?.scrollIntoView({
 					behavior: 'smooth',
@@ -74,8 +74,8 @@ export const ChatScreen: React.FC<ChatScreenProps> = (props): JSX.Element => {
 		fetchMessagesByConversationId(props.globalState.accessToken, props.conversationId, paginationValue)
 			.then(async ({ data }) => {
 				await data.attributes.messages.map((item: any) => setMessageList((currentState) => [item, ...currentState]))
-				if (data.attributes.count > messageList.length) setCanPaginate(true)
-				else setCanPaginate(false)
+				if (data.attributes.count > (data.attributes.messages.length + paginationValue)) setCanLoadMore(true)
+				else setCanLoadMore(false)
 			})
 	}, [paginationValue, props.conversationId])
 
@@ -101,7 +101,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = (props): JSX.Element => {
 		setMessageList((messageList: any) => [...messageList, {
 			send_by: props.username,
 			text: values.messageText,
-			created_at: formatISO(new Date)
+			created_at: formatISO(new Date())
 		}])
 		bottomEl.current?.scrollIntoView({
 			behavior: 'smooth',
@@ -142,7 +142,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = (props): JSX.Element => {
 		)
 	}
 
-	const loadMore = canPaginate  && (
+	const loadMore = canLoadMore  && (
 		<div style={{ textAlign: 'center', marginTop: 10 }}>
 			<Button
 				onClick={(): void => setPaginationValue(paginationValue + 10)}
@@ -167,7 +167,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = (props): JSX.Element => {
 			<div
 				style={{
 					display: 'flex',
-					padding: '0px 50px 50px 50px',
+					padding: '0 50px 50px 50px',
 					flexDirection: 'column',
 					overflow: 'scroll',
 					overflowX: 'hidden',
@@ -204,7 +204,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = (props): JSX.Element => {
 						<Input.TextArea rows={4} />
 					</Form.Item>
 					<Form.Item style={{ float: 'right' }}>
-						<div ref={bottomEl}>
+						<div ref={bottomEl} style={{ marginTop: 5 }}>
 							<Button  htmlType="submit"> Send </Button>
 						</div>
 					</Form.Item>
