@@ -3,7 +3,9 @@ import { Controller, Get, Response, Param } from '@nestjs/common'
 
 // Other dependencies
 import { createReadStream } from 'fs'
+import { ApiTags } from '@nestjs/swagger'
 
+@ApiTags('sitemap')
 @Controller('sitemap')
 export class SitemapController {
 	@Get(':filename')
