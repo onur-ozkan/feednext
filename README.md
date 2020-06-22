@@ -2,6 +2,9 @@
   <img src="https://raw.githubusercontent.com/feednext/feednext/master/server/public/logo-wide.png" alt="Brand Logo"/>
 
   <p align="center">
+    <a href="https://www.codefactor.io/repository/github/feednext/feednext">
+      <img src="https://www.codefactor.io/repository/github/feednext/feednext/badge?style=flat-square" />
+    </a>
     <a href="https://github.com/feednext/feednext/commits/master">
       <img src="https://img.shields.io/github/commit-activity/m/feednext/feednext?style=flat-square" alt="Commit Activity" />
     <a/>
