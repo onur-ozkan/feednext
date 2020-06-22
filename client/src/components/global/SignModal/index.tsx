@@ -20,7 +20,7 @@ export const SignModal = (props: ComponentProps) => (
 		footer={null}
 		onCancel={props.closeModal}
 	>
-		<Divider style={{ margin: "-10px 0px 10px 0px" }} orientation="center">
+		<Divider style={{ margin: "-10px 0 10px 0" }} orientation="center">
 			<Typography.Title level={4}>Sign In</Typography.Title>
 		</Divider>
 		<Typography.Text strong>This action requires User sign, please sign in before doing that</Typography.Text>

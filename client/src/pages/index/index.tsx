@@ -296,6 +296,6 @@ const Feeds: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 	)
 }
 
-Feeds.getInitialProps = async () => await getFeedsPageInitialValues()
+Feeds.getInitialProps = async () => getFeedsPageInitialValues()
 
 export default Feeds

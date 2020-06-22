@@ -148,7 +148,7 @@ export const ConversationList: React.FC<ConversationListProps> = (props): JSX.El
 						left: 0,
 						bottom: 10,
 						fontSize: 15,
-						padding: '0px 0px 0px 10px',
+						padding: '0 0 0 10px',
 						zIndex: 1
 					}}
 					onChange={(page: number): void => {

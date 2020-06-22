@@ -27,7 +27,7 @@ const FlowHeader: React.FC<FlowHeaderProps> = (props): JSX.Element => {
 	}
 
 	return (
-		<Row style={{ margin: '10px -15px -25px 0px', position: 'relative', zIndex: 1 }}>
+		<Row style={{ margin: '10px -15px -25px 0', position: 'relative', zIndex: 1 }}>
 			<Col />
 			<Button
 				onClick={props.openFilterModal}

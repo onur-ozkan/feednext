@@ -5,18 +5,19 @@ import { SettingOutlined, IdcardOutlined, UpSquareOutlined, LinkOutlined, Soluti
 // Other dependencies
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { format, parseISO } from 'date-fns'
+import { NextPage } from 'next'
 import { useRouter } from 'next/router'
+import { format, parseISO } from 'date-fns'
+
 
 // Local files
 import { API_URL, Guest } from '@/../config/constants'
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { UserTabs } from '@/components/pages/user/[username]'
-import AppLayout from '@/layouts/AppLayout'
-import NotFoundPage from '@/pages/404'
-import { NextPage } from 'next'
 import { getUserPageInitialValues } from '@/services/initializations'
 import { UserPageInitials } from '@/@types/initializations'
+import AppLayout from '@/layouts/AppLayout'
+import NotFoundPage from '@/pages/404'
 
 const readableRoles = {
 	0: 'User',
@@ -47,7 +48,7 @@ const User: NextPage<UserPageInitials> = (props): JSX.Element => {
 			<Row gutter={[5, 10]} style={{ padding: 5 }}>
 				<Col lg={10} md={24} sm={24} xs={24}>
 					<Card style={{ borderRadius: 5 }}>
-						<div style={{ textAlign: 'right', margin: '-4px 0px 5px 0px' }}>
+						<div style={{ textAlign: 'right', margin: '-4px 0 5px 0' }}>
 							{userState && (userState.username === router.query.username) &&
 								<SettingOutlined
 									onClick={() => router.push('/settings')}

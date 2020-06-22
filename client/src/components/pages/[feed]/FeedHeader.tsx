@@ -187,7 +187,7 @@ const FeedHeader: React.FC<FeedHeaderProps> = (props): JSX.Element => {
 					<>
 						<Tag color="#6ec49a">{categoryData.attributes.name}</Tag>
 						<Row>
-							<Col style={{ margin: '0px 5px -15px 0px' }}>
+							<Col style={{ margin: '0 5px -15px 0' }}>
 								<Typography.Title level={2} style={{ whiteSpace: 'pre-wrap' }}>
 									{titleData.attributes.name}
 								</Typography.Title>
