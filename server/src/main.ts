@@ -25,6 +25,16 @@ async function bootstrap() {
         origin: true
     })
 
+    fastifyAdapter.get('/', (_req, reply) => {
+        reply.code(200).header('Content-Type', 'application/json; charset=utf-8').send({
+            status: 'online',
+            source: 'https://github.com/feednext/feednext',
+            versions: [
+                'v1'
+            ]
+        })
+    })
+
     fastifyAdapter.register(helmet) // Initialize security middleware module 'fastify-helmet'
     fastifyAdapter.register(compress) // Initialize fastify-compress to better handle high-level traffic
     fastifyAdapter.register(fastifyCookie) // Initialize fastify-cookie for cookie manipulation
