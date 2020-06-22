@@ -36,7 +36,7 @@ export const HelpMenus = (): JSX.Element => {
     const handleMenuRendering = () => {
         return helpMenus.map(menu => {
             return (
-                <Col style={{ padding: '0px 30px 0px 30px' }} md={12} sm={24} xs={24}>
+                <Col style={{ padding: '0 30px 0 30px' }} md={12} sm={24} xs={24}>
                     <Card
                         title={
                             <Row style={{ alignItems: 'center' }}>

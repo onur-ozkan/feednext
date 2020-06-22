@@ -21,8 +21,8 @@ export class AwsService {
                     this.s3Instance().getObject({
                         Bucket: configService.getEnv('AWS_S3_BUCKET'),
                         Key: `${directory}/default.jpg`
-                    }, (_e, data) => {
-                        resolve(data.Body)
+                    }, (_e, value) => {
+                        resolve(value.Body)
                     })
                     return
                 }

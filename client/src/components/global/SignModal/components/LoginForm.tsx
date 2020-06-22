@@ -54,7 +54,7 @@ export const LoginForm: React.FC = (): JSX.Element => {
 	return (
 		<Form form={form} name="sign-in" onFinish={onSubmit} style={{ marginTop: 20 }}>
 			<Form.Item
-				style={{ margin: "0px 0px 10px 0px" }}
+				style={{ margin: "0 0 10px 0" }}
 				name="usernameOrEmail"
 				rules={[{ required: true, message: "Enter an username or email" }]}
 			>
@@ -65,7 +65,7 @@ export const LoginForm: React.FC = (): JSX.Element => {
 				<Input.Password prefix={<LockOutlined style={{ color: '#717171'}} />} placeholder="Password" />
 			</Form.Item>
 
-			<Row style={{ margin: "-5px 0px -10px 0px" }}>
+			<Row style={{ margin: "-5px 0 -10px 0" }}>
 				<Col>
 					<Form.Item name="remember" valuePropName="checked">
 						<Checkbox>Remember me</Checkbox>
@@ -87,7 +87,7 @@ export const LoginForm: React.FC = (): JSX.Element => {
 				</Button>
 			</Form.Item>
 
-			<Divider style={{ margin: "0px 0px -10px 0px" }} orientation="right">
+			<Divider style={{ margin: "0 0 -10px 0" }} orientation="right">
 				<Link href="/auth/sign-up">Sign Up</Link>
 			</Divider>
 		</Form>
