@@ -4,7 +4,7 @@ import { LoadingOutlined } from '@ant-design/icons'
 
 // Other dependencies
 import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
+import { useRouter, NextRouter } from 'next/router'
 
 // Local files
 import { PageHelmet } from '@/components/global/PageHelmet'
@@ -14,7 +14,7 @@ import AuthLayout from '@/layouts/AuthLayout'
 import '@/styles/pages/auth/sign-up/account-verification/style.less'
 
 const AccountVerification: React.FunctionComponent = () => {
-	const router = useRouter()
+	const router: NextRouter & { query: { token?: string } } = useRouter()
 	const [isRequestSucceess, setIsRequestSucceess] = useState<boolean | null>(null)
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
 

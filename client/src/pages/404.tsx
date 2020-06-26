@@ -6,9 +6,9 @@ import React from 'react'
 import { useRouter } from 'next/router'
 
 // Local files
+import { AppLayout } from '@/layouts/AppLayout'
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { Guest } from '@/../config/constants'
-import AppLayout from '@/layouts/AppLayout'
 
 const NotFoundPage: React.FC<{}> = () => {
 	const router = useRouter()

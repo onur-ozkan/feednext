@@ -1,4 +1,4 @@
-export interface ComponentProps {
+export interface SignModalProps {
 	visibility: boolean,
 	closeModal: () => void
 }

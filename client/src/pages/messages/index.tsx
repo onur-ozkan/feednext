@@ -14,7 +14,7 @@ import { WelcomePage } from '@/components/pages/messages/WelcomePage'
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { User } from '@/../config/constants'
 import { ConversationAttributes } from '@/@types/pages'
-import AppLayout from '@/layouts/AppLayout'
+import { AppLayout } from '@/layouts/AppLayout'
 import '@/styles/pages/messages/style.less'
 
 const Messages = (): JSX.Element => {

@@ -5,7 +5,7 @@ import { InfoCircleOutlined } from '@ant-design/icons'
 // Other dependencies
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { useRouter } from 'next/router'
+import { useRouter, NextRouter } from 'next/router'
 import { NextPage } from 'next'
 
 // Local files
@@ -17,15 +17,15 @@ import { PageHelmet } from '@/components/global/PageHelmet'
 import { EntryAttributes } from '@/@types/pages'
 import { getFeedPageInitialValues } from '@/services/initializations'
 import { FeedPageInitials } from '@/@types/initializations'
+import { ImageUpload } from '@/components/global/ImageUpload'
+import { AppLayout } from '@/layouts/AppLayout'
 import NotFoundPage from '@/pages/404'
 import FeedHeader from '@/components/pages/[feed]/FeedHeader'
 import FeedEntries from '@/components/pages/[feed]/FeedEntries'
 import PageLoading from '@/components/global/PageLoading'
-import ImageUpload from '@/components/global/ImageUpload'
-import AppLayout from '@/layouts/AppLayout'
 
 const Feed: NextPage<FeedPageInitials> = (props): JSX.Element => {
-	const router = useRouter()
+	const router: NextRouter & { query: { page?: number } } = useRouter()
 	const globalState = useSelector((state: any) => state.global)
 	const userRole = useSelector((state: any) => state.user?.attributes.user.role)
 

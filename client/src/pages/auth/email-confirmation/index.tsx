@@ -5,7 +5,7 @@ import { LoadingOutlined } from '@ant-design/icons'
 // Other dependencies
 import React, { useState, useEffect } from 'react'
 import { persistor } from '@/redux/store'
-import { useRouter } from 'next/router'
+import { useRouter, NextRouter } from 'next/router'
 
 // Local files
 import { PageHelmet } from '@/components/global/PageHelmet'
@@ -15,11 +15,11 @@ import '@/styles/pages/auth/email-confirmation/style.less'
 import AuthLayout from '@/layouts/AuthLayout'
 
 const EmailConfirmation: React.FunctionComponent = () => {
-	const router = useRouter()
+	const router: NextRouter & { query: { token?: string } } = useRouter()
 	const [isRequestSucceess, setIsRequestSucceess] = useState<boolean | null>(null)
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-	if (!router.query?.token) return <NotFoundPage />
+	if (!router.query.token) return <NotFoundPage />
 
 	useEffect(() => {
 		verifyUpdatedEmail(router.query.token).then(async () => {

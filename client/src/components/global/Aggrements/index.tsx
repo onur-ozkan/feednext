@@ -7,9 +7,9 @@ import React from 'react'
 // Local files
 import { PrivacyPolicy } from './components/PrivacyPolicy'
 import { TermsAndConditions } from './components/TermsAndConditions'
-import { ComponentProps } from '@/@types/components'
+import { AggrementsProps } from '@/@types/components'
 
-export const Aggrements: React.FC<ComponentProps> = (props): JSX.Element => (
+export const Aggrements: React.FC<AggrementsProps> = (props): JSX.Element => (
 	<div style={{ position: 'absolute' }}>
 		{props.aggrementModalVisibility && ( // To handle buggy animation on window close
 			<Modal

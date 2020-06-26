@@ -3,9 +3,9 @@ import React from 'react'
 import Head from 'next/head'
 
 // Local files
-import { ComponentProps } from '@/@types/components'
+import { PageHelmetProps } from '@/@types/components'
 
-export const PageHelmet = (props: ComponentProps): JSX.Element => {
+export const PageHelmet: React.FC<PageHelmetProps> = (props): JSX.Element => {
 	return (
 		<>
 			<Head>

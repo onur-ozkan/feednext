@@ -8,7 +8,7 @@ import React, { useContext } from 'react'
 import { CategorySelect } from '@/components/global/CategorySelect'
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { Step1Props } from '@/@types/pages'
-import ImageUpload from '@/components/global/ImageUpload'
+import { ImageUpload } from '@/components/global/ImageUpload'
 import StepContext from '@/services/step.context.service'
 import '@/styles/components/StepForm/style.less'
 
@@ -21,7 +21,7 @@ const formItemLayout = {
 	},
 }
 
-const Step1 = (props: Step1Props): JSX.Element => {
+const Step1: React.FC<Step1Props> = (props): JSX.Element => {
 	const [form] = Form.useForm()
 	const { createTitleFormData, readableCategoryValue } = useContext(StepContext)
 	const { setCreateTitleFormData, stepMovementTo, setReadableCategoryValue } = props

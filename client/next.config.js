@@ -7,9 +7,6 @@ const path = require('path')
 const themeVariables = lessToJS(fs.readFileSync(path.resolve(__dirname, './src/styles/antd/override.less'), 'utf8'))
 
 module.exports = withCSS(withLess({
-	typescript: {
-		ignoreBuildErrors: true
-	},
 	lessLoaderOptions: {
 		javascriptEnabled: true,
 		modifyVars: themeVariables // make your antd custom effective

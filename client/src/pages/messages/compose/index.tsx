@@ -5,20 +5,20 @@ import { ArrowLeftOutlined } from '@ant-design/icons'
 // Other dependencies
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { useRouter } from 'next/router'
+import { useRouter, NextRouter } from 'next/router'
 
 // Local files
 import { searchUser, fetchUserByUsername } from '@/services/api'
 import { socketConnection } from '@/services/socket.service'
 import { PageHelmet } from '@/components/global/PageHelmet'
-import { ComponentProps, FormDataType } from '@/@types/pages'
+import { FormDataType } from '@/@types/pages'
 import { API_URL, User } from '@/../config/constants'
-import AppLayout from '@/layouts/AppLayout'
+import { AppLayout } from '@/layouts/AppLayout'
 
 
-const Compose: React.FC<ComponentProps> = (props): JSX.Element => {
+const Compose: React.FC = (): JSX.Element => {
 	const globalState = useSelector((state: any) => state.global)
-	const router = useRouter()
+	const router: NextRouter & { query: { username?: string } } = useRouter()
 
 	const wss = socketConnection(globalState.accessToken)
 	const [form] = Form.useForm()

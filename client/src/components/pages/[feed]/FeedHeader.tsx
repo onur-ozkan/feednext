@@ -144,22 +144,25 @@ const FeedHeader: React.FC<FeedHeaderProps> = (props): JSX.Element => {
 				<Card style={{ padding: 15 }} bordered={false}>
 					{gridData.map(item => {
 						return (
-							<Card.Grid
-								key={item.title}
-								className={'cardGrids'}
-								style={{
-									cursor: item.href ? 'pointer' : 'normal'
-								}}
-								onClick={()  => {
+							<span
+								onClick={() => {
 									if (item.href) router.replace('/user/[username]', item.href)
 								}}
 							>
-								<Statistic
-									suffix={item.suffix}
-									title={item.title}
-									value={item.value}
-								/>
-							</Card.Grid>
+								<Card.Grid
+									key={item.title}
+									className={'cardGrids'}
+									style={{
+										cursor: item.href ? 'pointer' : 'normal'
+									}}
+								>
+									<Statistic
+										suffix={item.suffix}
+										title={item.title}
+										value={item.value}
+									/>
+								</Card.Grid>
+							</span>
 						)
 					})}
 				</Card>

@@ -7,7 +7,7 @@ export interface CategoryData {
 	updated_at: string
 }
 
-export interface ComponentProps {
+export interface CategorySelectProps {
 	style?: { [key: string]: string | number }
 	placeHolder?: string
 	multiple?: boolean

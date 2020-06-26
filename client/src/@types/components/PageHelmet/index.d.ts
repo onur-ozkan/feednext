@@ -1,4 +1,4 @@
-export interface ComponentProps {
+export interface PageHelmetProps {
 	title: string | undefined
 	description: string | undefined
 	author?: string | undefined
