@@ -171,7 +171,7 @@ const Feeds: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 						{item.featuredEntry ?
 							<ArticleListContent data={item.featuredEntry} />
 							:
-							<Typography.Text strong> No Entry Found </Typography.Text>
+							<Typography.Text strong> No entry posted yet </Typography.Text>
 						}
 					</List.Item>
 				)}
