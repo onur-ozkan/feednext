@@ -1,10 +1,10 @@
 // Antd dependencies
-import { Form, Button, Descriptions, Divider, Modal, Avatar } from 'antd'
-import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { Form, Button, Descriptions, Divider, Modal, Avatar, Rate } from 'antd'
+import { ExclamationCircleOutlined, LoadingOutlined } from '@ant-design/icons'
 import TextArea from 'antd/lib/input/TextArea'
 
 // Other dependencies
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 
 // Local files
 import { PageHelmet } from '@/components/global/PageHelmet'
@@ -23,26 +23,32 @@ const formItemLayout = {
 
 const Step2 = (props: Step2Props): JSX.Element => {
 	const [form] = Form.useForm()
-	const { createTitleFormData, readableCategoryValue, firstEntryForm } = useContext(StepContext)
-
-	const { stepMovementTo, setFirstEntryForm, setIsRequestReady } = props
+	const { createTitleFormData, readableCategoryValue, firstEntryForm, titleRate } = useContext(StepContext)
+	const { stepMovementTo, setFirstEntryForm, setIsRequestReady, setTitleRate } = props
+	const [isRequestStarted, setIsRequestStarted] = useState(false)
 
 	const onPrev = (): void => {
 		setFirstEntryForm((state: any) => ({...state, text: form.getFieldValue('entry') }))
+		setTitleRate(form.getFieldValue('rate'))
 		stepMovementTo('main')
 	}
 
 	const onValidateForm = (): void => {
-		if (!form.getFieldValue('entry')) return
+		setIsRequestStarted(true)
+		if (!form.getFieldValue('entry') || !form.getFieldValue('rate')) {
+			setIsRequestStarted(false)
+			return
+		}
 
 		setFirstEntryForm({
 			text: form.getFieldValue('entry')
 		})
+		setTitleRate(form.getFieldValue('rate'))
 		setIsRequestReady(true)
 	}
 
 	const confirmationModal = (): void => {
-		if (!form.getFieldValue('entry')) return
+		if (!form.getFieldValue('entry') || !form.getFieldValue('rate')) return
 		Modal.confirm({
 			centered: true,
 			title: 'You are about to post this feed. Are you sure ?',
@@ -81,8 +87,14 @@ const Step2 = (props: Step2Props): JSX.Element => {
 					</Descriptions.Item>
 				</Descriptions>
 				<Divider style={{ margin: '24px 0' }} />
+				<Form.Item label="Rate" name="rate" rules={[{ required: true, message: 'Please rate the title' }]}>
+					<Rate defaultValue={titleRate} />
+				</Form.Item>
 				<Form.Item rules={[{ required: true, message: 'Please fill the input above' }]} label="Entry" name="entry">
-					<TextArea placeholder="Share us your thoughts about the title that you are creating" allowClear autoSize={{ minRows: 4 }} />
+					<TextArea
+						placeholder="Share us your thoughts about the title that you are creating"
+						autoSize={{ minRows: 4 }}
+					/>
 				</Form.Item>
 				<Form.Item
 					style={{ marginBottom: 8 }}
@@ -94,10 +106,15 @@ const Step2 = (props: Step2Props): JSX.Element => {
 						},
 					}}
 				>
-					<Button type="primary" htmlType="submit" onClick={confirmationModal}>
+					<Button
+						type="primary"
+						htmlType="submit"
+						icon={isRequestStarted && <LoadingOutlined />}
+						onClick={!isRequestStarted && confirmationModal}
+					>
 						Post
 					</Button>
-					<Button onClick={onPrev} style={{ marginLeft: 8 }}>
+					<Button onClick={!isRequestStarted && onPrev} style={{ marginLeft: 8 }}>
 						Previous Step
 					</Button>
 				</Form.Item>

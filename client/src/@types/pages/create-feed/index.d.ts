@@ -13,6 +13,7 @@ export interface Step1Props {
 
 export interface Step2Props {
 	stepMovementTo: (_step?: string | undefined) => void,
+	setTitleRate: React.Dispatch<number>,
 	setIsRequestReady: React.Dispatch<React.SetStateAction<boolean>>,
 	setFirstEntryForm: React.Dispatch<React.SetStateAction<{ text: string }>>
 }
