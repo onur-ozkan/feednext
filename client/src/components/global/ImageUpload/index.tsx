@@ -4,9 +4,9 @@ import { LoadingOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons
 
 // Other dependencies
 import React, { useState } from 'react'
-import { ComponentProps } from '@/@types/components'
+import { ImageUploadProps } from '@/@types/components'
 
-const ImageUpload = ({ onImageTake, onRemoveImage, defaultUrl }: ComponentProps): JSX.Element => {
+export const ImageUpload: React.FC<ImageUploadProps> = ({ onImageTake, onRemoveImage, defaultUrl }): JSX.Element => {
 	const [isImageLoading, setIsImageLoading] = useState(false)
 	const [base64, setBase64] = useState<string | null>(defaultUrl)
 
@@ -98,5 +98,3 @@ const ImageUpload = ({ onImageTake, onRemoveImage, defaultUrl }: ComponentProps)
 		</Upload>
 	)
 }
-
-export default ImageUpload

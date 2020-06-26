@@ -6,10 +6,10 @@ import React from 'react'
 
 // Local files
 import { LoginForm } from './components/LoginForm'
-import { ComponentProps } from '@/@types/components'
+import { SignModalProps } from '@/@types/components'
 import './style.less'
 
-export const SignModal = (props: ComponentProps) => (
+export const SignModal: React.FC<SignModalProps> = (props) => (
 	<Modal
 		transitionName="fade"
 		className="signModal"

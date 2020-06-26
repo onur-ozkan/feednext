@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux'
 import { AccountSettings } from '../../components/pages/settings/account-settings'
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { User } from '@/../config/constants'
-import AppLayout from '@/layouts/AppLayout'
+import { AppLayout } from '@/layouts/AppLayout'
 import '@/styles/pages/settings/style.less'
 
 const Settings = (): JSX.Element => {
@@ -26,7 +26,7 @@ const Settings = (): JSX.Element => {
 				mediaDescription="Best reviews, comments, feedbacks about anything around the world"
 			/>
 			<Card>
-				<Tabs size="default" tabPosition="top" animated={false} defaultActiveKey="profile">
+				<Tabs size="middle" tabPosition="top" animated={false} defaultActiveKey="profile">
 					<Tabs.TabPane
 						tab={
 							<Typography.Text strong>

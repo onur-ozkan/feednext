@@ -7,11 +7,11 @@ import Link from 'next/link'
 
 // Local files
 import RightContent from '@/components/global/GlobalHeader/RightContent'
-import RouteHandler from '@/middleware/RouteHandler'
+import { RouteHandler } from '@/middleware/RouteHandler'
 import logoWide from '@/assets/logo-wide.svg'
 import logoSquare from '@/assets/logo-square.svg'
 
-const AppLayout: React.FC = props => {
+export const AppLayout: React.FC<{authority: number}> = props => {
 	return (
 		<RouteHandler authority={props.authority}>
 			<Layout>
@@ -42,5 +42,3 @@ const AppLayout: React.FC = props => {
 		</RouteHandler>
 	)
 }
-
-export default AppLayout

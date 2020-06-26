@@ -28,6 +28,7 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { format, parseISO } from 'date-fns'
 import { useRouter } from 'next/router'
+import { PaginationProps } from 'antd/lib/pagination'
 
 // Local files
 import { voteEntry, undoEntryVote, updateEntry, deleteEntry } from '@/services/api'
@@ -51,7 +52,7 @@ const FeedEntries: React.FC<FeedEntriesProps> = (props): JSX.Element => {
 	const userState = useSelector((state: any) => state.user?.attributes.user)
 	const [signModalVisibility, setSignModalVisibility] = useState(false)
 
-	const paginationOptions = {
+	const paginationOptions: PaginationProps = {
 		size: 'small',
 		showLessItems: true,
 		hideOnSinglePage: true,
@@ -253,19 +254,20 @@ const FeedEntries: React.FC<FeedEntriesProps> = (props): JSX.Element => {
 						<Comment
 							actions={handleEntryActions(item)}
 							author={
-								<Typography.Text
+								<span
 									onClick={() => router.push('/user/[username]', `/user/${item.written_by}`)}
 									style={{ cursor: 'pointer', fontSize: 15, color: '#414141' }}
 								>
 									{item.written_by}
-								</Typography.Text>
+								</span>
 							}
 							avatar={
-								<Avatar
-									onClick={() => router.push('/user/[username]', `/user/${item.written_by}`)}
-									src={`${API_URL}/v1/user/pp?username=${item.written_by}`}
-									alt="Author Image"
-								/>
+								<span onClick={() => router.push('/user/[username]', `/user/${item.written_by}`)}>
+									<Avatar
+										src={`${API_URL}/v1/user/pp?username=${item.written_by}`}
+										alt="Author Image"
+									/>
+								</span>
 							}
 							content={
 								<>
@@ -301,7 +303,7 @@ const FeedEntries: React.FC<FeedEntriesProps> = (props): JSX.Element => {
 								</>
 							}
 							datetime={
-								<span onClick={(): void => handleEntryRouting(item.id)} style={{ cursor: 'pointer' }}>
+								<span onClick={() => handleEntryRouting(item.id)} style={{ cursor: 'pointer' }}>
 									{format(parseISO(item.created_at), 'dd LLL yyyy (p O)')}
 								</span>
 							}
@@ -310,7 +312,11 @@ const FeedEntries: React.FC<FeedEntriesProps> = (props): JSX.Element => {
 				)}
 			/>
 			{userState && (
-				<AddEntry setEntryList={setEntryList} titleId={titleData.attributes.id} accessToken={accessToken} />
+				<AddEntry
+					accessToken={accessToken}
+					titleId={titleData.attributes.id}
+					setEntryList={setEntryList}
+				/>
 			)}
 		</Card>
 	)

@@ -19,9 +19,9 @@ import { TrendingCategoriesResponseData } from '@/@types/api'
 import { FeedList } from '@/@types/pages/feeds'
 import { getFeedsPageInitialValues } from '@/services/initializations'
 import { FeedsPageInitials } from '@/@types/initializations'
+import { AppLayout } from '@/layouts/AppLayout'
 import ArticleListContent from '@/components/pages/feeds/ArticleListContent'
 import FlowHeader from '@/components/pages/feeds/FlowHeader'
-import AppLayout from '@/layouts/AppLayout'
 
 const Feeds: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 	const [displayFilterModal, setDisplayFilterModal] = useState(false)
@@ -94,6 +94,7 @@ const Feeds: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 				* This is a workaround to fix wrong list order of Feeds Flow.
 				* Updating feeds should be refactored.
 				*/
+				// @ts-ignore
 				result.map(item => setFeed((feedList: FeedList[]) => [...feedList, item]))
 
 				if (feedsResponse.data.attributes.count > (feedsResponse.data.attributes.titles.length + skipValueForPagination)) setCanLoadMore(true)

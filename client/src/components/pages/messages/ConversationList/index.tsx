@@ -132,13 +132,14 @@ export const ConversationList: React.FC<ConversationListProps> = (props): JSX.El
 	return (
 		<div className={'left'}>
 			<div style={{ textAlign: 'center' }} className={'top'}>
-				<Avatar
-					onClick={() => router.push('/messages/compose')}
-					style={{ cursor: 'pointer' }}
-					shape="square" size="large"
-					src={newMessagePng}
-					alt="New Message Icon"
-				/>
+				<span onClick={() => router.push('/messages/compose')}>
+					<Avatar
+						style={{ cursor: 'pointer' }}
+						shape="square" size="large"
+						src={newMessagePng}
+						alt="New Message Icon"
+					/>
+				</span>
 			</div>
 			<Row className={'people'}>
 				{handleConversationListView()}

@@ -14,7 +14,7 @@ import { handleSessionExpiration } from '@/services/utils.service'
 import { socketConnection } from '@/services/socket.service'
 import { User } from '@/../config/constants'
 
-const RouteHandler = (props: { authority: number, children: React.ReactNode }) => {
+export const RouteHandler: React.FC<{ authority: number, children: any }> = (props) => {
 	const router = useRouter()
 
 	const [lastMessageFromSocket, setLastMessageFromSocket] = useState<{ conversation_id: string, from: string, body: string } | null>(null)
@@ -120,5 +120,3 @@ const RouteHandler = (props: { authority: number, children: React.ReactNode }) =
 
 	return props.children
 }
-
-export default RouteHandler

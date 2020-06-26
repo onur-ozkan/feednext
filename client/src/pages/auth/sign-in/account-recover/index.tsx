@@ -4,7 +4,7 @@ import { LoadingOutlined } from '@ant-design/icons'
 
 // Other dependencies
 import React, { useState } from 'react'
-import { useRouter } from 'next/router'
+import { useRouter, NextRouter } from 'next/router'
 
 // Local files
 import { PageHelmet } from '@/components/global/PageHelmet'
@@ -14,7 +14,12 @@ import AuthLayout from '@/layouts/AuthLayout'
 import '@/styles/pages/auth/sign-in/account-recover/style.less'
 
 const AccountRecover: React.FunctionComponent = () => {
-	const router = useRouter()
+	const router: NextRouter & {
+		query: {
+			email?: string,
+			recoveryKey?: string
+		}
+	} = useRouter()
 	const [requestOnGoing, setRequestOnGoing] = useState(false)
 	const [form] = Form.useForm()
 

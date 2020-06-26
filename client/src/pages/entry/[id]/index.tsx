@@ -13,8 +13,8 @@ import { PageHelmet } from '@/components/global/PageHelmet'
 import { getEntryPageInitialValues } from '@/services/initializations/[entry]'
 import { NextPage } from 'next'
 import { EntryPageInitials } from '@/@types/initializations'
+import { AppLayout } from '@/layouts/AppLayout'
 import NotFoundPage from '../../404'
-import AppLayout from '@/layouts/AppLayout'
 
 const Entry: NextPage<EntryPageInitials> = (props): JSX.Element => {
 	const router = useRouter()
@@ -35,9 +35,10 @@ const Entry: NextPage<EntryPageInitials> = (props): JSX.Element => {
 					<Typography.Title
 						level={2}
 						style={{ cursor: 'pointer', whiteSpace: 'pre-wrap' }}
-						onClick={() => router.push('/[feed]', `/${title?.attributes.slug}`)}
 					>
-						{title?.attributes.name}
+						<span onClick={() => router.push('/[feed]', `/${title?.attributes.slug}`)}>
+							{title?.attributes.name}
+						</span>
 					</Typography.Title>
 				</Col>
 				<Col>
@@ -87,18 +88,20 @@ const Entry: NextPage<EntryPageInitials> = (props): JSX.Element => {
 					datetime={handleCommentTime()}
 					author={
 						<Typography.Text
-							onClick={() => router.push('/user/[username]', `/user/${entryData?.attributes.written_by}`)}
 							style={{ cursor: 'pointer', fontSize: 15, color: '#414141' }}
 						>
-							{entryData?.attributes.written_by}
+							<span onClick={() => router.push('/user/[username]', `/user/${entryData?.attributes.written_by}`)}>
+								{entryData?.attributes.written_by}
+							</span>
 						</Typography.Text>
 					}
 					avatar={
-						<Avatar
-							onClick={() => router.push('/user/[username]', `/user/${entryData?.attributes.written_by}`)}
-							src={`${API_URL}/v1/user/pp?username=${entryData?.attributes.written_by}`}
-							alt="Author Image"
-						/>
+						<span onClick={() => router.push('/user/[username]', `/user/${entryData?.attributes.written_by}`)}>
+							<Avatar
+								src={`${API_URL}/v1/user/pp?username=${entryData?.attributes.written_by}`}
+								alt="Author Image"
+							/>
+						</span>
 					}
 					content={<p>{entryData?.attributes.text}</p>}
 				/>

@@ -11,10 +11,10 @@ import { createTitle, createEntry, rateTitle } from '@/services/api'
 import { CreateTitleFormData } from '@/@types/pages'
 import { StepProvider } from '@/services/step.context.service'
 import { User } from '@/../config/constants'
+import { AppLayout } from '@/layouts/AppLayout'
 import Step1 from '@/components/pages/create-feed/Step1'
 import Step2 from '@/components/pages/create-feed/Step2'
 import Step3 from '@/components/pages/create-feed/Step3'
-import AppLayout from '@/layouts/AppLayout'
 import '@/styles/pages/create-feed/style.less'
 
 const CreateFeed: React.FC = () => {

@@ -131,8 +131,10 @@ export const ChatScreen: React.FC<ChatScreenProps> = (props): JSX.Element => {
 				avatar={<Avatar src={`${API_URL}/v1/user/pp?username=${item.send_by}`} alt="Sender Image" />}
 				title={
 					<>
-						<Link href={'user/[username]'} as={`user/${item.send_by}`} style={{ fontWeight: 'bold', color: '#212121' }}>
-							{item.send_by}
+						<Link href={'user/[username]'} as={`user/${item.send_by}`}>
+							<a style={{ fontWeight: 'bold', color: '#212121' }}>
+								{item.send_by}
+							</a>
 						</Link>
 						<span style={{ color: 'gray', fontSize: 12 }}> {format(parseISO(item.created_at), 'dd LLL yyyy (p O)')} </span>
 					</>

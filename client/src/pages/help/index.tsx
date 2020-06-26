@@ -5,7 +5,7 @@ import { Card, Typography } from 'antd'
 import React from 'react'
 
 // Local files
-import AppLayout from '@/layouts/AppLayout'
+import { AppLayout } from '@/layouts/AppLayout'
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { HelpMenus } from '@/components/pages/help/helpMenus'
 import { Guest } from '@/../config/constants'

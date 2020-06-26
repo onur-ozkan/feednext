@@ -6,7 +6,7 @@ import { SettingOutlined, IdcardOutlined, UpSquareOutlined, LinkOutlined, Soluti
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { NextPage } from 'next'
-import { useRouter } from 'next/router'
+import { useRouter, NextRouter } from 'next/router'
 import { format, parseISO } from 'date-fns'
 
 
@@ -16,7 +16,7 @@ import { PageHelmet } from '@/components/global/PageHelmet'
 import { UserTabs } from '@/components/pages/user/[username]'
 import { getUserPageInitialValues } from '@/services/initializations'
 import { UserPageInitials } from '@/@types/initializations'
-import AppLayout from '@/layouts/AppLayout'
+import { AppLayout } from '@/layouts/AppLayout'
 import NotFoundPage from '@/pages/404'
 
 const readableRoles = {
@@ -29,7 +29,7 @@ const readableRoles = {
 }
 
 const User: NextPage<UserPageInitials> = (props): JSX.Element => {
-	const router = useRouter()
+	const router: NextRouter & { query: { username?: string } } = useRouter()
 	const userState = useSelector((state: any) => state.user?.attributes.user)
 	const [user, setUser] = useState(props.user)
 
@@ -89,20 +89,22 @@ const User: NextPage<UserPageInitials> = (props): JSX.Element => {
 							</Col>
 							<Col span={24} style={{ fontSize: 16 }}>
 								<Tooltip placement="bottom" title="Link">
-									<LinkOutlined style={{ marginRight: 3, color: '#6ec49a' }} />
-									{user.attributes.link ?
-										(
-											<a
-												href={
-													new RegExp('^(https?|ftp)://').test(user.attributes.link) ? user.attributes.link : `https://${user.attributes.link}`
-												}
-												target={`_${user.attributes.username}`}
-											>
-												{user.attributes.link}
-											</a>)
-										:
-										(<Typography.Text> - </Typography.Text>)
-									}
+									<>
+										<LinkOutlined style={{ marginRight: 3, color: '#6ec49a' }} />
+										{user.attributes.link ?
+											(
+												<a
+													href={
+														new RegExp('^(https?|ftp)://').test(user.attributes.link) ? user.attributes.link : `https://${user.attributes.link}`
+													}
+													target={`_${user.attributes.username}`}
+												>
+													{user.attributes.link}
+												</a>)
+											:
+											(<Typography.Text> - </Typography.Text>)
+										}
+									</>
 								</Tooltip>
 							</Col>
 						</Row>

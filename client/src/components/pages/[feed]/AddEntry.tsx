@@ -6,8 +6,9 @@ import React, { useState } from 'react'
 
 // Local files
 import { createEntry } from '@/services/api'
+import { AddEntryProps } from '@/@types/components/AddEntry'
 
-const AddEntry: React.FC = ({ titleId, accessToken, setEntryList }: any) => {
+const AddEntry: React.FC<AddEntryProps> = ({ titleId, accessToken, setEntryList }) => {
 	const [submitting, setSubmitting] = useState(false)
 	const [form] = Form.useForm();
 
