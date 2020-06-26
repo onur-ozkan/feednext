@@ -1,10 +1,10 @@
 // Antd dependencies
 import { Form, Button, Descriptions, Divider, Modal, Avatar, Rate } from 'antd'
-import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { ExclamationCircleOutlined, LoadingOutlined } from '@ant-design/icons'
 import TextArea from 'antd/lib/input/TextArea'
 
 // Other dependencies
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 
 // Local files
 import { PageHelmet } from '@/components/global/PageHelmet'
@@ -25,6 +25,7 @@ const Step2 = (props: Step2Props): JSX.Element => {
 	const [form] = Form.useForm()
 	const { createTitleFormData, readableCategoryValue, firstEntryForm, titleRate } = useContext(StepContext)
 	const { stepMovementTo, setFirstEntryForm, setIsRequestReady, setTitleRate } = props
+	const [isRequestStarted, setIsRequestStarted] = useState(false)
 
 	const onPrev = (): void => {
 		setFirstEntryForm((state: any) => ({...state, text: form.getFieldValue('entry') }))
@@ -33,7 +34,11 @@ const Step2 = (props: Step2Props): JSX.Element => {
 	}
 
 	const onValidateForm = (): void => {
-		if (!form.getFieldValue('entry') || !form.getFieldValue('rate')) return
+		setIsRequestStarted(true)
+		if (!form.getFieldValue('entry') || !form.getFieldValue('rate')) {
+			setIsRequestStarted(false)
+			return
+		}
 
 		setFirstEntryForm({
 			text: form.getFieldValue('entry')
@@ -101,10 +106,15 @@ const Step2 = (props: Step2Props): JSX.Element => {
 						},
 					}}
 				>
-					<Button type="primary" htmlType="submit" onClick={confirmationModal}>
+					<Button
+						type="primary"
+						htmlType="submit"
+						icon={isRequestStarted && <LoadingOutlined />}
+						onClick={!isRequestStarted && confirmationModal}
+					>
 						Post
 					</Button>
-					<Button onClick={onPrev} style={{ marginLeft: 8 }}>
+					<Button onClick={!isRequestStarted && onPrev} style={{ marginLeft: 8 }}>
 						Previous Step
 					</Button>
 				</Form.Item>
