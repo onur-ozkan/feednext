@@ -27,7 +27,7 @@ const Step1 = (props: Step1Props): JSX.Element => {
 	const { setCreateTitleFormData, stepMovementTo, setReadableCategoryValue } = props
 
 	const onValidateForm = (): void => {
-		if (!form.getFieldValue('categoryId') && !form.getFieldValue('title')) return
+		if (!createTitleFormData.categoryId || !form.getFieldValue('title')) return
 		setCreateTitleFormData({
 			...createTitleFormData,
 			name: form.getFieldValue('title')
@@ -86,7 +86,14 @@ const Step1 = (props: Step1Props): JSX.Element => {
 				<Form.Item
 					label="Category"
 					name="categoryId"
-					rules={[{ required: true, message: 'Please select category' }]}
+					rules={[
+						() => ({
+							validator() {
+								if (!createTitleFormData.categoryId) return Promise.reject('Please select category')
+								return Promise.resolve()
+							}
+						})
+					]}
 				>
 					<CategorySelect
 						defaultValue={readableCategoryValue}

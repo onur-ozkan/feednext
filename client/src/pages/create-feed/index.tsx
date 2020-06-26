@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux'
 import { AxiosError, AxiosResponse } from 'axios'
 
 // Local files
-import { createTitle, createEntry } from '@/services/api'
+import { createTitle, createEntry, rateTitle } from '@/services/api'
 import { CreateTitleFormData } from '@/@types/pages'
 import { StepProvider } from '@/services/step.context.service'
 import { User } from '@/../config/constants'
@@ -27,7 +27,8 @@ const CreateFeed: React.FC = () => {
 	const [firstEntryForm, setFirstEntryForm] = useState<{ text: string } | { text: any }>({
 		text: undefined
 	})
-	const [createTitleFormData, setCreateTitleFormData] = useState<CreateTitleFormData | any>({
+	const [titleRate, setTitleRate] = useState(undefined)
+	const [createTitleFormData, setCreateTitleFormData] = useState<CreateTitleFormData>({
 		name: undefined,
 		imageBase64: undefined,
 		imageFile: undefined,
@@ -41,14 +42,13 @@ const CreateFeed: React.FC = () => {
 		if (isRequestReady) {
 			const titleFormData = new FormData()
 
-			createTitleFormData
-
 			titleFormData.append('name', createTitleFormData.name)
 			titleFormData.append('categoryId', createTitleFormData.categoryId)
 			if (createTitleFormData.imageFile) titleFormData.append('image', createTitleFormData.imageFile)
 
-			createTitle(titleFormData, accessToken).then((res: AxiosResponse) => {
-				createEntry({
+			createTitle(titleFormData, accessToken).then(async (res: AxiosResponse) => {
+				await rateTitle(titleRate, res.data.attributes.id, accessToken)
+				await createEntry({
 					titleId: res.data.attributes.id,
 					text: firstEntryForm.text,
 				}, accessToken).catch((error: AxiosError) => message.error(error.response?.data.message))
@@ -85,6 +85,7 @@ const CreateFeed: React.FC = () => {
 					component:
 						<Step2
 							stepMovementTo={handleStepMovement}
+							setTitleRate={setTitleRate}
 							setFirstEntryForm={setFirstEntryForm}
 							setIsRequestReady={setIsRequestReady}
 						/>
@@ -115,7 +116,7 @@ const CreateFeed: React.FC = () => {
 
 	return (
 		<AppLayout authority={User}>
-			<StepProvider value={{ createTitleFormData, readableCategoryValue, firstEntryForm }}>
+			<StepProvider value={{ createTitleFormData, readableCategoryValue, firstEntryForm, titleRate }}>
 				<Card bordered={false}>
 					<Steps current={currentStep} className={'steps'}>
 						<Steps.Step title="Create Title" />
