@@ -14,21 +14,17 @@ export class AwsService {
     }
 
     getImageBuffer(fileName: string, directory: 'users' | 'titles'): unknown {
-        if (configService.isProduction()) {
-            return new Promise((resolve) => {
-                this.s3Instance().getObject({
-                    Bucket: configService.getEnv('AWS_S3_BUCKET'), Key: `${directory}/${fileName}.jpg`
-                }, (error, data) => {
-                    if (error) {
-                        resolve(createReadStream(`${__dirname}/../../../public/default-${directory}.jpg`))
-                        return
-                    }
-                    resolve(data.Body)
-                })
+        return new Promise((resolve) => {
+            this.s3Instance().getObject({
+                Bucket: configService.getEnv('AWS_S3_BUCKET'), Key: `${directory}/${fileName}.jpg`
+            }, (error, data) => {
+                if (error) {
+                    resolve(createReadStream(`${__dirname}/../../../public/default-${directory}.jpg`))
+                    return
+                }
+                resolve(data.Body)
             })
-        } else {
-            return createReadStream(`${__dirname}/../../../public/default-${directory}.jpg`)
-        }
+        })
     }
 
     uploadImage(fileName: string, directory: 'users' | 'titles', buffer: Buffer): void {
