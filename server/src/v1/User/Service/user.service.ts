@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 
 // Other dependencies
 import * as jwt from 'jsonwebtoken'
+import { createReadStream } from 'fs'
 
 // Local files
 import { UsersEntity } from 'src/shared/Entities/users.entity'
@@ -46,7 +47,10 @@ export class UserService {
 
     async getProfileImageBuffer(username: string): Promise<unknown> {
         const user = await this.usersRepository.getUserByUsername(username)
-        return this.awsService.getImageBuffer(String(user.id), 'users')
+        if (configService.isProduction()) {
+            return this.awsService.getImageBuffer(String(user.id), 'users')
+        }
+        return createReadStream(`${__dirname}/../../../../public/default-users.jpg`)
     }
 
     async uploadProfileImage(username, buffer: Buffer): Promise<void> {

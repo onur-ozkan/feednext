@@ -13,7 +13,7 @@ declare interface ArticleListContentProps {
 	data: any
 }
 
-const ArticleListContent: React.FC<ArticleListContentProps> = ({
+export const ArticleListContent: React.FC<ArticleListContentProps> = ({
 	data: { text, createdAt, avatar, writtenBy },
 }) => {
 	return (
@@ -35,5 +35,3 @@ const ArticleListContent: React.FC<ArticleListContentProps> = ({
 		</div>
 	)
 }
-
-export default ArticleListContent

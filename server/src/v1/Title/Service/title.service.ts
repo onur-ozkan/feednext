@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 
 // Other dependencies
 import { Validator, validate } from 'class-validator'
+import { createReadStream } from 'fs'
 
 // Local files
 import { TitlesRepository } from 'src/shared/Repositories/title.repository'
@@ -103,7 +104,10 @@ export class TitleService {
 
     async getTitleImage(titleId: string): Promise<unknown> {
         await this.titlesRepository.getTitleById(titleId)
-        return this.awsService.getImageBuffer(titleId, 'titles')
+        if (configService.isProduction()) {
+            return this.awsService.getImageBuffer(titleId, 'titles')
+        }
+        return createReadStream(`${__dirname}/../../../../public/default-titles.jpg`)
     }
 
     async updateTitleImage(titleId: string, buffer: Buffer): Promise<void> {

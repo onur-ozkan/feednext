@@ -20,7 +20,7 @@ import { FeedList } from '@/@types/pages/feeds'
 import { getFeedsPageInitialValues } from '@/services/initializations'
 import { FeedsPageInitials } from '@/@types/initializations'
 import { AppLayout } from '@/layouts/AppLayout'
-import ArticleListContent from '@/components/pages/feeds/ArticleListContent'
+import { ArticleListContent } from '@/components/pages/feeds/ArticleListContent'
 import FlowHeader from '@/components/pages/feeds/FlowHeader'
 
 const Feeds: NextPage<FeedsPageInitials> = (props): JSX.Element => {
