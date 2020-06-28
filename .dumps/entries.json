@@ -1,23 +1,5 @@
 [{
   "_id": {
-    "$oid": "5ecbff584e4c1c32d76217a7"
-  },
-  "text": "One of the best song on earth. It also used in 'The Sopranos' intro.",
-  "title_id": "5ecbff584e4c1c32d76217a6",
-  "written_by": "admin",
-  "votes": {
-    "value": 0,
-    "up_voted": [],
-    "down_voted": []
-  },
-  "created_at": {
-    "$date": "2020-05-25T17:24:40.527Z"
-  },
-  "updated_at": {
-    "$date": "2020-05-25T17:27:11.461Z"
-  }
-},{
-  "_id": {
     "$oid": "5ecbff904e4c1c32d76217a8"
   },
   "text": "Great song!",
@@ -32,7 +14,28 @@
     "$date": "2020-05-25T17:25:36.881Z"
   },
   "updated_at": {
-    "$date": "2020-05-25T17:27:22.016Z"
+    "$date": "2020-06-28T16:33:17.442Z"
+  }
+},{
+  "_id": {
+    "$oid": "5ecbff584e4c1c32d76217a7"
+  },
+  "text": "One of the best song on earth. It also used in 'The Sopranos' intro.",
+  "title_id": "5ecbff584e4c1c32d76217a6",
+  "written_by": "admin",
+  "votes": {
+    "value": -2,
+    "up_voted": [],
+    "down_voted": [
+      "jacky_eirl",
+      "onur.ozkan"
+    ]
+  },
+  "created_at": {
+    "$date": "2020-05-25T17:24:40.527Z"
+  },
+  "updated_at": {
+    "$date": "2020-06-28T16:34:24.907Z"
   }
 },{
   "_id": {
@@ -42,15 +45,17 @@
   "title_id": "5ecbff584e4c1c32d76217a6",
   "written_by": "jens.auhrk",
   "votes": {
-    "value": 0,
-    "up_voted": [],
+    "value": 1,
+    "up_voted": [
+      "jacky_eirl"
+    ],
     "down_voted": []
   },
   "created_at": {
     "$date": "2020-05-25T17:25:56.181Z"
   },
   "updated_at": {
-    "$date": "2020-05-25T17:25:56.181Z"
+    "$date": "2020-06-28T16:33:18.316Z"
   }
 },{
   "_id": {
@@ -60,9 +65,11 @@
   "title_id": "5ecbff584e4c1c32d76217a6",
   "written_by": "teo.alpha",
   "votes": {
-    "value": 1,
+    "value": 3,
     "up_voted": [
-      "admin"
+      "admin",
+      "jacky_eirl",
+      "onur.ozkan"
     ],
     "down_voted": []
   },
@@ -70,6 +77,132 @@
     "$date": "2020-05-25T17:26:54.340Z"
   },
   "updated_at": {
-    "$date": "2020-05-25T17:27:10.117Z"
+    "$date": "2020-06-28T16:33:34.328Z"
+  }
+},{
+  "_id": {
+    "$oid": "5ef8c34d99a0c3198f75ab29"
+  },
+  "text": "High performance, great camera. Solid phone.",
+  "title_id": "5ef8c34d99a0c3198f75ab28",
+  "written_by": "jacky_eirl",
+  "votes": {
+    "value": 0,
+    "up_voted": [],
+    "down_voted": []
+  },
+  "created_at": {
+    "$date": "2020-06-28T16:20:29.802Z"
+  },
+  "updated_at": {
+    "$date": "2020-06-28T16:20:29.802Z"
+  }
+},{
+  "_id": {
+    "$oid": "5ef8c510a4e4d21d5da7ce47"
+  },
+  "text": "Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book.",
+  "title_id": "5ef8c510a4e4d21d5da7ce46",
+  "written_by": "jacky_eirl",
+  "votes": {
+    "value": 0,
+    "up_voted": [],
+    "down_voted": []
+  },
+  "created_at": {
+    "$date": "2020-06-28T16:28:00.493Z"
+  },
+  "updated_at": {
+    "$date": "2020-06-28T16:28:00.493Z"
+  }
+},{
+  "_id": {
+    "$oid": "5ef8c566a4e4d21d5da7ce49"
+  },
+  "text": "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s when an unknown printer took a galley of type and scrambled it to make a type specimen book it has?",
+  "title_id": "5ef8c566a4e4d21d5da7ce48",
+  "written_by": "onur.ozkan",
+  "votes": {
+    "value": 0,
+    "up_voted": [],
+    "down_voted": []
+  },
+  "created_at": {
+    "$date": "2020-06-28T16:29:26.693Z"
+  },
+  "updated_at": {
+    "$date": "2020-06-28T16:29:26.693Z"
+  }
+},{
+  "_id": {
+    "$oid": "5ef8c5c8a4e4d21d5da7ce4a"
+  },
+  "text": "His son quipped that power bars were nothing more than adult candy bars.",
+  "title_id": "5ef8c510a4e4d21d5da7ce46",
+  "written_by": "onur.ozkan",
+  "votes": {
+    "value": 0,
+    "up_voted": [],
+    "down_voted": []
+  },
+  "created_at": {
+    "$date": "2020-06-28T16:31:04.498Z"
+  },
+  "updated_at": {
+    "$date": "2020-06-28T16:31:04.498Z"
+  }
+},{
+  "_id": {
+    "$oid": "5ef8c5ffa022ca232d9f087e"
+  },
+  "text": "She tilted her head back and let whip cream stream into her mouth while taking a bath.",
+  "title_id": "5ef8c566a4e4d21d5da7ce48",
+  "written_by": "jacky_eirl",
+  "votes": {
+    "value": 0,
+    "up_voted": [],
+    "down_voted": []
+  },
+  "created_at": {
+    "$date": "2020-06-28T16:31:59.835Z"
+  },
+  "updated_at": {
+    "$date": "2020-06-28T16:34:16.255Z"
+  }
+},{
+  "_id": {
+    "$oid": "5ef8c617a022ca232d9f087f"
+  },
+  "text": "He hated that he loved what she hated about hate.",
+  "title_id": "5ef8c34d99a0c3198f75ab28",
+  "written_by": "onur.ozkan",
+  "votes": {
+    "value": 0,
+    "up_voted": [],
+    "down_voted": []
+  },
+  "created_at": {
+    "$date": "2020-06-28T16:32:23.140Z"
+  },
+  "updated_at": {
+    "$date": "2020-06-28T16:32:23.140Z"
+  }
+},{
+  "_id": {
+    "$oid": "5ef8c624a022ca232d9f0880"
+  },
+  "text": "There are few things better in life than a slice of pie.",
+  "title_id": "5ecbff584e4c1c32d76217a6",
+  "written_by": "onur.ozkan",
+  "votes": {
+    "value": 0,
+    "up_voted": [],
+    "down_voted": []
+  },
+  "created_at": {
+    "$date": "2020-06-28T16:32:36.531Z"
+  },
+  "updated_at": {
+    "$date": "2020-06-28T16:32:36.531Z"
   }
 }]

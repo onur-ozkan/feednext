@@ -1,4 +1,5 @@
 // Other dependencies
+import { createReadStream } from 'fs'
 import * as s3 from 'aws-sdk/clients/s3'
 
 // Local files
@@ -18,12 +19,7 @@ export class AwsService {
                 Bucket: configService.getEnv('AWS_S3_BUCKET'), Key: `${directory}/${fileName}.jpg`
             }, (error, data) => {
                 if (error) {
-                    this.s3Instance().getObject({
-                        Bucket: configService.getEnv('AWS_S3_BUCKET'),
-                        Key: `${directory}/default.jpg`
-                    }, (_e, value) => {
-                        resolve(value.Body)
-                    })
+                    resolve(createReadStream(`${__dirname}/../../../public/default-${directory}.jpg`))
                     return
                 }
                 resolve(data.Body)
