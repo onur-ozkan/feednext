@@ -35,7 +35,7 @@ export const ListOfSimilarFeeds: React.FC<{ titleValue: string }> = ({ titleValu
                 itemLayout="horizontal"
                 style={{ display: listData.length > 0 ? 'initial' : 'none' }}
                 header={
-                    <Typography.Title level={4} style={{ fontSize: 17, marginBottom: -5, marginTop: -20, fontWeight: 'lighter' }}>
+                    <Typography.Title className="similar-feed-list-title" level={4}>
                         Feeds that are similar
                     </Typography.Title>
                 }
