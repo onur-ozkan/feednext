@@ -7,8 +7,8 @@ import { useRouter } from 'next/router'
 
 // Local files
 import { PageHelmet } from '@/components/global/PageHelmet'
+import { StepContext } from '@/services/step.context.service'
 import { Step3Props } from '@/@types/pages'
-import StepContext from '@/services/step.context.service'
 import '@/styles/components/StepForm/style.less'
 
 const Step3 = ({ titleSlugForRouting, feedCreatedSuccessfully }: Step3Props): JSX.Element => {

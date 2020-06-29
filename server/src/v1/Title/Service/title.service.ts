@@ -53,7 +53,7 @@ export class TitleService {
 
     async searchTitle({ searchValue }: { searchValue: string }): Promise<ISerializeResponse> {
         if (searchValue.length < 3) throw new BadRequestException('Search value must be at least 3 characters')
-        const result = await this.titlesRepository.searchTitle({ searchValue })
+        const result = await this.titlesRepository.searchTitle({ searchValue: searchValue.split(' ').join('|') })
         return serializerService.serializeResponse('searched_title_list', result)
     }
 
