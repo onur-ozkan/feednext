@@ -1,10 +1,10 @@
 import_db_dumps:
 	./db.restore.sh
 dev:
-	docker-compose up nginx_dev redis_dev mongo_dev backend
+	docker-compose -f docker-compose.dev.yml up backend nginx_dev redis_dev mongo_dev
 dev2:
-	docker-compose up redis_dev mongo_dev
+	docker-compose -f docker-compose.dev.yml up redis_dev mongo_dev
 prod:
-	docker-compose up -d nginx certbot redis backend mongo
+	docker-compose -f docker-compose.prod.yml up -d nginx certbot redis backend mongo
 down:
-	docker-compose down
+	docker-compose -f docker-compose.dev.yml -f docker-compose.prod.yml down

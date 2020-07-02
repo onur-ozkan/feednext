@@ -1,0 +1,67 @@
+# \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+# \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+# \\\\\\\\\\\\\\\\\\ DEVELOPMENT ENVIRONMENT \\\\\\\\\\\\\\\\\
+# \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+# \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+version: '3.5'
+services:
+  # ------------------------------------------------------------
+  # Nginx
+  # ------------------------------------------------------------
+  nginx_dev:
+    image: nginx:mainline-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./.docker/nginx/dev:/etc/nginx/conf.d:z
+
+
+  # ------------------------------------------------------------
+  # Node - Backend
+  # ------------------------------------------------------------
+  backend:
+    build:
+      context: ./.docker/build/node
+      args:
+        NODE_VERSION: ${BACKEND_NODE_VER}-alpine
+    hostname: backend
+    working_dir: /home/node/app
+    volumes:
+      - ./server:/home/node/app:z
+    command:
+      - sh
+      - -c
+      - npm ci && npm run start:${START_BACKEND_AS}
+    depends_on:
+      - redis_dev
+      - mongo_dev
+
+
+  # ------------------------------------------------------------
+  # Redis
+  # ------------------------------------------------------------
+  redis_dev:
+    image: redis:${REDIS_SERVER}-alpine
+    hostname: redis_dev
+    # Apply custom arguments to redis startup
+    command: redis-server ${REDIS_ARGS:- }
+    environment:
+      - REDIS_ARGS=${REDIS_ARGS:- }
+    ports:
+      - ${LOCAL_LISTEN_ADDR}${REDIS_CONTAINER_PORT}:6379
+
+
+  # ------------------------------------------------------------
+  # MongoDB
+  # ------------------------------------------------------------
+  mongo_dev:
+    image: mongo:${MONGO_SERVER}
+    hostname: mongo_dev
+    container_name: mongo_dev
+    ports:
+      # [local-machine:]local-port:docker-port
+      - ${LOCAL_LISTEN_ADDR}${MONGO_CONTAINER_PORT}:27017
+    volumes:
+      # Mount MongoDB Data directory
+      - ./.docker/data/mongo:/data/db:z

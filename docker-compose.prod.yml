@@ -1,17 +1,10 @@
-version: '3.5'
-
-networks:
-  app-network:
-    driver: ${APP_NETWORK}
-
-services:
-
 # \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 # \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 # \\\\\\\\\\\\\\\\\\\ PRODUCTION ENVIRONMENT \\\\\\\\\\\\\\\\\
 # \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 # \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
+version: '3.5'
+services:
   # ------------------------------------------------------------
   # Nginx - Webserver
   # ------------------------------------------------------------
@@ -27,8 +20,7 @@ services:
       - ./.docker/nginx/prod:/etc/nginx/conf.d:z
       - ./.docker/certbot/conf:/etc/letsencrypt:z
       - ./.docker/certbot/www:/var/www/certbot:z
-    networks:
-      - app-network
+
 
   # ------------------------------------------------------------
   # CERTBOT - SSL CERTIFICATION
@@ -60,8 +52,6 @@ services:
     depends_on:
       - redis
       - mongo
-    networks:
-      - app-network
 
 
   # ------------------------------------------------------------
@@ -74,8 +64,6 @@ services:
     command: redis-server ${REDIS_ARGS:- }
     environment:
       - REDIS_ARGS=${REDIS_ARGS:- }
-    networks:
-      - app-network
 
 
   # ------------------------------------------------------------
@@ -87,58 +75,3 @@ services:
     volumes:
       # Mount MongoDB Data directory
       - ./.docker/data/mongo:/data/db:z
-    networks:
-      - app-network
-
-
-# \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-# \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-# \\\\\\\\\\\\\\\\\\ DEVELOPMENT ENVIRONMENT \\\\\\\\\\\\\\\\\
-# \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-# \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
-  # ------------------------------------------------------------
-  # Nginx
-  # ------------------------------------------------------------
-  nginx_dev:
-    image: nginx:mainline-alpine
-    restart: unless-stopped
-    ports:
-      - "80:80"
-    volumes:
-      - ./.docker/nginx/dev:/etc/nginx/conf.d:z
-    networks:
-      - app-network
-
-
-  # ------------------------------------------------------------
-  # Redis
-  # ------------------------------------------------------------
-  redis_dev:
-    image: redis:${REDIS_SERVER}-alpine
-    hostname: redis_dev
-    # Apply custom arguments to redis startup
-    command: redis-server ${REDIS_ARGS:- }
-    environment:
-      - REDIS_ARGS=${REDIS_ARGS:- }
-    ports:
-      - ${LOCAL_LISTEN_ADDR}${REDIS_CONTAINER_PORT}:6379
-    networks:
-      - app-network
-
-
-  # ------------------------------------------------------------
-  # MongoDB
-  # ------------------------------------------------------------
-  mongo_dev:
-    image: mongo:${MONGO_SERVER}
-    hostname: mongo_dev
-    container_name: mongo_dev
-    ports:
-      # [local-machine:]local-port:docker-port
-      - ${LOCAL_LISTEN_ADDR}${MONGO_CONTAINER_PORT}:27017
-    volumes:
-      # Mount MongoDB Data directory
-      - ./.docker/data/mongo:/data/db:z
-    networks:
-      - app-network
