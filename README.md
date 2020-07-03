@@ -38,6 +38,7 @@
   | ------ | ------ |
   | Docker | * |
   | Docker Compose | * |
+  | Make | * |
   | Node | 12 |
 
   ### API
