@@ -39,7 +39,7 @@
   | Docker | * |
   | Docker Compose | * |
   | Make | * |
-  | Node | 12 |
+  | Node | LTS |
 
   ### API
   After you have forked and cloned this repository to your machine, cd into project folder and then create .env files from .env.example ones with following command:
