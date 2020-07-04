@@ -14,7 +14,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./.docker/nginx/dev:/etc/nginx/conf.d:z
+      - ./.docker/nginx/dev:/etc/nginx:z
 
 
   # ------------------------------------------------------------
