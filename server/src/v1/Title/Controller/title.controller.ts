@@ -14,7 +14,6 @@ import {
     Put,
     Req,
     BadRequestException,
-    HttpStatus,
     Res
 } from '@nestjs/common'
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
@@ -32,6 +31,7 @@ import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { TitleService } from '../Service/title.service'
 import { RateTitleDto } from '../Dto/rate-title.dto'
 import { Role } from 'src/shared/Enums/Roles'
+import { StatusOk } from 'src/shared/Types'
 
 @ApiTags('v1/title')
 @Controller()
@@ -135,7 +135,7 @@ export class TitleController {
 
             req.multipart(handler, (error) => {
                 if (error) reject(new BadRequestException('Not valid multipart request'))
-                resolve(new HttpException('Upload successfully ended', HttpStatus.OK))
+                resolve({ status: 'ok', message: 'Upload successfully ended' })
             })
         })
     }
@@ -149,9 +149,9 @@ export class TitleController {
     })
     @Delete('/image')
     @Roles(Role.Admin)
-    deleteTitleImage(@Query('titleId') titleId): HttpException {
+    deleteTitleImage(@Query('titleId') titleId): StatusOk {
         this.titleService.deleteTitleImage(titleId)
-        throw new HttpException('Image successfully deleted', HttpStatus.OK)
+        return { status: 'ok', message: 'Image successfully deleted'}
     }
 
     @ApiBearerAuth()
@@ -179,7 +179,7 @@ export class TitleController {
         @Headers('authorization') bearer: string,
         @Param('titleId') titleId: string,
         @Body() dto: RateTitleDto
-    ): Promise<HttpException> {
+    ): Promise<StatusOk> {
         return this.titleService.rateTitle(jwtManipulationService.decodeJwtToken(bearer, 'username'), titleId, dto.rateValue)
     }
 
@@ -203,7 +203,7 @@ export class TitleController {
     @UseGuards(AuthGuard('jwt'))
     @Delete(':titleId')
     @Roles(Role.SuperAdmin)
-    deleteTitle(@Param('titleId') titleId: string): Promise<HttpException> {
+    deleteTitle(@Param('titleId') titleId: string): Promise<StatusOk> {
         return this.titleService.deleteTitle(titleId)
     }
 }

@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Injectable, HttpStatus, HttpException, BadRequestException } from '@nestjs/common'
+import { Injectable, HttpException, BadRequestException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { InjectRepository } from '@nestjs/typeorm'
 
@@ -20,6 +20,7 @@ import { serializerService, ISerializeResponse } from 'src/shared/Services/seria
 import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.service'
 import { RecoverAccountDto } from '../Dto/recover-account.dto'
 import { sitemapManipulationService } from 'src/shared/Services/sitemap.manipulation.service'
+import { StatusOk } from 'src/shared/Types'
 
 @Injectable()
 export class AuthService {
@@ -31,7 +32,7 @@ export class AuthService {
         private readonly usersRepository: UsersRepository,
     ) {}
 
-    async signUp(dto: CreateAccountDto): Promise<HttpException> {
+    async signUp(dto: CreateAccountDto): Promise<StatusOk> {
         let user
         user = await this.usersRepository.find({
         where: {
@@ -67,7 +68,7 @@ export class AuthService {
         })
 
         await this.redisService.setData(dto.username, JSON.stringify(dto), 7200)
-        throw new HttpException('Account has been created. Please verify your account to be able to sign in', HttpStatus.OK)
+        return { status: 'ok', message: 'Account has been created. Please verify your account to be able to sign in' }
     }
 
     async signIn(userEntity: UsersEntity, dto: LoginDto): Promise<HttpException | ISerializeResponse> {
@@ -95,14 +96,14 @@ export class AuthService {
         return serializerService.serializeResponse('user_information', responseData, id)
     }
 
-    async signOut(bearer: string): Promise<HttpException> {
+    async signOut(bearer: string): Promise<StatusOk> {
         const decodedToken: any = jwtManipulationService.decodeJwtToken(bearer, 'all')
         await this.usersRepository.triggerRefreshToken(decodedToken.username)
         const expireDate: number = decodedToken.exp
         const remainingSeconds: number = Math.round(expireDate - Date.now() / 1000)
 
         await this.redisService.setOnlyKey(bearer.split(' ')[1], remainingSeconds)
-        throw new HttpException('Token is killed', HttpStatus.OK)
+        return { status: 'ok', message: 'Token is killed' }
     }
 
     async refreshToken(refreshToken: string): Promise<ISerializeResponse> {
@@ -140,7 +141,7 @@ export class AuthService {
         return await this.usersRepository.validateUser(dto)
     }
 
-    async generateRecoveryKey(dto: GenerateRecoveryKeyDto): Promise<HttpException> {
+    async generateRecoveryKey(dto: GenerateRecoveryKeyDto): Promise<StatusOk> {
         const { account, generatedKey }  = await this.usersRepository.generateRecoveryKey(dto)
 
         const mailBody: MailSenderBody = {
@@ -154,13 +155,13 @@ export class AuthService {
             throw new BadRequestException('SMTP transport failed')
         })
 
-        throw new HttpException('Recovery key has been sent to email address', HttpStatus.OK)
+        return { status: 'ok', message: 'Recovery key has been sent to email address' }
     }
 
-    async recoverAccount(dto: RecoverAccountDto): Promise<HttpException> {
+    async recoverAccount(dto: RecoverAccountDto): Promise<StatusOk> {
         await this.usersRepository.getUserByEmail(dto.email)
         await this.usersRepository.recoverAccount(dto)
-        throw new HttpException('Password has been successfully updated', HttpStatus.OK)
+        return { status: 'ok', message: 'Password has been successfully updated' }
     }
 
     async accountVerification(incToken: string): Promise<HttpException> {
@@ -184,7 +185,7 @@ export class AuthService {
             await this.redisService.deleteData(decodedToken.username)
             sitemapManipulationService.addToIndexedSitemap(`user/${decodedToken.username}`)
 
-            throw new HttpException('Account has been verified.', HttpStatus.OK)
+            return { status: 'ok', message: 'Account has been verified' }
         }
 
         throw new BadRequestException('Incoming token is not valid.')

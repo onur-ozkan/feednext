@@ -10,6 +10,7 @@ import { CategoryService } from '../Service/category.service'
 import { UpdateCategoryDto } from '../Dto/update-category.dto'
 import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { Role } from 'src/shared/Enums/Roles'
+import { StatusOk } from 'src/shared/Types'
 
 @ApiTags('v1/category')
 @Controller()
@@ -58,7 +59,7 @@ export class CategoryController {
     @UseGuards(AuthGuard('jwt'))
     @Delete(':categoryId')
     @Roles(Role.SuperAdmin)
-    deleteCategory(@Param('categoryId') categoryId: string): Promise<ISerializeResponse> {
+    deleteCategory(@Param('categoryId') categoryId: string): Promise<StatusOk> {
         return this.categoryService.deleteCategory(categoryId)
     }
 }

@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Injectable, BadRequestException, HttpException, HttpStatus } from '@nestjs/common'
+import { Injectable, BadRequestException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 
 // Other dependencies
@@ -11,6 +11,7 @@ import { ConversationsRepository } from 'src/shared/Repositories/conversations.r
 import { MessagesRepository } from 'src/shared/Repositories/messages.repository'
 import { serializerService, ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { ConversationsEntity } from 'src/shared/Entities/conversations.entity'
+import { StatusOk } from 'src/shared/Types'
 
 @Injectable()
 export class MessageService {
@@ -111,12 +112,12 @@ export class MessageService {
         return serializerService.serializeResponse('conversation_message_list', result)
     }
 
-    async deleteMessages(conversationId: string, username: string): Promise<HttpException> {
+    async deleteMessages(conversationId: string, username: string): Promise<StatusOk> {
         if (!this.validator.isMongoId(conversationId)) throw new BadRequestException('Conversation id must be a MongoId')
 
         const isDeleted = await this.conversationsRepository.deleteConversation(conversationId, username)
         if (isDeleted) await this.messagesRepository.deleteMessagesBelongsToConversation(conversationId)
 
-        throw new HttpException('Messages successfully deleted', HttpStatus.OK)
+        return { status: 'ok', message: 'Messages successfully deleted' }
     }
 }

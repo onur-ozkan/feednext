@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Injectable, HttpException, BadRequestException, HttpStatus } from '@nestjs/common'
+import { Injectable, HttpException, BadRequestException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 
 // Other dependencies
@@ -19,6 +19,7 @@ import { CategoriesEntity } from 'src/shared/Entities/categories.entity'
 import { AwsService } from 'src/shared/Services/aws.service'
 import { configService } from 'src/shared/Services/config.service'
 import { sitemapManipulationService } from 'src/shared/Services/sitemap.manipulation.service'
+import { StatusOk } from 'src/shared/Types'
 
 @Injectable()
 export class TitleService {
@@ -120,7 +121,7 @@ export class TitleService {
         this.awsService.deleteImage(titleId, 'titles')
     }
 
-    async rateTitle(ratedBy: string, titleId: string, rateValue: number): Promise<HttpException> {
+    async rateTitle(ratedBy: string, titleId: string, rateValue: number): Promise<StatusOk> {
         if (!this.validator.isMongoId(titleId)) throw new BadRequestException('TitleId must be a MongoId')
 
         try {
@@ -130,7 +131,7 @@ export class TitleService {
         }
 
         await this.titlesRepository.rateTitle(ratedBy, titleId, rateValue)
-        throw new HttpException('Title has been rated', HttpStatus.OK)
+        return { status: 'ok', message: 'Title has been rated' }
     }
 
     async getRateOfUser(username: string, titleId: string): Promise<any> {
@@ -184,12 +185,12 @@ export class TitleService {
         return serializerService.serializeResponse('title_detail', updatedTitle)
     }
 
-    async deleteTitle(titleId: string): Promise<HttpException> {
+    async deleteTitle(titleId: string): Promise<StatusOk> {
         if (!this.validator.isMongoId(titleId)) throw new BadRequestException('TitleId must be a MongoId.')
 
         await this.titlesRepository.deleteTitle(titleId)
         await this.entriesRepository.deleteEntriesBelongsToTitle(titleId)
         this.awsService.deleteImage(titleId, 'titles')
-        throw new HttpException('Title has been deleted.', HttpStatus.OK)
+        return { status: 'ok', message: 'Title has been deleted' }
     }
 }

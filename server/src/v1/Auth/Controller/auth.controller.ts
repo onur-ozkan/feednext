@@ -7,11 +7,9 @@ import {
     UseGuards,
     Get,
     Patch,
-    HttpException,
     Query,
     Request,
     Res,
-    HttpStatus,
     BadRequestException,
 } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
@@ -28,6 +26,7 @@ import { GenerateRecoveryKeyDto } from '../Dto/generate-recovery-key.dto'
 import { RecoverAccountDto } from '../Dto/recover-account.dto'
 import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { configService } from 'src/shared/Services/config.service'
+import { StatusOk } from 'src/shared/Types'
 
 @ApiTags('v1/auth')
 @Controller()
@@ -65,15 +64,15 @@ export class AuthController {
         errorMessage: 'You have reached the limit. You have to wait 2 minutes before trying again.'
     })
     @Post('signup')
-    signUp(@Body() dto: CreateAccountDto): Promise<HttpException> {
+    signUp(@Body() dto: CreateAccountDto): Promise<StatusOk> {
         return this.authService.signUp(dto)
     }
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Get('signout')
-    async signOut(@Headers('authorization') bearer: string): Promise<HttpException> {
-        return await this.authService.signOut(bearer)
+    async signOut(@Headers('authorization') bearer: string): Promise<StatusOk> {
+        return this.authService.signOut(bearer)
     }
 
     @RateLimit({
@@ -82,7 +81,7 @@ export class AuthController {
         errorMessage: 'You have reached the limit. You have to wait 5 minutes before trying again.'
     })
     @Patch('generate-recovery-key')
-    generateRecoveryKey(@Body() dto: GenerateRecoveryKeyDto): Promise<HttpException> {
+    generateRecoveryKey(@Body() dto: GenerateRecoveryKeyDto): Promise<StatusOk> {
         return this.authService.generateRecoveryKey(dto)
     }
 
@@ -92,7 +91,7 @@ export class AuthController {
         errorMessage: 'You have reached the limit. You have to wait 5 minutes before trying again.'
     })
     @Patch('recover-account')
-    recoverAccount(@Body() dto: RecoverAccountDto): Promise<HttpException> {
+    recoverAccount(@Body() dto: RecoverAccountDto): Promise<StatusOk> {
         return this.authService.recoverAccount(dto)
     }
 
@@ -102,15 +101,15 @@ export class AuthController {
         errorMessage: 'You have reached the limit. You have to wait 5 minutes before trying again.'
     })
     @Get('account-verification')
-    verifyAccount(@Query('token') token: string): Promise<HttpException> {
+    accountVerification(@Query('token') token: string): Promise<StatusOk> {
         return this.authService.accountVerification(token)
     }
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Get('check-token')
-    async checkJwtToken(): Promise<ISerializeResponse> {
-        throw new HttpException('Token is valid', HttpStatus.OK)
+    async checkJwtToken(): Promise<StatusOk> {
+        return { status: 'ok', message: 'Token is valid' }
     }
 
     @Get('refresh-token')

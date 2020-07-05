@@ -14,7 +14,6 @@ import {
     Query,
     Res,
     Req,
-    HttpStatus,
     Delete
 } from '@nestjs/common'
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
@@ -33,6 +32,7 @@ import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { Roles } from 'src/shared/Decorators/roles.decorator'
 import { Role } from 'src/shared/Enums/Roles'
 import { UserBanDto } from '../Dto/user-ban.dto'
+import { StatusOk } from 'src/shared/Types'
 
 @ApiTags('v1/user')
 @Controller()
@@ -89,7 +89,7 @@ export class UsersController {
 
             req.multipart(handler, (error) => {
                 if (error) reject(new BadRequestException('Not valid multipart request'))
-                resolve(new HttpException('Upload successfully ended', HttpStatus.OK))
+                resolve({ status: 'ok', message: 'Upload successfully ended' })
             })
         })
     }
@@ -98,9 +98,9 @@ export class UsersController {
     @UseGuards(AuthGuard('jwt'))
     @Delete('pp')
     @Roles(Role.User)
-    deleteProfileImage(@Headers('authorization') bearer: string): HttpException {
+    deleteProfileImage(@Headers('authorization') bearer: string): StatusOk {
         this.usersService.deleteProfileImage(jwtManipulationService.decodeJwtToken(bearer, 'username'))
-        throw new HttpException('Image successfully deleted', HttpStatus.OK)
+        return { status: 'ok', message: 'Image successfully deleted' }
     }
 
     @ApiBearerAuth()
@@ -161,7 +161,7 @@ export class UsersController {
         errorMessage: 'You can only send 1 activation mail in 5 minutes'
     })
     @Post('send-activation-mail')
-    async sendActivationMail(@Body() dto: ActivateUserDto): Promise<HttpException> {
+    async sendActivationMail(@Body() dto: ActivateUserDto): Promise<StatusOk > {
         return this.usersService.sendActivationMail(dto)
     }
 
@@ -171,7 +171,7 @@ export class UsersController {
         errorMessage: 'You have reached the limit. You have to wait 5 minutes before trying again'
     })
     @Get('activate-user')
-    async activateUser(@Query('token') token: string): Promise<HttpException> {
+    async activateUser(@Query('token') token: string): Promise<StatusOk | HttpException> {
         return this.usersService.activateUser(token)
     }
 }
