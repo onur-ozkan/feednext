@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Injectable, BadRequestException, HttpException, HttpStatus } from '@nestjs/common'
+import { Injectable, BadRequestException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 
 // Other dependencies
@@ -17,6 +17,7 @@ import { ActivateUserDto } from '../Dto/activate-user.dto'
 import { configService } from 'src/shared/Services/config.service'
 import { EntriesRepository } from 'src/shared/Repositories/entries.repository'
 import { AwsService } from 'src/shared/Services/aws.service'
+import { StatusOk } from 'src/shared/Types'
 
 @Injectable()
 export class UserService {
@@ -112,12 +113,12 @@ export class UserService {
         return serializerService.serializeResponse('updated_profile', profile, id)
     }
 
-    async banOrUnbanUser(operatorRole: number, username: string, banSituation: boolean): Promise<HttpException> {
+    async banOrUnbanUser(operatorRole: number, username: string, banSituation: boolean): Promise<StatusOk> {
         await this.usersRepository.banOrUnbanUser(operatorRole, username, banSituation)
-        throw new HttpException(`User ban situation updated to ${banSituation}`, HttpStatus.OK)
+        return { status: 'ok', message: `User ${username}'s ban situation changed to ${banSituation}` }
     }
 
-    async verifyUpdatedEmail(incToken: string): Promise<HttpException> {
+    async verifyUpdatedEmail(incToken: string): Promise<StatusOk> {
         let decodedToken
 
         try {
@@ -137,18 +138,18 @@ export class UserService {
             }
 
             await this.usersRepository.verifyUpdatedEmail(decodedToken)
-            throw new HttpException('Email has been updated.', HttpStatus.OK)
+            return { status: 'ok', message: 'Email has been updated' }
         }
 
         throw new BadRequestException('Incoming token is not valid')
     }
 
-    async disableUser(usernameParam: string): Promise<HttpException> {
+    async disableUser(usernameParam: string): Promise<StatusOk> {
         await this.usersRepository.disableUser(usernameParam)
-        throw new HttpException('OK', HttpStatus.OK)
+        return { status: 'ok', message: 'Account successfully disabled' }
     }
 
-    async activateUser(incToken: string): Promise<HttpException> {
+    async activateUser(incToken: string): Promise<StatusOk> {
         let decodedToken
 
         try {
@@ -164,13 +165,13 @@ export class UserService {
             }
 
             await this.usersRepository.activateUser(decodedToken)
-            throw new HttpException('Account has been activated.', HttpStatus.OK)
+            return { status: 'ok', message: 'Account has been activated' }
         }
 
         throw new BadRequestException('Incoming token is not valid.')
     }
 
-    async sendActivationMail(dto: ActivateUserDto): Promise<HttpException> {
+    async sendActivationMail(dto: ActivateUserDto): Promise<StatusOk> {
         const user: UsersEntity = await this.usersRepository.getUserByEmail(dto.email)
         if (user.is_banned) throw new BadRequestException('Banned accounts can not do activation mail processes')
         if (user.is_active) throw new BadRequestException('This account is already active')
@@ -193,7 +194,7 @@ export class UserService {
         await this.mailService.sendAccountActivation(mailBody).catch(_error => {
             throw new BadRequestException('SMTP transport failed')
         })
-        throw new HttpException('OK', HttpStatus.OK)
+        return { status: 'ok', message: 'Activation mail has been sent' }
     }
 
 }

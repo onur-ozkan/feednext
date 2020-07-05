@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Controller, UseGuards, Get, Headers, Query, Param, Delete, HttpException } from '@nestjs/common'
+import { Controller, UseGuards, Get, Headers, Query, Param, Delete } from '@nestjs/common'
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthGuard } from '@nestjs/passport'
 
@@ -7,6 +7,7 @@ import { AuthGuard } from '@nestjs/passport'
 import { MessageService } from '../Service/message.service'
 import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.service'
 import { ISerializeResponse } from 'src/shared/Services/serializer.service'
+import { StatusOk } from 'src/shared/Types'
 
 @ApiTags('v1/message')
 @Controller()
@@ -51,7 +52,7 @@ export class MessageController {
     deleteMessages(
         @Param('conversationId') conversationId,
         @Headers('authorization') bearer: string,
-    ): Promise<HttpException> {
+    ): Promise<StatusOk> {
         return this.messageService.deleteMessages(conversationId, jwtManipulationService.decodeJwtToken(bearer, 'username'))
     }
 }

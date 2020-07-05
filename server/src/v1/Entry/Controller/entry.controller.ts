@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Controller, Headers, Get, Param, UseGuards, Post, Body, Query, Patch, Delete, HttpException } from '@nestjs/common'
+import { Controller, Headers, Get, Param, UseGuards, Post, Body, Query, Patch, Delete } from '@nestjs/common'
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthGuard } from '@nestjs/passport'
 
@@ -12,6 +12,7 @@ import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { UpdateEntryDto } from '../Dto/update-entry.dto'
 import { Role } from 'src/shared/Enums/Roles'
 import { RateLimit } from 'nestjs-fastify-rate-limiter'
+import { StatusOk } from 'src/shared/Types'
 
 @ApiTags('v1/entry')
 @Controller()
@@ -70,7 +71,7 @@ export class EntryController {
     upVoteEntry(
         @Param('entryId') entryId: string,
         @Headers('authorization') bearer: string,
-    ): Promise<HttpException> {
+    ): Promise<StatusOk> {
         return this.entryService.voteEntry({ entryId, username: jwtManipulationService.decodeJwtToken(bearer, 'username'), isUpVoted: true })
     }
 
@@ -81,7 +82,7 @@ export class EntryController {
     downVoteEntry(
         @Param('entryId') entryId: string,
         @Headers('authorization') bearer: string,
-    ): Promise<HttpException> {
+    ): Promise<StatusOk> {
         return this.entryService.voteEntry({ entryId, username: jwtManipulationService.decodeJwtToken(bearer, 'username'), isUpVoted: false })
     }
 
@@ -93,7 +94,7 @@ export class EntryController {
         @Param('entryId') entryId: string,
         @Query('isUpVoted') isUpVoted: string,
         @Headers('authorization') bearer: string,
-    ): Promise<HttpException> {
+    ): Promise<StatusOk> {
         return this.entryService.undoVoteOfEntry({
             entryId,
             username: jwtManipulationService.decodeJwtToken(bearer, 'username'),
@@ -112,7 +113,7 @@ export class EntryController {
     @Roles(Role.User)
     createEntry(
         @Headers('authorization') bearer: string, @Body() dto: CreateEntryDto,
-    ): Promise<HttpException | ISerializeResponse> {
+    ): Promise<ISerializeResponse> {
         return this.entryService.createEntry(jwtManipulationService.decodeJwtToken(bearer, 'username'), dto)
     }
 
@@ -122,7 +123,7 @@ export class EntryController {
     deleteEntry(
         @Param('entryId') entryId: string,
         @Headers('authorization') bearer: string,
-    ): Promise<HttpException> {
+    ): Promise<StatusOk> {
         const { username, role } = jwtManipulationService.decodeJwtToken(bearer, 'all')
         return this.entryService.deleteEntry(username, role, entryId)
     }
@@ -131,7 +132,7 @@ export class EntryController {
     @UseGuards(AuthGuard('jwt'))
     @Delete('all/:username')
     @Roles(Role.SuperAdmin)
-    deleteEntriesBelongsToUsername(@Param('username') username: string): Promise<HttpException> {
+    deleteEntriesBelongsToUsername(@Param('username') username: string): Promise<StatusOk> {
         return this.entryService.deleteEntriesBelongsToUsername(username)
     }
 }

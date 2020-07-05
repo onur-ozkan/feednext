@@ -1,7 +1,6 @@
 // Nest dependencies
 import {
     BadRequestException,
-    HttpException,
     Controller,
     UseGuards,
     Get,
@@ -14,7 +13,6 @@ import {
     Query,
     Res,
     Req,
-    HttpStatus,
     Delete
 } from '@nestjs/common'
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
@@ -33,6 +31,7 @@ import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { Roles } from 'src/shared/Decorators/roles.decorator'
 import { Role } from 'src/shared/Enums/Roles'
 import { UserBanDto } from '../Dto/user-ban.dto'
+import { StatusOk } from 'src/shared/Types'
 
 @ApiTags('v1/user')
 @Controller()
@@ -75,7 +74,7 @@ export class UsersController {
     })
     @Put('pp')
     @Roles(Role.User)
-    uploadProfileImage(@Headers('authorization') bearer: string, @Req() req): Promise<HttpException> {
+    uploadProfileImage(@Headers('authorization') bearer: string, @Req() req): Promise<StatusOk> {
         const username = jwtManipulationService.decodeJwtToken(bearer, 'username')
 
         return new Promise((resolve, reject) => {
@@ -89,7 +88,7 @@ export class UsersController {
 
             req.multipart(handler, (error) => {
                 if (error) reject(new BadRequestException('Not valid multipart request'))
-                resolve(new HttpException('Upload successfully ended', HttpStatus.OK))
+                resolve({ status: 'ok', message: 'Upload successfully ended' })
             })
         })
     }
@@ -98,9 +97,9 @@ export class UsersController {
     @UseGuards(AuthGuard('jwt'))
     @Delete('pp')
     @Roles(Role.User)
-    deleteProfileImage(@Headers('authorization') bearer: string): HttpException {
+    deleteProfileImage(@Headers('authorization') bearer: string): StatusOk {
         this.usersService.deleteProfileImage(jwtManipulationService.decodeJwtToken(bearer, 'username'))
-        throw new HttpException('Image successfully deleted', HttpStatus.OK)
+        return { status: 'ok', message: 'Image successfully deleted' }
     }
 
     @ApiBearerAuth()
@@ -127,7 +126,7 @@ export class UsersController {
         @Param('username') username,
         @Headers('authorization') bearer: string,
         @Body() dto: UserBanDto
-    ): Promise<HttpException> {
+    ): Promise<StatusOk> {
         return this.usersService.banOrUnbanUser(
             jwtManipulationService.decodeJwtToken(bearer, 'role'),
             username,
@@ -141,7 +140,7 @@ export class UsersController {
         errorMessage: 'You have reached the limit. You have to wait 5 minutes before trying again'
     })
     @Get('verify-updated-email')
-    async verifyUpdatedEmail(@Query('token') token: string): Promise<HttpException> {
+    async verifyUpdatedEmail(@Query('token') token: string): Promise<StatusOk> {
         return this.usersService.verifyUpdatedEmail(token)
     }
 
@@ -151,7 +150,7 @@ export class UsersController {
     @Roles(Role.User)
     disableUser(
         @Headers('authorization') bearer: string,
-    ): Promise<HttpException> {
+    ): Promise<StatusOk> {
         return this.usersService.disableUser(jwtManipulationService.decodeJwtToken(bearer, 'username'))
     }
 
@@ -161,7 +160,7 @@ export class UsersController {
         errorMessage: 'You can only send 1 activation mail in 5 minutes'
     })
     @Post('send-activation-mail')
-    async sendActivationMail(@Body() dto: ActivateUserDto): Promise<HttpException> {
+    async sendActivationMail(@Body() dto: ActivateUserDto): Promise<StatusOk > {
         return this.usersService.sendActivationMail(dto)
     }
 
@@ -171,7 +170,7 @@ export class UsersController {
         errorMessage: 'You have reached the limit. You have to wait 5 minutes before trying again'
     })
     @Get('activate-user')
-    async activateUser(@Query('token') token: string): Promise<HttpException> {
+    async activateUser(@Query('token') token: string): Promise<StatusOk> {
         return this.usersService.activateUser(token)
     }
 }

@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Injectable, BadRequestException, HttpException, HttpStatus } from '@nestjs/common'
+import { Injectable, BadRequestException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 
 // Other dependencies
@@ -12,6 +12,7 @@ import { CreateEntryDto } from '../Dto/create-entry.dto'
 import { TitlesRepository } from 'src/shared/Repositories/title.repository'
 import { serializerService, ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { UsersRepository } from 'src/shared/Repositories/users.repository'
+import { StatusOk } from 'src/shared/Types'
 
 @Injectable()
 export class EntryService {
@@ -67,7 +68,7 @@ export class EntryService {
         return serializerService.serializeResponse('entry_detail', entry)
     }
 
-    async createEntry(writtenBy: string, dto: CreateEntryDto): Promise<HttpException | ISerializeResponse> {
+    async createEntry(writtenBy: string, dto: CreateEntryDto): Promise<ISerializeResponse> {
         dto.text = dto.text.replace(/^\s+|\s+$/g, '')
         if (dto.text.length === 0) throw new BadRequestException('Entry text can not be whitespace')
 
@@ -81,7 +82,7 @@ export class EntryService {
         return serializerService.serializeResponse('updated_entry', newEntry)
     }
 
-    async undoVoteOfEntry({ entryId, username, isUpVoted }: { entryId: string, username: string, isUpVoted: boolean }): Promise<HttpException> {
+    async undoVoteOfEntry({ entryId, username, isUpVoted }: { entryId: string, username: string, isUpVoted: boolean }): Promise<StatusOk> {
         if (!this.validator.isMongoId(entryId)) throw new BadRequestException('EntryId must be a MongoId.')
 
         try {
@@ -91,10 +92,10 @@ export class EntryService {
         }
 
         await this.entriesRepository.undoVoteOfEntry({ entryId, isUpVoted, username })
-        throw new HttpException('Entry has been un voted.', HttpStatus.OK)
+        return { status: 'ok', message: 'Entry has been un voted' }
     }
 
-    async voteEntry({ entryId, username, isUpVoted }: { entryId: string, username: string, isUpVoted: boolean }): Promise<HttpException> {
+    async voteEntry({ entryId, username, isUpVoted }: { entryId: string, username: string, isUpVoted: boolean }): Promise<StatusOk> {
         if (!this.validator.isMongoId(entryId)) throw new BadRequestException('EntryId must be a MongoId.')
 
         try {
@@ -104,19 +105,19 @@ export class EntryService {
         }
 
         await this.entriesRepository.voteEntry({ entryId, isUpVoted, username })
-        throw new HttpException('Entry has been voted.', HttpStatus.OK)
+        return { status: 'ok', message: 'Entry has been voted' }
     }
 
-    async deleteEntry(username: string, role: number, entryId: string): Promise<HttpException> {
+    async deleteEntry(username: string, role: number, entryId: string): Promise<StatusOk> {
         if (!this.validator.isMongoId(entryId)) throw new BadRequestException('EntryId must be a MongoId.')
         await this.usersRepository.getUserByUsername(username)
 
         const entry: EntriesEntity = await this.entriesRepository.deleteEntry(username, role, entryId)
         await this.titlesRepository.updateEntryCount(entry.title_id, -1)
-        throw new HttpException('Entry has been deleted.', HttpStatus.OK)
+        return { status: 'ok', message: 'Entry has been deleted' }
     }
 
-    async deleteEntriesBelongsToUsername(username: string): Promise<HttpException> {
+    async deleteEntriesBelongsToUsername(username: string): Promise<StatusOk> {
         await this.usersRepository.getUserByUsername(username)
         const entries: EntriesEntity[] = await this.entriesRepository.deleteEntriesBelongsToUsername(username)
         // Get get entry count belongs to title id
@@ -129,6 +130,6 @@ export class EntryService {
         entriesWithTitleId.map(async (item: { id: string, entryCount: number}) => {
             await this.titlesRepository.updateEntryCount(item.id, -item.entryCount)
         })
-        throw new HttpException('Entries are deleted', HttpStatus.OK)
+        return { status: 'ok', message: 'Entries are deleted' }
     }
 }
