@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Injectable, HttpException, BadRequestException } from '@nestjs/common'
+import { Injectable, BadRequestException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { InjectRepository } from '@nestjs/typeorm'
 
@@ -71,7 +71,7 @@ export class AuthService {
         return { status: 'ok', message: 'Account has been created. Please verify your account to be able to sign in' }
     }
 
-    async signIn(userEntity: UsersEntity, dto: LoginDto): Promise<HttpException | ISerializeResponse> {
+    async signIn(userEntity: UsersEntity, dto: LoginDto): Promise<ISerializeResponse> {
         if (userEntity.is_banned) throw new BadRequestException('This is a banned account')
         if (!userEntity.is_active) throw new BadRequestException('Account is not active')
 
@@ -164,7 +164,7 @@ export class AuthService {
         return { status: 'ok', message: 'Password has been successfully updated' }
     }
 
-    async accountVerification(incToken: string): Promise<HttpException> {
+    async accountVerification(incToken: string): Promise<StatusOk> {
         let decodedToken
         try {
             decodedToken = jwt.verify(incToken, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))

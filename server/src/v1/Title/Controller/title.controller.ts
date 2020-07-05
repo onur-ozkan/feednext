@@ -5,7 +5,6 @@ import {
     Headers,
     Post,
     Body,
-    HttpException,
     Get,
     Param,
     Query,
@@ -123,7 +122,7 @@ export class TitleController {
     })
     @Put('/image')
     @Roles(Role.Admin)
-    updateTitleImage(@Query('titleId') titleId, @Req() req): Promise<HttpException> {
+    updateTitleImage(@Query('titleId') titleId, @Req() req): Promise<StatusOk> {
         return new Promise((resolve, reject) => {
             const handler = (_field, file, _filename, _encoding, mimetype) => {
                 if (mimetype !== 'image/jpeg' && mimetype !== 'image/png') reject(new BadRequestException('File must be image'))
@@ -190,7 +189,7 @@ export class TitleController {
     getRateOfUser(
         @Headers('authorization') bearer: string,
         @Param('titleId') titleId: string,
-    ): Promise<HttpException> {
+    ): Promise<ISerializeResponse> {
         return this.titleService.getRateOfUser(jwtManipulationService.decodeJwtToken(bearer, 'username'), titleId)
     }
 

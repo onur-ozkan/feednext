@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Injectable, BadRequestException, HttpException } from '@nestjs/common'
+import { Injectable, BadRequestException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 
 // Other dependencies
@@ -149,7 +149,7 @@ export class UserService {
         return { status: 'ok', message: 'Account successfully disabled' }
     }
 
-    async activateUser(incToken: string): Promise<StatusOk | HttpException> {
+    async activateUser(incToken: string): Promise<StatusOk> {
         let decodedToken
 
         try {

@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Injectable, HttpException, BadRequestException } from '@nestjs/common'
+import { Injectable, BadRequestException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 
 // Other dependencies
@@ -73,7 +73,7 @@ export class TitleService {
         return serializerService.serializeResponse('title_list', result)
     }
 
-    async createTitle(openedBy: string, payload: CreateTitleDto, buffer: Buffer): Promise<HttpException | ISerializeResponse> {
+    async createTitle(openedBy: string, payload: CreateTitleDto, buffer: Buffer): Promise<ISerializeResponse> {
         payload.name = payload.name.replace(/^\s+|\s+$/g, '')
         if (payload.name.length === 0) throw new BadRequestException('Title name can not be whitespace')
 
@@ -134,7 +134,7 @@ export class TitleService {
         return { status: 'ok', message: 'Title has been rated' }
     }
 
-    async getRateOfUser(username: string, titleId: string): Promise<any> {
+    async getRateOfUser(username: string, titleId: string): Promise<ISerializeResponse> {
         if (!this.validator.isMongoId(titleId)) throw new BadRequestException('TitleId must be a MongoId')
 
         try {

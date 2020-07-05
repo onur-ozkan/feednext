@@ -10,7 +10,7 @@ import {
     Query,
     Request,
     Res,
-    BadRequestException,
+    BadRequestException
 } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'

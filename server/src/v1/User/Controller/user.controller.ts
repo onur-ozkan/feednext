@@ -1,7 +1,6 @@
 // Nest dependencies
 import {
     BadRequestException,
-    HttpException,
     Controller,
     UseGuards,
     Get,
@@ -75,7 +74,7 @@ export class UsersController {
     })
     @Put('pp')
     @Roles(Role.User)
-    uploadProfileImage(@Headers('authorization') bearer: string, @Req() req): Promise<HttpException> {
+    uploadProfileImage(@Headers('authorization') bearer: string, @Req() req): Promise<StatusOk> {
         const username = jwtManipulationService.decodeJwtToken(bearer, 'username')
 
         return new Promise((resolve, reject) => {
@@ -127,7 +126,7 @@ export class UsersController {
         @Param('username') username,
         @Headers('authorization') bearer: string,
         @Body() dto: UserBanDto
-    ): Promise<HttpException> {
+    ): Promise<StatusOk> {
         return this.usersService.banOrUnbanUser(
             jwtManipulationService.decodeJwtToken(bearer, 'role'),
             username,
@@ -141,7 +140,7 @@ export class UsersController {
         errorMessage: 'You have reached the limit. You have to wait 5 minutes before trying again'
     })
     @Get('verify-updated-email')
-    async verifyUpdatedEmail(@Query('token') token: string): Promise<HttpException> {
+    async verifyUpdatedEmail(@Query('token') token: string): Promise<StatusOk> {
         return this.usersService.verifyUpdatedEmail(token)
     }
 
@@ -151,7 +150,7 @@ export class UsersController {
     @Roles(Role.User)
     disableUser(
         @Headers('authorization') bearer: string,
-    ): Promise<HttpException> {
+    ): Promise<StatusOk> {
         return this.usersService.disableUser(jwtManipulationService.decodeJwtToken(bearer, 'username'))
     }
 
@@ -171,7 +170,7 @@ export class UsersController {
         errorMessage: 'You have reached the limit. You have to wait 5 minutes before trying again'
     })
     @Get('activate-user')
-    async activateUser(@Query('token') token: string): Promise<StatusOk | HttpException> {
+    async activateUser(@Query('token') token: string): Promise<StatusOk> {
         return this.usersService.activateUser(token)
     }
 }

@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Injectable, BadRequestException, HttpException } from '@nestjs/common'
+import { Injectable, BadRequestException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 
 // Other dependencies
@@ -68,7 +68,7 @@ export class EntryService {
         return serializerService.serializeResponse('entry_detail', entry)
     }
 
-    async createEntry(writtenBy: string, dto: CreateEntryDto): Promise<HttpException | ISerializeResponse> {
+    async createEntry(writtenBy: string, dto: CreateEntryDto): Promise<ISerializeResponse> {
         dto.text = dto.text.replace(/^\s+|\s+$/g, '')
         if (dto.text.length === 0) throw new BadRequestException('Entry text can not be whitespace')
 

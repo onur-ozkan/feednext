@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Controller, Headers, Get, Param, UseGuards, Post, Body, Query, Patch, Delete, HttpException } from '@nestjs/common'
+import { Controller, Headers, Get, Param, UseGuards, Post, Body, Query, Patch, Delete } from '@nestjs/common'
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthGuard } from '@nestjs/passport'
 
@@ -113,7 +113,7 @@ export class EntryController {
     @Roles(Role.User)
     createEntry(
         @Headers('authorization') bearer: string, @Body() dto: CreateEntryDto,
-    ): Promise<HttpException | ISerializeResponse> {
+    ): Promise<ISerializeResponse> {
         return this.entryService.createEntry(jwtManipulationService.decodeJwtToken(bearer, 'username'), dto)
     }
 
