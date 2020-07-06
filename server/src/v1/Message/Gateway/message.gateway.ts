@@ -12,7 +12,7 @@ import { configService } from 'src/shared/Services/config.service'
 
 @WebSocketGateway(4001 + Number(configService.getEnv('INSTANCE_ID') || 0), {
     transports: ['websocket'],
-    origins: configService.getEnv('APP_DOMAIN'),
+    origins: `${configService.getEnv('APP_DOMAIN')}:*`,
 })
 export class MessageGateway {
     @WebSocketServer() wss: Server
