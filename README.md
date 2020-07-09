@@ -131,7 +131,7 @@
   - Websocket protocol via [socket.io](https://socket.io)
   - [Sentry](https://sentry.io)
 
-  #### Backend
+  #### API
   - [NestJS](https://nestjs.com)
   - [JWT](https://jwt.io)
   - [Typeorm](https://typeorm.io)
