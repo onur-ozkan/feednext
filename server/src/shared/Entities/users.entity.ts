@@ -8,7 +8,7 @@ import {
     UpdateDateColumn,
     BeforeInsert,
 } from 'typeorm'
-import { createHmac } from 'crypto'
+import * as argon2 from 'argon2'
 
 @Entity('Users')
 export class UsersEntity {
@@ -33,8 +33,7 @@ export class UsersEntity {
     username: string
 
     @Column({
-        type: 'string',
-        length: 20,
+        type: 'string'
     })
     password: string
 
@@ -79,8 +78,8 @@ export class UsersEntity {
     updated_at: Date
 
     @BeforeInsert()
-    hashPassword() {
-        this.password = createHmac('sha256', this.password).digest('hex')
+    async hashPassword() {
+        this.password = await argon2.hash(this.password)
     }
 
     @BeforeInsert()

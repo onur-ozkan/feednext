@@ -13,7 +13,7 @@ export class RedisService {
         })
     }
 
-    async setData(key: string, value: any, expireTime?: number) {
+    async setData(key: string, value: string, expireTime?: number) {
         if (expireTime) {
             await this.redisConnection().set(key, value, 'EX', expireTime)
         } else {
@@ -29,7 +29,7 @@ export class RedisService {
         }
     }
 
-    async getData(key: any) {
+    async getData(key: string) {
         return await this.redisConnection().get(key)
     }
 
