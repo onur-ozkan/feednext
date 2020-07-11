@@ -73,7 +73,14 @@ export class UsersRepository extends Repository<UsersEntity> {
             throw new BadRequestException('Account is does not exists or not verified yet')
         }
 
-        if (!await argon2.verify(user.password, dto.password)) throw new BadRequestException('Incorrect account credentials')
+        let isVerified: boolean
+        try {
+            isVerified = await argon2.verify(user.password, dto.password)
+        }catch {
+            throw new BadRequestException('Your current password has the old hashing algorithm, please update your password')
+        }
+
+        if (!isVerified) throw new BadRequestException('Incorrect account credentials')
 
         return user
     }
