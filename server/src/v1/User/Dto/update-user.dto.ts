@@ -48,7 +48,7 @@ export class UpdateUserDto {
     })
     @IsOptional()
     @NotContains(' ')
-    @Length(6, 15)
+    @Length(6, 100)
     password: string
 
     @ApiProperty({
@@ -58,6 +58,6 @@ export class UpdateUserDto {
     @ValidateIf(o => o.password !== undefined )
     @IsNotEmpty()
     @NotContains(' ')
-    @Length(6, 15)
+    @Length(6, 100)
     oldPassword: string
 }

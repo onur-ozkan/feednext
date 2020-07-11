@@ -27,6 +27,6 @@ export class RecoverAccountDto {
     })
     @IsNotEmpty()
     @NotContains(' ')
-    @Length(6, 20)
+    @Length(6, 100)
     password: string
 }
