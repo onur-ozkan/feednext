@@ -33,8 +33,7 @@ export class UsersEntity {
     username: string
 
     @Column({
-        type: 'string',
-        length: 20,
+        type: 'string'
     })
     password: string
 
