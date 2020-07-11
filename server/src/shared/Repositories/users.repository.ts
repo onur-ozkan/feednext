@@ -2,10 +2,10 @@
 import { BadRequestException, UnprocessableEntityException } from '@nestjs/common'
 
 // Other dependencies
-import { createHmac } from 'crypto'
 import { Repository, EntityRepository } from 'typeorm'
 import * as jwt from 'jsonwebtoken'
 import * as kmachine from 'keymachine'
+import * as argon2 from 'argon2'
 
 // Local files
 import { UsersEntity } from '../Entities/users.entity'
@@ -54,10 +54,10 @@ export class UsersRepository extends Repository<UsersEntity> {
         return { users }
     }
 
-    async validateUser(dto: LoginDto): Promise<UsersEntity> {
-        const passwordHash: string = createHmac('sha256', dto.password).digest('hex')
+    async validateUser(dto: LoginDto): Promise<any> {
+        let user: UsersEntity
         try {
-            return await this.findOneOrFail({
+            user =  await this.findOneOrFail({
                 where: {
                     $or: [
                         {
@@ -66,13 +66,16 @@ export class UsersRepository extends Repository<UsersEntity> {
                         {
                             username: dto.username,
                         },
-                    ],
-                    password: passwordHash
+                    ]
                 }
             })
         } catch (err) {
-            throw new BadRequestException('Please check your credentials or make sure you have verified your account')
+            throw new BadRequestException('Account is does not exists or not verified yet')
         }
+
+        if (!await argon2.verify(user.password, dto.password)) throw new BadRequestException('Incorrect account credentials')
+
+        return user
     }
 
     async createUser(dto: CreateAccountDto): Promise<void> {
@@ -105,8 +108,8 @@ export class UsersRepository extends Repository<UsersEntity> {
         if (dto.link) profile.link = dto.link
         if (dto.biography) profile.biography = dto.biography
         if (dto.password) {
-            const hashedPassword = createHmac('sha256', dto.password).digest('hex')
-            if (profile.password !== createHmac('sha256', dto.oldPassword).digest('hex')) {
+            const hashedPassword = await argon2.hash(dto.password)
+            if (!await argon2.verify(profile.password, dto.oldPassword)) {
                 throw new BadRequestException('Old password does not match')
             }
             profile.password = hashedPassword
@@ -224,7 +227,7 @@ export class UsersRepository extends Repository<UsersEntity> {
         } catch (error) {
             throw new BadRequestException('Recovery key does not match')
         }
-        account.password = createHmac('sha256', dto.password).digest('hex')
+        account.password = await argon2.hash(dto.password)
         account.recovery_key = null
 
         await this.save(account)
