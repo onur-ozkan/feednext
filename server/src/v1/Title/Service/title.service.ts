@@ -23,7 +23,7 @@ import { StatusOk } from 'src/shared/Types'
 
 @Injectable()
 export class TitleService {
-    private validator
+    private validator: Validator
 
     constructor(
         @InjectRepository(TitlesRepository)

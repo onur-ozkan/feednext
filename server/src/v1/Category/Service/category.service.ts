@@ -18,8 +18,7 @@ import { StatusOk } from 'src/shared/Types'
 
 @Injectable()
 export class CategoryService {
-
-    private validator: ObjectId
+    private validator: Validator
 
     constructor(
         @InjectRepository(CategoriesRepository)

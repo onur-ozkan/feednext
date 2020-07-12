@@ -16,7 +16,6 @@ import { StatusOk } from 'src/shared/Types'
 
 @Injectable()
 export class EntryService {
-
     private validator: Validator
 
     constructor(
