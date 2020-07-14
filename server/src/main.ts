@@ -27,7 +27,17 @@ async function bootstrap() {
 
     fastifyAdapter.get('/', (_req, reply) => {
         reply.code(200).header('Content-Type', 'application/json; charset=utf-8').send({
-            status: 'online',
+            title: 'feednext: the source of feedbacks',
+            description: 'Restful API of feednext.io',
+            termsOfService: 'https://raw.githubusercontent.com/feednext/feednext/master/TERMS-CONDITIONS.md',
+            contact: {
+                name: 'API Support',
+                email: 'admin@feednext.io'
+            },
+            license: {
+                name: 'GPLv3',
+                url: 'https://raw.githubusercontent.com/feednext/feednext/master/COPYING'
+            },
             source: 'https://github.com/feednext/feednext',
             versions: [
                 'v1'
