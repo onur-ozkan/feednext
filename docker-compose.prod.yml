@@ -17,7 +17,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./.docker/nginx/prod:/etc/nginx:z
+      - ./.docker/nginx/prod:/etc/nginx/conf.d:z
       - ./.docker/certbot/conf:/etc/letsencrypt:z
       - ./.docker/certbot/www:/var/www/certbot:z
 
