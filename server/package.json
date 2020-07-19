@@ -3,7 +3,7 @@
   "version": "0.1.0-alpha",
   "description": "Server side of feednext.io",
   "author": "Onur Ozkan",
-  "license": "MIT",
+  "license": "GPLv3",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
