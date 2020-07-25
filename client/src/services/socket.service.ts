@@ -9,6 +9,6 @@ export const socketConnection = (accessToken: string): SocketIOClient.Socket => 
 		Authorization: `Bearer ${accessToken}`,
 	},
 	transports: ['websocket'],
-	rejectUnauthorized: false,
+	rejectUnauthorized: process.env.NODE_ENV === 'production' ? true : false,
 	reconnection: true
 })
