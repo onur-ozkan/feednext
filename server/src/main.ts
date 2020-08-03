@@ -17,12 +17,12 @@ import { configService } from './shared/Services/config.service'
 
 async function bootstrap() {
     const fastifyAdapter = new FastifyAdapter({
-        logger: !configService.isProduction() ? true : false,
+        logger: configService.isProduction() ? false : true,
     })
 
     fastifyAdapter.enableCors({
         credentials: true,
-        origin: true
+        origin: configService.isProduction() ? configService.getEnv('APP_DOMAIN') : true
     })
 
     fastifyAdapter.get('/', (_req, reply) => {
