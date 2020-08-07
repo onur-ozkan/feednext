@@ -31,7 +31,7 @@
     "@sentry/node": "^5.19.1",
     "argon2": "^0.26.2",
     "aws-sdk": "^2.713.0",
-    "class-transformer": "^0.2.3",
+    "class-transformer": "^0.3.1",
     "class-validator": "^0.11.1",
     "concat-stream": "^2.0.0",
     "dotenv": "^8.2.0",
