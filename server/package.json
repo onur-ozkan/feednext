@@ -45,7 +45,7 @@
     "glob": "^7.1.6",
     "ioredis": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
-    "keymachine": "1.0.7",
+    "keymachine": "2.1.0",
     "mongodb": "^3.5.9",
     "nan": "^2.14.1",
     "nest-raven": "^5.0.0",

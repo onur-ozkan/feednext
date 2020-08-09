@@ -4,7 +4,7 @@ import { BadRequestException, UnprocessableEntityException } from '@nestjs/commo
 // Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
 import * as jwt from 'jsonwebtoken'
-import * as kmachine from 'keymachine'
+import keymachine from 'keymachine'
 import * as argon2 from 'argon2'
 
 // Local files
@@ -215,7 +215,7 @@ export class UsersRepository extends Repository<UsersEntity> {
         if (account.is_banned) throw new BadRequestException('Banned accounts can not generate recovery key')
         if (!account.is_active) throw new BadRequestException('Account is not active')
 
-        const generatedKey: string = await kmachine.keymachine()
+        const generatedKey = keymachine()
         account.recovery_key = generatedKey
         return {
             account: await this.save(account),
