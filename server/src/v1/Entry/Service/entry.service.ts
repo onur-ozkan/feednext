@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Injectable, BadRequestException } from '@nestjs/common'
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 
 // Other dependencies
@@ -30,7 +30,7 @@ export class EntryService {
     }
 
     async getEntry(entryId: string): Promise<ISerializeResponse> {
-        if (!this.validator.isMongoId(entryId)) throw new BadRequestException('EntryId must be a MongoId.')
+        if (!this.validator.isMongoId(entryId)) throw new BadRequestException('Id must be a type of MongoId')
 
         const entry: EntriesEntity = await this.entriesRepository.getEntry(entryId)
         return serializerService.serializeResponse('entry_detail', entry)
@@ -61,7 +61,7 @@ export class EntryService {
     }
 
     async updateEntry(username: string, entryId: string, text: string): Promise<ISerializeResponse> {
-        if (!this.validator.isMongoId(entryId)) throw new BadRequestException('EntryId must be a MongoId.')
+        if (!this.validator.isMongoId(entryId)) throw new BadRequestException('Id must be a type of MongoId')
 
         const entry: EntriesEntity = await this.entriesRepository.updateEntry(username, entryId, text)
         return serializerService.serializeResponse('entry_detail', entry)
@@ -74,7 +74,7 @@ export class EntryService {
         try {
             await this.titlesRepository.updateEntryCount(dto.titleId, 1)
         } catch (err) {
-            throw new BadRequestException(`${dto.titleId} does not match in the database`)
+            throw new NotFoundException('Title could not found by given id')
         }
 
         const newEntry: EntriesEntity = await this.entriesRepository.createEntry(writtenBy, dto)
@@ -82,12 +82,12 @@ export class EntryService {
     }
 
     async undoVoteOfEntry({ entryId, username, isUpVoted }: { entryId: string, username: string, isUpVoted: boolean }): Promise<StatusOk> {
-        if (!this.validator.isMongoId(entryId)) throw new BadRequestException('EntryId must be a MongoId.')
+        if (!this.validator.isMongoId(entryId)) throw new BadRequestException('Id must be a type of MongoId')
 
         try {
             await this.entriesRepository.findOneOrFail(entryId)
         } catch (e) {
-            throw new BadRequestException('Entry with that id could not found in the database')
+            throw new NotFoundException('Entry could not found by given id')
         }
 
         await this.entriesRepository.undoVoteOfEntry({ entryId, isUpVoted, username })
@@ -95,7 +95,7 @@ export class EntryService {
     }
 
     async voteEntry({ entryId, username, isUpVoted }: { entryId: string, username: string, isUpVoted: boolean }): Promise<StatusOk> {
-        if (!this.validator.isMongoId(entryId)) throw new BadRequestException('EntryId must be a MongoId.')
+        if (!this.validator.isMongoId(entryId)) throw new BadRequestException('Id must be a type of MongoId')
 
         try {
             await this.entriesRepository.findOneOrFail(entryId)
@@ -108,7 +108,7 @@ export class EntryService {
     }
 
     async deleteEntry(username: string, role: number, entryId: string): Promise<StatusOk> {
-        if (!this.validator.isMongoId(entryId)) throw new BadRequestException('EntryId must be a MongoId.')
+        if (!this.validator.isMongoId(entryId)) throw new BadRequestException('Id must be a type of MongoId')
         await this.usersRepository.getUserByUsername(username)
 
         const entry: EntriesEntity = await this.entriesRepository.deleteEntry(username, role, entryId)

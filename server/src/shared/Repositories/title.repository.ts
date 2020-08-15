@@ -1,5 +1,5 @@
 // Nest dependencies
-import { UnprocessableEntityException, BadRequestException } from '@nestjs/common'
+import { UnprocessableEntityException, BadRequestException, NotFoundException } from '@nestjs/common'
 
 // Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
@@ -18,7 +18,7 @@ export class TitlesRepository extends Repository<TitlesEntity> {
             const title: TitlesEntity = await this.findOneOrFail({slug: titleSlug})
             return title
         } catch (err) {
-            throw new BadRequestException('No title found for given slug')
+            throw new NotFoundException('Title could not found by given slug')
         }
     }
 
@@ -27,7 +27,7 @@ export class TitlesRepository extends Repository<TitlesEntity> {
             const title: TitlesEntity = await this.findOneOrFail(titleId)
             return title
         } catch (err) {
-            throw new BadRequestException('No title found for given id')
+            throw new NotFoundException('Title could not found by given id')
         }
     }
 
@@ -51,7 +51,7 @@ export class TitlesRepository extends Repository<TitlesEntity> {
             title.entry_count += value
             this.save(title)
         } catch (err) {
-            throw new BadRequestException('Title with that id could not found in the database')
+            throw new NotFoundException('Title could not found by given id')
         }
     }
 
@@ -142,7 +142,7 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         try {
             title = await this.findOneOrFail(titleId)
         } catch (error) {
-            throw new BadRequestException('Title not found by given title id')
+            throw new NotFoundException('Title could not found by given id')
         }
 
         const docIfAlreadyRated = title.rate.find(item => item.username === ratedBy)
@@ -157,7 +157,7 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         try {
             title = await this.findOneOrFail(titleId)
         } catch (error) {
-            throw new BadRequestException('Title not found by given title id')
+            throw new NotFoundException('Title could not found by given id')
         }
 
         const userRate: { rateValue: number } | undefined = title.rate.find((
@@ -173,7 +173,7 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         try {
             title = await this.findOneOrFail(titleId)
         } catch (error) {
-            throw new BadRequestException('Title not found by given title id')
+            throw new NotFoundException('Title could not found by given id')
         }
 
         const averageRate = title.rate.reduce((
@@ -210,7 +210,7 @@ export class TitlesRepository extends Repository<TitlesEntity> {
             const title: TitlesEntity = await this.findOneOrFail(titleId)
             await this.delete(title)
         } catch (err) {
-            throw new BadRequestException('Title with that id could not found in the database.')
+            throw new NotFoundException('Title could not found by given id')
         }
     }
 }

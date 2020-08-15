@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Injectable, BadRequestException } from '@nestjs/common'
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 
 // Other dependencies
@@ -43,7 +43,7 @@ export class TitleService {
         let title: TitlesEntity
 
         if (isId) {
-            if (!this.validator.isMongoId(titleQueryData)) throw new BadRequestException('TitleId must be a MongoId.')
+            if (!this.validator.isMongoId(titleQueryData)) throw new BadRequestException('Id must be a type of MongoId')
             title = await this.titlesRepository.getTitleById(titleQueryData)
         } else {
             title = await this.titlesRepository.getTitleBySlug(titleQueryData)
@@ -53,7 +53,7 @@ export class TitleService {
     }
 
     async searchTitle({ searchValue }: { searchValue: string }): Promise<ISerializeResponse> {
-        if (searchValue.length < 3) throw new BadRequestException('Search value must be at least 3 characters')
+        if (searchValue.length < 3) throw new BadRequestException('Search value must be greater than 2 characters')
         const result = await this.titlesRepository.searchTitle({ searchValue })
         return serializerService.serializeResponse('searched_title_list', result)
     }
@@ -90,7 +90,7 @@ export class TitleService {
             try {
                 category = await this.categoriesRepository.findOneOrFail(dto.categoryId)
             } catch (err) {
-                throw new BadRequestException('Category could not found by given id')
+                throw new NotFoundException('Category could not found by given id')
             }
 
             if (!category.is_leaf) throw new BadRequestException('Category that is not leaf can not have titles')
@@ -122,12 +122,12 @@ export class TitleService {
     }
 
     async rateTitle(ratedBy: string, titleId: string, rateValue: number): Promise<StatusOk> {
-        if (!this.validator.isMongoId(titleId)) throw new BadRequestException('TitleId must be a MongoId')
+        if (!this.validator.isMongoId(titleId)) throw new BadRequestException('Id must be a type of MongoId')
 
         try {
             this.usersRepository.findOneOrFail({ username: ratedBy })
         } catch (error) {
-            throw new BadRequestException('User not found by given username')
+            throw new NotFoundException('User could not found by given username')
         }
 
         await this.titlesRepository.rateTitle(ratedBy, titleId, rateValue)
@@ -135,12 +135,12 @@ export class TitleService {
     }
 
     async getRateOfUser(username: string, titleId: string): Promise<ISerializeResponse> {
-        if (!this.validator.isMongoId(titleId)) throw new BadRequestException('TitleId must be a MongoId')
+        if (!this.validator.isMongoId(titleId)) throw new BadRequestException('Id must be a type of MongoId')
 
         try {
             this.usersRepository.findOneOrFail({ username })
         } catch (error) {
-            throw new BadRequestException('User not found by given username')
+            throw new NotFoundException('User could not found by given username')
         }
 
         const rate = await this.titlesRepository.getRateOfUser(username, titleId)
@@ -148,7 +148,7 @@ export class TitleService {
     }
 
     async getAvarageRate(titleId: string): Promise<ISerializeResponse> {
-        if (!this.validator.isMongoId(titleId)) throw new BadRequestException('TitleId must be a MongoId.')
+        if (!this.validator.isMongoId(titleId)) throw new BadRequestException('Id must be a type of MongoId')
         const averageRate = await this.titlesRepository.getAvarageRate(titleId)
         return serializerService.serializeResponse('average_title_rate', { title_id: titleId, rate: averageRate })
     }
@@ -157,17 +157,17 @@ export class TitleService {
         dto.name = dto.name.replace(/^\s+|\s+$/g, '')
         if (dto.name.length === 0) throw new BadRequestException('Title name can not be whitespace')
 
-        if (!this.validator.isMongoId(titleId)) throw new BadRequestException('TitleId must be a MongoId.')
+        if (!this.validator.isMongoId(titleId)) throw new BadRequestException('Id must be a type of MongoId')
 
         let title: TitlesEntity
         try {
             title = await this.titlesRepository.findOneOrFail(titleId)
         } catch {
-            throw new BadRequestException('Title could not found by given id')
+            throw new NotFoundException('Title could not found by given id')
         }
 
         if (dto.categoryId && !this.validator.isMongoId(dto.categoryId)) {
-            throw new BadRequestException('CategoryId must be a MongoId.')
+            throw new BadRequestException('Id must be a type of MongoId')
         }
 
         let category
@@ -175,7 +175,7 @@ export class TitleService {
             try {
                 category = await this.categoriesRepository.findOneOrFail(dto.categoryId)
             } catch (err) {
-                throw new BadRequestException('Category could not found by given id')
+                throw new NotFoundException('Category could not found by given id')
             }
         }
 
@@ -186,7 +186,7 @@ export class TitleService {
     }
 
     async deleteTitle(titleId: string): Promise<StatusOk> {
-        if (!this.validator.isMongoId(titleId)) throw new BadRequestException('TitleId must be a MongoId.')
+        if (!this.validator.isMongoId(titleId)) throw new BadRequestException('Id must be a type of MongoId')
 
         await this.titlesRepository.deleteTitle(titleId)
         await this.entriesRepository.deleteEntriesBelongsToTitle(titleId)

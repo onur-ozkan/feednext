@@ -114,7 +114,7 @@ export class AuthController {
 
     @Get('refresh-token')
     async refreshJwtToken(@Request() { cookies }): Promise<ISerializeResponse> {
-        if (!cookies.rt) throw new BadRequestException('Server could not give access tokken without refresh token')
+        if (!cookies.rt) throw new BadRequestException('Server can not give access token without a refresh token')
         return await this.authService.refreshToken(cookies.rt)
     }
 }

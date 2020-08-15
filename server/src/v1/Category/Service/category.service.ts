@@ -32,7 +32,7 @@ export class CategoryService {
     }
 
     async getCategory(categoryId: string): Promise<ISerializeResponse> {
-        if (!this.validator.isMongoId(categoryId)) throw new BadRequestException('CategoryId must be a MongoId')
+        if (!this.validator.isMongoId(categoryId)) throw new BadRequestException('Id must be a type of MongoId')
 
         const category: CategoriesEntity = await this.categoriesRepository.getCategory(categoryId)
         return serializerService.serializeResponse('category_detail', category)
@@ -79,14 +79,14 @@ export class CategoryService {
     }
 
     async updateCategory(categoryId: string, dto: UpdateCategoryDto): Promise<ISerializeResponse> {
-        if (!this.validator.isMongoId(categoryId)) throw new BadRequestException('CategoryId must be a MongoId.')
+        if (!this.validator.isMongoId(categoryId)) throw new BadRequestException('Id must be a type of MongoId')
 
         const category: CategoriesEntity = await this.categoriesRepository.updateCategory(categoryId, dto)
         return serializerService.serializeResponse('category_detail', category)
     }
 
     async deleteCategory(categoryId: string): Promise<StatusOk> {
-        if (!this.validator.isMongoId(categoryId)) throw new BadRequestException('CategoryId must be a MongoId.')
+        if (!this.validator.isMongoId(categoryId)) throw new BadRequestException('Id must be a type of MongoId')
 
         await this.categoriesRepository.deleteCategory(categoryId)
         return { status: 'ok', message: 'Category has been deleted' }

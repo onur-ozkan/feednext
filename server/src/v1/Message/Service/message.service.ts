@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Injectable, BadRequestException } from '@nestjs/common'
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 
 // Other dependencies
@@ -73,7 +73,7 @@ export class MessageService {
         try {
             await this.usersRepository.findOneOrFail({ username })
         } catch (error) {
-            throw new BadRequestException('User does not exist')
+            throw new NotFoundException('User could not found by given username')
         }
 
         const [conversations] = await this.conversationsRepository.findAndCount({
@@ -104,7 +104,7 @@ export class MessageService {
     }
 
     async getMessageListByConversationId (username: string, conversationId: string, skip: string): Promise<ISerializeResponse>  {
-        if (!this.validator.isMongoId(conversationId)) throw new BadRequestException('Conversation id must be a MongoId')
+        if (!this.validator.isMongoId(conversationId)) throw new BadRequestException('Id must be a type of MongoId')
         await this.conversationsRepository.verifyUserAccessToConversation(username, conversationId)
         await this.conversationsRepository.resetUnreadMessageCount(username, conversationId)
 
@@ -113,7 +113,7 @@ export class MessageService {
     }
 
     async deleteMessages(conversationId: string, username: string): Promise<StatusOk> {
-        if (!this.validator.isMongoId(conversationId)) throw new BadRequestException('Conversation id must be a MongoId')
+        if (!this.validator.isMongoId(conversationId)) throw new BadRequestException('Id must be a type of MongoId')
 
         const isDeleted = await this.conversationsRepository.deleteConversation(conversationId, username)
         if (isDeleted) await this.messagesRepository.deleteMessagesBelongsToConversation(conversationId)

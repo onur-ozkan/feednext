@@ -1,5 +1,5 @@
 // Nest dependencies
-import { BadRequestException, UnprocessableEntityException, ForbiddenException, ConflictException } from '@nestjs/common'
+import { BadRequestException, UnprocessableEntityException, ForbiddenException, ConflictException, NotFoundException } from '@nestjs/common'
 
 // Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
@@ -16,7 +16,7 @@ export class EntriesRepository extends Repository<EntriesEntity> {
             const entry: EntriesEntity = await this.findOneOrFail(entryId)
             return entry
         } catch (err) {
-            throw new BadRequestException('Entry could not found by given id')
+            throw new NotFoundException('Entry could not found by given id')
         }
     }
 
@@ -115,7 +115,7 @@ export class EntriesRepository extends Repository<EntriesEntity> {
             return entries
 
         } catch (err) {
-            throw new BadRequestException('No entry found for given TitleId')
+            throw new NotFoundException('Entry could not found by given id')
         }
     }
 
@@ -138,11 +138,11 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         try {
             entry = await this.findOneOrFail(entryId)
         } catch {
-            throw new BadRequestException('Entry could not found by given id')
+            throw new NotFoundException('Entry could not found by given id')
         }
 
-        if (entry.written_by !== username) throw new BadRequestException('Only author of the entry can update it')
-        if (entry.text === text) throw new BadRequestException('Text must be different to update entry')
+        if (entry.written_by !== username) throw new BadRequestException('Only author of the entry can update its entry')
+        if (entry.text === text) throw new BadRequestException('Text must be different than the current entry to update it')
 
         try {
             entry.text = text
@@ -197,11 +197,11 @@ export class EntriesRepository extends Repository<EntriesEntity> {
         try {
             entry = await this.findOneOrFail(entryId)
         } catch (err) {
-            throw new BadRequestException('Entry could not found by given id')
+            throw new NotFoundException('Entry could not found by given id')
         }
 
         if (role < Role.Admin && entry.written_by !== username) {
-            throw new ForbiddenException('You have no permission to do this action')
+            throw new ForbiddenException('Operation not permitted')
         }
 
         await this.delete(entry)

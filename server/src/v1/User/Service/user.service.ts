@@ -41,7 +41,7 @@ export class UserService {
     }
 
     async searchUserByUsername({ searchValue } : { searchValue: string }): Promise<ISerializeResponse> {
-        if (searchValue.length < 3) throw new BadRequestException('Search value must be at least 3 characters')
+        if (searchValue.length < 3) throw new BadRequestException('Search value must be greater than 2 characters')
         const result = await this.usersRepository.searchUserByUsername({ searchValue })
         return serializerService.serializeResponse('searched_user_list', result)
     }
@@ -124,24 +124,24 @@ export class UserService {
         try {
             decodedToken = jwt.verify(incToken, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
         } catch (error) {
-            throw new BadRequestException('Invalid token signature')
+            throw new BadRequestException('Token signature is not valid')
         }
 
         if (decodedToken.email === decodedToken.newEmail) {
-            throw new BadRequestException('Current and new email can not be same')
+            throw new BadRequestException('Verification token is not valid')
         }
 
         if (decodedToken.verifyUpdateEmailToken) {
             const remainingTime: number = await decodedToken.exp - Math.floor(Date.now() / 1000)
             if (remainingTime <= 0) {
-                throw new BadRequestException('Incoming token is expired.')
+                throw new BadRequestException('Verification token is not valid')
             }
 
             await this.usersRepository.verifyUpdatedEmail(decodedToken)
             return { status: 'ok', message: 'Email has been updated' }
         }
 
-        throw new BadRequestException('Incoming token is not valid')
+        throw new BadRequestException('Verification token is not valid')
     }
 
     async disableUser(usernameParam: string): Promise<StatusOk> {
@@ -155,20 +155,20 @@ export class UserService {
         try {
             decodedToken = jwt.verify(incToken, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
         } catch (error) {
-            throw new BadRequestException('Invalid token signature')
+            throw new BadRequestException('Token signature is not valid')
         }
 
         if (decodedToken.activationToken) {
             const remainingTime: number = await decodedToken.exp - Math.floor(Date.now() / 1000)
             if (remainingTime <= 0) {
-                throw new BadRequestException('Incoming token is expired.')
+                throw new BadRequestException('Activation token is not valid')
             }
 
             await this.usersRepository.activateUser(decodedToken)
             return { status: 'ok', message: 'Account has been activated' }
         }
 
-        throw new BadRequestException('Incoming token is not valid.')
+        throw new BadRequestException('Activation token is not valid')
     }
 
     async sendActivationMail(dto: ActivateUserDto): Promise<StatusOk> {

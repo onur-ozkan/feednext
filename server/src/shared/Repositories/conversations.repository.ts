@@ -1,5 +1,5 @@
 // Nest Dependencies
-import { BadRequestException } from '@nestjs/common'
+import { BadRequestException, NotFoundException } from '@nestjs/common'
 
 // Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
@@ -97,7 +97,7 @@ export class ConversationsRepository extends Repository<ConversationsEntity> {
                 }
             })
         } catch (err) {
-            throw new BadRequestException('Conversation could not found by giving id and username')
+            throw new NotFoundException('Conversation could not found by giving id and username')
         }
 
         if (conversation.deleted_from.length < (conversation.participants.length - 1)) {

@@ -14,7 +14,7 @@ export class JwtManipulationService {
             try {
                 decodedJwtData = jwt.verify(token.split(' ')[1], configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
             } catch (error) {
-                throw new BadRequestException('Invalid token signature')
+                throw new BadRequestException('Token signature is not valid')
             }
 
             if (property === 'all') result = decodedJwtData

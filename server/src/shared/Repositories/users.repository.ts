@@ -1,5 +1,5 @@
 // Nest dependencies
-import { BadRequestException, UnprocessableEntityException } from '@nestjs/common'
+import { BadRequestException, UnprocessableEntityException, NotFoundException, ForbiddenException } from '@nestjs/common'
 
 // Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
@@ -28,7 +28,7 @@ export class UsersRepository extends Repository<UsersEntity> {
             const profile: UsersEntity = await this.findOneOrFail({ username })
             return profile
         } catch (err) {
-            throw new BadRequestException('User could not found')
+            throw new NotFoundException('User could not found by given username')
         }
     }
 
@@ -36,7 +36,7 @@ export class UsersRepository extends Repository<UsersEntity> {
         try {
             return await this.findOneOrFail({ email: emailParam })
         } catch (err) {
-            throw new BadRequestException('User could not found by given email')
+            throw new NotFoundException('User could not found by given email')
         }
     }
 
@@ -104,11 +104,9 @@ export class UsersRepository extends Repository<UsersEntity> {
         let profile: UsersEntity
 
         try {
-            profile = await this.findOneOrFail({
-                username
-            })
+            profile = await this.findOneOrFail({ username })
         } catch (error) {
-            throw new BadRequestException('Account does not exist')
+            throw new NotFoundException('User could not found by given username')
         }
 
         if (dto.fullName) profile.full_name = dto.fullName
@@ -157,7 +155,7 @@ export class UsersRepository extends Repository<UsersEntity> {
             account.email = decodedToken.newEmail
             await this.save(account)
         } catch (err) {
-            throw new BadRequestException('Incoming token is not valid.')
+            throw new BadRequestException('Verification token is not valid')
         }
     }
 
@@ -167,7 +165,7 @@ export class UsersRepository extends Repository<UsersEntity> {
         try {
             user = await this.findOneOrFail({ username })
         } catch (err) {
-            throw new BadRequestException('User could not found')
+            throw new NotFoundException('User could not found')
         }
 
         user.is_active = false
@@ -184,7 +182,7 @@ export class UsersRepository extends Repository<UsersEntity> {
           account.is_active = true
           await this.save(account)
         } catch (err) {
-            throw new BadRequestException('Incoming token is not valid')
+            throw new BadRequestException('Activation token is not valid')
         }
     }
 
@@ -194,10 +192,10 @@ export class UsersRepository extends Repository<UsersEntity> {
         try {
             user = await this.findOneOrFail({ username })
         } catch (err) {
-            throw new BadRequestException('User could not found')
+            throw new NotFoundException('User could not found by given username')
         }
 
-        if (operatorRole <= user.role) throw new BadRequestException('Target must have lower role than operator user')
+        if (operatorRole <= user.role) throw new ForbiddenException('Operation not permitted')
 
         user.is_banned = banSituation
         await this.save(user)
@@ -209,10 +207,10 @@ export class UsersRepository extends Repository<UsersEntity> {
         try {
             account = await this.findOneOrFail({ email: dto.email })
         } catch (err) {
-            throw new BadRequestException('User could not found by given email')
+            throw new NotFoundException('User could not found by given email')
         }
 
-        if (account.is_banned) throw new BadRequestException('Banned accounts can not generate recovery key')
+        if (account.is_banned) throw new BadRequestException('Account is banned')
         if (!account.is_active) throw new BadRequestException('Account is not active')
 
         const generatedKey = keymachine()

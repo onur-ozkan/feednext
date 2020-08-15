@@ -1,5 +1,5 @@
 // Nest dependencies
-import { BadRequestException, UnprocessableEntityException } from '@nestjs/common'
+import { BadRequestException, UnprocessableEntityException, NotFoundException } from '@nestjs/common'
 
 // Other dependencies
 import { Repository, EntityRepository } from 'typeorm'
@@ -16,7 +16,7 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
             const category: CategoriesEntity = await this.findOneOrFail(categoryId)
             return category
         } catch (err) {
-            throw new BadRequestException('Category with that id could not found in the database.')
+            throw new NotFoundException('Category could not find by given id')
         }
     }
 
@@ -75,7 +75,7 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
                 categoryPayload.parent_category = dto.parentCategoryId
                 categoryPayload.ancestors.push(...parentCategory.ancestors, dto.parentCategoryId)
             } catch (err) {
-                throw new BadRequestException(`Category with id:${dto.parentCategoryId} does not match in database.`)
+                throw new NotFoundException('Category could not find by given id')
             }
         }
 
@@ -94,7 +94,7 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
             try {
                 parentCategory = await this.findOneOrFail(dto.parentCategoryId)
             } catch (err) {
-                throw new BadRequestException('Parent category with that id could not found in the database.')
+                throw new NotFoundException('Parent category could not find by given id')
             }
         }
 
@@ -102,7 +102,7 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
         try {
             category = await this.findOneOrFail(categoryId)
         } catch {
-            throw new BadRequestException('Category with that id could not found in the database.')
+            throw new NotFoundException('Category could not find by given id')
         }
 
         try {
@@ -126,7 +126,7 @@ export class CategoriesRepository extends Repository<CategoriesEntity> {
             category = await this.findOneOrFail(categoryId)
             await this.delete(category)
         } catch (err) {
-            throw new BadRequestException('Category with that id could not found in the database.')
+            throw new NotFoundException('Category could not find by given id')
         }
 
         // Delete all child categories that belongs to deleted category

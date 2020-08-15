@@ -1,5 +1,5 @@
 // Nest dependencies
-import { Injectable, BadRequestException } from '@nestjs/common'
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { InjectRepository } from '@nestjs/typeorm'
 
@@ -72,7 +72,7 @@ export class AuthService {
     }
 
     async signIn(userEntity: UsersEntity, dto: LoginDto): Promise<ISerializeResponse> {
-        if (userEntity.is_banned) throw new BadRequestException('This is a banned account')
+        if (userEntity.is_banned) throw new BadRequestException('Account is banned')
         if (!userEntity.is_active) throw new BadRequestException('Account is not active')
 
         const token: string = this.jwtService.sign({
@@ -112,7 +112,7 @@ export class AuthService {
         try {
             decodedToken = jwt.verify(refreshToken, configService.getEnv('SECRET_FOR_REFRESH_TOKEN'))
         } catch (error) {
-            throw new BadRequestException('Invalid token signature')
+            throw new BadRequestException('Token signature is not valid')
         }
 
         let user: UsersEntity
@@ -123,7 +123,7 @@ export class AuthService {
                 refresh_token: refreshToken
             })
         } catch (e) {
-            throw new BadRequestException('Refresh token is invalid')
+            throw new BadRequestException('Refresh token is not valid')
         }
 
         const refreshedToken = this.jwtService.sign({
@@ -169,17 +169,17 @@ export class AuthService {
         try {
             decodedToken = jwt.verify(incToken, configService.getEnv('SECRET_FOR_ACCESS_TOKEN'))
         } catch (error) {
-            throw new BadRequestException('Invalid token signature')
+            throw new BadRequestException('Token signature is not valid')
         }
 
         if (decodedToken.verificationToken && decodedToken.username) {
             const remainingTime: number = await decodedToken.exp - Math.floor(Date.now() / 1000)
             if (remainingTime <= 0) {
-                throw new BadRequestException('Incoming token is expired.')
+                throw new BadRequestException('Verification token is no longer valid, its expired')
             }
 
             const accountInformation = await this.redisService.getData(decodedToken.username)
-            if (!accountInformation) throw new BadRequestException('Could not found an account to verify')
+            if (!accountInformation) throw new NotFoundException('Account could not found')
 
             await this.usersRepository.createUser(JSON.parse(accountInformation))
             await this.redisService.deleteData(decodedToken.username)
@@ -188,6 +188,6 @@ export class AuthService {
             return { status: 'ok', message: 'Account has been verified' }
         }
 
-        throw new BadRequestException('Incoming token is not valid.')
+        throw new BadRequestException('Token is not valid')
     }
 }
