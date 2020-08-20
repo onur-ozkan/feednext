@@ -10,5 +10,5 @@ export const socketConnection = (accessToken: string): SocketIOClient.Socket => 
 	},
 	transports: ['websocket'],
 	rejectUnauthorized: process.env.NODE_ENV === 'production' ? true : false,
-	reconnection: true
+	reconnection: false
 })
