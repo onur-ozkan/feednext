@@ -23,7 +23,7 @@ import { AppLayout } from '@/layouts/AppLayout'
 import { ArticleListContent } from '@/components/pages/feeds/ArticleListContent'
 import FlowHeader from '@/components/pages/feeds/FlowHeader'
 
-const Feeds: NextPage<FeedsPageInitials> = (props): JSX.Element => {
+const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 	const [displayFilterModal, setDisplayFilterModal] = useState(false)
 	const [trendingCategories, setTrendingCategories] = useState<TrendingCategoriesResponseData[]>(props.trendingCategories)
 	const [categoryFilter, setCategoryFilter] = useState<string | undefined>(undefined)
@@ -297,6 +297,6 @@ const Feeds: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 	)
 }
 
-Feeds.getInitialProps = async () => getFeedsPageInitialValues()
+Homepage.getInitialProps = async () => getFeedsPageInitialValues()
 
-export default Feeds
+export default Homepage
