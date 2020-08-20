@@ -5,7 +5,7 @@ import App from 'next/app'
 import ReactGA from 'react-ga'
 import Router, { useRouter } from 'next/router'
 import NProgress from 'nprogress'
-import * as kmachine from 'keymachine'
+import keymachine from 'keymachine'
 import 'nprogress/nprogress.css'
 
 // Local files
@@ -16,7 +16,6 @@ NProgress.configure({ showSpinner: false })
 Router.events.on('routeChangeStart', () => NProgress.start())
 Router.events.on('routeChangeComplete', () => NProgress.done())
 Router.events.on('routeChangeError', () => NProgress.done())
-kmachine.configuration.lenght = 16
 
 const AppBase = ({ Component, pageProps }) => {
 	const pathname = useRouter().pathname
@@ -32,7 +31,7 @@ const AppBase = ({ Component, pageProps }) => {
 				<Component
 					// Following condition is for the not calling useEffect twice on account verification
 					{...pathname !== '/auth/sign-up/account-verification' && {
-						key: kmachine.keymachine()
+						key: keymachine({ length: 16 })
 					}}
 					{...pageProps}
 				/>
