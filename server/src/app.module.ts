@@ -6,7 +6,7 @@ import { RouterModule } from 'nest-router'
 
 // Other dependencies
 import { RavenInterceptor } from 'nest-raven'
-import { RateLimiterInterceptor, RateLimiterModule } from 'nestjs-fastify-rate-limiter'
+import { RateLimiterInterceptor, RateLimiterModule } from 'nestjs-rate-limiter'
 
 // Local files
 import { versionRoutes } from 'src/version.routes'
@@ -19,7 +19,11 @@ import { SitemapModule } from './sitemap/sitemap.module'
     imports: [
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         RouterModule.forRoutes(versionRoutes),
-        RateLimiterModule.register(configService.getGlobalRateLimitations()),
+        RateLimiterModule.register({
+            for: 'Fastify',
+            points: Number.MAX_SAFE_INTEGER,
+            duration: 1
+        }),
         SitemapModule,
         V1Module,
     ],

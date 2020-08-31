@@ -16,7 +16,7 @@ import { AuthGuard } from '@nestjs/passport'
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 
 // Other dependencies
-import { RateLimit } from 'nestjs-fastify-rate-limiter'
+import { RateLimit } from 'nestjs-rate-limiter'
 
 // Local files
 import { AuthService } from '../Service/auth.service'
@@ -59,7 +59,7 @@ export class AuthController {
     }
 
     @RateLimit({
-        points: 5,
+        points: 1,
         duration: 120,
         errorMessage: 'You have reached the limit. You have to wait 2 minutes before trying again.'
     })

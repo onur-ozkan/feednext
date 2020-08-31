@@ -19,7 +19,7 @@ import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 import { AuthGuard } from '@nestjs/passport'
 
 // Other dependencies
-import { RateLimit } from 'nestjs-fastify-rate-limiter'
+import { RateLimit } from 'nestjs-rate-limiter'
 import * as concat from 'concat-stream'
 
 // Local files

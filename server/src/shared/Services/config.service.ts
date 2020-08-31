@@ -24,15 +24,6 @@ export class ConfigService {
         return this.getEnv('MODE') === 'PROD'
     }
 
-    public getGlobalRateLimitations() {
-        return {
-            type: 'Memory',
-            points: Number.MAX_SAFE_INTEGER,
-            duration: 1,
-            keyPrefix: 'global',
-        }
-    }
-
     public getTypeOrmConfig(): TypeOrmModuleOptions {
         return {
             type: 'mongodb',

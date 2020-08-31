@@ -11,7 +11,7 @@ import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.ser
 import { ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { UpdateEntryDto } from '../Dto/update-entry.dto'
 import { Role } from 'src/shared/Enums/Roles'
-import { RateLimit } from 'nestjs-fastify-rate-limiter'
+import { RateLimit } from 'nestjs-rate-limiter'
 import { StatusOk } from 'src/shared/Types'
 
 @ApiTags('v1/entry')

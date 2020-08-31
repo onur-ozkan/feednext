@@ -20,7 +20,7 @@ import { AuthGuard } from '@nestjs/passport/dist/auth.guard'
 
 // Other dependencies
 import * as concat from 'concat-stream'
-import { RateLimit } from 'nestjs-fastify-rate-limiter'
+import { RateLimit } from 'nestjs-rate-limiter'
 
 // Local dependencies
 import { jwtManipulationService } from 'src/shared/Services/jwt.manipulation.service'
