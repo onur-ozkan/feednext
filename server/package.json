@@ -50,7 +50,7 @@
     "nan": "^2.14.1",
     "nest-raven": "^5.0.0",
     "nest-router": "^1.0.9",
-    "nestjs-rate-limiter": "^2.1.0",
+    "nestjs-rate-limiter": "^2.4.0",
     "nodemailer": "^6.4.10",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
