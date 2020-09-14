@@ -7,7 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { TitlesEntity } from 'src/shared/Entities/titles.entity'
 import { TitlesRepository } from 'src/shared/Repositories/title.repository'
 import { TitleService } from './Service/title.service'
-import { CategoriesRepository } from 'src/shared/Repositories/categories.repository'
 import { TitleController } from './Controller/title.controller'
 import { EntriesRepository } from 'src/shared/Repositories/entries.repository'
 import { UsersRepository } from 'src/shared/Repositories/users.repository'
@@ -17,7 +16,7 @@ import { RolesGuard } from 'src/shared/Guards/roles.guard'
 @Module({
     imports: [
         TypeOrmModule.forFeature([
-            TitlesEntity, TitlesRepository, CategoriesRepository, UsersRepository, EntriesRepository
+            TitlesEntity, TitlesRepository, UsersRepository, EntriesRepository
         ])
     ],
     controllers: [TitleController],

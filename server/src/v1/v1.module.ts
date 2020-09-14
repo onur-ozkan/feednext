@@ -6,7 +6,6 @@ import { BlacklistMiddleware } from 'src/shared/Middleware/blacklist.middleware'
 import { RedisService } from 'src/shared/Services/redis.service'
 import { UserModule } from './User/user.module'
 import { AuthModule } from './Auth/auth.module'
-import { CategoryModule } from './Category/category.module'
 import { EntryModule } from './Entry/entry.module'
 import { TitleModule } from './Title/title.module'
 import { MessageModule } from './Message/message.module'
@@ -15,7 +14,6 @@ import { MessageModule } from './Message/message.module'
     imports: [
         UserModule,
         AuthModule,
-        CategoryModule,
         EntryModule,
         TitleModule,
         MessageModule

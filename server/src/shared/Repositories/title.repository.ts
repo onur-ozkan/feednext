@@ -58,7 +58,7 @@ export class TitlesRepository extends Repository<TitlesEntity> {
     async getTitleList(
         query: {
             author: string,
-            categoryIds: string[],
+            tags: string[],
             sortBy: 'hot' | 'top',
             skip: number,
         }
@@ -68,19 +68,10 @@ export class TitlesRepository extends Repository<TitlesEntity> {
                 ...query.author && {
                     opened_by: query.author
                 },
-                ...query.categoryIds && {
-                    $or: [
-                        {
-                            category_id: {
-                                $in: query.categoryIds
-                            }
-                        },
-                        {
-                            category_ancestors: {
-                                $in: query.categoryIds
-                            }
-                        },
-                    ]
+                ...query.tags && {
+                    tags: {
+                        $in: query.tags
+                    }
                 },
                 ...query.sortBy === 'hot' && {
                     created_at: {
@@ -121,12 +112,11 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         return { titles, count: total }
     }
 
-    async createTitle(openedBy: string, dto: CreateTitleDto, categoryAncestors: string[]): Promise<TitlesEntity> {
+    async createTitle(openedBy: string, dto: CreateTitleDto): Promise<TitlesEntity> {
         const newTitle: TitlesEntity = new TitlesEntity({
             name: dto.name,
             slug: slugify(dto.name, { lower: true }),
-            category_id: dto.categoryId,
-            category_ancestors: categoryAncestors,
+            tags: dto.tags,
             opened_by: openedBy,
         })
 
@@ -184,17 +174,13 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         return Math.round(averageRate)
     }
 
-    async updateTitle(updatedBy: string, title: TitlesEntity, dto: UpdateTitleDto, categoryAncestors: string[]): Promise<TitlesEntity> {
+    async updateTitle(updatedBy: string, title: TitlesEntity, dto: UpdateTitleDto): Promise<TitlesEntity> {
         try {
             if (dto.name) {
                 title.name = dto.name
                 title.slug = slugify(dto.name, { lower: true })
             }
-
-            if (dto.categoryId) {
-                title.category_id = dto.categoryId
-                title.category_ancestors = categoryAncestors
-            }
+            if (dto.tags) title.tags = dto.tags
 
             title.updated_by = updatedBy
 

@@ -6,7 +6,6 @@ import * as env from 'dotenv'
 
 // Local files
 import { UsersEntity } from '../Entities/users.entity'
-import { CategoriesEntity } from '../Entities/categories.entity'
 import { EntriesEntity } from '../Entities/entries.entity'
 import { TitlesEntity } from '../Entities/titles.entity'
 import { ConversationsEntity } from '../Entities/conversations.entity'
@@ -33,7 +32,7 @@ export class ConfigService {
             synchronize: true,
             useUnifiedTopology: true,
             entities: [
-                UsersEntity, CategoriesEntity, EntriesEntity, TitlesEntity, ConversationsEntity, MessagesEntity
+                UsersEntity, EntriesEntity, TitlesEntity, ConversationsEntity, MessagesEntity
             ],
             ssl: false,
         }

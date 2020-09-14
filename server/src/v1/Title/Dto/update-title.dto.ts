@@ -2,7 +2,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 
 // Other dependencies
-import { IsNotEmpty, IsMongoId, MaxLength, IsOptional } from 'class-validator'
+import { IsNotEmpty, MaxLength, IsOptional } from 'class-validator'
 
 export class UpdateTitleDto {
     @ApiProperty({
@@ -15,9 +15,8 @@ export class UpdateTitleDto {
 
     @ApiProperty({
         required: false,
-        example: '507f1f77bcf86cd799439011',
+        example: '"electronics", "phone", "samsung"'
     })
     @IsOptional()
-    @IsMongoId()
-    categoryId: string
+    tags: string[]
 }
