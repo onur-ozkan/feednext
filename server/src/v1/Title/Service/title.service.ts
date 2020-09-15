@@ -18,6 +18,7 @@ import { AwsService } from 'src/shared/Services/aws.service'
 import { configService } from 'src/shared/Services/config.service'
 import { sitemapManipulationService } from 'src/shared/Services/sitemap.manipulation.service'
 import { StatusOk } from 'src/shared/Types'
+import { TagsRepository } from 'src/shared/Repositories/tags.repository'
 
 @Injectable()
 export class TitleService {
@@ -26,6 +27,8 @@ export class TitleService {
     constructor(
         @InjectRepository(TitlesRepository)
         private readonly titlesRepository: TitlesRepository,
+        @InjectRepository(TagsRepository)
+        private readonly tagsRepository: TagsRepository,
         @InjectRepository(EntriesRepository)
         private readonly entriesRepository: EntriesRepository,
         @InjectRepository(UsersRepository)
@@ -78,11 +81,23 @@ export class TitleService {
         dto.name = payload.name
         dto.tags = payload.tags.split(',')
 
-        return await validate(dto, { validationError: { target: false } }).then(async errors => {
+        dto.tags.forEach(async element => {
+            const tag = await this.tagsRepository.findOne({ name: element })
+            if (!tag) {
+                this.tagsRepository.save({
+                    name: element,
+                    total_title: 0
+                })
+            } else {
+                tag.total_title++
+                this.tagsRepository.save(tag)
+            }
+        })
+
+        const result = await validate(dto, { validationError: { target: false } }).then(async errors => {
             if (errors.length > 0) {
                 throw new BadRequestException(errors)
             }
-
 
             const newTitle: TitlesEntity = await this.titlesRepository.createTitle(openedBy, dto)
             if (buffer) this.awsService.uploadImage(String(newTitle.id), 'titles', buffer)
@@ -90,6 +105,8 @@ export class TitleService {
             if (configService.isProduction()) sitemapManipulationService.addToIndexedSitemap(newTitle.slug, new Date().toJSON().slice(0,10))
             return serializerService.serializeResponse('title_detail', newTitle)
         })
+
+        return result
     }
 
     async getTitleImage(titleId: string): Promise<unknown> {

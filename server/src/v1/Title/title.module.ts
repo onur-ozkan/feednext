@@ -10,13 +10,14 @@ import { TitleService } from './Service/title.service'
 import { TitleController } from './Controller/title.controller'
 import { EntriesRepository } from 'src/shared/Repositories/entries.repository'
 import { UsersRepository } from 'src/shared/Repositories/users.repository'
+import { TagsRepository } from 'src/shared/Repositories/tags.repository'
 import { AwsService } from 'src/shared/Services/aws.service'
 import { RolesGuard } from 'src/shared/Guards/roles.guard'
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([
-            TitlesEntity, TitlesRepository, UsersRepository, EntriesRepository
+            TitlesEntity, TagsRepository, TitlesRepository, UsersRepository, EntriesRepository
         ])
     ],
     controllers: [TitleController],
