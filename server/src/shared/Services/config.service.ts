@@ -10,6 +10,7 @@ import { EntriesEntity } from '../Entities/entries.entity'
 import { TitlesEntity } from '../Entities/titles.entity'
 import { ConversationsEntity } from '../Entities/conversations.entity'
 import { MessagesEntity } from '../Entities/messages.entity'
+import { TagsEntity } from '../Entities/tags.entity'
 
 env.config()
 
@@ -32,7 +33,7 @@ export class ConfigService {
             synchronize: true,
             useUnifiedTopology: true,
             entities: [
-                UsersEntity, EntriesEntity, TitlesEntity, ConversationsEntity, MessagesEntity
+                UsersEntity, TagsEntity, TitlesEntity, EntriesEntity, ConversationsEntity, MessagesEntity
             ],
             ssl: false,
         }
