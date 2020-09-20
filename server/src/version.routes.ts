@@ -8,6 +8,7 @@ import { EntryModule } from './v1/Entry/entry.module'
 import { UserModule } from './v1/User/user.module'
 import { TitleModule } from './v1/Title/title.module'
 import { MessageModule } from './v1/Message/message.module'
+import { TagModule } from './v1/Tag/tag.module'
 
 export const versionRoutes: Routes = [
     {
@@ -19,21 +20,25 @@ export const versionRoutes: Routes = [
                 module: AuthModule,
             },
             {
-                path: '/entry',
-                module: EntryModule,
+                path: '/user',
+                module: UserModule,
+            },
+            {
+                path: '/tag',
+                module: TagModule
             },
             {
                 path: '/title',
                 module: TitleModule,
             },
             {
-                path: '/user',
-                module: UserModule,
+                path: '/entry',
+                module: EntryModule,
             },
             {
                 path: '/message',
                 module: MessageModule,
-            },
+            }
         ],
     },
   ]
