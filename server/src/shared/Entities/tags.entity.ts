@@ -23,6 +23,9 @@ export class TagsEntity {
     @Column({ type: 'int' })
     total_title: number
 
+    @Column({ type: 'double' })
+    popularity_ratio: number
+
     @CreateDateColumn({ type: 'date' })
     created_at: Date
 
