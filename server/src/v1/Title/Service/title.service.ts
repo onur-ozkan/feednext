@@ -81,19 +81,6 @@ export class TitleService {
         dto.name = payload.name
         dto.tags = payload.tags.split(',')
 
-        dto.tags.forEach(async element => {
-            const tag = await this.tagsRepository.findOne({ name: element })
-            if (!tag) {
-                this.tagsRepository.save({
-                    name: element,
-                    total_title: 0
-                })
-            } else {
-                tag.total_title++
-                this.tagsRepository.save(tag)
-            }
-        })
-
         const result = await validate(dto, { validationError: { target: false } }).then(async errors => {
             if (errors.length > 0) {
                 throw new BadRequestException(errors)
@@ -105,6 +92,8 @@ export class TitleService {
             if (configService.isProduction()) sitemapManipulationService.addToIndexedSitemap(newTitle.slug, new Date().toJSON().slice(0,10))
             return serializerService.serializeResponse('title_detail', newTitle)
         })
+
+        dto.tags.forEach(async element => this.tagsRepository.tagActionOnTitleCreate(element))
 
         return result
     }
