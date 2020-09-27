@@ -32,4 +32,9 @@ export class TagsRepository extends Repository<TagsEntity> {
         return
     }
 
+    async deleteTag(tag: TagsEntity): Promise<void> {
+        await this.delete(tag)
+        return
+    }
+
 }

@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 
 // Local files
+import { TitlesRepository } from 'src/shared/Repositories/title.repository'
 import { TagsRepository } from 'src/shared/Repositories/tags.repository'
 import { TagController } from './tag.controller'
 import { TagService } from './tag.service'
@@ -10,7 +11,8 @@ import { TagService } from './tag.service'
 @Module({
     imports: [
         TypeOrmModule.forFeature([
-            TagsRepository
+            TagsRepository,
+            TitlesRepository
         ])
     ],
     controllers: [TagController],

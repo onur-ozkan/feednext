@@ -6,8 +6,11 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Validator } from 'class-validator'
 
 // Local files
-import { TagsRepository } from 'src/shared/Repositories/tags.repository'
 import { ISerializeResponse, serializerService } from 'src/shared/Services/serializer.service'
+import { TitlesRepository } from 'src/shared/Repositories/title.repository'
+import { TagsRepository } from 'src/shared/Repositories/tags.repository'
+import { TagsEntity } from 'src/shared/Entities/tags.entity'
+import { StatusOk } from 'src/shared/Types'
 
 @Injectable()
 export class TagService {
@@ -16,6 +19,8 @@ export class TagService {
     constructor(
         @InjectRepository(TagsRepository)
         private readonly tagRepository: TagsRepository,
+        @InjectRepository(TitlesRepository)
+        private readonly titleRepository: TitlesRepository,
     ) {
         this.validator = new Validator()
     }
@@ -37,5 +42,22 @@ export class TagService {
     async getTrending(): Promise<any> {
         // TODO
         return 'hey'
+    }
+
+    async deleteTag(tagId: string): Promise<StatusOk> {
+        if (!this.validator.isMongoId(tagId)) throw new BadRequestException('Id must be a type of MongoId')
+
+        let tag: TagsEntity | null
+        try {
+            tag = await this.tagRepository.findOneOrFail(tagId)
+        }
+        catch {
+            throw new NotFoundException('Tag could not found by given id')
+        }
+
+        await this.titleRepository.deleteTagFromTitle(tag.name)
+        await this.tagRepository.deleteTag(tag)
+
+        return { status: 'ok', message: 'Tag has been deleted' }
     }
 }

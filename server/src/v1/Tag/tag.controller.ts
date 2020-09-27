@@ -1,9 +1,13 @@
 // Nest dependencies
-import { Controller, Get, Param } from '@nestjs/common'
+import { Controller, Delete, Get, Param, UseGuards } from '@nestjs/common'
+import { AuthGuard } from '@nestjs/passport'
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 
 // Local files
 import { ISerializeResponse } from 'src/shared/Services/serializer.service'
+import { Roles } from 'src/shared/Decorators/roles.decorator'
+import { Role } from 'src/shared/Enums/Roles'
+import { StatusOk } from 'src/shared/Types'
 import { TagService } from './tag.service'
 
 @ApiTags('v1/tag')
@@ -11,8 +15,8 @@ import { TagService } from './tag.service'
 export class TagController {
     constructor(private readonly tagService: TagService) {}
 
-    @Get(':categoryId')
-    getCategory(@Param('categoryId') tagId: string): Promise<ISerializeResponse> {
+    @Get(':tagId')
+    getCategory(@Param('tagId') tagId: string): Promise<ISerializeResponse> {
         return this.tagService.getTag(tagId)
     }
 
@@ -20,6 +24,14 @@ export class TagController {
     @Get('trending')
     getString(): Promise<any> {
         return this.tagService.getTrending()
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
+    @Delete(':tagId')
+    @Roles(Role.SuperAdmin)
+    deleteTag(@Param('tagId') tagId: string): Promise<StatusOk> {
+        return this.tagService.deleteTag(tagId)
     }
 
 }
