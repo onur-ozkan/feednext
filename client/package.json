@@ -37,6 +37,7 @@
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
     "socket.io-client": "^2.3.0",
+    "string-to-color": "^2.2.2",
     "webpack-filter-warnings-plugin": "1.2.1"
   },
   "devDependencies": {
