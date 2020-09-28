@@ -7,6 +7,25 @@ import { TagsEntity } from '../Entities/tags.entity'
 @EntityRepository(TagsEntity)
 export class TagsRepository extends Repository<TagsEntity> {
 
+    async getTrendingTags(): Promise<{ tags: TagsEntity[], count: number }> {
+        const [tags, total] = await this.findAndCount({
+            where: {
+                updated_at: {
+                    // Last 24 hours
+                    $gte: new Date(new Date().setDate(new Date().getDate() - 1))
+                }
+            },
+            order: {
+                popularity_ratio: 'DESC',
+                updated_at: 'DESC'
+            },
+            take: 30,
+            skip: 0,
+        })
+
+        return { tags, count: total }
+    }
+
     async tagActionOnTitleCreate(tagName: string): Promise<void> {
         const tag: any = await this.findOne({ name: tagName })
 

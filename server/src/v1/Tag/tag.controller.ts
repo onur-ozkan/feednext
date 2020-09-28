@@ -22,8 +22,8 @@ export class TagController {
 
     @ApiBearerAuth()
     @Get('trending')
-    getString(): Promise<any> {
-        return this.tagService.getTrending()
+    getString(): Promise<ISerializeResponse> {
+        return this.tagService.getTrendingTags()
     }
 
     @ApiBearerAuth()

@@ -39,9 +39,12 @@ export class TagService {
         return serializerService.serializeResponse('tag_detail', tag)
     }
 
-    async getTrending(): Promise<any> {
-        // TODO
-        return 'hey'
+    async getTrendingTags(): Promise<ISerializeResponse> {
+        const result: {
+            tags: TagsEntity[],
+            count: number
+        } = await this.tagRepository.getTrendingTags()
+        return serializerService.serializeResponse('trending_tag_list', result)
     }
 
     async deleteTag(tagId: string): Promise<StatusOk> {
