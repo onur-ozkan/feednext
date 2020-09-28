@@ -16,7 +16,7 @@ export class TagController {
     constructor(private readonly tagService: TagService) {}
 
     @Get(':tagId')
-    getCategory(@Param('tagId') tagId: string): Promise<ISerializeResponse> {
+    getTag(@Param('tagId') tagId: string): Promise<ISerializeResponse> {
         return this.tagService.getTag(tagId)
     }
 

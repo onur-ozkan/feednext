@@ -59,7 +59,7 @@ export class TitleController {
             skip: number,
         }
     ): Promise<ISerializeResponse> {
-        if (query.tags) query.tags = query.tags.split(',')
+        if (query.tags?.split) query.tags = query.tags.split(',')
         return this.titleService.getTitleList(query)
     }
 
