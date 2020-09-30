@@ -26,18 +26,19 @@ export class TagsRepository extends Repository<TagsEntity> {
         return { tags, count: total }
     }
 
-    async tagActionOnTitleCreate(tagName: string): Promise<void> {
-        const tag: any = await this.findOne({ name: tagName })
+    async tagActionOnTitleCreateOrUpdate(tagName: string): Promise<void> {
+        const tag = await this.findOne({ name: tagName })
 
         if (!tag) {
             this.save({
                 name: tagName,
                 popularity_ratio: 0.01,
-                total_title: 0
+                total_title: 1
             })
         }
 
         else {
+            // @ts-ignore
             const diff = new Date().getTime() - tag.updated_at
             const diffAsMin = Math.round((diff / 1000) / 60)
 
@@ -47,6 +48,21 @@ export class TagsRepository extends Repository<TagsEntity> {
             tag.total_title++
             this.save(tag)
         }
+
+        return
+    }
+
+    async updateTagWhenRemovedFromTitle(tagName: string): Promise<void> {
+        const tag = await this.findOne({ name: tagName })
+        if (!tag) return
+
+        if (tag.total_title > 1) {
+            tag.total_title--
+            if (tag.popularity_ratio > 0.01) (tag.popularity_ratio -= 0.01).toFixed(1)
+            tag.updated_at = tag.updated_at
+            this.save(tag)
+        }
+        else this.deleteTag(tag)
 
         return
     }

@@ -89,11 +89,11 @@ export class TitleService {
             const newTitle: TitlesEntity = await this.titlesRepository.createTitle(openedBy, dto)
             if (buffer) this.awsService.uploadImage(String(newTitle.id), 'titles', buffer)
 
-            if (configService.isProduction()) sitemapManipulationService.addToIndexedSitemap(newTitle.slug, new Date().toJSON().slice(0,10))
+            if (configService.isProduction()) sitemapManipulationService.addToIndexedSitemap(newTitle.slug, new Date().toJSON().slice(0, 10))
             return serializerService.serializeResponse('title_detail', newTitle)
         })
 
-        dto.tags.forEach(async element => this.tagsRepository.tagActionOnTitleCreate(element))
+        dto.tags.forEach(async element => this.tagsRepository.tagActionOnTitleCreateOrUpdate(element))
 
         return result
     }
@@ -149,8 +149,8 @@ export class TitleService {
     }
 
     async updateTitle(updatedBy: string, titleId: string, dto: UpdateTitleDto): Promise<ISerializeResponse> {
-        dto.name = dto.name.replace(/^\s+|\s+$/g, '')
-        if (dto.name.length === 0) throw new BadRequestException('Title name can not be whitespace')
+        if (dto.name) dto.name = dto.name.replace(/^\s+|\s+$/g, '')
+        if (dto.name?.length === 0) throw new BadRequestException('Title name can not be whitespace')
 
         if (!this.validator.isMongoId(titleId)) throw new BadRequestException('Id must be a type of MongoId')
 
@@ -161,8 +161,13 @@ export class TitleService {
             throw new NotFoundException('Title could not found by given id')
         }
 
+        if (dto.tags) {
+            dto.tags.forEach(async element => this.tagsRepository.tagActionOnTitleCreateOrUpdate(element))
+            title.tags.forEach(async element => this.tagsRepository.updateTagWhenRemovedFromTitle(element))
+        }
+
         const updatedTitle: TitlesEntity = await this.titlesRepository.updateTitle(updatedBy, title, dto)
-        if (configService.isProduction()) sitemapManipulationService.addToIndexedSitemap(updatedTitle.slug, new Date().toJSON().slice(0,10))
+        if (configService.isProduction()) sitemapManipulationService.addToIndexedSitemap(updatedTitle.slug, new Date().toJSON().slice(0, 10))
 
         return serializerService.serializeResponse('title_detail', updatedTitle)
     }

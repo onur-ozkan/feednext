@@ -9,6 +9,7 @@ export class UpdateTitleDto {
         required: true,
         example: 'Phone Y',
     })
+    @IsOptional()
     @IsNotEmpty()
     @MaxLength(60)
     name: string
