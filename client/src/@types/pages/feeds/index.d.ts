@@ -3,7 +3,7 @@ export interface FeedList {
 	name: string,
 	slug: string,
 	href: string,
-	categoryName: string,
+	tags: string[],
 	entryCount: number,
 	featuredEntry: {
 		id: string,

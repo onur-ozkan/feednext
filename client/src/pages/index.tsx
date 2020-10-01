@@ -8,14 +8,15 @@ import { AxiosError, AxiosResponse } from 'axios'
 import { NextPage } from 'next'
 import { Img } from 'react-image'
 import Link from 'next/link'
+import * as stringToColor from 'string-to-color'
 
 // Local files
-import { fetchAllFeeds, fetchFeaturedEntryByTitleId, fetchTrendingCategories, fetchOneCategory } from '@/services/api'
+import { fetchAllFeeds, fetchFeaturedEntryByTitleId, fetchTrendingTags, fetchOneCategory } from '@/services/api'
 import { CategorySelect } from '@/components/global/CategorySelect'
 import { API_URL, Guest } from '@/../config/constants'
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { AdditionalBlock } from '@/components/pages/feeds/AdditionalBlock'
-import { TrendingCategoriesResponseData } from '@/@types/api'
+import { TrendingTagsResponseData } from '@/@types/api'
 import { FeedList } from '@/@types/pages/feeds'
 import { getFeedsPageInitialValues } from '@/services/initializations'
 import { FeedsPageInitials } from '@/@types/initializations'
@@ -25,8 +26,8 @@ import FlowHeader from '@/components/pages/feeds/FlowHeader'
 
 const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 	const [displayFilterModal, setDisplayFilterModal] = useState(false)
-	const [trendingCategories, setTrendingCategories] = useState<TrendingCategoriesResponseData[]>(props.trendingCategories)
-	const [categoryFilter, setCategoryFilter] = useState<string | undefined>(undefined)
+	const [trendingTags, setTrendingTags] = useState<TrendingTagsResponseData[]>(props.trendingTags)
+	const [tagFilter, setTagFilter] = useState<string | undefined>(undefined)
 	const [feedList, setFeed] = useState<FeedList[]>([])
 	const [sortBy, setSortBy] = useState<'hot' | 'top' | undefined>(undefined)
 	const [skipValueForPagination, setSkipValueForPagination] = useState(0)
@@ -35,12 +36,12 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 	const [isLoading, setIsLoading] = useState(true)
 	const [isLoadMoreTriggered, setIsLoadMoreTriggered] = useState(false)
 
-	const handleCategoryFilterSet = (id) => {
+	const handleTagFilterSet = (id) => {
 		setIsLoading(true)
 		setFeed([])
 		setSkipValueForPagination(0)
 		setIsJustInitialized(false)
-		setCategoryFilter(id)
+		setTagFilter(id)
 	}
 
 	const handleSortBySet = (val) => {
@@ -52,15 +53,15 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 	}
 
 	const handleDataFetching = async (): Promise<void> => {
-		if (!trendingCategories) {
-			fetchTrendingCategories()
-				.then(res => setTrendingCategories(res.data.attributes.categories))
+		if (!trendingTags) {
+			fetchTrendingTags()
+				.then(res => setTrendingTags(res.data.attributes.tags))
 		}
 
-		await fetchAllFeeds(skipValueForPagination, undefined, categoryFilter, sortBy)
+		await fetchAllFeeds(skipValueForPagination, undefined, tagFilter, sortBy)
 			.then(async (feedsResponse: AxiosResponse) => {
 				const promises = await feedsResponse.data.attributes.titles.map(async (title: any) => {
-					const categoryName = await fetchOneCategory(title.category_id).then(({ data }) => data.attributes.name)
+					const categoryName = null // await fetchOneCategory(title.category_id).then(({ data }) => data.attributes.name)
 					const featuredEntry: any = await fetchFeaturedEntryByTitleId(title.id).then(featuredEntryResponse => featuredEntryResponse.data.attributes)
 						.catch(_error => { })
 
@@ -69,6 +70,7 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 						slug: title.slug,
 						name: title.name,
 						href: `/${title.slug}`,
+						tags: title.tags,
 						categoryName: categoryName,
 						createdAt: title.created_at,
 						updatedAt: title.updated_at,
@@ -167,7 +169,17 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 									alt="Title Image"
 								/>
 							}
-							description={<p className={'custom-tag'}>{item.categoryName.toUpperCase()}</p>}
+							description={
+								item.tags.map(tag => {
+									return (
+										<div key={tag} className={'custom-tag'} style={{ backgroundColor: stringToColor(tag) }}>
+											<Typography.Text style={{ color: (parseInt(stringToColor(tag).replace('#', ''), 16) > 0xffffff / 2) ? '#000' : '#fff', background: (parseInt(stringToColor(tag).replace('#', ''), 16) > 0xffffff / 2) ? '#fff' : '#000', opacity: 0.9 }}>
+												#{tag}
+											</Typography.Text>
+										</div>
+									)
+								})
+							}
 						/>
 						{item.featuredEntry ?
 							<ArticleListContent data={item.featuredEntry} />
@@ -180,9 +192,8 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 		)
 	}
 
-	const handleTrendingCategoriesRender = (): JSX.Element => {
-
-		if (!trendingCategories) {
+	const handleTrendingTagsRender = (): JSX.Element => {
+		if (!trendingTags) {
 			return (
 				<div style={{ textAlign: 'center' }}>
 					<LoadingOutlined spin style={{ fontSize: 25 }} />
@@ -191,22 +202,14 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 		}
 
 		return (
-			<div style={{ marginTop: -20 }}>
-				{trendingCategories.map(category => {
+			<div style={{ marginTop: -10 }}>
+				{trendingTags.map(tag => {
 					return (
-						<Row key={category.id} style={{ alignItems: 'center' }}>
-							<Typography.Text style={{ width: 'calc(100% - 30px)' }} ellipsis strong>
-								{category.name.toUpperCase()}
+						<div key={tag._id} onClick={() => alert(tag._id)} className={'custom-tag'} style={{ backgroundColor: stringToColor(tag.name), cursor: 'pointer' }}>
+							<Typography.Text style={{ color: (parseInt(stringToColor(tag.name).replace('#', ''), 16) > 0xffffff / 2) ? '#000' : '#fff', background: (parseInt(stringToColor(tag.name).replace('#', ''), 16) > 0xffffff / 2) ? '#fff' : '#000', opacity: 0.9 }}>
+								#{tag.name}
 							</Typography.Text>
-							<Button
-								onClick={(): void => handleCategoryFilterSet(category.id)}
-								style={{ width: 25, marginLeft: 5 }}
-								size="large"
-								type="link"
-								key={category.id}
-								icon={<EyeOutlined style={{ color: '#6ec49a' }} />}
-							/>
-						</Row>
+						</div>
 					)
 				})}
 			</div>
@@ -215,7 +218,7 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 
 	useEffect(() => {
 		handleDataFetching()
-	}, [skipValueForPagination, categoryFilter, sortBy, isJustInitialized])
+	}, [skipValueForPagination, tagFilter, sortBy, isJustInitialized])
 
 	const handleFetchMore = (): void => {
 		setIsLoadMoreTriggered(true)
@@ -248,7 +251,7 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 		>
 			<CategorySelect
 				multiple
-				onSelect={(id): void => handleCategoryFilterSet(String(id))}
+				onSelect={(id): void => handleTagFilterSet(String(id))}
 				style={{ width: '100%' }}
 				placeHolder="All Categories"
 				allowClear
@@ -278,7 +281,7 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 						<FlowHeader
 							openFilterModal={(): void => setDisplayFilterModal(true)}
 							setSortBy={(val: 'top' | 'hot' | undefined): void => handleSortBySet(val)}
-							resetCategoryFilter={(): void => handleCategoryFilterSet(undefined)}
+							resetCategoryFilter={(): void => handleTagFilterSet(undefined)}
 							sortBy={sortBy}
 						/>
 						{handleModalScreen()}
@@ -287,7 +290,7 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 				</Col>
 				<Col xl={8} lg={10} md={24} sm={24} xs={24} style={{ padding: 4 }}>
 					<Card className="blockEdges" style={{ marginBottom: 5 }} bordered={false} title="Trending Categories">
-						{handleTrendingCategoriesRender()}
+						{handleTrendingTagsRender()}
 					</Card>
 					<AdditionalBlock />
 				</Col>

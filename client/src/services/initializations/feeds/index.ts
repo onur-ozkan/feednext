@@ -1,13 +1,13 @@
 // Local files
-import { fetchTrendingCategories } from '@/services/api'
-import { TrendingCategoriesResponseData } from '@/@types/api'
+import { fetchTrendingTags } from '@/services/api'
+import { TrendingTagsResponseData } from '@/@types/api'
 import { FeedsPageInitials } from '@/@types/initializations'
 
 export const getFeedsPageInitialValues = async (): Promise<FeedsPageInitials> => {
-    let trendingCategories: TrendingCategoriesResponseData[]
+    let trendingTags: TrendingTagsResponseData[]
 
-    await fetchTrendingCategories().then(res => trendingCategories = res.data.attributes.categories)
+    await fetchTrendingTags().then(res => trendingTags = res.data.attributes.tags)
         .catch((_error) => { })
 
-    return { trendingCategories }
+    return { trendingTags }
 }
