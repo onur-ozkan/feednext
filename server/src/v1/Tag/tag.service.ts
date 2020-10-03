@@ -39,6 +39,12 @@ export class TagService {
         return serializerService.serializeResponse('tag_detail', tag)
     }
 
+    async searchTag(searchValue: string): Promise<ISerializeResponse> {
+        if (searchValue.length < 3) throw new BadRequestException('Search value must be greater than 2 characters')
+        const result = await this.tagRepository.searchTag(searchValue)
+        return serializerService.serializeResponse('tag_search_result', result)
+    }
+
     async getTrendingTags(): Promise<ISerializeResponse> {
         const result: {
             tags: TagsEntity[],

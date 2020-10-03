@@ -2,7 +2,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 
 // Other dependencies
-import { IsNotEmpty, Length, IsArray } from 'class-validator'
+import { IsNotEmpty, Length, IsArray, MinLength, NotContains } from 'class-validator'
 
 export class CreateTitleDto {
     @ApiProperty({
@@ -16,6 +16,12 @@ export class CreateTitleDto {
     @ApiProperty({
         required: true,
         example: '["electronics", "phone", "samsung"]'
+    })
+    @NotContains(' ', {
+        each: true,
+    })
+    @MinLength(3, {
+        each: true,
     })
     @IsArray()
     tags: string[]

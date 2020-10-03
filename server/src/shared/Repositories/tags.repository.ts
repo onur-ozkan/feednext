@@ -26,6 +26,20 @@ export class TagsRepository extends Repository<TagsEntity> {
         return { tags, count: total }
     }
 
+    async searchTag(searchValue: string): Promise<{ tags: TagsEntity[] }> {
+        const [tags] = await this.findAndCount({
+            where: {
+                name: new RegExp(searchValue, 'i')
+            },
+            take: 25,
+            order: {
+                popularity_ratio: 'DESC'
+            }
+        })
+
+        return { tags }
+    }
+
     async tagActionOnTitleCreateOrUpdate(tagName: string): Promise<void> {
         const tag = await this.findOne({ name: tagName })
 
