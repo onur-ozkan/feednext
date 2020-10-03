@@ -23,11 +23,12 @@ import { FeedsPageInitials } from '@/@types/initializations'
 import { AppLayout } from '@/layouts/AppLayout'
 import { ArticleListContent } from '@/components/pages/feeds/ArticleListContent'
 import FlowHeader from '@/components/pages/feeds/FlowHeader'
+import { TagSearchingBlock } from '@/components/pages/feeds/TagSearchingBlock'
 
 const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 	const [displayFilterModal, setDisplayFilterModal] = useState(false)
 	const [trendingTags, setTrendingTags] = useState<TrendingTagsResponseData[]>(props.trendingTags)
-	const [tagFilter, setTagFilter] = useState<string>('')
+	const [tagFilter, setTagFilter] = useState<string>(null)
 	const [feedList, setFeed] = useState<FeedList[]>([])
 	const [sortBy, setSortBy] = useState<'hot' | 'top' | undefined>(undefined)
 	const [skipValueForPagination, setSkipValueForPagination] = useState(0)
@@ -36,20 +37,34 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 	const [isLoading, setIsLoading] = useState(true)
 	const [isLoadMoreTriggered, setIsLoadMoreTriggered] = useState(false)
 
-	const handleTagFilterSet = (name: string) => {
+	useEffect(() => {
+		handleDataFetching().then(() => setIsJustInitialized(false))
+	}, [])
+
+	useEffect(() => {
+		if (!isJustInitialized) {
+			handleDataFetching()
+		}
+	}, [skipValueForPagination, tagFilter, sortBy])
+
+	const handleFlowReset = (): void => {
 		setIsLoading(true)
 		setFeed([])
 		setSkipValueForPagination(0)
-		setIsJustInitialized(false)
-		setTagFilter(name)
 	}
 
-	const handleSortBySet = (val) => {
-		setIsLoading(true)
-		setFeed([])
-		setSkipValueForPagination(0)
-		setIsJustInitialized(false)
-		setSortBy(val)
+	const handleFilteringTags = (tag: string): void => {
+		if (tagFilter) {
+			if (!tagFilter.includes(tag)) {
+				handleFlowReset()
+				setTagFilter(`${tagFilter},${tag}`)
+			}
+		}
+
+		else {
+			handleFlowReset()
+			setTagFilter(tag)
+		}
 	}
 
 	const handleDataFetching = async (): Promise<void> => {
@@ -60,7 +75,6 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 
 		await fetchAllFeeds(skipValueForPagination, undefined, tagFilter, sortBy)
 			.then(async (feedsResponse: AxiosResponse) => {
-				console.log('asdas')
 				const promises = await feedsResponse.data.attributes.titles.map(async (title: any) => {
 					const categoryName = null // await fetchOneCategory(title.category_id).then(({ data }) => data.attributes.name)
 					const featuredEntry: any = await fetchFeaturedEntryByTitleId(title.id).then(featuredEntryResponse => featuredEntryResponse.data.attributes)
@@ -92,14 +106,10 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 				})
 
 				const result = await Promise.all(promises)
-
-				/* TODO
-				* This is a workaround to fix wrong list order of Feeds Flow.
-				* Updating feeds should be refactored.
-				*/
-				// @ts-ignore
-				// result.map(item => setFeed((feedList: FeedList[]) => [...feedList, item]))
-				setFeed(result)
+				result.map((item: FeedList) => {
+					if (feedList.find(i => i.id === item.id)) return
+					setFeed((feedList: FeedList[]) => [...feedList, item])
+				})
 
 				if (feedsResponse.data.attributes.count > (feedsResponse.data.attributes.titles.length + skipValueForPagination)) setCanLoadMore(true)
 				else setCanLoadMore(false)
@@ -207,7 +217,7 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 			<div style={{ marginTop: -10 }}>
 				{trendingTags.map(tag => {
 					return (
-						<div key={tag._id} onClick={() => setTagFilter(`${tagFilter},${tag.name}`)} className={'custom-tag'} style={{ backgroundColor: stringToColor(tag.name), cursor: 'pointer' }}>
+						<div key={tag._id} onClick={() => handleFilteringTags(tag.name)} className={'custom-tag'} style={{ backgroundColor: stringToColor(tag.name), cursor: 'pointer' }}>
 							<Typography.Text style={{ color: (parseInt(stringToColor(tag.name).replace('#', ''), 16) > 0xffffff / 2) ? '#000' : '#fff', background: (parseInt(stringToColor(tag.name).replace('#', ''), 16) > 0xffffff / 2) ? '#fff' : '#000', opacity: 0.9 }}>
 								#{tag.name}
 							</Typography.Text>
@@ -218,14 +228,9 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 		)
 	}
 
-	useEffect(() => {
-		handleDataFetching()
-	}, [skipValueForPagination, tagFilter, sortBy, isJustInitialized])
-
 	const handleFetchMore = (): void => {
 		setIsLoadMoreTriggered(true)
 		setSkipValueForPagination(skipValueForPagination + 10)
-		setIsJustInitialized(false)
 	}
 
 	const loadMore = canLoadMore && (
@@ -251,13 +256,7 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 			footer={null}
 			onCancel={(): void => setDisplayFilterModal(false)}
 		>
-			<CategorySelect
-				multiple
-				onSelect={(id): void => handleTagFilterSet(String(id))}
-				style={{ width: '100%' }}
-				placeHolder="All Categories"
-				allowClear
-			/>
+
 		</Modal>
 	)
 
@@ -282,8 +281,8 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 					>
 						<FlowHeader
 							openFilterModal={(): void => setDisplayFilterModal(true)}
-							setSortBy={(val: 'top' | 'hot' | undefined): void => handleSortBySet(val)}
-							resetCategoryFilter={(): void => handleTagFilterSet('')}
+							setSortBy={(val: 'top' | 'hot' | undefined): void => setSortBy(val)}
+							resetCategoryFilter={(): void => setTagFilter(null)}
 							sortBy={sortBy}
 						/>
 						{handleModalScreen()}
@@ -294,10 +293,11 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 					<Card className="blockEdges" style={{ marginBottom: 5 }} bordered={false} title="Trending Tags">
 						{handleTrendingTagsRender()}
 					</Card>
-					<Card className="blockEdges" style={{ marginBottom: 5 }} bordered={false} title="Search Tag">
-						<Select mode="multiple" style={{ width: '100%' }} placeholder="Search..">
-						</Select>
-					</Card>
+					<TagSearchingBlock
+						tagFilter={tagFilter ? tagFilter.split(',') : []}
+						setTagFilter={handleFilteringTags}
+						updateTagFilterList={setTagFilter}
+					/>
 					<AdditionalBlock />
 				</Col>
 			</Row>
