@@ -1,14 +1,14 @@
 // Antd dependencies
-import { Card, Select, Typography, Col, Divider } from 'antd'
+import { Card, Select } from 'antd'
 
 // Other dependencies
 import React, { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { searchTagByName } from '@/services/api'
 
 // Local files
+import { searchTagByName } from '@/services/api'
+import { TagSearchingBlockProps } from '@/@types/components/TagSearchingBlock'
 
-export const TagSearchingBlock = (props): JSX.Element => {
+export const TagSearchingBlock: React.FC<TagSearchingBlockProps> = (props): JSX.Element => {
 	const [tagResult, setTagResult] = useState<any[]>([])
 	const [selectedValues, setSelectedValues] = useState<string[]>(props.tagFilter)
 
@@ -35,6 +35,7 @@ export const TagSearchingBlock = (props): JSX.Element => {
 	}
 
 	const handleDeSelect = (tag: string) => {
+		props.beforeTagDeSelect()
 		const updatedList = selectedValues.filter(value => value !== tag)
 		props.updateTagFilterList(updatedList.toString())
 	}

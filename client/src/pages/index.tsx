@@ -12,7 +12,6 @@ import * as stringToColor from 'string-to-color'
 
 // Local files
 import { fetchAllFeeds, fetchFeaturedEntryByTitleId, fetchTrendingTags } from '@/services/api'
-import { CategorySelect } from '@/components/global/CategorySelect'
 import { API_URL, Guest } from '@/../config/constants'
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { AdditionalBlock } from '@/components/pages/feeds/AdditionalBlock'
@@ -55,7 +54,7 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 
 	const handleFilteringTags = (tag: string): void => {
 		if (tagFilter) {
-			if (!tagFilter.includes(tag)) {
+			if (tagFilter.split(',').includes(tag) === false) {
 				handleFlowReset()
 				setTagFilter(`${tagFilter},${tag}`)
 			}
@@ -296,6 +295,7 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 					<TagSearchingBlock
 						tagFilter={tagFilter ? tagFilter.split(',') : []}
 						setTagFilter={handleFilteringTags}
+						beforeTagDeSelect={() => handleFlowReset()}
 						updateTagFilterList={setTagFilter}
 					/>
 					<AdditionalBlock />
