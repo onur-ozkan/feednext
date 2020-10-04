@@ -25,7 +25,6 @@ import FlowHeader from '@/components/pages/feeds/FlowHeader'
 import { TagSearchingBlock } from '@/components/pages/feeds/TagSearchingBlock'
 
 const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
-	const [displayFilterModal, setDisplayFilterModal] = useState(false)
 	const [trendingTags, setTrendingTags] = useState<TrendingTagsResponseData[]>(props.trendingTags)
 	const [tagFilter, setTagFilter] = useState<string>(null)
 	const [feedList, setFeed] = useState<FeedList[]>([])
@@ -44,12 +43,17 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 		if (!isJustInitialized) {
 			handleDataFetching()
 		}
-	}, [skipValueForPagination, tagFilter, sortBy])
+	}, [skipValueForPagination, tagFilter, sortBy, isLoading])
 
 	const handleFlowReset = (): void => {
 		setIsLoading(true)
 		setFeed([])
 		setSkipValueForPagination(0)
+	}
+
+	const handleSorting = (sortBy: 'hot' | 'top' | undefined): void => {
+		handleFlowReset()
+		setSortBy(sortBy)
 	}
 
 	const handleFilteringTags = (tag: string): void => {
@@ -213,7 +217,7 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 		}
 
 		return (
-			<div style={{ marginTop: -10 }}>
+			<div>
 				{trendingTags.map(tag => {
 					return (
 						<div key={tag._id} onClick={() => handleFilteringTags(tag.name)} className={'custom-tag'} style={{ backgroundColor: stringToColor(tag.name), cursor: 'pointer' }}>
@@ -246,19 +250,6 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 		</div>
 	)
 
-	const handleModalScreen = (): JSX.Element => (
-		<Modal
-			transitionName='fade'
-			style={{ textAlign: 'center' }}
-			visible={displayFilterModal}
-			closable={false}
-			footer={null}
-			onCancel={(): void => setDisplayFilterModal(false)}
-		>
-
-		</Modal>
-	)
-
 	return (
 		<AppLayout authority={Guest}>
 			<PageHelmet
@@ -279,17 +270,17 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 						}}
 					>
 						<FlowHeader
-							openFilterModal={(): void => setDisplayFilterModal(true)}
-							setSortBy={(val: 'top' | 'hot' | undefined): void => setSortBy(val)}
+							setSortBy={(val: 'top' | 'hot' | undefined): void => handleSorting(val)}
 							resetCategoryFilter={(): void => setTagFilter(null)}
+							beforeFilterReset={() => handleFlowReset()}
 							sortBy={sortBy}
 						/>
-						{handleModalScreen()}
 						{handleFeedListView()}
 					</Card>
 				</Col>
 				<Col xl={8} lg={10} md={24} sm={24} xs={24} style={{ padding: 4 }}>
-					<Card className="blockEdges" style={{ marginBottom: 5 }} bordered={false} title="Trending Tags">
+					<Card className="blockEdges" style={{ marginBottom: 5 }} bordered={false}>
+						<Typography.Title level={4} style={{ fontWeight: 'normal' }}> Trending Tags </Typography.Title>
 						{handleTrendingTagsRender()}
 					</Card>
 					<TagSearchingBlock

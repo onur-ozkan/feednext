@@ -22,5 +22,5 @@ export interface FlowHeaderProps {
 	sortBy: "top" | "hot" | undefined,
 	setSortBy: (val: "top" | "hot" | undefined) => void,
 	resetCategoryFilter: () => void,
-	openFilterModal: () => void
+	beforeFilterReset: () => void
 }
