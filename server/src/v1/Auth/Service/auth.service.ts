@@ -85,7 +85,7 @@ export class AuthService {
         if (dto.rememberMe) userEntity.refresh_token = await this.usersRepository.triggerRefreshToken(dto.email || dto.username)
 
         const id: any = userEntity.id
-        const properties: string[] = ['id', 'password', 'recovery_key', 'refresh_token']
+        const properties: string[] = ['id', 'password', 'recovery_key']
         await serializerService.deleteProperties(userEntity, properties)
 
         const responseData: object = {
