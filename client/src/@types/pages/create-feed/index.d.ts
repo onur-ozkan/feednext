@@ -2,13 +2,13 @@ export interface CreateTitleFormData {
 	name: string,
 	imageBase64: string,
 	imageFile: string,
-	categoryId: string,
+	tags: string,
 }
 
 export interface Step1Props {
 	stepMovementTo: (_step?: string | undefined) => void,
 	setCreateTitleFormData: React.Dispatch<CreateTitleFormData>,
-	setReadableCategoryValue: React.Dispatch<React.SetStateAction<ReactNode>>
+	setReadableTagValue: React.Dispatch<React.SetStateAction<ReactNode>>
 }
 
 export interface Step2Props {
