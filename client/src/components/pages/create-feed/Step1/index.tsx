@@ -30,8 +30,8 @@ const Step1: React.FC<Step1Props> = (props): JSX.Element => {
 	const { createTitleFormData } = useContext(StepContext)
 	const { setCreateTitleFormData, stepMovementTo, setReadableTagValue } = props
 
-	const handleFormValidation = (): void => {
-		if (!createTitleFormData.tags || !form.getFieldValue('title')) return
+	const handleFormValidation = async (): Promise<void> => {
+		await form.validateFields()
 		setCreateTitleFormData({
 			...createTitleFormData,
 			name: form.getFieldValue('title')
@@ -40,7 +40,6 @@ const Step1: React.FC<Step1Props> = (props): JSX.Element => {
 	}
 
 	const handleReadableTagValue = (tags: string[]): void => {
-		console.log(tags.toString())
 		setCreateTitleFormData({
 			...createTitleFormData,
 			tags,
@@ -115,7 +114,7 @@ const Step1: React.FC<Step1Props> = (props): JSX.Element => {
 					rules={[
 						() => ({
 							validator() {
-								if (!createTitleFormData.tags) return Promise.reject('Please select atleast one tag')
+								if (!createTitleFormData.tags || createTitleFormData.tags.length < 1) return Promise.reject('Please select atleast one tag')
 								return Promise.resolve()
 							}
 						})
