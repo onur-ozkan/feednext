@@ -4,7 +4,6 @@ import { EntryAttributes } from '@/@types/pages'
 
 export interface FeedPageInitials {
     titleData: TitleResponseData,
-	categoryData: CategoryResponseData,
 	featuredEntry: string,
 	averageTitleRate: number,
 	entryList: {

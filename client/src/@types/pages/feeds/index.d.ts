@@ -21,6 +21,6 @@ export interface FeedList {
 export interface FlowHeaderProps {
 	sortBy: "top" | "hot" | undefined,
 	setSortBy: (val: "top" | "hot" | undefined) => void,
-	resetCategoryFilter: () => void,
+	resetTagFilter: () => void,
 	beforeFilterReset: () => void
 }

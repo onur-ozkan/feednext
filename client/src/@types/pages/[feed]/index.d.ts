@@ -17,7 +17,6 @@ export interface EntryAttributes {
 
 export interface FeedHeaderProps {
 	accessToken: string,
-	categoryData: CategoryResponseData,
 	titleData: TitleResponseData,
 	averageTitleRate: number,
 	userRole: number,
