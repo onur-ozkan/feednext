@@ -1,5 +1,5 @@
 // Local files
-import { CategoryResponseData, TitleResponseData, EntryResponseData} from '@/@types/api'
+import { TitleResponseData, EntryResponseData} from '@/@types/api'
 
 export interface EntryAttributes {
 	id: string,

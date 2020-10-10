@@ -4,7 +4,6 @@ import { TitleResponseData, EntryResponseData } from '@/@types/api'
 
 export interface EntryPageInitials {
     title: TitleResponseData,
-	categoryName: string,
 	averageTitleRate: number,
 	entryData: EntryResponseData,
 }
