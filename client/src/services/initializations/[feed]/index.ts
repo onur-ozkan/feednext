@@ -1,12 +1,11 @@
 // Local files
-import { fetchTitle, fetchOneCategory, fetchFeaturedEntryByTitleId, getAverageTitleRate, fetchEntriesByTitleId } from '@/services/api'
-import { TitleResponseData, CategoryResponseData } from '@/@types/api'
+import { fetchTitle, fetchFeaturedEntryByTitleId, getAverageTitleRate, fetchEntriesByTitleId } from '@/services/api'
+import { TitleResponseData } from '@/@types/api'
 import { EntryAttributes } from '@/@types/pages'
 import { FeedPageInitials } from '@/@types/initializations'
 
 export const getFeedPageInitialValues = async (titleSlug: string, entryPage: number): Promise<FeedPageInitials> => {
     let titleData: TitleResponseData
-	let categoryData: CategoryResponseData
 	let featuredEntry: string
 	let averageTitleRate: number
 	let entryList: {
@@ -17,7 +16,6 @@ export const getFeedPageInitialValues = async (titleSlug: string, entryPage: num
 	let error: boolean = false
 
 	await fetchTitle(titleSlug, 'slug').then(async titleResponse => {
-		await fetchOneCategory(titleResponse.data.attributes.category_id).then(({ data }) => categoryData = data)
 		await fetchFeaturedEntryByTitleId(titleResponse.data.attributes.id).then(({ data }) => featuredEntry = data.attributes.text).catch(_error => {})
 		await getAverageTitleRate(titleResponse.data.attributes.id).then(averageRateResponse => averageTitleRate = averageRateResponse.data.attributes.rate || 0)
 		titleData = titleResponse.data
@@ -35,7 +33,6 @@ export const getFeedPageInitialValues = async (titleSlug: string, entryPage: num
 
 	return {
 		titleData,
-		categoryData,
 		featuredEntry,
 		averageTitleRate,
 		entryList,

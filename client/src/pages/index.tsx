@@ -79,7 +79,6 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 		await fetchAllFeeds(skipValueForPagination, undefined, tagFilter, sortBy)
 			.then(async (feedsResponse: AxiosResponse) => {
 				const promises = await feedsResponse.data.attributes.titles.map(async (title: any) => {
-					const categoryName = null // await fetchOneCategory(title.category_id).then(({ data }) => data.attributes.name)
 					const featuredEntry: any = await fetchFeaturedEntryByTitleId(title.id).then(featuredEntryResponse => featuredEntryResponse.data.attributes)
 						.catch(_error => { })
 
@@ -89,7 +88,6 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 						name: title.name,
 						href: `/${title.slug}`,
 						tags: title.tags,
-						categoryName: categoryName,
 						createdAt: title.created_at,
 						updatedAt: title.updated_at,
 						entryCount: title.entry_count,
@@ -271,7 +269,7 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 					>
 						<FlowHeader
 							setSortBy={(val: 'top' | 'hot' | undefined): void => handleSorting(val)}
-							resetCategoryFilter={(): void => setTagFilter(null)}
+							resetTagFilter={(): void => setTagFilter(null)}
 							beforeFilterReset={() => handleFlowReset()}
 							sortBy={sortBy}
 						/>

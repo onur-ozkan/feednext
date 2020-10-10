@@ -23,7 +23,7 @@ const FlowHeader: React.FC<FlowHeaderProps> = (props): JSX.Element => {
 
 	const handleFilterReset = (): void => {
 		props.beforeFilterReset()
-		props.resetCategoryFilter()
+		props.resetTagFilter()
 		props.setSortBy(undefined)
 	}
 

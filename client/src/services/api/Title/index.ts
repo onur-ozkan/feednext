@@ -79,7 +79,7 @@ export const updateTitle = (
 	titleId: string,
 	payload: {
 		name: string,
-		categoryId: string | string[] | null
+		tags: string[]
 	}
 ): Promise<AxiosResponse> => axios.patch(`/v1/title/${titleId}`, payload, {
 	headers: {
