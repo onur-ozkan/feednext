@@ -8,13 +8,14 @@ import { useRouter } from 'next/router'
 import * as stringToColor from 'string-to-color'
 
 // Local files
-import { API_URL, Guest } from '@/../config/constants'
+import { API_URL } from '@/../config/constants'
 import { TitleResponseData, EntryResponseData } from '@/@types/api'
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { getEntryPageInitialValues } from '@/services/initializations/[entry]'
 import { NextPage } from 'next'
 import { EntryPageInitials } from '@/@types/initializations'
 import { AppLayout } from '@/layouts/AppLayout'
+import { Roles } from '@/enums'
 import NotFoundPage from '../../404'
 
 const Entry: NextPage<EntryPageInitials> = (props): JSX.Element => {
@@ -78,7 +79,7 @@ const Entry: NextPage<EntryPageInitials> = (props): JSX.Element => {
 	)
 
 	return (
-		<AppLayout authority={Guest}>
+		<AppLayout authority={Roles.Guest}>
 			<PageHelmet
 				title={`${title?.attributes.name}`}
 				description={entryData?.attributes.text}

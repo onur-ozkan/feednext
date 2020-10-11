@@ -10,12 +10,12 @@ import { AxiosError, AxiosResponse } from 'axios'
 import { createTitle, createEntry, rateTitle } from '@/services/api'
 import { CreateTitleFormData } from '@/@types/pages'
 import { StepProvider } from '@/services/step.context.service'
-import { User } from '@/../config/constants'
 import { AppLayout } from '@/layouts/AppLayout'
 import Step1 from '@/components/pages/create-feed/Step1'
 import Step2 from '@/components/pages/create-feed/Step2'
 import Step3 from '@/components/pages/create-feed/Step3'
 import './style.less'
+import { Roles } from '@/enums'
 
 const CreateFeed: React.FC = () => {
 	const accessToken = useSelector((state: any) => state.global.accessToken)
@@ -115,7 +115,7 @@ const CreateFeed: React.FC = () => {
 	if (!stepComponent) handleStepMovement()
 
 	return (
-		<AppLayout authority={User}>
+		<AppLayout authority={Roles.User}>
 			<StepProvider value={{ createTitleFormData, readableTagValue, firstEntryForm, titleRate }}>
 				<Card bordered={false}>
 					<Steps current={currentStep} className={'steps'}>

@@ -12,7 +12,7 @@ import * as stringToColor from 'string-to-color'
 
 // Local files
 import { fetchAllFeeds, fetchFeaturedEntryByTitleId, fetchTrendingTags } from '@/services/api'
-import { API_URL, Guest } from '@/../config/constants'
+import { API_URL } from '@/../config/constants'
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { AdditionalBlock } from '@/components/pages/feeds/AdditionalBlock'
 import { TrendingTagsResponseData } from '@/@types/api'
@@ -21,8 +21,9 @@ import { getFeedsPageInitialValues } from '@/services/initializations'
 import { FeedsPageInitials } from '@/@types/initializations'
 import { AppLayout } from '@/layouts/AppLayout'
 import { ArticleListContent } from '@/components/pages/feeds/ArticleListContent'
-import FlowHeader from '@/components/pages/feeds/FlowHeader'
 import { TagSearchingBlock } from '@/components/pages/feeds/TagSearchingBlock'
+import { Roles } from '@/enums'
+import FlowHeader from '@/components/pages/feeds/FlowHeader'
 
 const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 	const [trendingTags, setTrendingTags] = useState<TrendingTagsResponseData[]>(props.trendingTags)
@@ -249,7 +250,7 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 	)
 
 	return (
-		<AppLayout authority={Guest}>
+		<AppLayout authority={Roles.Guest}>
 			<PageHelmet
 				title="Feednext: the source of feedbacks"
 				description="Best reviews, comments, feedbacks about anything around the world"

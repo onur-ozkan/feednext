@@ -11,13 +11,14 @@ import { NextPage } from 'next'
 // Local files
 import { fetchEntriesByTitleId, getAverageTitleRate, updateTitle, deleteTitleImage, updateTitleImage, searchTagByName } from '@/services/api'
 import { TitleResponseData } from '@/@types/api'
-import { API_URL, Guest } from '@/../config/constants'
+import { API_URL } from '@/../config/constants'
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { EntryAttributes } from '@/@types/pages'
 import { getFeedPageInitialValues } from '@/services/initializations'
 import { FeedPageInitials } from '@/@types/initializations'
 import { ImageUpload } from '@/components/global/ImageUpload'
 import { AppLayout } from '@/layouts/AppLayout'
+import { Roles } from '@/enums'
 import NotFoundPage from '@/pages/404'
 import FeedHeader from '@/components/pages/[feed]/FeedHeader'
 import FeedEntries from '@/components/pages/[feed]/FeedEntries'
@@ -117,7 +118,7 @@ const Feed: NextPage<FeedPageInitials> = (props): JSX.Element => {
 	if (!entryList || !title || (!averageTitleRate && averageTitleRate !== 0)) return <PageLoading />
 
 	return (
-		<AppLayout authority={Guest}>
+		<AppLayout authority={Roles.Guest}>
 			<PageHelmet
 				title={title.attributes.name}
 				description={`Best reviews, comments, feedbacks about ${title.attributes.name} around the world`}

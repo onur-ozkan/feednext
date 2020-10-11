@@ -7,7 +7,6 @@ import React from 'react'
 // Local files
 import { AppLayout } from '@/layouts/AppLayout'
 import { PageHelmet } from '@/components/global/PageHelmet'
-import { Guest } from 'config/constants'
 import topicContent from '@/components/pages/help/content.json'
 import NotFoundPage from '@/pages/404'
 import faqPng from '@/assets/faq.png'
@@ -15,6 +14,7 @@ import guidePng from '@/assets/guide.png'
 import securityPng from '@/assets/privacyAndSecurity.png'
 import rulesPng from '@/assets/rulesAndReporting.png'
 import './style.less'
+import { Roles } from '@/enums'
 
 const topicData = {
     'f.a.q': { titleReadable: 'F.A.Q', logo: faqPng },
@@ -44,7 +44,7 @@ const HelpTopic = (props): JSX.Element => {
     }
 
 	return (
-        <AppLayout authority={Guest}>
+        <AppLayout authority={Roles.Guest}>
 			<PageHelmet
                 title={props.topic.title}
                 description="Best reviews, comments, feedbacks about anything around the world"

@@ -12,7 +12,7 @@ import { SET_ACCESS_TOKEN, SET_UNREAD_MESSAGES_INFO, INCREASE_UNREAD_MESSAGE_VAL
 import { checkAccessToken, refreshToken, fetchUnreadMessageInfo } from '@/services/api'
 import { handleSessionExpiration } from '@/services/utils.service'
 import { socketConnection } from '@/services/socket.service'
-import { User } from '@/../config/constants'
+import { Roles } from '@/enums'
 
 export const RouteHandler: React.FC<{ authority: number, children: any }> = (props) => {
 	const router = useRouter()
@@ -98,7 +98,7 @@ export const RouteHandler: React.FC<{ authority: number, children: any }> = (pro
 		}
 	}, [lastMessageFromSocket])
 
-	if (process.browser && !user && props.authority >= User && router.route !== '/') {
+	if (process.browser && !user && props.authority >= Roles.User && router.route !== '/') {
 		router.push('/auth/sign-in')
 		return null
 	}
