@@ -26,7 +26,7 @@ import {
 import React, { useState } from 'react'
 import { format, parseISO } from 'date-fns'
 import { useRouter } from 'next/router'
-import * as stringToColor from 'string-to-color'
+import stringToColor from 'string-to-color'
 
 // Local files
 import { getUserRateOfTitle, rateTitle, deleteTitle } from '@/services/api'
@@ -171,6 +171,7 @@ const FeedHeader: React.FC<FeedHeaderProps> = (props): JSX.Element => {
 									<Statistic
 										suffix={item.suffix}
 										title={item.title}
+										// @ts-ignore
 										value={item.value}
 									/>
 								</Card.Grid>

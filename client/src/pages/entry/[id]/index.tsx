@@ -5,7 +5,7 @@ import { ArrowUpOutlined } from '@ant-design/icons'
 // Other dependencies
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
-import * as stringToColor from 'string-to-color'
+import stringToColor from 'string-to-color'
 
 // Local files
 import { API_URL } from '@/../config/constants'

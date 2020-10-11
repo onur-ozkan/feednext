@@ -8,7 +8,7 @@ import { AxiosError, AxiosResponse } from 'axios'
 import { NextPage } from 'next'
 import { Img } from 'react-image'
 import Link from 'next/link'
-import * as stringToColor from 'string-to-color'
+import stringToColor from 'string-to-color'
 
 // Local files
 import { fetchAllFeeds, fetchFeaturedEntryByTitleId, fetchTrendingTags } from '@/services/api'

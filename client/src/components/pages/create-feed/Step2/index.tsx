@@ -5,7 +5,7 @@ import TextArea from 'antd/lib/input/TextArea'
 
 // Other dependencies
 import React, { useContext, useState } from 'react'
-import * as stringToColor from 'string-to-color'
+import stringToColor from 'string-to-color'
 
 // Local files
 import { PageHelmet } from '@/components/global/PageHelmet'

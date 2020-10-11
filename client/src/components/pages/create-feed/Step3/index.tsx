@@ -4,7 +4,7 @@ import { Button, Result, Descriptions, Typography } from 'antd'
 // Other dependencies
 import React, { useContext } from 'react'
 import { useRouter } from 'next/router'
-import * as stringToColor from 'string-to-color'
+import stringToColor from 'string-to-color'
 
 // Local files
 import { PageHelmet } from '@/components/global/PageHelmet'
