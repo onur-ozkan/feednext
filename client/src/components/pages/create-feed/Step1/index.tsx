@@ -10,8 +10,8 @@ import { Step1Props } from '@/@types/pages'
 import { ImageUpload } from '@/components/global/ImageUpload'
 import { ListOfSimilarFeeds } from '@/components/global/ListOfSimilarFeeds'
 import { StepContext } from '@/services/step.context.service'
-import '@/styles/components/StepForm/style.less'
 import { searchTagByName } from '@/services/api'
+import '../style.less'
 
 const formItemLayout = {
 	labelCol: {

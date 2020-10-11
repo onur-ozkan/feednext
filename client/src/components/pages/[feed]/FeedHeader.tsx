@@ -33,8 +33,7 @@ import { getUserRateOfTitle, rateTitle, deleteTitle } from '@/services/api'
 import { SignModal } from '@/components/global/SignModal'
 import { API_URL } from '@/../config/constants'
 import { FeedHeaderProps } from '@/@types/pages'
-import '@/styles/components/[feed]/style.less'
-import { title } from 'process'
+import './style.less'
 
 const FeedHeader: React.FC<FeedHeaderProps> = (props): JSX.Element => {
 	const {

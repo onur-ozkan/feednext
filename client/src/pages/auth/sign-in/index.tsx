@@ -14,7 +14,7 @@ import { SET_ACCESS_TOKEN } from '@/redux/Actions/Global'
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { signIn } from '@/services/api'
 import AuthLayout from '@/layouts/AuthLayout'
-import '@/styles/pages/auth/sign-in/style.less'
+import './style.less'
 
 export declare interface FormDataType {
 	usernameOrEmail: string

@@ -12,7 +12,7 @@ import { PageHelmet } from '@/components/global/PageHelmet'
 import RegisterResult from '@/components/pages/sign-up/result'
 import { Aggrements } from '@/components/global/Aggrements'
 import AuthLayout from '@/layouts/AuthLayout'
-import '@/styles/pages/auth/sign-up/style.less'
+import './style.less'
 
 export declare interface FormDataType {
 	fullName: string

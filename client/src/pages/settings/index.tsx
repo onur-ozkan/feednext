@@ -11,7 +11,7 @@ import { AccountSettings } from '../../components/pages/settings/account-setting
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { User } from '@/../config/constants'
 import { AppLayout } from '@/layouts/AppLayout'
-import '@/styles/pages/settings/style.less'
+import './style.less'
 
 const Settings = (): JSX.Element => {
 	const user = useSelector((state: any) => state.user?.attributes.user)

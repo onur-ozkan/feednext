@@ -15,7 +15,7 @@ import { PageHelmet } from '@/components/global/PageHelmet'
 import { User } from '@/../config/constants'
 import { ConversationAttributes } from '@/@types/pages'
 import { AppLayout } from '@/layouts/AppLayout'
-import '@/styles/pages/messages/style.less'
+import './style.less'
 
 const Messages = (): JSX.Element => {
 	const [currentConversations, setCurrentConversations] = useState<{

@@ -14,7 +14,7 @@ import faqPng from '@/assets/faq.png'
 import guidePng from '@/assets/guide.png'
 import securityPng from '@/assets/privacyAndSecurity.png'
 import rulesPng from '@/assets/rulesAndReporting.png'
-import '@/styles/pages/help/[topic-slug]/style.less'
+import './style.less'
 
 const topicData = {
     'f.a.q': { titleReadable: 'F.A.Q', logo: faqPng },

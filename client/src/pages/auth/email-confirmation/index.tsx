@@ -11,8 +11,8 @@ import { useRouter, NextRouter } from 'next/router'
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { verifyUpdatedEmail } from '@/services/api'
 import NotFoundPage from '@/pages/404'
-import '@/styles/pages/auth/email-confirmation/style.less'
 import AuthLayout from '@/layouts/AuthLayout'
+import './style.less'
 
 const EmailConfirmation: React.FunctionComponent = () => {
 	const router: NextRouter & { query: { token?: string } } = useRouter()

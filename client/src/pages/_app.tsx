@@ -10,7 +10,7 @@ import 'nprogress/nprogress.css'
 
 // Local files
 import { store, persistor } from '@/redux/store'
-import '@/styles/antd/global.less'
+import './global.less'
 
 NProgress.configure({ showSpinner: false })
 Router.events.on('routeChangeStart', () => NProgress.start())

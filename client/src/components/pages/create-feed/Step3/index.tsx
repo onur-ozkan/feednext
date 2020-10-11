@@ -10,7 +10,7 @@ import * as stringToColor from 'string-to-color'
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { StepContext } from '@/services/step.context.service'
 import { Step3Props } from '@/@types/pages'
-import '@/styles/components/StepForm/style.less'
+import '../style.less'
 
 const Step3 = ({ titleSlugForRouting, feedCreatedSuccessfully }: Step3Props): JSX.Element => {
 	const router = useRouter()

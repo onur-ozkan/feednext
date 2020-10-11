@@ -11,7 +11,7 @@ import * as stringToColor from 'string-to-color'
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { StepContext } from '@/services/step.context.service'
 import { Step2Props } from '@/@types/pages'
-import '@/styles/components/StepForm/style.less'
+import '../style.less'
 
 const formItemLayout = {
 	labelCol: {

@@ -11,7 +11,7 @@ import { PageHelmet } from '@/components/global/PageHelmet'
 import { verifyAccount } from '@/services/api'
 import NotFoundPage from '@/pages/404'
 import AuthLayout from '@/layouts/AuthLayout'
-import '@/styles/pages/auth/sign-up/account-verification/style.less'
+import './style.less'
 
 const AccountVerification: React.FunctionComponent = () => {
 	const router: NextRouter & { query: { token?: string } } = useRouter()

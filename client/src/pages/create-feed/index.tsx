@@ -15,7 +15,7 @@ import { AppLayout } from '@/layouts/AppLayout'
 import Step1 from '@/components/pages/create-feed/Step1'
 import Step2 from '@/components/pages/create-feed/Step2'
 import Step3 from '@/components/pages/create-feed/Step3'
-import '@/styles/pages/create-feed/style.less'
+import './style.less'
 
 const CreateFeed: React.FC = () => {
 	const accessToken = useSelector((state: any) => state.global.accessToken)
