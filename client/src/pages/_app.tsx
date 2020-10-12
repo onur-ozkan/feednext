@@ -10,6 +10,7 @@ import 'nprogress/nprogress.css'
 
 // Local files
 import { store, persistor } from '@/redux/store'
+import { appWithTranslation } from '@/../i18n'
 import './global.less'
 
 NProgress.configure({ showSpinner: false })
@@ -45,4 +46,4 @@ AppBase.getInitialProps = async (appContext) => {
 	return { ...appProps }
 }
 
-export default AppBase
+export default appWithTranslation(AppBase)

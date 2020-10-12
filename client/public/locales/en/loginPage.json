@@ -1,0 +1,11 @@
+{
+    "title": "Login Form",
+    "signIn": "Sign In",
+    "validationErrorEmailOrUsername": "Please input your username or email",
+    "validationErrorPassword": "Please input your password",
+    "rememberMe": "Remember Me",
+    "createAccount": "Create a new account",
+    "forgotPassword": "Forgot Password",
+    "usernameOrEmail": "Username or Email",
+    "password": "Password"
+}
