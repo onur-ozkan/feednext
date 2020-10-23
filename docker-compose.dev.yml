@@ -15,6 +15,8 @@ services:
       - "80:80"
     volumes:
       - ./.docker/nginx/dev:/etc/nginx/conf.d:z
+      - ./.docker/certbot/conf:/etc/letsencrypt:z
+      - ./.docker/certbot/www:/var/www/certbot:z
 
 
   # ------------------------------------------------------------
