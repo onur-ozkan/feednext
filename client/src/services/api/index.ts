@@ -7,7 +7,7 @@ import { API_URL } from '@/../config/constants'
 axios.defaults.baseURL = API_URL
 
 export * from './Auth'
-export * from './Category'
+export * from './Tag'
 export * from './Entry'
 export * from './Message'
 export * from './Title'

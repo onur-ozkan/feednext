@@ -15,7 +15,7 @@ import { UpdateTitleDto } from 'src/v1/Title/Dto/update-title.dto'
 export class TitlesRepository extends Repository<TitlesEntity> {
     async getTitleBySlug(titleSlug: string): Promise<TitlesEntity> {
         try {
-            const title: TitlesEntity = await this.findOneOrFail({slug: titleSlug})
+            const title: TitlesEntity = await this.findOneOrFail({ slug: titleSlug })
             return title
         } catch (err) {
             throw new NotFoundException('Title could not found by given slug')
@@ -31,7 +31,7 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         }
     }
 
-    async searchTitle({ searchValue } : { searchValue: string }): Promise<{ titles: TitlesEntity[] }> {
+    async searchTitle({ searchValue }: { searchValue: string }): Promise<{ titles: TitlesEntity[] }> {
         const [titles] = await this.findAndCount({
             where: {
                 name: new RegExp(searchValue, 'i')
@@ -58,7 +58,7 @@ export class TitlesRepository extends Repository<TitlesEntity> {
     async getTitleList(
         query: {
             author: string,
-            categoryIds: string[],
+            tags: string[],
             sortBy: 'hot' | 'top',
             skip: number,
         }
@@ -68,19 +68,10 @@ export class TitlesRepository extends Repository<TitlesEntity> {
                 ...query.author && {
                     opened_by: query.author
                 },
-                ...query.categoryIds && {
-                    $or: [
-                        {
-                            category_id: {
-                                $in: query.categoryIds
-                            }
-                        },
-                        {
-                            category_ancestors: {
-                                $in: query.categoryIds
-                            }
-                        },
-                    ]
+                ...query.tags && {
+                    tags: {
+                        $in: query.tags
+                    }
                 },
                 ...query.sortBy === 'hot' && {
                     created_at: {
@@ -121,12 +112,11 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         return { titles, count: total }
     }
 
-    async createTitle(openedBy: string, dto: CreateTitleDto, categoryAncestors: string[]): Promise<TitlesEntity> {
+    async createTitle(openedBy: string, dto: CreateTitleDto): Promise<TitlesEntity> {
         const newTitle: TitlesEntity = new TitlesEntity({
             name: dto.name,
             slug: slugify(dto.name, { lower: true }),
-            category_id: dto.categoryId,
-            category_ancestors: categoryAncestors,
+            tags: dto.tags,
             opened_by: openedBy,
         })
 
@@ -147,7 +137,7 @@ export class TitlesRepository extends Repository<TitlesEntity> {
 
         const docIfAlreadyRated = title.rate.find(item => item.username === ratedBy)
         if (docIfAlreadyRated) docIfAlreadyRated.rateValue = rateValue
-        else title.rate.push({ username: ratedBy, rateValue})
+        else title.rate.push({ username: ratedBy, rateValue })
 
         this.save(title)
     }
@@ -161,7 +151,7 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         }
 
         const userRate: { rateValue: number } | undefined = title.rate.find((
-            item: {username: string, rateValue: number }
+            item: { username: string, rateValue: number }
         ) => item.username === username)
 
         if (userRate) return userRate!.rateValue
@@ -184,17 +174,13 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         return Math.round(averageRate)
     }
 
-    async updateTitle(updatedBy: string, title: TitlesEntity, dto: UpdateTitleDto, categoryAncestors: string[]): Promise<TitlesEntity> {
+    async updateTitle(updatedBy: string, title: TitlesEntity, dto: UpdateTitleDto): Promise<TitlesEntity> {
         try {
             if (dto.name) {
                 title.name = dto.name
                 title.slug = slugify(dto.name, { lower: true })
             }
-
-            if (dto.categoryId) {
-                title.category_id = dto.categoryId
-                title.category_ancestors = categoryAncestors
-            }
+            if (dto.tags) title.tags = dto.tags
 
             title.updated_by = updatedBy
 
@@ -203,6 +189,22 @@ export class TitlesRepository extends Repository<TitlesEntity> {
         } catch (err) {
             throw new BadRequestException(err.errmsg)
         }
+    }
+
+    async deleteTagFromTitle(tagName: string): Promise<void> {
+        const titles = await this.find({
+            where: {
+                tags: { $in: [tagName] }
+            }
+        })
+
+        titles.map(title => {
+            const updatedTagList = title.tags.filter(tag => tag !== tagName)
+            title.tags = updatedTagList
+            this.save(title)
+        })
+
+        return
     }
 
     async deleteTitle(titleId: string): Promise<void> {

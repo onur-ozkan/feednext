@@ -11,8 +11,9 @@ import { signUp } from '@/services/api'
 import { PageHelmet } from '@/components/global/PageHelmet'
 import RegisterResult from '@/components/pages/sign-up/result'
 import { Aggrements } from '@/components/global/Aggrements'
+import { withTranslation } from '@/../i18n'
 import AuthLayout from '@/layouts/AuthLayout'
-import '@/styles/pages/auth/sign-up/style.less'
+import './style.less'
 
 export declare interface FormDataType {
 	fullName: string
@@ -21,7 +22,7 @@ export declare interface FormDataType {
 	password: string
 }
 
-const Register = () => {
+const Register: React.FunctionComponent = ({ t }) => {
 	const [requestOnGoing, setRequestOnGoing] = useState(false)
 	const [signedAccount, setSignedAccount] = useState<FormDataType | null>(null)
 	const [aggrementModalVisibility, setAggrementModalVisibilit] = useState<null | 'policy' | 'terms'>(null)
@@ -46,7 +47,7 @@ const Register = () => {
 
 	const handleSubmitButtonView = () => (
 		<Button size="large" loading={false} className={'submit'} type="primary" htmlType="submit">
-			{requestOnGoing ? <LoadingOutlined /> : 'Sign Up'}
+			{requestOnGoing ? <LoadingOutlined /> : t("registerPage:signUp")}
 		</Button>
 	)
 
@@ -72,34 +73,34 @@ const Register = () => {
 					<Tabs>
 						<Tabs.TabPane
 							key="sign-up"
-							tab="Sign Up"
+							tab={t("registerPage:title")}
 						>
 							<Form.Item
 								name="fullName"
-								rules={[{ required: true, message: 'Please input your name and surname!', whitespace: true }]}
+								rules={[{ required: true, message: t("registerPage:validationErrorFullName"), whitespace: true }]}
 							>
-								<Input prefix={<IdcardOutlined style={{ color: '#717171'}} />} placeholder="Full Name" />
+								<Input prefix={<IdcardOutlined style={{ color: '#717171'}} />} placeholder={t("registerPage:fullName")} />
 							</Form.Item>
 							<Form.Item
 								name="username"
-								rules={[{ required: true, message: 'Please input your username!', whitespace: true }]}
+								rules={[{ required: true, message: t("registerPage:validationErrorUsername"), whitespace: true }]}
 							>
-								<Input prefix={<UserOutlined style={{ color: '#717171'}} />} placeholder="Username" />
+								<Input prefix={<UserOutlined style={{ color: '#717171'}} />} placeholder={t("registerPage:username")} />
 							</Form.Item>
 							<Form.Item
 								name="email"
 								rules={[
 									{
 										type: 'email',
-										message: 'The input is not valid E-mail!',
+										message: t("registerPage:validationErrorEmail2"),
 									},
 									{
 										required: true,
-										message: 'Please input your E-mail!',
+										message: t("registerPage:validationErrorEmail"),
 									},
 								]}
 							>
-								<Input prefix={<MailOutlined style={{ color: '#717171'}} />} placeholder="Email" />
+								<Input prefix={<MailOutlined style={{ color: '#717171'}} />} placeholder={t("registerPage:email")} />
 							</Form.Item>
 
 							<Form.Item
@@ -107,12 +108,12 @@ const Register = () => {
 								rules={[
 									{
 										required: true,
-										message: 'Please input your password!',
+										message: t("registerPage:validationErrorPassword"),
 									},
 								]}
 								hasFeedback
 							>
-								<Input.Password prefix={<LockOutlined style={{ color: '#717171'}} />} placeholder="Password" />
+								<Input.Password prefix={<LockOutlined style={{ color: '#717171'}} />} placeholder={t("registerPage:password")} />
 							</Form.Item>
 
 							<Form.Item
@@ -122,19 +123,19 @@ const Register = () => {
 								rules={[
 									{
 										required: true,
-										message: 'Please confirm your password!',
+										message: t("registerPage:validationErrorConfirmPassword"),
 									},
 									({ getFieldValue }) => ({
 										validator(rule, value) {
 											if (!value || getFieldValue('password') === value) {
 												return Promise.resolve()
 											}
-											return Promise.reject('The two passwords that you entered do not match!')
+											return Promise.reject(t("registerPage:validationErrorPasswordMatch"))
 										},
 									}),
 								]}
 							>
-								<Input.Password prefix={<LockOutlined style={{ color: '#717171'}} />} placeholder="Confirm Password" />
+								<Input.Password prefix={<LockOutlined style={{ color: '#717171'}} />} placeholder={t("registerPage:confirmPassword")} />
 							</Form.Item>
 
 							<Form.Item
@@ -143,37 +144,37 @@ const Register = () => {
 								rules={[
 									{
 										validator: (_, value) =>
-											value ? Promise.resolve() : Promise.reject('You must accept the privacy policy and terms & conditions'),
+											value ? Promise.resolve() : Promise.reject(t("registerPage:validationErrorTermsAndPolicy")),
 									},
 								]}
 							>
 								<Checkbox>
-									I have read the
-									{' '}
 									<Button
 										onClick={(): void => setAggrementModalVisibilit('policy')}
 										type="link"
 										style={{ margin: 0, padding: 0 }}
 									>
-										privacy policy
+										{t("registerPage:privacyPolicy")}
 									</Button>
 									{' '}
-									and
+									,
 									{' '}
 									<Button
 										onClick={(): void => setAggrementModalVisibilit('terms')}
 										type="link"
 										style={{ margin: 0, padding: 0 }}
 									>
-										terms & conditions
+										{t("registerPage:termsAndConditions")}
 									</Button>
+									{' '}
+									{t("registerPage:readAndUnderstood")}
 								</Checkbox>
 							</Form.Item>
 							<Form.Item>
 								{handleSubmitButtonView()}
 								<Link href="/auth/sign-in">
 									<a className={'login'}>
-										Already have an Account?
+										{t("registerPage:alreadyHaveAnAccount")}
 									</a>
 								</Link>
 							</Form.Item>
@@ -185,4 +186,4 @@ const Register = () => {
 	)
 }
 
-export default Register
+export default withTranslation('registerPage')(Register)

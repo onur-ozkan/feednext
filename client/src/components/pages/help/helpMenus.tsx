@@ -11,7 +11,7 @@ import guidePng from '@/assets/guide.png'
 import securityPng from '@/assets/privacyAndSecurity.png'
 import rulesPng from '@/assets/rulesAndReporting.png'
 import content from './content.json'
-import '@/styles/pages/help/style.less'
+import './style.less'
 
 const helpMenus = [
     { titleReadable: 'F.A.Q', title: 'f.a.q', logo: faqPng },

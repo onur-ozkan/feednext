@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 
 // Local files
+import { withTranslation } from '@/../i18n'
 import logo from '@/assets/logo-square.svg'
 import './AuthLayout.less'
 
@@ -37,7 +38,7 @@ const AuthLayout: React.FC = props => {
 				</div>
 				<Layout.Footer style={{ background: 'transparent', textAlign: 'center' }}>
 					<Typography.Text>
-						Feednext © 2020. All rights reserved
+						{props.t("authLayout:copyright")}
 					</Typography.Text>
 				</Layout.Footer>
 			</div>
@@ -45,4 +46,4 @@ const AuthLayout: React.FC = props => {
 	}
 }
 
-export default AuthLayout
+export default withTranslation('authLayout')(AuthLayout)

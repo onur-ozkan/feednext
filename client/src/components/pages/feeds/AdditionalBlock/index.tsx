@@ -61,7 +61,7 @@ export const AdditionalBlock = (): JSX.Element => {
 				<Typography.Text>
 					Feednext © 2020. All rights reserved
 				</Typography.Text>
-				<Divider style={{ marginBottom: -15, marginTop: 3 }} orientation="right">
+				<Divider style={{ marginBottom: -15, marginTop: 3, color: 'red' }} plain orientation="right">
 					<Typography.Text style={{ fontSize: 13, color: '#6ec49a' }}>
 						v{packageJson.version}
 					</Typography.Text>

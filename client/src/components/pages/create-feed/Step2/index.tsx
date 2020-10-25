@@ -1,16 +1,17 @@
 // Antd dependencies
-import { Form, Button, Descriptions, Divider, Modal, Avatar, Rate } from 'antd'
+import { Form, Button, Descriptions, Divider, Modal, Avatar, Rate, Typography } from 'antd'
 import { ExclamationCircleOutlined, LoadingOutlined } from '@ant-design/icons'
 import TextArea from 'antd/lib/input/TextArea'
 
 // Other dependencies
 import React, { useContext, useState } from 'react'
+import stringToColor from 'string-to-color'
 
 // Local files
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { StepContext } from '@/services/step.context.service'
 import { Step2Props } from '@/@types/pages'
-import '@/styles/components/StepForm/style.less'
+import '../style.less'
 
 const formItemLayout = {
 	labelCol: {
@@ -23,7 +24,7 @@ const formItemLayout = {
 
 const Step2 = (props: Step2Props): JSX.Element => {
 	const [form] = Form.useForm()
-	const { createTitleFormData, readableCategoryValue, firstEntryForm, titleRate } = useContext(StepContext)
+	const { createTitleFormData, readableTagValue, firstEntryForm, titleRate } = useContext(StepContext)
 	const { stepMovementTo, setFirstEntryForm, setIsRequestReady, setTitleRate } = props
 	const [isRequestStarted, setIsRequestStarted] = useState(false)
 
@@ -79,8 +80,16 @@ const Step2 = (props: Step2Props): JSX.Element => {
 							alt="Title Image"
 						/>
 					</Descriptions.Item>
-					<Descriptions.Item label="Category">
-						{ readableCategoryValue }
+					<Descriptions.Item label="Tags">
+						{readableTagValue.map(tag => {
+							return (
+								<div key={tag} className={'custom-tag'} style={{ backgroundColor: stringToColor(tag) }}>
+									<Typography.Text style={{ color: (parseInt(stringToColor(tag).replace('#', ''), 16) > 0xffffff / 2) ? '#000' : '#fff', background: (parseInt(stringToColor(tag).replace('#', ''), 16) > 0xffffff / 2) ? '#fff' : '#000', opacity: 0.9 }}>
+										#{tag}
+									</Typography.Text>
+								</div>
+							)
+						})}
 					</Descriptions.Item>
 					<Descriptions.Item label="Title">
 						{ createTitleFormData.name }

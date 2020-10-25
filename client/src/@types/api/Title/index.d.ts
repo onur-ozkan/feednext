@@ -5,8 +5,7 @@ export interface TitleResponseData {
 		name: string,
 		slug: string,
 		entry_count: number,
-		category_id: string,
-		category_ancestors: string[],
+		tags: string[],
 		opened_by: string,
 		rate: {
 			username: string,

@@ -11,7 +11,7 @@ import { PageHelmet } from '@/components/global/PageHelmet'
 import { recoverAccountWithKey } from '@/services/api'
 import NotFoundPage from '@/pages/404'
 import AuthLayout from '@/layouts/AuthLayout'
-import '@/styles/pages/auth/sign-in/account-recover/style.less'
+import './style.less'
 
 const AccountRecover: React.FunctionComponent = () => {
 	const router: NextRouter & {

@@ -8,12 +8,12 @@ import React from 'react'
 import { AppLayout } from '@/layouts/AppLayout'
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { HelpMenus } from '@/components/pages/help/helpMenus'
-import { Guest } from '@/../config/constants'
+import { Roles } from '@/enums'
 
 const Help = (): JSX.Element => {
 
 	return (
-		<AppLayout authority={Guest}>
+		<AppLayout authority={Roles.Guest}>
 			<PageHelmet
                 title="Help | Feednext"
                 description="Best reviews, comments, feedbacks about anything around the world"

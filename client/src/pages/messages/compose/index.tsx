@@ -12,8 +12,9 @@ import { searchUser, fetchUserByUsername } from '@/services/api'
 import { socketConnection } from '@/services/socket.service'
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { FormDataType } from '@/@types/pages'
-import { API_URL, User } from '@/../config/constants'
+import { API_URL } from '@/../config/constants'
 import { AppLayout } from '@/layouts/AppLayout'
+import { Roles } from '@/enums'
 
 
 const Compose: React.FC = (): JSX.Element => {
@@ -77,7 +78,7 @@ const Compose: React.FC = (): JSX.Element => {
 	const handleOnSelect = (username: string): void => setMessageForm({ ...messageForm, to: username })
 
 	return (
-		<AppLayout authority={User}>
+		<AppLayout authority={Roles.User}>
 			<PageHelmet
 				title="Send Message"
 				description="Best reviews, comments, feedbacks about anything around the world"

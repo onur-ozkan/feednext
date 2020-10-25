@@ -8,12 +8,12 @@ import { useRouter } from 'next/router'
 // Local files
 import { AppLayout } from '@/layouts/AppLayout'
 import { PageHelmet } from '@/components/global/PageHelmet'
-import { Guest } from '@/../config/constants'
+import { Roles } from '@/enums'
 
 const NotFoundPage: React.FC<{}> = () => {
 	const router = useRouter()
 	return (
-		<AppLayout authority={Guest}>
+		<AppLayout authority={Roles.Guest}>
 			<PageHelmet
 				title="404 Not Found | Feednext"
 				description="Best reviews, comments, feedbacks about anything around the world"

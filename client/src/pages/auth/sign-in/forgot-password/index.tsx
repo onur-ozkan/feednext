@@ -9,7 +9,7 @@ import React, { useState } from 'react'
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { generateRecoveryKey } from '@/services/api'
 import AuthLayout from '@/layouts/AuthLayout'
-import '@/styles/pages/auth/sign-in/forgot-password/style.less'
+import './style.less'
 
 const ForgotPassword: React.FunctionComponent = () => {
 	const [requestOnGoing, setRequestOnGoing] = useState(false)

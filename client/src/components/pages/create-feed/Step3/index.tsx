@@ -1,19 +1,20 @@
 // Antd dependencies
-import { Button, Result, Descriptions } from 'antd'
+import { Button, Result, Descriptions, Typography } from 'antd'
 
 // Other dependencies
 import React, { useContext } from 'react'
 import { useRouter } from 'next/router'
+import stringToColor from 'string-to-color'
 
 // Local files
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { StepContext } from '@/services/step.context.service'
 import { Step3Props } from '@/@types/pages'
-import '@/styles/components/StepForm/style.less'
+import '../style.less'
 
 const Step3 = ({ titleSlugForRouting, feedCreatedSuccessfully }: Step3Props): JSX.Element => {
 	const router = useRouter()
-	const { createTitleFormData, readableCategoryValue, firstEntryForm } = useContext(StepContext)
+	const { createTitleFormData, readableTagValue, firstEntryForm } = useContext(StepContext)
 
 	const onFinish = () => router.push('/')
 	const handleOnPostRoute = () => router.push('/[feed]', `/${titleSlugForRouting}`)
@@ -21,8 +22,16 @@ const Step3 = ({ titleSlugForRouting, feedCreatedSuccessfully }: Step3Props): JS
 	const information = (
 		<div className={'information'}>
 			<Descriptions column={1}>
-				<Descriptions.Item label="Category">
-					{ readableCategoryValue }
+				<Descriptions.Item label="Tags">
+					{readableTagValue.map(tag => {
+						return (
+							<div key={tag} className={'custom-tag'} style={{ backgroundColor: stringToColor(tag) }}>
+								<Typography.Text style={{ color: (parseInt(stringToColor(tag).replace('#', ''), 16) > 0xffffff / 2) ? '#000' : '#fff', background: (parseInt(stringToColor(tag).replace('#', ''), 16) > 0xffffff / 2) ? '#fff' : '#000', opacity: 0.9 }}>
+									#{tag}
+								</Typography.Text>
+							</div>
+						)
+					})}
 				</Descriptions.Item>
 				<Descriptions.Item label="Title">
 					{ createTitleFormData.name }

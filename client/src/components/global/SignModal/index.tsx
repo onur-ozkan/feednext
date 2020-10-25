@@ -5,7 +5,7 @@ import { Modal, Typography, Divider } from 'antd'
 import React from 'react'
 
 // Local files
-import { LoginForm } from './components/LoginForm'
+import { LoginForm } from './LoginForm'
 import { SignModalProps } from '@/@types/components'
 import './style.less'
 

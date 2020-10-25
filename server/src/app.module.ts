@@ -22,7 +22,8 @@ import { SitemapModule } from './sitemap/sitemap.module'
         RateLimiterModule.register({
             for: 'Fastify',
             points: Number.MAX_SAFE_INTEGER,
-            duration: 1
+            duration: 1,
+            whiteList: ['127.0.0.1', configService.getEnv('FRONTEND_IP')]
         }),
         SitemapModule,
         V1Module,

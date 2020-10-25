@@ -3,7 +3,7 @@ export interface FeedList {
 	name: string,
 	slug: string,
 	href: string,
-	categoryName: string,
+	tags: string[],
 	entryCount: number,
 	featuredEntry: {
 		id: string,
@@ -21,6 +21,6 @@ export interface FeedList {
 export interface FlowHeaderProps {
 	sortBy: "top" | "hot" | undefined,
 	setSortBy: (val: "top" | "hot" | undefined) => void,
-	resetCategoryFilter: () => void,
-	openFilterModal: () => void
+	resetTagFilter: () => void,
+	beforeFilterReset: () => void
 }

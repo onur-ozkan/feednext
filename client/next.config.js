@@ -1,12 +1,21 @@
 const webpack = require('webpack')
+
 const withCSS = require('@zeit/next-css')
 const withLess = require('@zeit/next-less')
 const lessToJS = require('less-vars-to-js')
+
 const fs = require('fs')
 const path = require('path')
-const themeVariables = lessToJS(fs.readFileSync(path.resolve(__dirname, './src/styles/antd/override.less'), 'utf8'))
+const themeVariables = lessToJS(fs.readFileSync(path.resolve(__dirname, './config/override.less'), 'utf8'))
+
+const { nextI18NextRewrites } = require('next-i18next/rewrites')
+const localeSubpaths = {}
 
 module.exports = withCSS(withLess({
+	rewrites: async () => nextI18NextRewrites(localeSubpaths),
+	publicRuntimeConfig: {
+		localeSubpaths,
+	},
 	lessLoaderOptions: {
 		javascriptEnabled: true,
 		modifyVars: themeVariables // make your antd custom effective

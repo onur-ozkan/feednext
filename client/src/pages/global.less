@@ -1,0 +1,116 @@
+@import '~antd/es/style/themes/default.less';
+
+@navbar-background: #016d9b !important;
+@navbar-font-color: #eee !important;
+
+html,
+body,
+#root {
+	height: 100%;
+}
+
+.ant-layout {
+	min-height: 100vh !important;
+	background-color: #eee;
+}
+
+.antBtnLink {
+	color: rgba(0, 0, 0, 0.65) !important;
+}
+
+.ant-divider-with-text {
+	border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+.custom-tag {
+	line-height: 20px;
+	cursor: default;
+	font-size: 14px;
+	font-weight: bold;
+	opacity: 0.85;
+	padding: 0px 5px 0px 5px;
+	margin: 0px 0px 5px 5px;
+	border-radius: 4px;
+	display: inline-table;
+	font-family: 'Courier New', Courier, monospace;
+}
+
+.blockEdges {
+	border: solid rgba(0, 0, 0, .4);
+	border-radius: 5px !important;
+	border-width: 0.5px;
+
+	.ant-card-head {
+		border: 0;
+	}
+}
+
+.ant-tabs > .ant-tabs-nav .ant-tabs-nav-more, .ant-tabs > div > .ant-tabs-nav .ant-tabs-nav-more {
+	display: none;
+}
+
+canvas {
+	display: block;
+}
+
+body {
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+ul,
+ol {
+	list-style: none;
+}
+
+:global(.ant-col-xxl-18) {
+	max-width: 1350px;
+}
+
+#nprogress .bar {
+	background: #6ec49a !important;
+}
+
+.navBarlogo {
+	height: 40px;
+}
+
+.ant-menu-submenu {
+	display: none !important;
+}
+
+.ant-layout-header {
+	cursor: default;
+	background-color: @navbar-background;
+	color: @navbar-font-color;
+}
+
+.ant-layout-header > ul {
+	background-color: @navbar-background;
+	color: @navbar-font-color;
+}
+
+@media (max-width: @screen-xs) {
+	.ant-table {
+		width: 100%;
+		overflow-x: auto;
+		&-thead > tr,
+		&-tbody > tr {
+			> th,
+			> td {
+				white-space: pre;
+				> span {
+					display: block;
+				}
+			}
+		}
+	}
+}
+
+// Compatible with IE11
+@media screen and(-ms-high-contrast: active), (-ms-high-contrast: none) {
+	body > .ant-layout {
+		min-height: 100vh;
+	}
+}

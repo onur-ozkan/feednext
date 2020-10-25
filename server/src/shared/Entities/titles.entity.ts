@@ -18,11 +18,8 @@ export class TitlesEntity {
     @ObjectIdColumn()
     id: ObjectID
 
-    @Column({ type: 'string' })
-    category_id: string
-
     @Column({ type: 'array' })
-    category_ancestors: string[]
+    tags: string[]
 
     @Column({
         unique: true,

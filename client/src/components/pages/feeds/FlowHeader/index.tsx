@@ -22,22 +22,14 @@ const FlowHeader: React.FC<FlowHeaderProps> = (props): JSX.Element => {
 	}
 
 	const handleFilterReset = (): void => {
-		props.resetCategoryFilter()
+		props.beforeFilterReset()
+		props.resetTagFilter()
 		props.setSortBy(undefined)
 	}
 
 	return (
 		<Row style={{ margin: '10px -15px -25px 0', position: 'relative', zIndex: 1 }}>
 			<Col />
-			<Button
-				onClick={props.openFilterModal}
-				className={'antBtnLink'}
-				type="link"
-				style={{ marginRight: 5 }}
-				icon={<FilterFilled />}
-			>
-				FILTER
-			</Button>
 			<Dropdown
 				trigger={['click']}
 				overlay={

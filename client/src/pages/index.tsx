@@ -1,6 +1,6 @@
 // Antd dependencies
-import { Button, Card, List, message, BackTop, Row, Col, Typography, Modal, Skeleton } from 'antd'
-import { LoadingOutlined, ArrowUpOutlined, EyeOutlined } from '@ant-design/icons'
+import { Button, Card, List, message, BackTop, Row, Col, Typography, Modal, Skeleton, Select } from 'antd'
+import { LoadingOutlined, ArrowUpOutlined } from '@ant-design/icons'
 
 // Other dependencies
 import React, { useEffect, useState } from 'react'
@@ -8,25 +8,26 @@ import { AxiosError, AxiosResponse } from 'axios'
 import { NextPage } from 'next'
 import { Img } from 'react-image'
 import Link from 'next/link'
+import stringToColor from 'string-to-color'
 
 // Local files
-import { fetchAllFeeds, fetchFeaturedEntryByTitleId, fetchTrendingCategories, fetchOneCategory } from '@/services/api'
-import { CategorySelect } from '@/components/global/CategorySelect'
-import { API_URL, Guest } from '@/../config/constants'
+import { fetchAllFeeds, fetchFeaturedEntryByTitleId, fetchTrendingTags } from '@/services/api'
+import { API_URL } from '@/../config/constants'
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { AdditionalBlock } from '@/components/pages/feeds/AdditionalBlock'
-import { TrendingCategoriesResponseData } from '@/@types/api'
+import { TrendingTagsResponseData } from '@/@types/api'
 import { FeedList } from '@/@types/pages/feeds'
 import { getFeedsPageInitialValues } from '@/services/initializations'
 import { FeedsPageInitials } from '@/@types/initializations'
 import { AppLayout } from '@/layouts/AppLayout'
 import { ArticleListContent } from '@/components/pages/feeds/ArticleListContent'
+import { TagSearchingBlock } from '@/components/pages/feeds/TagSearchingBlock'
+import { Roles } from '@/enums'
 import FlowHeader from '@/components/pages/feeds/FlowHeader'
 
 const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
-	const [displayFilterModal, setDisplayFilterModal] = useState(false)
-	const [trendingCategories, setTrendingCategories] = useState<TrendingCategoriesResponseData[]>(props.trendingCategories)
-	const [categoryFilter, setCategoryFilter] = useState<string | undefined>(undefined)
+	const [trendingTags, setTrendingTags] = useState<TrendingTagsResponseData[]>(props.trendingTags)
+	const [tagFilter, setTagFilter] = useState<string>(null)
 	const [feedList, setFeed] = useState<FeedList[]>([])
 	const [sortBy, setSortBy] = useState<'hot' | 'top' | undefined>(undefined)
 	const [skipValueForPagination, setSkipValueForPagination] = useState(0)
@@ -35,32 +36,50 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 	const [isLoading, setIsLoading] = useState(true)
 	const [isLoadMoreTriggered, setIsLoadMoreTriggered] = useState(false)
 
-	const handleCategoryFilterSet = (id) => {
+	useEffect(() => {
+		handleDataFetching().then(() => setIsJustInitialized(false))
+	}, [])
+
+	useEffect(() => {
+		if (!isJustInitialized) {
+			handleDataFetching()
+		}
+	}, [skipValueForPagination, tagFilter, sortBy, isLoading])
+
+	const handleFlowReset = (): void => {
 		setIsLoading(true)
 		setFeed([])
 		setSkipValueForPagination(0)
-		setIsJustInitialized(false)
-		setCategoryFilter(id)
 	}
 
-	const handleSortBySet = (val) => {
-		setIsLoading(true)
-		setFeed([])
-		setSkipValueForPagination(0)
-		setIsJustInitialized(false)
-		setSortBy(val)
+	const handleSorting = (sortBy: 'hot' | 'top' | undefined): void => {
+		handleFlowReset()
+		setSortBy(sortBy)
+	}
+
+	const handleFilteringTags = (tag: string): void => {
+		if (tagFilter) {
+			if (tagFilter.split(',').includes(tag) === false) {
+				handleFlowReset()
+				setTagFilter(`${tagFilter},${tag}`)
+			}
+		}
+
+		else {
+			handleFlowReset()
+			setTagFilter(tag)
+		}
 	}
 
 	const handleDataFetching = async (): Promise<void> => {
-		if (!trendingCategories) {
-			fetchTrendingCategories()
-				.then(res => setTrendingCategories(res.data.attributes.categories))
+		if (!trendingTags) {
+			fetchTrendingTags()
+				.then(res => setTrendingTags(res.data.attributes.tags))
 		}
 
-		await fetchAllFeeds(skipValueForPagination, undefined, categoryFilter, sortBy)
+		await fetchAllFeeds(skipValueForPagination, undefined, tagFilter, sortBy)
 			.then(async (feedsResponse: AxiosResponse) => {
 				const promises = await feedsResponse.data.attributes.titles.map(async (title: any) => {
-					const categoryName = await fetchOneCategory(title.category_id).then(({ data }) => data.attributes.name)
 					const featuredEntry: any = await fetchFeaturedEntryByTitleId(title.id).then(featuredEntryResponse => featuredEntryResponse.data.attributes)
 						.catch(_error => { })
 
@@ -69,7 +88,7 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 						slug: title.slug,
 						name: title.name,
 						href: `/${title.slug}`,
-						categoryName: categoryName,
+						tags: title.tags,
 						createdAt: title.created_at,
 						updatedAt: title.updated_at,
 						entryCount: title.entry_count,
@@ -89,13 +108,10 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 				})
 
 				const result = await Promise.all(promises)
-
-				/* TODO
-				* This is a workaround to fix wrong list order of Feeds Flow.
-				* Updating feeds should be refactored.
-				*/
-				// @ts-ignore
-				result.map(item => setFeed((feedList: FeedList[]) => [...feedList, item]))
+				result.map((item: FeedList) => {
+					if (feedList.find(i => i.id === item.id)) return
+					setFeed((feedList: FeedList[]) => [...feedList, item])
+				})
 
 				if (feedsResponse.data.attributes.count > (feedsResponse.data.attributes.titles.length + skipValueForPagination)) setCanLoadMore(true)
 				else setCanLoadMore(false)
@@ -167,7 +183,17 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 									alt="Title Image"
 								/>
 							}
-							description={<p className={'custom-tag'}>{item.categoryName.toUpperCase()}</p>}
+							description={
+								item.tags.map(tag => {
+									return (
+										<div key={tag} className={'custom-tag'} style={{ backgroundColor: stringToColor(tag) }}>
+											<Typography.Text style={{ color: (parseInt(stringToColor(tag).replace('#', ''), 16) > 0xffffff / 2) ? '#000' : '#fff', background: (parseInt(stringToColor(tag).replace('#', ''), 16) > 0xffffff / 2) ? '#fff' : '#000', opacity: 0.9 }}>
+												#{tag}
+											</Typography.Text>
+										</div>
+									)
+								})
+							}
 						/>
 						{item.featuredEntry ?
 							<ArticleListContent data={item.featuredEntry} />
@@ -180,9 +206,8 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 		)
 	}
 
-	const handleTrendingCategoriesRender = (): JSX.Element => {
-
-		if (!trendingCategories) {
+	const handleTrendingTagsRender = (): JSX.Element => {
+		if (!trendingTags) {
 			return (
 				<div style={{ textAlign: 'center' }}>
 					<LoadingOutlined spin style={{ fontSize: 25 }} />
@@ -191,36 +216,23 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 		}
 
 		return (
-			<div style={{ marginTop: -20 }}>
-				{trendingCategories.map(category => {
+			<div>
+				{trendingTags.map(tag => {
 					return (
-						<Row key={category.id} style={{ alignItems: 'center' }}>
-							<Typography.Text style={{ width: 'calc(100% - 30px)' }} ellipsis strong>
-								{category.name.toUpperCase()}
+						<div key={tag._id} onClick={() => handleFilteringTags(tag.name)} className={'custom-tag'} style={{ backgroundColor: stringToColor(tag.name), cursor: 'pointer' }}>
+							<Typography.Text style={{ color: (parseInt(stringToColor(tag.name).replace('#', ''), 16) > 0xffffff / 2) ? '#000' : '#fff', background: (parseInt(stringToColor(tag.name).replace('#', ''), 16) > 0xffffff / 2) ? '#fff' : '#000', opacity: 0.9 }}>
+								#{tag.name}
 							</Typography.Text>
-							<Button
-								onClick={(): void => handleCategoryFilterSet(category.id)}
-								style={{ width: 25, marginLeft: 5 }}
-								size="large"
-								type="link"
-								key={category.id}
-								icon={<EyeOutlined style={{ color: '#6ec49a' }} />}
-							/>
-						</Row>
+						</div>
 					)
 				})}
 			</div>
 		)
 	}
 
-	useEffect(() => {
-		handleDataFetching()
-	}, [skipValueForPagination, categoryFilter, sortBy, isJustInitialized])
-
 	const handleFetchMore = (): void => {
 		setIsLoadMoreTriggered(true)
 		setSkipValueForPagination(skipValueForPagination + 10)
-		setIsJustInitialized(false)
 	}
 
 	const loadMore = canLoadMore && (
@@ -237,27 +249,8 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 		</div>
 	)
 
-	const handleModalScreen = (): JSX.Element => (
-		<Modal
-			transitionName='fade'
-			style={{ textAlign: 'center' }}
-			visible={displayFilterModal}
-			closable={false}
-			footer={null}
-			onCancel={(): void => setDisplayFilterModal(false)}
-		>
-			<CategorySelect
-				multiple
-				onSelect={(id): void => handleCategoryFilterSet(String(id))}
-				style={{ width: '100%' }}
-				placeHolder="All Categories"
-				allowClear
-			/>
-		</Modal>
-	)
-
 	return (
-		<AppLayout authority={Guest}>
+		<AppLayout authority={Roles.Guest}>
 			<PageHelmet
 				title="Feednext: the source of feedbacks"
 				description="Best reviews, comments, feedbacks about anything around the world"
@@ -276,19 +269,25 @@ const Homepage: NextPage<FeedsPageInitials> = (props): JSX.Element => {
 						}}
 					>
 						<FlowHeader
-							openFilterModal={(): void => setDisplayFilterModal(true)}
-							setSortBy={(val: 'top' | 'hot' | undefined): void => handleSortBySet(val)}
-							resetCategoryFilter={(): void => handleCategoryFilterSet(undefined)}
+							setSortBy={(val: 'top' | 'hot' | undefined): void => handleSorting(val)}
+							resetTagFilter={(): void => setTagFilter(null)}
+							beforeFilterReset={() => handleFlowReset()}
 							sortBy={sortBy}
 						/>
-						{handleModalScreen()}
 						{handleFeedListView()}
 					</Card>
 				</Col>
 				<Col xl={8} lg={10} md={24} sm={24} xs={24} style={{ padding: 4 }}>
-					<Card className="blockEdges" style={{ marginBottom: 5 }} bordered={false} title="Trending Categories">
-						{handleTrendingCategoriesRender()}
+					<Card className="blockEdges" style={{ marginBottom: 5 }} bordered={false}>
+						<Typography.Title level={4} style={{ fontWeight: 'normal' }}> Trending Tags </Typography.Title>
+						{handleTrendingTagsRender()}
 					</Card>
+					<TagSearchingBlock
+						tagFilter={tagFilter ? tagFilter.split(',') : []}
+						setTagFilter={handleFilteringTags}
+						beforeTagDeSelect={() => handleFlowReset()}
+						updateTagFilterList={setTagFilter}
+					/>
 					<AdditionalBlock />
 				</Col>
 			</Row>

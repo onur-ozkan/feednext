@@ -11,12 +11,13 @@ import { format, parseISO } from 'date-fns'
 
 
 // Local files
-import { API_URL, Guest } from '@/../config/constants'
+import { API_URL } from '@/../config/constants'
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { UserTabs } from '@/components/pages/user/[username]'
 import { getUserPageInitialValues } from '@/services/initializations'
 import { UserPageInitials } from '@/@types/initializations'
 import { AppLayout } from '@/layouts/AppLayout'
+import { Roles } from '@/enums'
 import NotFoundPage from '@/pages/404'
 
 const readableRoles = {
@@ -36,7 +37,7 @@ const User: NextPage<UserPageInitials> = (props): JSX.Element => {
 	if (!user) return <NotFoundPage />
 
 	return (
-		<AppLayout authority={Guest}>
+		<AppLayout authority={Roles.Guest}>
 			<PageHelmet
 				title={`${user.attributes.full_name} | Feednext`}
 				description="Best reviews, comments, feedbacks about anything around the world"

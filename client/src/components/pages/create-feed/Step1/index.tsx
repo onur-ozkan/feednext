@@ -1,17 +1,17 @@
 // Antd dependencies
-import { Form, Button, Input } from 'antd'
+import { Form, Button, Input, Select, Typography } from 'antd'
 
 // Other dependencies
 import React, { useContext, useState } from 'react'
 
 // Local files
-import { CategorySelect } from '@/components/global/CategorySelect'
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { Step1Props } from '@/@types/pages'
 import { ImageUpload } from '@/components/global/ImageUpload'
 import { ListOfSimilarFeeds } from '@/components/global/ListOfSimilarFeeds'
 import { StepContext } from '@/services/step.context.service'
-import '@/styles/components/StepForm/style.less'
+import { searchTagByName } from '@/services/api'
+import '../style.less'
 
 const formItemLayout = {
 	labelCol: {
@@ -24,12 +24,14 @@ const formItemLayout = {
 
 const Step1: React.FC<Step1Props> = (props): JSX.Element => {
 	const [form] = Form.useForm()
+	const [tagResult, setTagResult] = useState([])
+	const [noTagDataMessage, setNoTagDataMessage] = useState('Enter at least 3 characters to search')
 	const [titleValue, setTitleValue] = useState('')
-	const { createTitleFormData, readableCategoryValue } = useContext(StepContext)
-	const { setCreateTitleFormData, stepMovementTo, setReadableCategoryValue } = props
+	const { createTitleFormData } = useContext(StepContext)
+	const { setCreateTitleFormData, stepMovementTo, setReadableTagValue } = props
 
-	const handleFormValidation = (): void => {
-		if (!createTitleFormData.categoryId || !form.getFieldValue('title')) return
+	const handleFormValidation = async (): Promise<void> => {
+		await form.validateFields()
 		setCreateTitleFormData({
 			...createTitleFormData,
 			name: form.getFieldValue('title')
@@ -37,12 +39,32 @@ const Step1: React.FC<Step1Props> = (props): JSX.Element => {
 		stepMovementTo('create-entry')
 	}
 
-	const handleReadableCategoryValue = (id: string | string[], title: React.ReactNode[]): void => {
+	const handleReadableTagValue = (tags: string[]): void => {
 		setCreateTitleFormData({
 			...createTitleFormData,
-			categoryId: id,
+			tags,
 		})
-		setReadableCategoryValue(title[0])
+		setReadableTagValue(tags)
+	}
+
+	const handleTagSearching = (value: string): void => {
+		if (value.length < 3) {
+			setTagResult([])
+			setNoTagDataMessage('Enter at least 3 characters to search')
+		}
+
+		else {
+			searchTagByName(value).then(({ data }) => {
+				const result = []
+
+				data.attributes.tags.map(tag => {
+					result.push(<Select.Option key={tag._id} value={tag.name}>{tag.name}</Select.Option>)
+				})
+
+				if (result.length !== 0) setTagResult(result)
+				else setTagResult([<Select.Option key={value} value={value}>{value}</Select.Option>])
+			})
+		}
 	}
 
 
@@ -73,7 +95,7 @@ const Step1: React.FC<Step1Props> = (props): JSX.Element => {
 			<Form
 				{...formItemLayout}
 				form={form}
-				initialValues={{ categoryId: createTitleFormData.categoryId, title: createTitleFormData.name }}
+				initialValues={{ tags: createTitleFormData.tags, title: createTitleFormData.name }}
 				layout="horizontal"
 				className={'stepForm'}
 			>
@@ -87,22 +109,30 @@ const Step1: React.FC<Step1Props> = (props): JSX.Element => {
 				</Form.Item>
 
 				<Form.Item
-					label="Category"
-					name="categoryId"
+					label="Tags"
+					name="tags"
 					rules={[
 						() => ({
 							validator() {
-								if (!createTitleFormData.categoryId) return Promise.reject('Please select category')
+								if (!createTitleFormData.tags || createTitleFormData.tags.length < 1) return Promise.reject('Please select atleast one tag')
 								return Promise.resolve()
 							}
 						})
 					]}
 				>
-					<CategorySelect
-						defaultValue={readableCategoryValue}
-						placeHolder="Electronic"
-						onSelect={handleReadableCategoryValue}
-					/>
+					<Select
+						mode="multiple"
+						style={{ width: '100%' }}
+						placeholder="please specify feed-related keywords"
+						onChange={handleReadableTagValue}
+						allowClear
+						onSearch={handleTagSearching}
+						notFoundContent={
+							<Typography.Text style={{ width: '100%' }}> {noTagDataMessage} </Typography.Text>
+						}
+					>
+						{tagResult}
+					</Select>
 				</Form.Item>
 
 				<Form.Item label="Title" name="title" rules={[{ required: true, message: 'Please fill the title input' }, { min: 3, message: 'Title length must be longer than 2 characters' }]}>

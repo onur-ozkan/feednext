@@ -10,16 +10,15 @@ import { createReadStream } from 'fs'
 import { TitlesRepository } from 'src/shared/Repositories/title.repository'
 import { CreateTitleDto } from '../Dto/create-title.dto'
 import { TitlesEntity } from 'src/shared/Entities/titles.entity'
-import { CategoriesRepository } from 'src/shared/Repositories/categories.repository'
 import { UpdateTitleDto } from '../Dto/update-title.dto'
 import { serializerService, ISerializeResponse } from 'src/shared/Services/serializer.service'
 import { EntriesRepository } from 'src/shared/Repositories/entries.repository'
 import { UsersRepository } from 'src/shared/Repositories/users.repository'
-import { CategoriesEntity } from 'src/shared/Entities/categories.entity'
 import { AwsService } from 'src/shared/Services/aws.service'
 import { configService } from 'src/shared/Services/config.service'
 import { sitemapManipulationService } from 'src/shared/Services/sitemap.manipulation.service'
 import { StatusOk } from 'src/shared/Types'
+import { TagsRepository } from 'src/shared/Repositories/tags.repository'
 
 @Injectable()
 export class TitleService {
@@ -28,8 +27,8 @@ export class TitleService {
     constructor(
         @InjectRepository(TitlesRepository)
         private readonly titlesRepository: TitlesRepository,
-        @InjectRepository(CategoriesRepository)
-        private readonly categoriesRepository: CategoriesRepository,
+        @InjectRepository(TagsRepository)
+        private readonly tagsRepository: TagsRepository,
         @InjectRepository(EntriesRepository)
         private readonly entriesRepository: EntriesRepository,
         @InjectRepository(UsersRepository)
@@ -61,7 +60,7 @@ export class TitleService {
     async getTitleList(
         query: {
             author: string,
-            categoryIds: string[],
+            tags: string[],
             sortBy: 'hot' | 'top',
             skip: number,
         }
@@ -73,34 +72,30 @@ export class TitleService {
         return serializerService.serializeResponse('title_list', result)
     }
 
-    async createTitle(openedBy: string, payload: CreateTitleDto, buffer: Buffer): Promise<ISerializeResponse> {
+    async createTitle(openedBy: string, payload: any, buffer: Buffer): Promise<ISerializeResponse> {
         payload.name = payload.name.replace(/^\s+|\s+$/g, '')
         if (payload.name.length === 0) throw new BadRequestException('Title name can not be whitespace')
+        if (!payload.tags) throw new BadRequestException('tags must be provided')
 
         const dto = new CreateTitleDto()
         dto.name = payload.name
-        dto.categoryId = payload.categoryId
+        dto.tags = payload.tags.split(',')
 
-        return await validate(dto, { validationError: { target: false } }).then(async errors => {
+        const result = await validate(dto, { validationError: { target: false } }).then(async errors => {
             if (errors.length > 0) {
                 throw new BadRequestException(errors)
             }
 
-            let category: CategoriesEntity
-            try {
-                category = await this.categoriesRepository.findOneOrFail(dto.categoryId)
-            } catch (err) {
-                throw new NotFoundException('Category could not found by given id')
-            }
-
-            if (!category.is_leaf) throw new BadRequestException('Category that is not leaf can not have titles')
-
-            const newTitle: TitlesEntity = await this.titlesRepository.createTitle(openedBy, dto, category.ancestors)
+            const newTitle: TitlesEntity = await this.titlesRepository.createTitle(openedBy, dto)
             if (buffer) this.awsService.uploadImage(String(newTitle.id), 'titles', buffer)
 
-            if (configService.isProduction()) sitemapManipulationService.addToIndexedSitemap(newTitle.slug, new Date().toJSON().slice(0,10))
+            if (configService.isProduction()) sitemapManipulationService.addToIndexedSitemap(newTitle.slug, new Date().toJSON().slice(0, 10))
             return serializerService.serializeResponse('title_detail', newTitle)
         })
+
+        dto.tags.forEach(async element => this.tagsRepository.tagActionOnTitleCreateOrUpdate(element))
+
+        return result
     }
 
     async getTitleImage(titleId: string): Promise<unknown> {
@@ -154,8 +149,8 @@ export class TitleService {
     }
 
     async updateTitle(updatedBy: string, titleId: string, dto: UpdateTitleDto): Promise<ISerializeResponse> {
-        dto.name = dto.name.replace(/^\s+|\s+$/g, '')
-        if (dto.name.length === 0) throw new BadRequestException('Title name can not be whitespace')
+        if (dto.name) dto.name = dto.name.replace(/^\s+|\s+$/g, '')
+        if (dto.name?.length === 0) throw new BadRequestException('Title name can not be whitespace')
 
         if (!this.validator.isMongoId(titleId)) throw new BadRequestException('Id must be a type of MongoId')
 
@@ -166,21 +161,13 @@ export class TitleService {
             throw new NotFoundException('Title could not found by given id')
         }
 
-        if (dto.categoryId && !this.validator.isMongoId(dto.categoryId)) {
-            throw new BadRequestException('Id must be a type of MongoId')
+        if (dto.tags) {
+            dto.tags.forEach(async element => this.tagsRepository.tagActionOnTitleCreateOrUpdate(element))
+            title.tags.forEach(async element => this.tagsRepository.updateTagWhenRemovedFromTitle(element))
         }
 
-        let category
-        if (dto.categoryId) {
-            try {
-                category = await this.categoriesRepository.findOneOrFail(dto.categoryId)
-            } catch (err) {
-                throw new NotFoundException('Category could not found by given id')
-            }
-        }
-
-        const updatedTitle: TitlesEntity = await this.titlesRepository.updateTitle(updatedBy, title, dto, category?.ancestors)
-        if (configService.isProduction()) sitemapManipulationService.addToIndexedSitemap(updatedTitle.slug, new Date().toJSON().slice(0,10))
+        const updatedTitle: TitlesEntity = await this.titlesRepository.updateTitle(updatedBy, title, dto)
+        if (configService.isProduction()) sitemapManipulationService.addToIndexedSitemap(updatedTitle.slug, new Date().toJSON().slice(0, 10))
 
         return serializerService.serializeResponse('title_detail', updatedTitle)
     }

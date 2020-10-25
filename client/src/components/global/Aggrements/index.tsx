@@ -5,8 +5,8 @@ import { Modal } from 'antd'
 import React from 'react'
 
 // Local files
-import { PrivacyPolicy } from './components/PrivacyPolicy'
-import { TermsAndConditions } from './components/TermsAndConditions'
+import { PrivacyPolicy } from './PrivacyPolicy'
+import { TermsAndConditions } from './TermsAndConditions'
 import { AggrementsProps } from '@/@types/components'
 
 export const Aggrements: React.FC<AggrementsProps> = (props): JSX.Element => (

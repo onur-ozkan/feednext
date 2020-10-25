@@ -1,0 +1,21 @@
+{
+    "title": "Register Form",
+    "signUp": "Sign Up",
+    "fullName": "Full Name",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "validationErrorFullName": "Please enter your full name",
+    "validationErrorUsername": "Please enter your username",
+    "validationErrorEmail": "Please enter your email",
+    "validationErrorEmail2": "Email format is not valid",
+    "validationErrorPassword": "Please enter your password",
+    "validationErrorConfirmPassword": "Please confirm your password",
+    "validationErrorPasswordMatch": "The two passwords that you entered do not match",
+    "validationErrorTermsAndPolicy": "You must accept the privacy policy and terms & conditions",
+    "alreadyHaveAnAccount": "Already have an account?",
+    "privacyPolicy": "Privacy Policy",
+    "termsAndConditions": "Terms & Conditions",
+    "readAndUnderstood": "read and understood."
+}
