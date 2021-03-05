@@ -5,9 +5,6 @@
     <a href="https://www.codefactor.io/repository/github/feednext/feednext">
       <img src="https://www.codefactor.io/repository/github/feednext/feednext/badge?style=flat-square" />
     </a>
-    <a href="https://github.com/feednext/feednext/commits/master">
-      <img src="https://img.shields.io/github/commit-activity/m/feednext/feednext?style=flat-square" alt="Commit Activity" />
-    <a/>
     <a href="https://github.com/feednext/feednext/issues?q=is%3Aissue+is%3Aclosed">
       <img src="https://img.shields.io/github/issues-closed-raw/feednext/feednext?style=flat-square&colorB=blue" alt="Closed Issues" />
     <a/>
