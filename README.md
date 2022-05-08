@@ -1,3 +1,5 @@
+## No longer maintained
+
 <div>
   <img src="https://raw.githubusercontent.com/feednext/feednext/master/server/public/logo-wide.png" alt="Brand Logo"/>
 
