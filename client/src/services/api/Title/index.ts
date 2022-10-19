@@ -4,13 +4,13 @@ import axios, { AxiosResponse } from 'axios'
 export const fetchAllFeeds = (
 	skip: number,
 	username: string | undefined,
-	categoryIds: string | undefined,
+	tags: string | undefined,
 	sortBy?: 'hot' | 'top' | undefined
 ): Promise<AxiosResponse> => axios.get(
 	'/v1/title/all', {
 		params: {
 			...username && { author: username },
-			...categoryIds && { categoryIds },
+			...tags && { tags },
 			...sortBy && { sortBy },
 			skip
 		}
@@ -79,7 +79,7 @@ export const updateTitle = (
 	titleId: string,
 	payload: {
 		name: string,
-		categoryId: string | string[] | null
+		tags: string[]
 	}
 ): Promise<AxiosResponse> => axios.patch(`/v1/title/${titleId}`, payload, {
 	headers: {

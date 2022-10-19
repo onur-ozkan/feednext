@@ -1,5 +1,5 @@
 // Antd dependencies
-import { Modal, Form, Input, Button, Popconfirm, message } from 'antd'
+import { Modal, Form, Input, Button, Popconfirm, message, Select, Typography } from 'antd'
 import { InfoCircleOutlined } from '@ant-design/icons'
 
 // Other dependencies
@@ -9,16 +9,16 @@ import { useRouter, NextRouter } from 'next/router'
 import { NextPage } from 'next'
 
 // Local files
-import { fetchEntriesByTitleId, getAverageTitleRate, updateTitle, deleteTitleImage, updateTitleImage } from '@/services/api'
-import { TitleResponseData, CategoryResponseData } from '@/@types/api'
-import { API_URL, Guest } from '@/../config/constants'
-import { CategorySelect } from '@/components/global/CategorySelect'
+import { fetchEntriesByTitleId, getAverageTitleRate, updateTitle, deleteTitleImage, updateTitleImage, searchTagByName } from '@/services/api'
+import { TitleResponseData } from '@/@types/api'
+import { API_URL } from '@/../config/constants'
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { EntryAttributes } from '@/@types/pages'
 import { getFeedPageInitialValues } from '@/services/initializations'
 import { FeedPageInitials } from '@/@types/initializations'
 import { ImageUpload } from '@/components/global/ImageUpload'
 import { AppLayout } from '@/layouts/AppLayout'
+import { Roles } from '@/enums'
 import NotFoundPage from '@/pages/404'
 import FeedHeader from '@/components/pages/[feed]/FeedHeader'
 import FeedEntries from '@/components/pages/[feed]/FeedEntries'
@@ -29,12 +29,10 @@ const Feed: NextPage<FeedPageInitials> = (props): JSX.Element => {
 	const globalState = useSelector((state: any) => state.global)
 	const userRole = useSelector((state: any) => state.user?.attributes.user.role)
 
-	const [title, setTitle]: any = useState<TitleResponseData>(props.titleData)
-	const [category, setCategory]: any = useState<CategoryResponseData>(props.categoryData)
+	const [title, setTitle] = useState<TitleResponseData>(props.titleData)
 	const [featuredEntry, setFeaturedEntry] = useState<string>(props.featuredEntry)
 	const [keywords, setKeywords] = useState(props.keywords)
 	const [averageTitleRate, setAverageTitleRate] = useState<number | null>(props.averageTitleRate)
-	const [updateCategoryId, setUpdateCategoryId] = useState<string | string[] | null>(null)
 	const [entryList, setEntryList] = useState<{
 		entries: EntryAttributes[],
 		count: number
@@ -44,15 +42,47 @@ const Feed: NextPage<FeedPageInitials> = (props): JSX.Element => {
 	const [titleImageBlob, setTitleImageBlob] = useState<Blob | null>(null)
 	const [titleNotFound, setTitleNotFound] = useState(props.error)
 
+	const [tagResult, setTagResult] = useState([])
+	const [noTagDataMessage, setNoTagDataMessage] = useState('Enter at least 3 characters to search')
+	const [tagValue, setTagValue] = useState(title.attributes.tags)
+
 	const [form] = Form.useForm()
+
+	useEffect(() => {
+		if (title) handleEntryFetching(10 * (Number(router.query.page) - 1) || 0)
+	}, [title, sortEntriesBy])
 
 	const handleEntryFetching = (page: number): void => {
 		fetchEntriesByTitleId(title.attributes.id, page, sortEntriesBy).then(async ({ data }) => setEntryList(data.attributes))
 	}
 
-	useEffect(() => {
-		if (title) handleEntryFetching(10 * (Number(router.query.page) - 1) || 0)
-	}, [title, sortEntriesBy])
+	const handleTagSearching = (value: string): void => {
+		if (value.length < 3) {
+			setTagResult([])
+			setNoTagDataMessage('Enter at least 3 characters to search')
+		}
+
+		else {
+			searchTagByName(value).then(({ data }) => {
+				const result = []
+				data.attributes.tags.map(tag => {
+					result.push(<Select.Option key={tag._id} value={tag.name}>{tag.name}</Select.Option>)
+				})
+
+				if (result.length !== 0) setTagResult(result)
+				else setTagResult([<Select.Option key={value} value={value}>{value}</Select.Option>])
+			})
+		}
+	}
+
+	const handleTagSelect = (value: string): void => {
+		setTagValue([...tagValue, value])
+	}
+
+	const handleDeSelect = (tag: string) => {
+		const updatedList = tagValue.filter(value => value !== tag)
+		setTagValue(updatedList)
+	}
 
 	const getTitleRate = async (titleId: string): Promise<void> => {
 		await getAverageTitleRate(titleId).then(res => setAverageTitleRate(res.data.attributes.rate || 0))
@@ -60,8 +90,8 @@ const Feed: NextPage<FeedPageInitials> = (props): JSX.Element => {
 
 	const handleTitleUpdate = async (values: { name: string }): Promise<void> => {
 		const updatePayload = {
-			categoryId: updateCategoryId,
-			name: values.name
+			name: values.name,
+			tags: tagValue,
 		}
 
 		if (!titleImageBlob) {
@@ -85,10 +115,10 @@ const Feed: NextPage<FeedPageInitials> = (props): JSX.Element => {
 	}
 
 	if (titleNotFound) return <NotFoundPage />
-	if (!entryList || !title || !category || (!averageTitleRate && averageTitleRate !== 0)) return <PageLoading />
+	if (!entryList || !title || (!averageTitleRate && averageTitleRate !== 0)) return <PageLoading />
 
 	return (
-		<AppLayout authority={Guest}>
+		<AppLayout authority={Roles.Guest}>
 			<PageHelmet
 				title={title.attributes.name}
 				description={`Best reviews, comments, feedbacks about ${title.attributes.name} around the world`}
@@ -103,7 +133,6 @@ const Feed: NextPage<FeedPageInitials> = (props): JSX.Element => {
 				openUpdateModal={(): void => setUpdateModalVisibility(true)}
 				userRole={userRole}
 				titleData={title}
-				categoryData={category}
 				averageTitleRate={averageTitleRate}
 				refreshTitleRate={getTitleRate}
 			/>
@@ -147,12 +176,20 @@ const Feed: NextPage<FeedPageInitials> = (props): JSX.Element => {
 						</div>
 					</div>
 					<Form.Item style={{ marginBottom: 10 }}>
-						<CategorySelect
+						<Select
+							mode="multiple"
+							defaultValue={title.attributes.tags}
 							style={{ width: '100%' }}
-							defaultValue={category.name}
-							placeHolder="Electronic"
-							onSelect={(id): void => setUpdateCategoryId(id)}
-						/>
+							placeholder="please specify feed-related keywords"
+							onSearch={handleTagSearching}
+							onSelect={handleTagSelect}
+							onDeselect={handleDeSelect}
+							notFoundContent={
+								<Typography.Text style={{ width: '100%' }}> {noTagDataMessage} </Typography.Text>
+							}
+						>
+							{tagResult}
+						</Select>
 					</Form.Item>
 					<Form.Item
 						name="name"

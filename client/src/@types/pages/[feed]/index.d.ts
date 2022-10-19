@@ -1,5 +1,5 @@
 // Local files
-import { CategoryResponseData, TitleResponseData, EntryResponseData} from '@/@types/api'
+import { TitleResponseData, EntryResponseData} from '@/@types/api'
 
 export interface EntryAttributes {
 	id: string,
@@ -17,7 +17,6 @@ export interface EntryAttributes {
 
 export interface FeedHeaderProps {
 	accessToken: string,
-	categoryData: CategoryResponseData,
 	titleData: TitleResponseData,
 	averageTitleRate: number,
 	userRole: number,

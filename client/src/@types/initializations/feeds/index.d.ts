@@ -1,6 +1,6 @@
 // Local files
-import { TrendingCategoriesResponseData } from '@/@types/api'
+import { TrendingTagsResponseData } from '@/@types/api'
 
 export interface FeedsPageInitials {
-    trendingCategories: TrendingCategoriesResponseData[]
+    trendingTags: TrendingTagsResponseData[]
 }
