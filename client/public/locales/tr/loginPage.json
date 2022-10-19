@@ -1,0 +1,11 @@
+{
+    "title": "Giriş Formu",
+    "signIn": "Giriş Yap",
+    "validationErrorEmailOrUsername": "Lütfen kullanıcı adı ya da eposta girin",
+    "validationErrorPassword": "Lütfen parolanızı girin",
+    "rememberMe": "Beni Hatırla",
+    "createAccount": "Yeni bir hesap oluştur",
+    "forgotPassword": "Şifremi Unuttum",
+    "usernameOrEmail": "Kullanıcı adı ya da Eposta",
+    "password": "Parola"
+}

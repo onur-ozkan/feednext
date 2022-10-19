@@ -1,0 +1,21 @@
+{
+    "title": "Kayıt Formu",
+    "signUp": "Kayıt Ol",
+    "fullName": "Ad Soyad",
+    "username": "Kullanıcı Adı",
+    "email": "E Posta",
+    "password": "Parola",
+    "confirmPassword": "Parolayı Onayla",
+    "validationErrorFullName": "Lütfen ad soyad alanına değer girin",
+    "validationErrorUsername": "Lütfen kullanıcı adı alanına değer girin",
+    "validationErrorEmail": "Lütfen e posta alanına değer girin",
+    "validationErrorEmail2": "E posta formatı uygun değil",
+    "validationErrorPassword": "Lütfen parola alanına değer girin",
+    "validationErrorConfirmPassword": "Lütfen parolanızı onaylayın",
+    "validationErrorPasswordMatch": "Girilen iki parola birbiri ile eşleşmiyor",
+    "validationErrorTermsAndPolicy": "Gizlilik politikasını ve hüküm & koşulları kabul etmelisiniz",
+    "alreadyHaveAnAccount": "Zaten hesabınız var mı?",
+    "privacyPolicy": "Gizlilik politikası",
+    "termsAndConditions": "Hüküm & Koşullar",
+    "readAndUnderstood": "okudum ve anladım."
+}
