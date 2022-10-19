@@ -13,8 +13,9 @@ import { SIGN_IN } from '@/redux/Actions/User'
 import { SET_ACCESS_TOKEN } from '@/redux/Actions/Global'
 import { PageHelmet } from '@/components/global/PageHelmet'
 import { signIn } from '@/services/api'
+import { withTranslation } from '@/../i18n'
 import AuthLayout from '@/layouts/AuthLayout'
-import '@/styles/pages/auth/sign-in/style.less'
+import './style.less'
 
 export declare interface FormDataType {
 	usernameOrEmail: string
@@ -22,7 +23,7 @@ export declare interface FormDataType {
 	remember: boolean
 }
 
-const Login: React.FunctionComponent = () => {
+const Login: React.FunctionComponent = ({ t }) => {
 	const router = useRouter()
 
 	const [form] = Form.useForm()
@@ -73,30 +74,30 @@ const Login: React.FunctionComponent = () => {
 					<Tabs>
 						<Tabs.TabPane
 							key="sign-in"
-							tab="Sign In"
+							tab={t("loginPage:title")}
 						>
 							<Form.Item
 								name="usernameOrEmail"
-								rules={[{ required: true, message: 'Please input your username or email!' }]}
+								rules={[{ required: true, message: t("loginPage:validationErrorEmailOrUsername") }]}
 							>
-								<Input prefix={<UserOutlined style={{ color: '#717171'}} />} placeholder="Username or Email" />
+								<Input prefix={<UserOutlined style={{ color: '#717171'}} />} placeholder={t("loginPage:usernameOrEmail")} />
 							</Form.Item>
 
-							<Form.Item name="password" rules={[{ required: true, message: 'Please input your password!' }]}>
-								<Input.Password prefix={<LockOutlined style={{ color: '#717171'}} />} placeholder="Password" />
+							<Form.Item name="password" rules={[{ required: true, message: t("loginPage:validationErrorPassword") }]}>
+								<Input.Password prefix={<LockOutlined style={{ color: '#717171'}} />} placeholder={t("loginPage:password")} />
 							</Form.Item>
 
 							<Row>
 								<Col span={12}>
 									<Form.Item name="remember" valuePropName="checked">
-										<Checkbox>Remember me</Checkbox>
+										<Checkbox>{t("loginPage:rememberMe")}</Checkbox>
 									</Form.Item>
 								</Col>
 								<Col span={12}>
 									<Form.Item style={{ float: 'right'}}>
 										<Link href="/auth/sign-in/forgot-password">
 											<a style={{ color: '#d60d17' }}>
-													Forgot Password
+												{t("loginPage:forgotPassword")}
 											</a>
 										</Link>
 									</Form.Item>
@@ -105,11 +106,11 @@ const Login: React.FunctionComponent = () => {
 
 							<Form.Item>
 								<Button className={'submit'} size="large" type="primary" htmlType="submit">
-									{isSigning ? <LoadingOutlined /> : 'Sign In'}
+									{isSigning ? <LoadingOutlined /> : t("loginPage:signIn") }
 								</Button>
 								<Link href="/auth/sign-up">
 									<a className={'register'}>
-										Create an Account
+										{t("loginPage:createAccount")}
 									</a>
 								</Link>
 							</Form.Item>
@@ -121,4 +122,4 @@ const Login: React.FunctionComponent = () => {
 	)
 }
 
-export default Login
+export default withTranslation('loginPage')(Login)

@@ -13,7 +13,6 @@ import { API_URL } from '@/../config/constants'
 import PageLoading from '@/components/global/PageLoading'
 import { ConversationListProps } from '@/@types/pages'
 import newMessagePng from '@/assets/newMessage.png'
-import '@/styles/pages/messages/style.less'
 
 export const ConversationList: React.FC<ConversationListProps> = (props): JSX.Element => {
 	const router = useRouter()

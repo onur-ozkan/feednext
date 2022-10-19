@@ -10,7 +10,6 @@ import { useDispatch } from 'react-redux'
 import { uploadProfilePicture, updateUser } from '@/services/api'
 import { UPDATE_USER } from '@/redux/Actions/User'
 import { API_URL } from '@/../config/constants'
-import '@/styles/pages/settings/style.less'
 
 export const AccountSettings = (params: AccountSettingsParams): JSX.Element => {
 	const [imageUri, setImageUri] = useState(`${API_URL}/v1/user/pp?username=${params.user.username}`)

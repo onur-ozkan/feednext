@@ -26,19 +26,19 @@ import {
 import React, { useState } from 'react'
 import { format, parseISO } from 'date-fns'
 import { useRouter } from 'next/router'
+import stringToColor from 'string-to-color'
 
 // Local files
 import { getUserRateOfTitle, rateTitle, deleteTitle } from '@/services/api'
 import { SignModal } from '@/components/global/SignModal'
 import { API_URL } from '@/../config/constants'
 import { FeedHeaderProps } from '@/@types/pages'
-import '@/styles/components/[feed]/style.less'
+import './style.less'
 
 const FeedHeader: React.FC<FeedHeaderProps> = (props): JSX.Element => {
 	const {
 		titleData,
 		openUpdateModal,
-		categoryData,
 		accessToken,
 		averageTitleRate,
 		refreshTitleRate,
@@ -73,6 +73,18 @@ const FeedHeader: React.FC<FeedHeaderProps> = (props): JSX.Element => {
 			.catch(_error => setInitialRatingModalValue(0))
 	}
 
+	const handleTagsView = (tags: string[]) => {
+		return tags.map(tag => {
+			return (
+				<div key={tag} className={'custom-tag'} style={{ backgroundColor: stringToColor(tag) }}>
+					<Typography.Text style={{ color: (parseInt(stringToColor(tag).replace('#', ''), 16) > 0xffffff / 2) ? '#000' : '#fff', background: (parseInt(stringToColor(tag).replace('#', ''), 16) > 0xffffff / 2) ? '#fff' : '#000', opacity: 0.9 }}>
+						#{tag}
+					</Typography.Text>
+				</div>
+			)
+		})
+	}
+
 	const handleRateModalRender = (): JSX.Element => (
 		<Modal
 			transitionName='fade'
@@ -103,8 +115,8 @@ const FeedHeader: React.FC<FeedHeaderProps> = (props): JSX.Element => {
 				value: titleData.attributes.name
 			},
 			{
-				title: 'Category',
-				value: categoryData.attributes.name
+				title: 'Tags',
+				value: titleData.attributes.tags
 			},
 			{
 				title: 'Entry Count',
@@ -159,6 +171,7 @@ const FeedHeader: React.FC<FeedHeaderProps> = (props): JSX.Element => {
 									<Statistic
 										suffix={item.suffix}
 										title={item.title}
+										// @ts-ignore
 										value={item.value}
 									/>
 								</Card.Grid>
@@ -188,7 +201,7 @@ const FeedHeader: React.FC<FeedHeaderProps> = (props): JSX.Element => {
 			<PageHeader
 				title={
 					<>
-						<Tag color="#6ec49a">{categoryData.attributes.name}</Tag>
+						{handleTagsView(titleData.attributes.tags)}
 						<Row>
 							<Col style={{ margin: '0 5px -15px 0' }}>
 								<Typography.Title level={2} style={{ whiteSpace: 'pre-wrap' }}>
