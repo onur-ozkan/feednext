@@ -33,8 +33,9 @@ import { PaginationProps } from 'antd/lib/pagination'
 // Local files
 import { voteEntry, undoEntryVote, updateEntry, deleteEntry } from '@/services/api'
 import { SignModal } from '@/components/global/SignModal'
-import { API_URL, Admin } from '@/../config/constants'
+import { API_URL } from '@/../config/constants'
 import { FeedEntriesProps } from '@/@types/pages'
+import { Roles } from '@/enums'
 import AddEntry from './AddEntry'
 
 const FeedEntries: React.FC<FeedEntriesProps> = (props): JSX.Element => {
@@ -281,7 +282,7 @@ const FeedEntries: React.FC<FeedEntriesProps> = (props): JSX.Element => {
 									>
 										{item.text}
 									</Typography.Text>
-									{(userState?.username === item.written_by || userState?.role >= Admin) && (
+									{(userState?.username === item.written_by || userState?.role >= Roles.Admin) && (
 										<span style={{ float: 'right' }}>
 											<Popconfirm
 												placement="leftBottom"
