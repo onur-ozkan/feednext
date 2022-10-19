@@ -9,7 +9,6 @@ import * as fastifyCookie from 'fastify-cookie'
 import * as fastifyMultipart from 'fastify-multipart'
 import * as sentry from '@sentry/node'
 import * as helmet from 'fastify-helmet'
-import * as compress from 'fastify-compress'
 
 // Local files
 import { AppModule } from './app.module'
@@ -45,12 +44,15 @@ async function bootstrap() {
         })
     })
 
-    fastifyAdapter.register(helmet) // Initialize security middleware module 'fastify-helmet'
-    fastifyAdapter.register(compress) // Initialize fastify-compress to better handle high-level traffic
-    fastifyAdapter.register(fastifyCookie) // Initialize fastify-cookie for cookie manipulation
-    fastifyAdapter.register(fastifyMultipart) // Enable multipart data support
 
     const app = await NestFactory.create<NestFastifyApplication>(AppModule, fastifyAdapter )
+    // @ts-ignore
+    app.getHttpAdapter().register(helmet)
+    // @ts-ignore
+    app.getHttpAdapter().register(fastifyCookie)
+    // @ts-ignore
+    app.getHttpAdapter().register(fastifyMultipart)
+
     app.setGlobalPrefix('/api') // Setting base path
     app.useGlobalPipes(new ValidationPipe()) // Initialize global validation
 
